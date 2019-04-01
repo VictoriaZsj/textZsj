@@ -1,0 +1,103 @@
+/**
+ * 设置面板
+ */
+class SettingPanel extends BasePanel
+{
+	public bgSoundHs: eui.HSlider;
+	public soundEffectHs: eui.HSlider;
+	public bgSoundTog: eui.ToggleButton;
+	public soundEffectTog: eui.ToggleButton;
+	public disbandBtn: eui.Button;
+	public reLoginBtn: eui.Button;
+
+	public constructor()
+	{
+		super();
+		this.skinName = UISkinName.SettingPanel;
+	}
+	protected onAwake(event: eui.UIEvent)
+	{
+		super.onAwake(event);
+	}
+	public init(appendData: any)
+	{
+		super.init(appendData);
+		this.disbandBtn.visible = false;
+		this.reLoginBtn.visible = false;
+		switch (SceneManager._currentSceneType)
+		{
+			case SceneType.Hall:
+				this.reLoginBtn.visible = true;
+				break;
+			case SceneType.Game:
+				this.disbandBtn.visible = true;
+				break;
+
+		}
+	}
+	protected onEnable(event: eui.UIEvent): void
+	{
+		super.onEnable(event);
+		this.bgSoundHs.addEventListener(egret.Event.CHANGE, this.bgSoundChangeHandler, this);
+		this.soundEffectHs.addEventListener(egret.Event.CHANGE, this.soundEffectChangeHandler, this);
+
+		this.bgSoundTog.addEventListener(egret.Event.CHANGE, this.closeBgSoundHandler, this);
+		this.soundEffectTog.addEventListener(egret.Event.CHANGE, this.closeSoundEffectHandler, this);
+
+		this.disbandBtn.addEventListener(egret.TouchEvent.TOUCH_TAP, this.disbandClickHandler, this);
+		this.reLoginBtn.addEventListener(egret.TouchEvent.TOUCH_TAP, this.reLoginClickHandler, this);
+	}
+	protected onDisable(event: eui.UIEvent): void
+	{
+		super.onDisable(event);
+		this.bgSoundHs.removeEventListener(egret.Event.CHANGE, this.bgSoundChangeHandler, this);
+		this.soundEffectHs.removeEventListener(egret.Event.CHANGE, this.soundEffectChangeHandler, this);
+
+		this.bgSoundTog.removeEventListener(egret.Event.CHANGE, this.closeBgSoundHandler, this);
+		this.soundEffectTog.removeEventListener(egret.Event.CHANGE, this.closeSoundEffectHandler, this);
+
+		this.disbandBtn.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.disbandClickHandler, this);
+		this.reLoginBtn.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.reLoginClickHandler, this);
+	}
+	protected onRender(event: egret.Event)
+	{
+		super.onRender(event);
+		this.soundEffectTog.selected = SoundManager.effectEnabled;
+		this.bgSoundTog.selected = SoundManager.bgEnabled;
+
+		this.bgSoundHs.value = SoundManager.bgVolume * 10;
+		this.soundEffectHs.value = SoundManager.effectVolume * 10;
+	}
+	private bgSoundChangeHandler(event: egret.Event)
+	{
+		SoundManager.bgVolume = this.bgSoundHs.value / 10;
+		PrefsManager.setNumber(PrefsManager.Sound_Bg_Volume, SoundManager.bgVolume);
+		SoundManager.changeBgMusic(SoundManager.bgVolume);
+	}
+	private soundEffectChangeHandler(event: egret.Event)
+	{
+		SoundManager.effectVolume = this.soundEffectHs.value / 10;
+		PrefsManager.setNumber(PrefsManager.Sound_Effect_Volume, SoundManager.effectVolume);
+	}
+	private closeBgSoundHandler(event: egret.Event)
+	{
+		SoundManager.playEffect(Sex.Female, MusicAction.buttonClick);
+		SoundManager.bgEnabled = this.bgSoundTog.selected;
+		SoundManager.bgMusicOpen(SceneManager._currentSceneType);
+	}
+	private closeSoundEffectHandler(event: egret.Event)
+	{
+		SoundManager.playEffect(Sex.Female, MusicAction.buttonClick);
+		SoundManager.effectEnabled = this.soundEffectTog.selected;
+		PrefsManager.setBoolean(PrefsManager.Sound_Effect_Enable, this.soundEffectTog.selected);
+		console.log(StringUtil.format("你{0}了音效！", SoundManager.effectEnabled ? "开启" : "关闭"));
+	}
+	private disbandClickHandler(event: egret.TouchEvent)
+	{
+		RoomManager.reqExitRoom();
+	}
+	private reLoginClickHandler(event: egret.TouchEvent)
+	{
+		GameManager.reLogin(SystemReenterType.Logout);
+	}
+}

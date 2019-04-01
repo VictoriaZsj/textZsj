@@ -1,0 +1,57 @@
+/**
+ * 会员管理
+ */
+class VipManager
+{  
+    /**
+    * vip时间变更事件
+    */
+    public static vipUpgrade: ActionDispatcher = new ActionDispatcher();
+    
+    /**
+     * 计算vip等级
+     */
+    public static getVipLevel(vipExp: number): number
+    {
+        let vipLevelArray: Array<number> = ProjectDefined.GetInstance().getValue(ProjectDefined.vipLevel);
+        for (let i = 0; i < vipLevelArray.length; i++)
+        {
+            if (vipExp > vipLevelArray[i])
+            {
+                continue;
+            }
+            return i;
+        }
+    }
+
+    public static initialize(data: SpRpcResult)
+    {
+        SocketManager.RemoveCommandListener(Command.Rec_GetVipTime_2027, this.onGetVipTime);
+        SocketManager.AddCommandListener(Command.Rec_GetVipTime_2027, this.onGetVipTime);
+
+        VipManager.onGetVipTime(data);
+    }
+
+    private static onGetVipTime(result: SpRpcResult)
+    {
+        UserManager.userVipInfo.vipTime = parseInt(result.data["vipTime"]);
+        UserManager.userVipInfo.isYearVip = result.data["isYearVip"];
+        UserManager.userVipInfo.vipExp = parseInt(result.data["vipExp"]);
+        UserManager.userVipInfo.vipLevel = VipManager.getVipLevel(UserManager.userVipInfo.vipExp);
+       // UserManager.userVipInfo.vipSpeed = VipDefined.GetInstance().getVipDefinitionById(UserManager.userVipInfo.vipLevel).speed;
+        VipManager.vipUpgrade.dispatch();
+    }
+
+    public static GetLeftTime(): number
+    {
+        let serverTimeNow: number = TimeManager.GetServerUtcTimestamp();
+        if (UserManager.userVipInfo.vipTime && UserManager.userVipInfo.vipTime > serverTimeNow)
+        {
+            return UserManager.userVipInfo.vipTime - serverTimeNow;
+        }
+        else
+        {
+            return 0;
+        }
+    }
+}

@@ -1,0 +1,160 @@
+/**
+ * 买入游戏面板
+ */
+class BuyAccessGamePanel extends BasePanel
+{
+	public unEnoughGoldGp:eui.Group;
+	public buyAccessGp:eui.Group;
+	public currentProperty:eui.Label;
+	public countLable:eui.Label;
+	public smallestLabel:eui.Label;
+	public biggestLabel:eui.Label;
+    public buyAccessHs:eui.HSlider;
+    public autoBuyCheck:eui.CheckBox;
+    public shoppingBtn:eui.Button;
+	public buyAccessBtn:eui.Button;
+	public priceLabel:eui.Label;
+	public goldLabel:eui.Label;	
+    public buyNowBtn:eui.Button;
+	public closeButton:eui.Button;
+	/**
+	 * 自动买入状态
+	*/
+	public static autoBuyState:boolean;
+
+	public constructor()
+	{
+		super();
+		this.skinName = UISkinName.BuyAccessGamePanel;
+	}
+	protected onAwake(event: eui.UIEvent)
+	{
+		super.onAwake(event);
+	}
+	public init(appendData: any)
+	{
+		super.init(appendData);
+		if(UserManager.userInfo.gold<appendData.smallestGold)
+		{
+			this.buyAccessGp.visible=false;
+			this.unEnoughGoldHandle(appendData.smallestGold);	
+			this.unEnoughGoldGp.visible=true;				
+		}
+		else
+		{
+			this.unEnoughGoldGp.visible=false;
+			this.buyAccessGp.visible=true;
+			this.smallestLabel.text=MathUtil.formatNum(appendData.smallestGold);
+			this.biggestLabel.text=MathUtil.formatNum(appendData.biggestGold);
+			this.currentProperty.text=MathUtil.formatNum(UserManager.userInfo.gold);
+			this.buyAccessHs.minimum=appendData.smallestGold;
+			this.buyAccessHs.maximum=appendData.biggestGold;
+			this.buyAccessHs.value=this.buyAccessHs.minimum;
+			this.buyAccessHs.snapInterval=appendData.bigChips;
+			this.countLable.text="$"+this.buyAccessHs.value.toString();
+		}				
+	}
+	protected onRender(event: egret.Event)
+	{
+		super.onRender(event);
+	}
+	protected onEnable(event: eui.UIEvent): void
+	{
+		super.onEnable(event);
+		this.buyAccessHs.addEventListener(egret.Event.CHANGE,this.countBuyGold,this);
+		this.autoBuyCheck.addEventListener(egret.TouchEvent.TOUCH_TAP,this.autoBuyHandle,this);
+		this.buyNowBtn.addEventListener(egret.TouchEvent.TOUCH_TAP,this.goShopping,this);
+		this.shoppingBtn.addEventListener(egret.TouchEvent.TOUCH_TAP,this.goShopping,this);
+		this.buyAccessBtn.addEventListener(egret.TouchEvent.TOUCH_TAP,this.buyAccessHandle,this)
+}
+	protected onDisable(event: eui.UIEvent): void
+	{
+		super.onDisable(event);
+		this.buyAccessHs.removeEventListener(egret.Event.CHANGE,this.countBuyGold,this);
+		this.autoBuyCheck.removeEventListener(egret.TouchEvent.TOUCH_TAP,this.autoBuyHandle,this);
+	}
+/**
+ * 进入商城充值
+ */
+private goShopping()
+{
+	UIManager.closePanel(this);
+	UIManager.showPanel(UIModuleName.ShoppingPanel);
+}	
+/**
+ * 买入游戏处理
+*/
+private buyAccessHandle()
+{
+	UIManager.closePanel(this);
+}
+/**
+ * 金币不足处理
+*/
+private unEnoughGoldHandle(smallestGold:number)
+{
+	//当前资产与最小买入的差值
+	let goldOffset:number=smallestGold-UserManager.userInfo.gold;
+	// let awardDef = AwardDefined.GetInstance().(ShoppingManager.awardGoldList.id,ShoppingManager.awardGoldList)
+	// let goldIndex=awardDef.costType.indexOf(CostType.RMB);
+	if(ShoppingManager.awardGoldList.length>0)
+	{
+		for(let i:number=0;i<ShoppingManager.awardGoldList.length;i++)
+		{		
+			if(i==0)
+			{
+				if(goldOffset<ShoppingManager.awardGoldList[i].rewardNum[0])
+				{
+					this.priceLabel.text="仅需"+ShoppingManager.awardGoldList[i].costNum[0]+"元";
+					this.goldLabel.text=ShoppingManager.awardGoldList[i].name;
+					return;
+				}
+			};
+			if(i>0)
+			{
+				if(ShoppingManager.awardGoldList[i-1].rewardNum[0]<goldOffset&&goldOffset<ShoppingManager.awardGoldList[i].rewardNum[0])
+				{
+					this.priceLabel.text="仅需"+ShoppingManager.awardGoldList[i].costNum[0]+"元";
+					this.goldLabel.text=ShoppingManager.awardGoldList[i].name;
+					return;
+				}
+			}		
+		}
+	}	
+}
+/**
+ * 计算买入金币
+*/
+private countBuyGold()
+{
+  	this.countLable.text="$"+MathUtil.formatNum(this.buyAccessHs.value);
+;
+}
+/**
+ * 自动买入
+*/
+private autoBuyHandle()
+{
+  	BuyAccessGamePanel.autoBuyState=this.autoBuyCheck.selected;
+}
+
+}
+/**
+ * 买入游戏数据
+*/
+class BuyAccessData
+{
+	/**
+	 * 最小买入
+	*/
+	public smallestGold:number;
+	/**
+	 * 最大买入
+	*/
+	public biggestGold:number;
+	/**
+	 * 大盲注
+	*/
+	public bigChips:number
+	
+}

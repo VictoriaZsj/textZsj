@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="touziSkin" width="100" height="100" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing" xmlns:ns1="*" xmlns:tween="egret.tween.*">
+	<w:Declarations>
+		<tween:TweenGroup id="touziAnimate">
+			<tween:TweenItem target="{image0}">
+				<tween:Set>
+				</tween:Set>
+				<tween:Wait duration="50"/>
+				<tween:Set>
+					<tween:props>
+						<e:Object alpha="{0}"/>
+					</tween:props>
+				</tween:Set>
+				<tween:Wait duration="50"/>
+				<tween:Set/>
+				<tween:Wait duration="50"/>
+				<tween:Set/>
+                 <tween:props>
+					<e:Object loop="{true}" />
+				</tween:props>
+			</tween:TweenItem>
+			<tween:TweenItem target="{image1}">
+				<tween:Set>
+					<tween:props>
+						<e:Object alpha="100%"/>
+					</tween:props>
+				</tween:Set>
+				<tween:Wait duration="50"/>
+				<tween:Set>
+					<tween:props>
+						<e:Object alpha="{1}"/>
+					</tween:props>
+				</tween:Set>
+				<tween:Wait duration="50"/>
+				<tween:Set>
+					<tween:props>
+						<e:Object alpha="{0}"/>
+					</tween:props>
+				</tween:Set>
+				<tween:Wait duration="50"/>
+				<tween:Set/>
+                <tween:props>
+					<e:Object loop="{true}" />
+				</tween:props>
+			</tween:TweenItem>
+			<tween:TweenItem target="{image2}">
+				<tween:Set>
+					<tween:props>
+						<e:Object alpha="100%"/>
+					</tween:props>
+				</tween:Set>
+				<tween:Wait duration="50"/>
+				<tween:Set/>
+				<tween:Wait duration="50"/>
+				<tween:Set>
+					<tween:props>
+						<e:Object alpha="{1}"/>
+					</tween:props>
+				</tween:Set>
+				<tween:Wait duration="50"/>
+				<tween:Set>
+					<tween:props>
+						<e:Object alpha="{0}"/>
+					</tween:props>
+				</tween:Set>
+                <tween:props>
+					<e:Object loop="{true}" />
+				</tween:props>
+			</tween:TweenItem>
+			<tween:TweenItem target="{image3}">
+				<tween:Set>
+					<tween:props>
+						<e:Object alpha="{0}"/>
+					</tween:props>
+				</tween:Set>
+				<tween:Wait duration="50"/>
+				<tween:Set/>
+				<tween:Wait duration="50"/>
+				<tween:Set/>
+				<tween:Wait duration="50"/>
+				<tween:Set>
+					<tween:props>
+						<e:Object alpha="{1}"/>
+					</tween:props>
+				</tween:Set>
+                <tween:props>
+					<e:Object loop="{true}" />
+				</tween:props>
+			</tween:TweenItem>
+		</tween:TweenGroup>
+	</w:Declarations>
+	<e:Image id="image0" width="100" height="100" x="0" y="0" source="dice_Action_0_png"/>
+    <e:Image id="image1" width="100" height="100" x="0" y="0" source="dice_Action_1_png"/>
+    <e:Image id="image2" width="100" height="100" x="0" y="0" source="dice_Action_2_png"/>
+    <e:Image id="image3" width="100" height="100" x="0" y="0" source="dice_Action_3_png"/>
+    <e:Image id="touziImg1" width="100" height="100" x="0" y="0"/>
+</e:Skin>

@@ -1,0 +1,279 @@
+class Command
+{
+    /**
+    * 登录
+    */
+    public static Login_login: string = "login";
+    public static Login_exchange: string = "exchange";
+    public static Login_auth: string = "auth";
+    /**
+     * 心跳
+     */
+    public static System_Heartbeat_3016: string = "c3016";
+    /**
+     * 请求加入牌局
+     */
+    public static Req_JoinInRoom_3004: string = "c3004";
+    /**
+     * 抢占登录
+     */
+    public static System_Response_Login_2013: string = "c2013";
+    /**
+     * 用户协议
+     */
+    public static Role_Get_3000: string = "c3000";
+    /**
+     * 请求购买房卡（测试专用）
+     */
+    public static Req_BuyCard_3001: string = "c3001";
+    /**
+     * 卡牌数量推送
+     */
+    public static Rec_PushCard_2000: string = "c2000";
+    /**
+     * 推送其他玩家进入房间
+     */
+    public static Rec_PushOtherPlayerJoin_2001: string = "c2001";
+    /**
+     * 请求拉取战绩信息
+     */
+    public static Req_GetRoundInfo_3002: string = "c3002";
+    /**
+     * 请求创建房间
+     */
+    public static Req_CreateRoom_3003: string = "c3003";
+    /**
+     * 请求退出房间
+     */
+    public static Req_ExitRoom_3005: string = "c3005";
+    /**
+     * 请求是否同意退出
+     */
+    public static Req_IsAgreeExit_3006: string = "c3006";
+    /**
+     * 推送请求退出房间
+     */
+    public static Rec_PushReqExitRoom_2002: string = "c2002";
+    /**
+     * 推送退出房间投票结果
+     */
+    public static Rec_PushExitVoteResult_2003: string = "c2003";
+    /**
+     * 请求继续游戏 4家都请求了，才可以开始 第一局资源加载完成则请求继续
+     */
+    public static Req_GoOnGame_3015: string = "c3015";
+    /**
+     * 推送投掷骰子结果
+     */
+    public static Rec_PushTouziResult_2004: string = "c2004";
+    /**
+     * 房间解散
+     */
+    public static Rec_PushRoomDisbanded_2015: string = "c2015";
+    /**
+     * 推送手牌
+     */
+    public static Rec_PushShouPai_2005: string = "c2005";
+    /**
+     * 推送玩家摸牌
+     */
+    public static Rec_PushMoPai_2006: string = "c2006";
+    /**
+     * 推送出牌
+     */
+    public static Rec_PushOutCard_2007: string = "c2007";
+    /**
+     * 推送玩家摸牌结果 本家摸牌
+     */
+    public static Rec_PushMoPaiResult_2016: string = "c2016";
+    /**
+     * 请求出牌
+     */
+    public static Req_PutOutCard_3008: string = "c3008";
+    /**
+     * 请求碰牌
+     */
+    public static Req_PengCard_3009: string = "c3009";
+    /**
+     * 请求杠牌
+     */
+    public static Req_GangCard_3010: string = "c3010";
+    /**
+     * 请求胡牌
+     */
+    public static Req_HuCard_3011: string = "c3011";
+    /**
+     * 请求听牌(请求2次就是取消)
+     */
+    public static Req_TingCard_3012: string = "c3012";
+    /**
+     * 杠牌推送
+     */
+    public static Rec_PushGangCard_2017: string = "c2017";
+    /**
+     * 碰牌推送
+     */
+    public static Rec_PushPengCard_2018: string = "c2018";
+    /**
+     * 胡牌推送
+     */
+    public static Rec_PushHuCard_2019: string = "c2019";
+    /**
+     * 请求过牌
+     */
+    public static Req_Pass_3020: string = "c3020";
+    /**
+     * 推送听牌
+     */
+    public static Rec_Push_2010: string = "c2010";
+    /**
+     * 请求买马
+     */
+    public static Req_BuyHorse_3013: string = "c3013";
+    /**
+     * 推送一局结算结果
+     */
+    public static Rec_PushOnceResult_2011: string = "c2011";
+    /**
+     * 推送游戏结束
+     */
+    public static Rec_PushGameOver_2020: string = "c2020";
+    /**
+     * 推送买马结果
+     */
+    public static Rec_PushBuyHorse_2021: string = "c2021";
+    /**
+     * 推送玩家准备
+     */
+    public static Rec_PushPlayReady_2022: string = "c2022";
+    /**
+     * 推送积分变化
+     */
+    public static Rec_PushScore_2008: string = "c2008";
+    /**
+     * 推送玩家退出
+     */
+    public static Rec_PushPlayerExitRoom_2023: string = "c2023";
+    /**
+     * 推送玩家托管状态
+     */
+    public static Rec_PushPlayerHosted_2024: string = "c2024";
+    /**
+     * 请求托管
+     */
+    public static Req_Hosted_3022: string = "c3022";
+    /**
+     * 推送等待时间
+     */
+    public static Rec_PushSec_2025: string = "c2025";
+    /**
+     * 聊天消息推送
+     */
+    public static Rec_Message_2014: string = "c2014";
+    /**
+     * 会员时间戳变更推送
+     */
+    public static Rec_GetVipTime_2027: string = "c2027";
+    /**
+     * 推送玩家离线
+     */
+    public static Rec_Push_Offline_2026: string = "c2026";
+    /**
+     * 拉取战绩详细信息
+     */
+    public static Req_GetRoundDetials_3024: string = "c3024";
+    /**
+     * 请求绑定
+     */
+    public static Req_BindId_3025: string = "c3025";
+    /**
+     * 请求领取房卡
+     */
+    public static Req_BringCard_3026: string = "c3026";
+    /**
+     * 拉取分享好友列表
+     */
+    public static Req_BindFriendList_3027: string = "c3027";
+    /**
+     * 请求上传聊天信息
+     */
+    public static Req_Send_ChatMessage_3019: string = "c3019";
+    /**
+     * 请求上传签名
+     */
+    public static Req_Chat_Record_Sgin_3018: string = "c3018";
+    /**
+     * 设置角色基础信息
+     */
+    public static Req_SetUserInfo_3017: string = "c3017";
+    /**
+     * 用户经验变更推送
+     */
+    public static Rec_ExpChange_2028: string = "c2028";
+
+
+    /**
+     * 请求游戏场房间列表信息
+    */
+    public static Req_RoomInfo_3002: string = "c3002";
+    /**
+     * 请求好友列表信息
+    */
+    public static Req_friendInfo_3003: string = "c3003";
+    /**
+     * 请求赠送好友金币
+    */
+    public static Req_GiveFriendGold_3013: string = "c3013";
+    /**
+     * 请求获取好友详细信息
+     */
+    public static Req_GetUserInfo_3023: string = "c3023";
+    /**
+     * 请求领取好友赠送的金币
+     */
+    public static Req_ReceiveGift_3006: string = "c3006";
+    /**
+     * 请求好友请求列表
+     */
+    public static Req_FriendRequest_3007: string = "c3007";
+    /**
+     * 发送是否接受好友请求的请求
+     */
+    public static Req_ReceiveFriend_3008: string = "c3008";
+    /**
+     * 发送搜索用户的请求
+     */
+    public static Req_SearchPlayer_3009: string = "c3009";
+    /**
+     * 发送添加用户为好友的请求
+     */
+    public static Req_AddPlayer_3010: string = "c3010";
+    /**
+     * 发送快速领取好友赠送的金币的请求
+     */
+    public static Req_FastReceive_3011: string = "c3011";
+    /**
+     * 发送创建角色的请求
+     */
+    public static Req_CreateRole_3012: string = "c3012";   /**
+     * 发送存取金币的请求
+     */
+    public static Req_saveORwithdraw_3014: string = "c3014";
+    /**
+     * 发送购买金币/钻石的请求
+     */
+    public static Req_buyGoldDiamond_3014: string = "c3015";
+    /**
+     * 拉取邮件列表的请求
+     */
+    public static Req_Mail_3097: string = "c3097";
+    /**
+     * 新邮件通知推送
+     */
+    public static Rec_Mail_New_Notify_2024 = "c2024";
+    /**
+     * 兑换奖励
+     */
+    public static Exchange_3113 = "c3113";
+}
+

@@ -1,0 +1,66 @@
+class SaveManager
+{
+    public static pwdSuccessEvent: ActionDispatcher = new ActionDispatcher();
+    public static modifyPwdEvent: ActionDispatcher = new ActionDispatcher();
+    /**
+     *  请求存取金币
+    */
+    public static reqSaveWithdrawGold(num: number, type: number, pwd?: number)
+    {
+        let successCallBack: Function = function (result: SpRpcResult)
+        {
+            if (type == SafeType.Save)
+            {
+                UIManager.showFloatTips("存入成功");
+            } else if (type == SafeType.Withdraw)
+            {
+                UIManager.showFloatTips("取出成功");
+            }
+        }
+        let errorCallBack: Function = function (result: SpRpcResult)
+        {
+            if (result.error == 3004)
+            {
+                AlertManager.showSingleAlert("您输入的密码错误，请重新输入！");
+            }
+        }
+        SocketManager.Send(Command.Req_saveORwithdraw_3014, { num: num, type: type, pwd: pwd }, successCallBack,errorCallBack);
+    }
+    /**
+     *  请求创建密码
+    */
+    public static reqCreatePwd(newPwd: number)
+    {
+        let callBack: Function = function (result: SpRpcResult)
+        {
+            SocketManager.RemoveCommandListener(Command.Req_safePwd_3017, callBack);
+            SaveManager.pwdSuccessEvent.dispatch();//协议发送后抛出存取完事件       
+        }
+        SocketManager.AddCommandListener(Command.Req_safePwd_3017, callBack);
+        SocketManager.Send(Command.Req_safePwd_3017, { "newPwd": newPwd });
+    }
+    /**
+     *  请求修改密码
+    */
+    public static reqModifyPwd(newPwd: number, oldPwd: number)
+    {
+        let successCallBack: Function = function (result: SpRpcResult)
+        {
+            SocketManager.RemoveErrorListener(Command.Req_safePwd_3017, errorCallBack);
+            SocketManager.RemoveCommandListener(Command.Req_safePwd_3017, successCallBack);
+            SaveManager.modifyPwdEvent.dispatch();//协议发送后抛出存取完事件       
+        }
+        let errorCallBack: Function = function (result: SpRpcResult)
+        {
+            SocketManager.RemoveCommandListener(Command.Req_safePwd_3017, successCallBack);
+            SocketManager.RemoveErrorListener(Command.Req_safePwd_3017, errorCallBack);
+            if (result.error == 3001)
+            {
+                AlertManager.showSingleAlert("您的原密码不正确！");
+            }
+        }
+        SocketManager.AddErrorListener(Command.Req_safePwd_3017, errorCallBack);
+        SocketManager.AddCommandListener(Command.Req_safePwd_3017, successCallBack);
+        SocketManager.Send(Command.Req_safePwd_3017, { "newPwd": newPwd, "oldPwd": oldPwd });
+    }
+}

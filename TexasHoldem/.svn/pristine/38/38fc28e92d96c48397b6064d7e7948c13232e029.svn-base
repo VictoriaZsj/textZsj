@@ -1,0 +1,113 @@
+/**
+ * 会员面板
+ */
+class VipWealthPanel extends BasePanel
+{
+	//标签按钮
+	public myVipToggle:eui.RadioButton;
+	public vipIntroduceToggle:eui.RadioButton;
+	public radioButtonGroup:eui.RadioButtonGroup;//单选组
+	//标签组
+	public myVipGroup:eui.Group;
+	public vipIntroduceGroup:eui.Group;
+
+	//我的Vip
+	public userImg: eui.Image;//头像
+	public userNameLabel: eui.Label;//用户名
+	public vipLevelLabel: eui.Label;//用户vip等级
+	public yearVipImg:eui.Image;//年度会员标识
+	public buyVipButton:eui.Button;//续费会员 
+	public vipProgressImg:eui.ProgressBar;//会员成长进度条
+	public vipExpLabel:eui.Label;//会员成长值
+	public vipProgressLabel:eui.Label;//会员等级
+	public vipSpeedLabel:eui.Label;//会员成长速度
+	public buyYearVipLabel:eui.Label;//购买年会员
+
+	//Vip介绍
+	public scroller:eui.Scroller;
+
+	public constructor()
+	{
+		super();
+		this.skinName = UISkinName.VipWealthPanel;
+	}
+	protected onAwake(event: eui.UIEvent)
+	{
+		super.onAwake(event);
+		this.radioButtonGroup = new eui.RadioButtonGroup();
+	}
+	public init(appendData: any)
+	{
+		super.init(appendData);
+
+		this.myVipToggle.group = this.radioButtonGroup;
+		this.vipIntroduceToggle.group = this.radioButtonGroup;
+		this.myVipToggle.selected = true;
+	}
+	protected onRender(event: egret.Event)
+	{
+		super.onRender(event);
+		this.userImg.source = "";
+		this.userNameLabel.text = UserManager.userInfo.name;
+		this.myVipGroup.visible = true;
+		this.vipIntroduceGroup.visible = false;
+        this.refreshVipInfo();
+	}
+	protected onEnable(event: eui.UIEvent): void
+	{
+		super.onEnable(event);
+		this.addEventListener(egret.TouchEvent.TOUCH_TAP,this.clickHandler,this);
+		this.radioButtonGroup.addEventListener(egret.Event.CHANGE,this.changeActive,this);
+	}
+	protected onDisable(event: eui.UIEvent): void
+	{
+		super.onDisable(event);
+		this.removeEventListener(egret.TouchEvent.TOUCH_TAP,this.clickHandler,this);
+		this.radioButtonGroup.removeEventListener(egret.Event.CHANGE,this.changeActive,this);
+	}
+
+	private refreshVipInfo()
+	{
+		this.vipLevelLabel.text = "VIP"+UserManager.userVipInfo.vipLevel.toString();
+		this.yearVipImg.visible = UserManager.userVipInfo.isYearVip;
+		this.vipProgressImg.maximum = 1;
+		this.vipProgressImg.value = UserManager.userVipInfo.vipExp/6000;
+		this.vipExpLabel.text = UserManager.userVipInfo.vipExp.toString()+"点";
+		this.vipProgressLabel.text = UserManager.userVipInfo.vipLevel.toString();
+		this.vipSpeedLabel.text = UserManager.userVipInfo.vipSpeed+"点";
+	}
+
+	/**
+	 * 点击面板按钮事件处理
+	*/
+	private clickHandler(event: egret.TouchEvent)
+	{
+		SoundManager.playButtonEffect(event.target);
+		switch (event.target)
+		{
+			case this.buyVipButton:
+			case this.buyYearVipLabel:
+				UIManager.showPanel(UIModuleName.PayPanel);
+			break;
+		}
+	}
+
+	/**
+	 * 改变选项卡按钮状态
+	*/
+	private changeActive(event: eui.UIEvent)
+	{
+		SoundManager.playButtonEffect(event.target);
+		switch (event.target)
+		{
+			case this.myVipToggle:
+				this.myVipGroup.visible = true;
+				this.vipIntroduceGroup.visible = false;
+			break;
+			case this.vipIntroduceToggle:
+				this.myVipGroup.visible = false;
+				this.vipIntroduceGroup.visible = true;
+			break;
+		}
+	}
+}

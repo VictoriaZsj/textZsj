@@ -1,0 +1,52 @@
+/**
+ * 锦标赛最近赛况折叠项面板
+*/
+class OutsChildItemRenderer extends BaseItemRenderer<Rank>
+{
+    /**
+     * 头像
+    */
+    private headImg: eui.Image;
+    /**
+     * 名次
+    */
+    private rankLabel: eui.Label;
+    /**
+     * 用户昵称
+    */
+    private userNameLabel: eui.Label;
+    /**
+     * 获得的奖励
+    */
+    private awardLabel: eui.Label;
+
+    public constructor()
+    {
+        super();
+        this.skinName = UIRendererSkinName.OutsChildItemRenderer;
+    }
+    protected createChildren()
+    {
+        this.dataChanged();
+    }
+    protected dataChanged()
+    {
+        super.dataChanged();
+        if (this.bindData)
+        {
+            this.headImg.source = this.bindData.head;
+            if (this.bindData.rank == 2)
+            {
+                this.rankLabel.text = "亚军";
+            } else if (this.bindData.rank == 3)
+            {
+                this.rankLabel.text = "季军";
+            } else
+            {
+                this.rankLabel.text = this.bindData.rank.toString();
+            }
+            this.userNameLabel.text = this.bindData.name;
+            this.awardLabel.text = this.bindData.award;
+        }
+    }
+}

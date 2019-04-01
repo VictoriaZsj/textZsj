@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="SavePanelSkin" width="720" height="1280" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing"
+        xmlns:ns1="*" xmlns:tween="egret.tween.*">
+	<w:Config id="15c813d330f" />
+	<e:Group id="anmGroup" width="720" height="100" x="0" y="0">
+		<e:Image id="bg" width="720" height="100" x="0" y="0" source="bg_page4_png"/>
+		<e:Image id="titleImg" width="300" height="80" y="10" source="bg_page3_2_png" x="210" scaleX="1" scaleY="1"/>
+		<e:Button id="closeButton" label="返回" x="50" y="50" skinName="buttonSkin2" width="150" scaleX="0.5" height="80" scaleY="0.9" anchorOffsetX="75" anchorOffsetY="40"/>
+	</e:Group>
+	<e:Group id="anmGroup1" width="720" height="1180" x="0" y="100" anchorOffsetY="0">
+       <e:Image width="720" height="1180" x="0" y="3.03" source="bg_page2_png" scale9Grid="21,20,106,107" anchorOffsetY="0" />
+		<e:Label text="保险箱" x="31" y="27" size="37" textColor="0xffffff"/>
+		<ns1:TabComponent id="SaveTab" height="736" y="172.88" anchorOffsetY="0" left="0" right="-2" rotation="359.86"/>
+		<e:Label text="当前金币：" x="54" y="88.33"/>
+		<e:Label id="currentGold" text="99999999" x="232" y="88.33"/>
+		<e:Label text="保险箱金币：" x="57" y="132"/>
+		<e:Label id="saveGold" text="999900" x="247" y="132"/>
+
+       <e:Group id="saveGoldGroup" width="612" height="516" anchorOffsetX="0" anchorOffsetY="0" horizontalCenter="0" verticalCenter="0" name="存款" visible="false">  
+					<e:Label text="请选择存入金额" x="208.42" y="213.02"/>
+                    <e:HSlider id="saveGoldHs" width="400" height="40" skinName="HSliderSkin1"  horizontalCenter="0" verticalCenter="52.5" rotation="359.86"/>
+					<e:Button id="subBtn" label="Button" x="38.95" y="288.03" skinName="buttonSkin2" scaleX="0.3" scaleY="0.5" rotation="359.86"/>
+                     <e:Button id="saveBtn" label="Button" x="253.29" y="355.02" skinName="buttonSkin2" scaleX="0.6" scaleY="0.5" anchorOffsetX="0" width="153.22" rotation="359.86"/>
+                    <e:Button id="addBtn" label="Button" x="519.8" y="288.53" skinName="buttonSkin2" scaleX="0.3" scaleY="0.5"/>
+					<e:Label text="-" x="56.6" y="342.06" textColor="0xfcf7f7" rotation="359.86"/>
+					<e:Label text="+" x="533.45" y="339.03" textColor="0xf2efef"/>
+					<e:Label text="存入" x="269.26" y="397.52" textColor="0xfcf4f4" rotation="359.86"/>
+					<e:Label text="只有VIP才可使用保险箱，当您VIP过期后，将不可再使用存入功能。非VIP用户请                   注：保险箱存款最小操作单位为1万游戏币" x="57.22" y="441.02" size="21" width="500"/>
+					<e:Label text="续费VIP " x="336.42" y="462.02" size="21" textColor="0xdd0d0d" border="true"/>
+					<e:Label id="saveCount" text="0万" x="279.42" y="258.53" textColor="0x67f413"/>
+
+       </e:Group>
+        <e:Group id="withdrawGroup" width="612" height="569" anchorOffsetX="0" anchorOffsetY="0" horizontalCenter="-2" verticalCenter="26.5" name="提现" visible="false">
+				<e:Label text="请选择要取出的金额" x="172" y="184"/>
+                    <e:HSlider id="withdrawGoldHs" width="400" height="40" skinName="HSliderSkin1"  horizontalCenter="-9" verticalCenter="-6" rotation="359.86"/>
+					<e:Button id="withdrawSubBtn" label="Button" x="30.53" y="259.01" skinName="buttonSkin2" scaleX="0.3" scaleY="0.5" rotation="359.86"/>
+                     <e:Button id="withdrawBtn" label="Button" x="259.48" y="451.06" skinName="buttonSkin2" scaleX="0.6" scaleY="0.5" anchorOffsetX="0" width="153.22" rotation="359.86"/>
+                    <e:Button id="withdrawAddBtn" label="Button" x="511.38" y="259.51" skinName="buttonSkin2" scaleX="0.3" scaleY="0.5"/>
+					<e:Label text="-" x="48.18" y="313.04" textColor="0xfcf7f7" rotation="359.86"/>
+					<e:Label text="+" x="525.03" y="310.01" textColor="0xf2efef"/>
+					<e:Label text="取出" x="282.97" y="493.68" textColor="0xfcf4f4" rotation="359.86" size="24"/>
+					<e:Label text="  注：保险箱取款最小操作单位为1万游戏币" x="63" y="530" size="21" width="500"/>
+
+					<e:Label id="withdrawCount" text="0万" x="271" y="229.51" textColor="0x67f413"/>
+					<e:Label text="输入密码" x="253" y="353"/>
+					<e:Label text="取回密码" x="505.03" y="493.56" textColor="0xff2d2d" size="19"/>
+					<e:EditableText id="withdrawPwd" width="250.67" height="37.34" text="" x="205.69" y="400.33" prompt="请输入取款密码" border="true" anchorOffsetX="0" inputType="password" anchorOffsetY="0" size="26" textColor="0xffffff"/>
+					<e:Label id="tipPwd" text="密码不能小于6位数字" x="420" y="450.84" size="20" textColor="0xe82e2e" visible="false"/>	
+       </e:Group>
+
+        <e:Group id="pwdGroup" width="612" height="516" anchorOffsetX="0" anchorOffsetY="0" name="创建密码" horizontalCenter="0" verticalCenter="0">
+					<e:Group id="modifyPwd_gp" x="77" y="186" anchorOffsetY="0" height="245" visible="false">
+						<e:Label text="原密码" x="56" y="0"/>
+						<e:Label text="再输入一次" x="0" y="100"/>
+						<e:Button id="modifyPwdBtn" label="Button" x="175" y="174.32" skinName="buttonSkin2" scaleX="0.6" scaleY="0.5" anchorOffsetX="0" width="153.22"/>
+						<e:Label text="修改密码" x="178.97" y="216.82" size="21" textColor="0xf2eaea"/>
+						<e:Label text="新密码" x="58.22" y="50.65999999999997"/>
+						<e:EditableText id="oldPwd" width="203" height="28" text="" x="194.33" y="7" anchorOffsetY="0" anchorOffsetX="0" prompt="请输入原密码" size="19" verticalAlign="middle" border="true"/>
+
+
+						<e:EditableText id="newPwd" width="204" height="28" text="" x="194" y="45" anchorOffsetY="0" anchorOffsetX="0" prompt="请输入新密码" size="20" border="true"/>
+						<e:EditableText id="againPwd" width="196" height="23" text="" x="194" y="100" anchorOffsetY="0" anchorOffsetX="0" border="true" size="18" prompt="请确认您的新密码"/>
+						<e:Label id="tip1_ModifyPwd" text="* 密码不能小于6位数字" textColor="0xfc1e1e" size="19" x="197" y="137" visible="false"/>
+						<e:Label id="tip2_ModifyPwd" text="* 两次新密码不一致" textColor="0xfc1e1e" size="19" x="197" y="137" visible="false"/>
+						<e:Label id="tip3_ModifyPwd" text="* 密码不能为空" textColor="0xfc1e1e" size="19" x="197" y="137" visible="false"/>
+
+					</e:Group>
+					<e:Group id="createPwd_gp" x="75.07" y="168" anchorOffsetY="0" height="309">
+					<e:Label text="创建密码" x="51.33" y="75"/>
+					<e:Label text="再输入一次" x="21.93" y="126"/>
+					<e:Button id="createPwdBtn" label="Button" x="185.96" y="194.67" skinName="buttonSkin2" scaleX="0.6" scaleY="0.5" anchorOffsetX="0" width="153.22"/>
+					<e:Label text="创建密码" x="191.26" y="235.66" size="21" textColor="0xf4ebeb"/>
+					<e:Label text="注：保险箱取款最小操作单位为1万游戏币" x="50.93" y="272.66" size="20"/>
+						<e:EditableText id="createPwd" width="214.67" height="29.33" text="" x="196.26" y="76.67" anchorOffsetX="0" anchorOffsetY="0" border="true" prompt="请输入一个密码" size="18" verticalAlign="middle"/>
+						<e:EditableText id="createAgainPwd" width="218.67" height="29.33" text="" x="196.26" y="126.67" anchorOffsetX="0" anchorOffsetY="0" prompt="请确认您的密码" border="true" size="19" verticalAlign="middle"/>
+						<e:Label id="tip2_CreatePwd" text="* 密码不能小于6位数字" x="196.26" y="161" textColor="0xfc1e1e" size="19" anchorOffsetY="0" height="21.67" wordWrap="true" visible="false"/>
+						<e:Label id="tip1_CreatePwd" text="密码不一致" x="211.5" y="156" textColor="0xf42c2c" size="20" visible="false"/>
+
+					</e:Group>
+       </e:Group>
+
+
+
+
+	</e:Group>
+</e:Skin>

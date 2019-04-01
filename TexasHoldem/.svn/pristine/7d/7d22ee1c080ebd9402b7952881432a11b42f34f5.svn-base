@@ -1,0 +1,1051 @@
+/**
+ * 行牌逻辑面板
+ */
+class GameScenePanel extends BasePanel
+{
+	//----------------------------
+	// 公共组件信息
+	//----------------------------
+	public pubGroup: eui.Group;
+	public timeLabel: eui.Label
+
+	private _benjia_info: RoomUserHeadInfoComponent;
+	private _xiajia_info: RoomUserHeadInfoComponent;
+	private _duijia_info: RoomUserHeadInfoComponent;
+	private _shangjia_info: RoomUserHeadInfoComponent;
+
+	/**
+	 * 用户头像信息
+	 */
+	private _userInfoRendererList: Array<RoomUserHeadInfoComponent>;
+
+	public roomIdLabel: eui.Label;
+	public voiceBtn: eui.Button;
+
+	public benJiaWind: eui.Image;
+	public xiaJiaWind: eui.Image;
+	public duiJiaWind: eui.Image;
+	public shangJiaWind: eui.Image;
+	private _windImgList: Array<eui.Image>;
+
+	private static readonly _windNameList: Array<string> = ["e", "s", "w", "n"];
+	private static readonly _directionNameList: Array<string> = ["down", "right", "up", "left"];
+
+	//---------------------------------
+	// 等待开启组件信息
+	//---------------------------------
+	public waitGroup: eui.Group;
+	public invitBtn: eui.Button;
+	public exitBtn: eui.Button;
+	public disbandedBtn: eui.Button;
+
+	public cancelHostedBtn: eui.Button;
+
+	//---------------------------------
+	// 游戏
+	//---------------------------------
+	public gameGroup: eui.Group;
+	public roundTypeLabel: eui.Label;
+	public roundNumLabel: eui.Label;
+	public remainLabel: eui.Label;
+	public paiPosGroup: eui.Group;
+	public promptComponet: eui.Component;
+	public btnGroup: eui.DataGroup;
+
+	public shouPaiGroup: eui.DataGroup;
+
+	public moPaiBtn: eui.Button;  //local
+	public daPaiBtn: eui.Button; //local
+	public benJiaSortBtn: eui.Button; //local
+	public insertPaiBtn: eui.Button; //
+
+	private _touziCompent1: TouZiComponent;
+	private _touziCompent2: TouZiComponent;
+	//---------------------------------
+	// 牌墙逻辑
+	//---------------------------------
+	private _isRunFaPai: boolean;
+	//---------------------------------
+	// 骰子逻辑
+	//---------------------------------
+	private _startPlayTouziTime: number = 0;
+	private _isTouziPlay: boolean;
+	private _playTouziGap: number = 500;
+	//---------------------------------
+	// 手牌逻辑
+	//---------------------------------
+	private _exactlyBenJiaTime: number;
+	private _exactlyBenJiaGap: number = 300;
+	private _lastCardShowTimeId: number;
+	//---------------------------------
+	// 行牌逻辑
+	//---------------------------------
+	public pengBtn: eui.Button;
+	public gangBtn: eui.Button;
+	public tingBtn: eui.Button;
+	public huBtn: eui.Button;
+	//---------------------------------
+	// 听牌时间控制
+	//---------------------------------
+	public tingOutCardTime: number = 0;
+	public tingGap: number = 800;
+
+	private _pengVisible: boolean;
+	private _gangVisible: boolean;
+	private _tingVisible: boolean;
+	private _huVisible: boolean;
+	private _gangPanelVisible: boolean;
+
+	public cancelBtn: eui.Button;
+	public guoBtn: eui.Button;
+	private _btnLy: eui.TileLayout;
+
+	public testPengBtn: eui.Button;
+	public testGangBtn: eui.Button;
+
+	private _refreshTimeId: number;
+	private _refreshStateGap: number = 500;
+	public tingHelpBtn: eui.Image;
+
+	//---------------------------------
+	// 行牌时间控制
+	//---------------------------------
+	public actionTimeLabel: eui.Label;
+	public timeLogic: TimeShowLogic;
+
+	public gameEffectLogic: GameEffectLogic;
+	public cardGroup: eui.Group;
+
+	public benjiaAnimate: egret.tween.TweenGroup;
+	public xiajiaAnimate: egret.tween.TweenGroup;
+	public duijiaAnimate: egret.tween.TweenGroup;
+	public shangjiaAnimate: egret.tween.TweenGroup;
+	private _windAnimateList: Array<egret.tween.TweenGroup>;
+
+	public benJiaReadyImg: eui.Image;
+	public xiaJiaReadyImg: eui.Image;
+	public duiJiaReadyImg: eui.Image;
+	public shangJiaReadyImg: eui.Image;
+
+	public hostGroup: eui.Group;
+	public xiaJiaHostedImg: eui.Button;
+	public duiJiaHostedImg: eui.Button;
+	public shangJiaHostedImg: eui.Button;
+
+	private actionWidth: number = 157;
+
+	public waitShowGroup: eui.Group;
+	// public waitTimeImg0: eui.Image;
+	// public waitTimeImg1: eui.Image;
+	// public waitTimeImg2: eui.Image;
+	// public waitTimeImg3: eui.Image;
+	// public waitTimeImg4: eui.Image;
+
+	public maimaComponent: any;
+
+	public settingBtn: eui.Button;
+
+	private _audioRecordBtnOper: AudioRecordButton;
+
+	// private huCard: HuCard;
+
+	public constructor()
+	{
+		super();
+		this.isTween = false;
+		this.setGrayMask(false);
+		this._benjia_info = new RoomUserHeadInfoComponent();
+		this._benjia_info.x = 3;
+		this._benjia_info.y = 498;
+		this._xiajia_info = new RoomUserHeadInfoComponent();
+		this._xiajia_info.x = 1178;
+		this._xiajia_info.y = 137;
+		this._duijia_info = new RoomUserHeadInfoComponent();
+		this._duijia_info.x = 950;
+		this._duijia_info.y = 0;
+		this._shangjia_info = new RoomUserHeadInfoComponent();
+		this._shangjia_info.x = -1;
+		this._shangjia_info.y = 175;
+
+		this._userInfoRendererList = new Array<RoomUserHeadInfoComponent>();
+		this._userInfoRendererList.push(this._benjia_info);
+		this._userInfoRendererList.push(this._xiajia_info);
+		this._userInfoRendererList.push(this._duijia_info);
+		this._userInfoRendererList.push(this._shangjia_info);
+
+		this._touziCompent1 = this.createTouziComponent(18, -70);
+		this._touziCompent2 = this.createTouziComponent(-21, -70);
+
+		this._audioRecordBtnOper = new AudioRecordButton();
+
+		//this.huCard = new HuCard();
+		this.skinName = UISkinName.GameScenePanel;
+	}
+	private createTouziComponent(hc: number, vc: number): TouZiComponent
+	{
+		let componet: TouZiComponent = new TouZiComponent();
+		componet.scaleX = componet.scaleY = 0.4;
+		componet.horizontalCenter = hc;
+		componet.verticalCenter = vc;
+		return componet;
+	}
+	protected onAwake(event: eui.UIEvent)
+	{
+		this._windImgList = new Array<eui.Image>();
+
+		this.benJiaWind.touchEnabled = this.xiaJiaWind.touchEnabled = this.duiJiaWind.touchEnabled = this.shangJiaWind.touchEnabled = false;
+		this.actionTimeLabel.touchEnabled = false;
+		this._windImgList.push(this.benJiaWind);
+		this._windImgList.push(this.xiaJiaWind);
+		this._windImgList.push(this.duiJiaWind);
+		this._windImgList.push(this.shangJiaWind);
+
+		for (let userHeadInfo of this._userInfoRendererList)
+		{
+			userHeadInfo.visible = false;
+			this.pubGroup.addChildAt(userHeadInfo, 0);
+		}
+		// this._btnLy = UIUtil.getHTileLayout(-20, 1, egret.HorizontalAlign.RIGHT);
+		// this.btnGroup.layout = this._btnLy;
+		this.timeLogic = new TimeShowLogic(this.actionTimeLabel);
+
+		this.timeLogic.setWaitTimeGroup(this.waitShowGroup);
+		this.waitShowGroup.visible = false;
+
+		this.gameEffectLogic = new GameEffectLogic(this.tweenGroup);
+		this._windAnimateList = new Array<egret.tween.TweenGroup>();
+		this._windAnimateList.push(this.benjiaAnimate);
+		this._windAnimateList.push(this.xiajiaAnimate);
+		this._windAnimateList.push(this.duijiaAnimate);
+		this._windAnimateList.push(this.shangjiaAnimate);
+
+		this._duijia_info.setReadyImg(this.duiJiaReadyImg);
+		this._benjia_info.setReadyImg(this.benJiaReadyImg);
+		this._xiajia_info.setReadyImg(this.xiaJiaReadyImg);
+		this._shangjia_info.setReadyImg(this.shangJiaReadyImg);
+
+		this._duijia_info.setHostedImg(this.duiJiaHostedImg);
+		this._benjia_info.setHostedImg(this.hostGroup);
+		this._xiajia_info.setHostedImg(this.xiaJiaHostedImg);
+		this._shangjia_info.setHostedImg(this.shangJiaHostedImg);
+
+		//托管
+		// this._duijia_info.setHostedImg(this.duiJiaHostedImg);
+		// this._benjia_info.setHostedImg(this.hostGroup);
+		// this._xiajia_info.setHostedImg(this.xiaJiaHostedImg);
+		// this._shangjia_info.setHostedImg(this.shangJiaHostedImg);
+
+		this.actionTimeLabel.visible = false;
+		VersionManager.setComponentVisibleBySafe(this.invitBtn);
+
+		this._audioRecordBtnOper.initialize(this.voiceBtn);
+		super.onAwake(event);
+	}
+	public init(appendData: any)
+	{
+		super.init(appendData);
+		if (this.panelData)
+		{
+			this.headInit();
+		}
+		this.waitShowGroup.visible = false;
+		this.hideWindTween();
+		this.hideActionBtn();
+		this.showPaiPosGroup(false);
+		this.showWaitGroup(true);
+		if (appendData)
+		{
+			this.refreshWaitBtnState();
+		}
+		this.maimaComponent.visible = false;
+	}
+	public showWaitGroup(state: boolean)
+	{
+		// state = true;
+		this.waitGroup.visible = state;
+	}
+	/**
+	 * 下一局
+	 */
+	public nextRound()
+	{
+		this.actionTimeLabel.visible = false;
+		this.maimaComponent.visible = false;
+		this.showWaitGroup(false);
+		clearTimeout(this._refreshTimeId);
+		GoCardProcessManager.state = GameSceneState.WaitStart;
+		// GoCardProcessManager.isReady = fal;		
+		this.initRound();
+		this.rendererStart(null);
+		this.refreshHeadInfo();
+		this.refreshHotedBtn();
+		UIManager.closePanel(UIModuleName.TingInfoPanel);
+	}
+	public clear()
+	{
+		this._exactlyBenJiaTime = 0;
+		this.tingOutCardTime = 0;
+		this._isRunFaPai = false;
+		this._isTouziPlay = false;
+		GoCardProcessManager.isDispatchInit = false;
+	}
+	private initRoomInfo()
+	{
+		if (RoomManager.roomInfo)
+		{
+			let def: PlayWayDefinition = ProjectDefined.GetInstance().getPlayWayDefinition(RoomManager.roomInfo.type);
+			if (def)
+			{
+				this.roundTypeLabel.text = def.des;
+			}
+			this.roundNumLabel.text = "第" + RoomManager.roomInfo.roundNum + "/" + RoomManager.roomInfo.round + "局";
+			this.refreshRemainLabel();
+		}
+		this.refreshTingHelpBtn(false);
+	}
+	public refreshRemainLabel()
+	{
+		if (RoomManager.roomInfo)
+		{
+			let num: number = GameSetting.CardTotalNum - RoomManager.roomInfo.head;
+			if (num)
+			{
+				this.remainLabel.text = num.toString();
+			}
+			else
+			{
+				this.remainLabel.text = "0";
+			}
+		}
+	}
+	private initRound()
+	{
+		this.hideActionBtn();
+		GoCardProcessManager.isDispatchInit = false;
+		this._exactlyBenJiaTime = 0;
+		this._startPlayTouziTime = 0;
+		this.showPaiPosGroup(false);
+	}
+	protected rendererStart(event: egret.Event)
+	{
+		super.rendererStart(event);
+		if (!RoomManager.roomInfo)
+		{
+			return;
+		}
+		// switch(RoomManager.roomInfo)
+		this.refreshPubGroup();
+		this.refreshState();
+		this.initRoomInfo();
+		// this.runCardWall();//local
+	}
+	protected onEnable(event: eui.UIEvent): void
+	{
+		super.onEnable(event);
+		Tick.getInstance().AddSecondsInvoke(this.refreshTimeInfo, this);
+		this.addEventListener(egret.TouchEvent.TOUCH_TAP, this.onPanelClick, this);
+		this.addEventListener(egret.Event.ENTER_FRAME, this.update, this);
+		CardWallHandler.runAd.addListener(this.onRunCardWallComplete, this);
+		CardWallHandler.faMoAd.addListener(this.onFaMoCardWallComplete, this);
+		this._touziCompent1.onTouZiComplete.addListener(this.onTouZiComplete, this);
+		OutCardHandler.onOutCardChange.addListener(this.onRefresh, this);
+		this._audioRecordBtnOper.OnEnable();
+		this.timeLogic.onEnable();
+		RecordAudioManager.OnPrepearPlay.addListener(this.prepearPlayRecordHandler, this);
+		RecordAudioManager.OnPlayRecordComplete.addListener(this.playRecordCompleteHandler, this);
+	}
+	protected onDisable(event: eui.UIEvent): void
+	{
+		super.onDisable(event);
+		Tick.getInstance().RemoveSecondsInvoke(this.refreshTimeInfo);
+		this.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.onPanelClick, this);
+		this.removeEventListener(egret.Event.ENTER_FRAME, this.update, this);
+		CardWallHandler.runAd.removeListener(this.onRunCardWallComplete);
+		CardWallHandler.faMoAd.removeListener(this.onFaMoCardWallComplete);
+		this._touziCompent1.onTouZiComplete.removeListener(this.onTouZiComplete);
+		OutCardHandler.onOutCardChange.removeListener(this.onRefresh);
+		clearTimeout(this._lastCardShowTimeId);
+		this.tingOutCardTime = 0;
+		this.timeLogic.onDisable();
+		this._audioRecordBtnOper.OnDisable();
+		this.maimaComponent.animate.stop();
+		RecordAudioManager.OnPrepearPlay.removeListener(this.prepearPlayRecordHandler);
+		RecordAudioManager.OnPlayRecordComplete.removeListener(this.playRecordCompleteHandler);
+	}
+	private mopai: number;
+	private onPanelClick(event: egret.TouchEvent)
+	{
+		if (event.target instanceof RoomUserHeadInfoComponent)
+		{
+			let component: RoomUserHeadInfoComponent = event.target as RoomUserHeadInfoComponent;
+			if (component.bindData)
+			{
+				UserManager.reqGetOtherUserInfo(component.bindData.roleId);
+			}
+			SoundManager.playEffect(Sex.Male, MusicAction.buttonClick);
+		}
+		else
+		{
+			SoundManager.playButtonEffect(event.target);
+			switch (event.target)
+			{
+				case this.invitBtn:  //微信邀请好友
+					UIManager.showFloatTips("正在开发中！");
+					break;
+				case this.exitBtn: //退出房间
+				case this.disbandedBtn:
+					if (RoomManager.roomInfo)
+					{
+						if (RoomManager.roomInfo.roundNum <= 0)
+						{
+							if (RoomManager.isMineHost)
+							{
+								AlertManager.showDoubleAlert("第一局未开启前解散房间不扣除房卡，是否确认解散？", RoomManager.reqExitRoom);
+							}
+							else
+							{
+								RoomManager.reqExitRoom();
+							}
+						}
+						else
+						{
+							if (RoomManager.isMineHost)
+							{
+								AlertManager.showDoubleAlert("解散房间需要其他玩家同意，是否发送解散申请？", RoomManager.reqExitRoom);
+							}
+							else
+							{
+								AlertManager.showDoubleAlert("退出房间需要其他玩家同意，是否发送退出申请？", RoomManager.reqExitRoom);
+							}
+						}
+					}
+					break;
+				case this.moPaiBtn:
+					this.mopai = MathUtil.getRandom(1, 28);
+					// this._shouCardController.setNewCard(PosType.BenJia, this.mopai);
+					// this._shouCardController.setNewCard(PosType.XiaJia);
+					// this._shouCardController.setNewCard(PosType.DuiJia);
+					// this._shouCardController.setNewCard(PosType.ShangJia);
+					break;
+				case this.daPaiBtn:
+					// this._shouCardController.outCard(PosType.BenJia); //todo
+					// this._shouCardController.outCard(PosType.XiaJia); //todo
+					// this._shouCardController.outCard(PosType.DuiJia); //todo
+					// this._shouCardController.outCard(PosType.ShangJia); //todo
+					break;
+				case this.insertPaiBtn:
+					// this._shouCardController.startInsert(PosType.BenJia, this.mopai);
+					// this._shouCardController.startInsert(PosType.XiaJia);
+					// this._shouCardController.startInsert(PosType.DuiJia);
+					// this._shouCardController.startInsert(PosType.ShangJia);
+					break;
+				case this.benJiaSortBtn:
+					// this._shouCardController.exactlyBenJiaCard();
+					break;
+				case this.testPengBtn:
+					// this.huCard.tryHu(null);
+					// SceneManager.gameScene.gameProcesser.testShowPeng(PosType.BenJia);
+					this._exactlyBenJiaTime = 1;
+					// SceneManager.gameScene.gameProcesser.exactlyBenJiaCard();
+					break;
+				case this.testGangBtn:
+					SceneManager.gameScene.gameProcesser.testShowPeng(PosType.BenJia);
+					break;
+				case this.pengBtn:
+					GoCardProcessManager.reqPengCard();
+					break;
+				case this.gangBtn:
+					let list: Array<number> = SceneManager.gameScene.gameProcesser.canGangList;
+					if (list && list.length > 1)
+					{
+						this._gangPanelVisible = true;
+						this.recordBtnsVisible();
+						this.hideActionBtn();
+						this.showCancelBtn(true);
+						UIManager.showPanel(UIModuleName.GangSelectPanel, list);
+					}
+					else
+					{
+						GoCardProcessManager.reqGangCard();
+					}
+					break;
+				case this.huBtn:
+					GoCardProcessManager.reqHuCard();
+					break;
+				case this.tingBtn:
+					this.recordBtnsVisible();
+					this.hideActionBtn();
+					this.showCancelBtn(true);
+					GoCardProcessManager.isClickTingBtn = true;
+					break;
+				case this.cancelBtn:
+					this.backUpBtnVisible();
+					this.showGuoBtn(true);
+					this.showCancelBtn(false);
+					GoCardProcessManager.isClickTingBtn = false;
+					break;
+				case this.guoBtn:
+					if (GoCardProcessManager.isInActionSelect)
+					{
+						GoCardProcessManager.reqPass();
+					}
+					else
+					{	//听牌胡牌的过
+						if (SceneManager.gameScene.gameProcesser.isCanHu && RoomManager.roomInfo && RoomManager.mineInfo && RoomManager.mineInfo.isTing)
+						{
+							console.log("胡牌过牌出牌了：");
+							GoCardProcessManager.reqPutOutCard(null, RoomManager.roomInfo.myLastCard)
+						}
+						this.hideActionBtn();
+						this.showGuoBtn(false);
+					}
+					break;
+				case this.tweenGroup:
+				case this.cardGroup:
+					UIManager.closePanel(UIModuleName.TingInfoPanel);
+					break;
+				case this.tingHelpBtn:
+					SceneManager.gameScene.gameProcesser.showTingInfoPanel();
+					break;
+				case this.cancelHostedBtn:
+					GoCardProcessManager.reqCancelHosted();
+					break;
+				case this.settingBtn:
+					UIManager.showPanel(UIModuleName.SettingPanel);
+					break;
+			}
+		}
+	}
+	protected onCloseBtnClickHandler(event: egret.TouchEvent)
+	{
+		this.tryGoBackHall();
+	}
+	private tryGoBackHall()
+	{
+		AlertManager.showDoubleAlert("返回大厅，房间仍会保留，快邀请伙伴来玩吧！", this.goBackHall);
+	}
+	private goBackHall()
+	{
+		SceneManager.goToHall();
+	}
+	private update(event: egret.Event)
+	{
+		if (!GoCardProcessManager.isDispatchInit && this._touziCompent1.isLoadComplete && this._touziCompent2.isLoadComplete)
+		{
+			GoCardProcessManager.isDispatchInit = true;
+			if (this.panelData)
+			{
+				UIManager.dispatchEvent(UIModuleName.GameScenePanel, UIModuleEvent.COMPLETE);
+			}
+		}
+		if (!this._isTouziPlay && this._startPlayTouziTime != 0 && egret.getTimer() - this._startPlayTouziTime >= this._playTouziGap)
+		{
+			this._isTouziPlay = true;
+			this.playTouziAnimate();
+		}
+		if (this._exactlyBenJiaTime != 0 && egret.getTimer() - this._exactlyBenJiaTime >= this._exactlyBenJiaGap)
+		{
+			this._exactlyBenJiaTime = 0;
+
+			SceneManager.gameScene.gameProcesser.exactlyBenJiaCard();
+
+			clearTimeout(this._lastCardShowTimeId);
+			this._lastCardShowTimeId = egret.setTimeout(this.tryShowLastCard, this, 500);
+		}
+		if (this.tingOutCardTime != 0 && egret.getTimer() - this.tingOutCardTime >= this.tingGap)
+		{
+			this.tingOutCardTime = 0;
+			if (RoomManager.roomInfo && !SceneManager.gameScene.gameProcesser.isCanHu)
+			{
+				// this.refreshTime(ProjectDefined.GetInstance().getValue(ProjectDefined.putTimeoutClient)); 
+				console.log("听牌自动出牌");
+				GoCardProcessManager.reqPutOutCard(null, RoomManager.roomInfo.myLastCard);
+			}
+		}
+	}
+	/**
+	 * 玩家加入
+	 */
+	public onPlayerJoin(playerInfo: PlayerInfo, posType: PosType)
+	{
+		let compent: RoomUserHeadInfoComponent;
+		compent = this._userInfoRendererList[posType - 1];
+		compent.visible = true;
+		compent.init(playerInfo);
+	}
+	private refreshPubGroup()
+	{
+		this.refreshTimeInfo();
+		this.roomIdLabel.text = RoomManager.roomInfo.roomId.toString();
+		this.refreshWind(true);
+	}
+	private refreshTimeInfo()
+	{
+		let date: Date = TimeManager.GetServerLocalDateTime();
+		this.timeLabel.text = DateTimeUtil.formatCountdown(date.getHours()) + ":" + DateTimeUtil.formatCountdown(date.getMinutes()) + ":" + DateTimeUtil.formatCountdown(date.getSeconds());
+	}
+	/**
+	 * 显示积分效果
+	 */
+	public showScoreEffect()
+	{
+		if (this.gameEffectLogic)
+		{
+			this.gameEffectLogic.showScoreEffect();
+		}
+		this.refreshHeadInfo();
+	}
+	/**
+	 * 显示行为特效
+	 */
+	public showActionEffect(actionType: ActionType, posType: PosType)
+	{
+		if (actionType == ActionType.MaiMa)
+		{
+			if (this.maimaComponent)
+			{
+				this.maimaComponent.image0.alpha = 1;
+				this.maimaComponent.image.alpha = 1;
+				this.maimaComponent.visible = true;
+				this.maimaComponent.animate.stop();
+				this.maimaComponent.animate.play();
+			}
+		}
+		else
+		{
+			if (this.gameEffectLogic)
+			{
+				this.gameEffectLogic.showActionEffect(actionType, posType);
+			}
+		}
+	}
+	/**
+	 * 刷新显示时间
+	 */
+	public refreshTime(num: number, isShowlabel?: boolean)
+	{
+		if (this.timeLogic)
+		{
+			this.timeLogic.nowTotal = num + TimeManager.GetServerUtcTimestamp();
+			if (isShowlabel != undefined)
+			{
+				this.actionTimeLabel.visible = isShowlabel;
+			}
+		}
+	}
+	/**
+	 * 刷新头像信息
+	 */
+	public refreshHeadInfo()
+	{
+		let compent: RoomUserHeadInfoComponent;
+		let roomPlayerInfo: PlayerInfo;
+		let mineInfo: PlayerInfo = RoomManager.mineInfo;
+		if (!mineInfo)
+		{
+			return;
+		}
+		for (let i: PosType = PosType.BenJia; i <= PosType.ShangJia; i++)
+		{
+			compent = this._userInfoRendererList[i - 1];
+			roomPlayerInfo = RoomManager.findPlayerInfo(mineInfo.pos, i);
+			if (roomPlayerInfo)
+			{
+				compent.visible = true;
+				compent.init(roomPlayerInfo);
+			}
+			else
+			{
+				compent.visible = false;
+			}
+		}
+	}
+	/**
+	 * 玩家退出房间隐藏玩家头像
+	 */
+	public hidePlayerHead(roleId: number)
+	{
+		let posType: PosType = RoomManager.getPosTypeByRoleId(roleId);
+		if (posType >= PosType.BenJia && posType <= PosType.ShangJia)
+		{
+			let compent: RoomUserHeadInfoComponent = this._userInfoRendererList[posType - 1];
+			compent.visible = false;
+			compent.init(null);
+		}
+	}
+	private headInit()
+	{
+		let compent: RoomUserHeadInfoComponent;
+		for (let i: number = 0; i < this._userInfoRendererList.length; i++)
+		{
+			compent = this._userInfoRendererList[i];
+			compent.init(null);
+		}
+	}
+	private _lastWindTween: egret.tween.TweenGroup;
+	/**
+	 * 刷新 等待风圈 信息
+	 */
+	public refreshWind(isInit: boolean = false)
+	{
+		let mineInfo: PlayerInfo = RoomManager.mineInfo;
+		if (!mineInfo)
+		{
+			return;
+		}
+		if (!RoomManager.roomInfo)
+		{
+			return;
+		}
+		let actionPos: number;
+		let isInGaming: boolean;
+		if (GoCardProcessManager.state == GameSceneState.Processing)
+		{
+			isInGaming = true;
+			actionPos = RoomManager.roomInfo.pos;
+		}
+		else
+		{
+			isInGaming = false;
+			actionPos = RoomManager.mineInfo.pos;
+		}
+		let actionPosType: PosType = RoomManager.getPosTypeForMine(actionPos);
+
+		let index: number = 0;
+		let dir: string;
+		let wind: string;
+		let imgState: number = 0;
+		let img: eui.Image;
+		for (let i: PosType = PosType.BenJia; i <= PosType.ShangJia; i++)
+		{
+			index = RoomManager.getPosByPosTypeForMine(i);
+			wind = GameScenePanel._windNameList[index - 1];
+			dir = GameScenePanel._directionNameList[i - 1];
+			img = this._windImgList[i - 1];
+			imgState = 0;
+			if (i == actionPosType)
+			{
+				if (!isInGaming)
+				{
+					this.hideWindTween();
+					img.alpha = 1;
+					imgState = 1;
+				}
+				else
+				{
+					imgState = 1;
+
+					this.hideWindTween();
+					if (!isInit)
+					{
+						this._lastWindTween = this._windAnimateList[actionPosType - 1];
+						this._lastWindTween.play();
+					}
+				}
+			}
+			else
+			{
+				imgState = 0;
+			}
+			if (imgState == 0)
+			{
+				img.alpha = 1;
+			}
+			img.source = wind + "_" + dir + "_" + imgState + ResSuffixName.PNGSuffix;
+		}
+	}
+	private hideWindTween()
+	{
+		if (this._lastWindTween)
+		{
+			this._lastWindTween.stop();
+		}
+	}
+	private refreshState()
+	{
+		clearTimeout(this._refreshTimeId);
+		this.gameGroup.visible = false;
+		this.waitGroup.touchEnabled = false;
+		switch (GoCardProcessManager.state)
+		{
+			case GameSceneState.Processing:
+			case GameSceneState.RunFapai:
+				this.gameGroup.visible = true;
+				this.btnGroup.visible = true; //todo
+
+				// this._touziCompent1.visible = this._touziCompent2.visible = false; //local
+				// this.addChild(this._touziCompent1); //local
+				// this.addChild(this._touziCompent2); //local
+
+				break;
+			case GameSceneState.WaitStart:
+				this._touziCompent1.visible = this._touziCompent2.visible = false;
+				break;
+		}
+	}
+	/**
+	 * 显示听牌
+	 */
+	public showTing(roleId: number, isTing: boolean)
+	{
+		this.refreshHeadInfo();
+	}
+	/**
+	 * 显示卡牌组
+	 */
+	public showCardGroup(state: boolean)
+	{
+		this.cardGroup.visible = state;
+	}
+	private _waitOtherReadyTime: number;
+	/**
+	 * 显示等待时间
+	 */
+	public refreshWaitTime(time: number)
+	{
+		if (this._waitOtherReadyTime == undefined)
+		{
+			this._waitOtherReadyTime = ProjectDefined.GetInstance().getValue(ProjectDefined.waitReadyTime);
+		}
+		if (time <= this._waitOtherReadyTime || time == undefined)
+		{
+			this.timeLogic.waitTime = time + TimeManager.GetServerUtcTimestamp();
+			if (time > 0)
+			{
+				this.showPaiPosGroup(false);
+			}
+		}
+	}
+	/**
+	 * 显示骰子动画
+	 */
+	private playTouziAnimate()
+	{
+		this._touziCompent1.visible = this._touziCompent2.visible = true;
+		this._touziCompent1.init(RoomManager.roomInfo.num1);
+		this._touziCompent2.init(RoomManager.roomInfo.num2);
+		this.addChild(this._touziCompent1);
+		this.addChild(this._touziCompent2);
+	}
+	private onTouZiComplete(): void
+	{
+		if (!this._isRunFaPai) //两个筛子会进来两次所以用个标记
+		{
+			this._startPlayTouziTime = 0;
+			this._isRunFaPai = true;
+			SceneManager.gameScene.gameProcesser.shouCardHandlerInit(false);
+			SceneManager.gameScene.gameProcesser.runFaPai();
+		}
+	}
+	private onRunCardWallComplete()
+	{
+		this._startPlayTouziTime = egret.getTimer();
+		this._isTouziPlay = false;
+		this._isRunFaPai = false;
+	}
+	private onFaMoCardWallComplete()
+	{
+		GoCardProcessManager.state = GameSceneState.Processing;
+		this._refreshTimeId = egret.setTimeout(this.refreshState, this, this._refreshStateGap);
+		this._exactlyBenJiaTime = egret.getTimer();
+	}
+	private onRefresh(data: any)
+	{
+		this.paiPosGroup.x = data.x;
+		this.paiPosGroup.y = data.y;
+		this.showPaiPosGroup(true);
+		this.paiPosGroup.parent.addChild(this.paiPosGroup);
+	}
+	private tryShowLastCard()
+	{
+		GoCardProcessManager.isReady = true;
+		RoomManager.updateHead(1);
+
+		if (this._touziCompent1.parent)
+		{
+			this.removeChild(this._touziCompent1);
+			this.removeChild(this._touziCompent2);
+		}
+
+		this.actionTimeLabel.visible = true;
+
+		SceneManager.gameScene.gameProcesser.showLastCard();
+
+		clearTimeout(this._lastCardShowTimeId);
+		this.refreshWind();
+	}
+	public hideActionBtn()
+	{
+		this.pengBtn.visible = false;
+		this.gangBtn.visible = false;
+		this.tingBtn.visible = false;
+		this.huBtn.visible = false;
+		this.cancelBtn.visible = false;
+		this.guoBtn.visible = false;
+	}
+	private recordBtnsVisible()
+	{
+		this._pengVisible = this.pengBtn.visible;
+		this._gangVisible = this.gangBtn.visible;
+		this._huVisible = this.huBtn.visible;
+		this._tingVisible = this.tingBtn.visible;
+	}
+	private backUpBtnVisible()
+	{
+		this.pengBtn.visible = this._pengVisible;
+		this.gangBtn.visible = this._gangVisible;
+		this.huBtn.visible = this._huVisible;
+		this.tingBtn.visible = this._tingVisible;
+		if (this._gangPanelVisible)
+		{
+			this._gangPanelVisible = false;
+			UIManager.closePanel(UIModuleName.GangSelectPanel);
+		}
+	}
+	/**
+	 * 刷新托管按钮状态
+	 */
+	public refreshHotedBtn()
+	{
+		if (RoomManager.mineInfo)
+		{
+			this.hostGroup.visible = false;
+			if (RoomManager.mineInfo.hosted)
+			{
+				this.hostGroup.visible = true;
+			}
+		}
+	}
+	public showBtnState(btn: eui.Button, state: boolean)
+	{
+		btn.visible = state;
+		this.showBtnAnimate(btn, state);
+		let index: number = 3;
+		let actionBtn: eui.Button;
+		for (let i: number = 0; i < this.btnGroup.numChildren; i++)
+		{
+			actionBtn = this.btnGroup.getChildAt(i) as eui.Button;
+			if (actionBtn && actionBtn.visible)
+			{
+				actionBtn.x = index * 157;
+				index--;
+			}
+		}
+	}
+	public showPaiPosGroup(state: boolean)
+	{
+		this.paiPosGroup.visible = state;
+		if (!state)
+		{
+			this.promptComponet.y = 29;
+		}
+		this.showBtnAnimate(this.promptComponet, state);
+
+	}
+	public showCancelBtn(state: boolean)
+	{
+		this.cancelBtn.visible = state;
+		this.showBtnAnimate(this.cancelBtn, state);
+	}
+	public showGuoBtn(state: boolean)
+	{
+		this.guoBtn.visible = state;
+		this.showBtnAnimate(this.guoBtn, state);
+	}
+	/**
+	 * 刷新听按钮
+	 */
+	public refreshTingHelpBtn(state: boolean)
+	{
+		this.tingHelpBtn.visible = state;
+		this.showBtnAnimate(this.tingHelpBtn, state);
+	}
+	private refreshWaitBtnState()
+	{
+		if (RoomManager.mineInfo)
+		{
+			this.exitBtn.visible = false;
+			this.disbandedBtn.visible = false;
+			this.invitBtn.visible = false;
+			if (RoomManager.isMineHost)
+			{
+				this.disbandedBtn.visible = true;
+				this.invitBtn.visible = true;
+			}
+			else
+			{
+				this.exitBtn.visible = true;
+			}
+		}
+		VersionManager.setComponentVisibleBySafe(this.invitBtn);
+	}
+	private showBtnAnimate(target: eui.UIComponent, state: boolean)
+	{
+		let btnProxy: any = target;
+		if (state)
+		{
+			if (btnProxy.animate)
+			{
+				btnProxy.animate.pause();
+				btnProxy.animate.play(0);
+			}
+		}
+		else
+		{
+			if (btnProxy.animate)
+			{
+				btnProxy.animate.pause();
+			}
+		}
+	}
+	/**
+	 * 开始播放录音
+	 */
+	private prepearPlayRecordHandler(guid: string)
+	{
+		let chatInfo: ChatInfo = ChatManager.getRecordChatInfo(guid);
+		if (chatInfo)
+		{
+			let head: RoomUserHeadInfoComponent = this.getHeadComponent(chatInfo.roleId);
+			if (head)
+			{
+				head.showPlayRecordState(true);
+			}
+		}
+	}
+	/**
+	 * 播放录音完毕
+	 */
+	private playRecordCompleteHandler(guid: string)
+	{
+		let chatInfo: ChatInfo = ChatManager.getRecordChatInfo(guid);
+		if (chatInfo)
+		{
+			let head: RoomUserHeadInfoComponent = this.getHeadComponent(chatInfo.roleId);
+			if (head)
+			{
+				head.showPlayRecordState(false);
+			}
+		}
+	}
+	private getHeadComponent(roleId: number): RoomUserHeadInfoComponent
+	{
+		let compent: RoomUserHeadInfoComponent;
+		let roomPlayerInfo: PlayerInfo;
+		let mineInfo: PlayerInfo = RoomManager.mineInfo;
+		if (!mineInfo)
+		{
+			return null;
+		}
+		for (let i: PosType = PosType.BenJia; i <= PosType.ShangJia; i++)
+		{
+			compent = this._userInfoRendererList[i - 1];
+			roomPlayerInfo = RoomManager.findPlayerInfo(mineInfo.pos, i);
+			if (roomPlayerInfo && roomPlayerInfo.roleId == roleId)
+			{
+				return compent;
+			}
+		}
+		return null;
+	}
+}

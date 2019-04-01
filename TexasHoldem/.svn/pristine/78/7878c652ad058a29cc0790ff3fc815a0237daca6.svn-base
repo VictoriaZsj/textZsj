@@ -1,0 +1,59 @@
+/**
+ * 对家手牌操作
+ */
+class ShouPaiDuiJiaHandler extends BaseShouPaiHandler<OtherShouCard>
+{
+	constructor(lc: LayerContainer)
+	{
+		super(lc);
+		this._posType = PosType.DuiJia;
+	}
+	public init(instanceT: { new (def: ShouPaiDefinition, pos: number): OtherShouCard; }, isDefaultShow: boolean)
+	{
+		super.init(instanceT, isDefaultShow);
+		if (this._shouPaiPosList)
+		{
+			this.exactlyCard(isDefaultShow);
+		}
+	}
+	public startInsertCard(insertCard: number)
+	{
+		super.startInsertCard(insertCard);
+		if (this._nowInsertPit && this._nowInsertPit && this._outProxyPit.card && this._lastPit.card.visible)
+		{
+			this._newCardTween = egret.Tween.get(this._outProxyPit.card);
+			let def: ShouPaiDefinition = this._nowInsertPit.def;
+			this._newCardTween.to({ rotation: -15 }, 200).to({ y: def.y - 50 }, 200).to({ x: def.x }, 300, egret.Ease.quintOut).to({ rotation: 0 }, 100).call(this.playInsert.bind(this)).to({ y: def.y }, 200, egret.Ease.quadInOut).call(this.moveOver.bind(this));
+			this._newCardTween.play();
+			this.hideLastCard();
+		}
+	}
+	protected playInsert()
+	{
+		if (this._isInserting)
+		{
+			super.playInsert();
+			let len: number = this._needMoveList.length;
+			let moveTween: egret.Tween;
+			let pit: MoveCardPit;
+			for (let i = 0; i < len; i++)
+			{
+				pit = this._needMoveList[i];
+				// moveTween = this._moveTweenMap.tryGetValue(moveCard.posIndex);
+				moveTween = egret.Tween.get(pit.card);
+				moveTween.to({ x: pit.targetPit.def.x }, 200, egret.Ease.quintOut);
+				moveTween.play();
+			}
+		}
+		else
+		{
+			console.log("对家插牌动画调用异常！");
+		}
+	}
+	protected moveOver()
+	{
+		super.moveOver();
+		// this.cardList.sort(this.sortPosIndex);
+		// this.exactlyCard();
+	}
+}

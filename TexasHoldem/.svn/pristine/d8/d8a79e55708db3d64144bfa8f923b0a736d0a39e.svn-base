@@ -1,0 +1,151 @@
+/**
+ * 用户信息面板
+ */
+class UserInfoPanel extends BasePanel
+{
+	//资料
+	public userInfoTab: TabComponent;
+	public userNameLabel: eui.Label;//用户名
+	public changeNameBtn: eui.Button;//修改昵称
+	public userImg: eui.Image;//头像
+	public borderImg: eui.Image;//边框
+	public vipLevelLabel: eui.Label;//用户vip等级
+	public vipGroup: eui.Group;//vip组
+	public sexImg: eui.Image;//性别
+	public ageLabel: eui.Label//年龄
+	public userIdLabel: eui.Label;//ID
+	public userDesLabel: eui.Label;//用户描述
+	public diamondNumLabel: eui.Label;//钻石数
+	public goldNumLabel: eui.Label;//金币数量
+	public levelLabel: eui.Label;//等级
+	public titleLabel: eui.Label;//称号
+	public levelProgressImg: eui.ProgressBar;//等级进度
+	public statusLabel: eui.Label;//目前状态
+	public myPrizeBtn: eui.Button;//我的奖品
+	public myVipBtn: eui.Button;//我的Vip
+	public dataGroup: eui.Group;//资料组
+
+	//概况
+	public joinTimeLabel: eui.Label;//加入时间
+	public maxGoldLabel: eui.Label;//最高拥有金币
+	public maxGoldOnetimeLabel: eui.Label;//一把最高赢取金币
+	public frindNumLabel: eui.Label;//好友数量
+	public winTimeLabel: eui.Label;//已完成局数/胜利
+	public winProbabilityLabel: eui.Label;//胜率
+	public maxHandLabel: eui.Label;//最大手牌
+	public maxHandGroup: eui.Group;//最大手牌组
+	public championTimesLabel: eui.Label;//夺冠次数
+	public situationGroup: eui.Group;//概况组
+
+	//成就
+	public scroller: eui.Scroller;
+	public list: eui.List;
+	public achievementGroup: eui.Group;//成就组
+
+	public constructor()
+	{
+		super();
+		this.skinName = UISkinName.UserInfoPanel;
+	}
+	protected onAwake(event: eui.UIEvent)
+	{
+		super.onAwake(event);
+		this.isCloseButtonTween = false;
+		
+	}
+	public init(appendData: any)
+	{
+		super.init(appendData);
+		let array: Array<eui.Group> = new Array<eui.Group>();
+		array.push(this.dataGroup);
+		array.push(this.situationGroup);
+		array.push(this.achievementGroup);
+
+		this.userInfoTab.init(array);
+		this.userInfoTab.isTween = false;
+		this.userInfoTab.viewStack.y = -150;
+	}
+	protected onRender(event: egret.Event)
+	{
+		super.onRender(event);
+		let otherUserInfo: UserInfo = UserManager.otherUserInfo;
+		if (otherUserInfo != null && otherUserInfo.roleId == UserManager.userInfo.roleId)
+		{
+			this.dataGroup.visible = true;
+			this.situationGroup.visible = false;
+			this.achievementGroup.visible = false;
+			this.diamondNumLabel.text = UserManager.userInfo.diamond.toString();
+			this.goldNumLabel.text = UserManager.userInfo.gold.toString();
+		}
+		else
+		{
+
+		}
+
+		this.userNameLabel.text = UserManager.userInfo.name;
+		//this.userImg.source = "";
+		if (!VipManager.isVip())
+		{
+			this.vipGroup.visible = false;
+		}
+		else
+		{
+			this.vipLevelLabel.text = UserManager.userInfo.vipLevel.toString();
+		}
+		this.ageLabel.text = UserManager.userInfo.age.toString();
+		this.userIdLabel.text = UserManager.userInfo.roleId.toString();
+		this.userDesLabel.text = UserManager.userInfo.des;
+		this.levelLabel.text = UserManager.userInfo.level.toString();
+		this.titleLabel.text = UserUtil.getTitle(UserManager.userInfo.level);
+		this.levelProgressImg.maximum = 100;
+		this.levelProgressImg.value = UserUtil.getPercentage(UserManager.userInfo.level, UserManager.userInfo.exp);
+
+		this.joinTimeLabel.text = UserManager.userInfo.joinTime;
+		this.maxGoldLabel.text = UserManager.userInfo.maxGold.toString();
+		this.maxGoldOnetimeLabel.text = UserManager.userInfo.maxGoldOnetimes.toString();
+		this.winTimeLabel.text = UserManager.userInfo.gameTimes.toString() + "/" + UserManager.userInfo.winTimes.toString();
+		this.winProbabilityLabel.text = Math.round((UserManager.userInfo.winTimes / UserManager.userInfo.gameTimes) * 100).toString() + "%";
+
+		this.maxHandLabel.text = UserManager.userInfo.maxHandName;
+		this.championTimesLabel.text = UserManager.userInfo.championTimes.toString();
+
+		for (let i: number = 0; i < 5; i++)
+		{
+			let img:eui.Image = this.maxHandGroup.getChildAt(i) as eui.Image;
+			img.source = UserManager.userInfo.maxHandList[i].toString();
+		}
+	}
+
+	protected onEnable(event: eui.UIEvent): void
+	{
+		super.onEnable(event);
+		this.addEventListener(egret.TouchEvent.TOUCH_TAP, this.clickHandler, this);
+	}
+	protected onDisable(event: eui.UIEvent): void
+	{
+		super.onDisable(event);
+		this.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.clickHandler, this);
+	}
+
+	/**
+	 * 点击面板按钮事件处理
+	*/
+	private clickHandler(event: egret.TouchEvent)
+	{
+		SoundManager.playButtonEffect(event.target);
+		switch (event.target)
+		{
+			case this.changeNameBtn:
+				break;
+			case this.myPrizeBtn:
+				UIManager.showPanel(UIModuleName.MyAwardPanel);
+				break;
+			case this.myVipBtn:
+				UIManager.showPanel(UIModuleName.VipPanel);
+				break;
+			case this.userImg:
+				UIManager.showPanel(UIModuleName.EditUserInfoPanel);
+				break;
+		}
+	}
+}

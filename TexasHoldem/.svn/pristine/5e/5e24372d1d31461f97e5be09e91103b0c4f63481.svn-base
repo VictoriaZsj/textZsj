@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="bindFriendItemRenderer" width="870.34" height="51.04" xmlns:ns1="*" xmlns:e="http://ns.egret.com/eui"
+        xmlns:w="http://ns.egret.com/wing">
+    <e:Image id="bgImage" width="870.34" height="49.04" anchorOffsetX="0" anchorOffsetY="0" scale9Grid="2,2,8,8"
+              source="bg_page19_3_png" y="1"/>
+    <e:Label id="timeLabel" text="2017-08-04 22:25:59" x="24.66" y="10.89" fontFamily="SimHei" size="30"  textColor="0xa0522b"/>
+    <e:Label id="nameLabel" text="大大奥丁多少" x="321.78" y="10.89" width="226" textAlign="center" fontFamily="SimHei" size="30"  anchorOffsetX="0" textColor="0xa0522b"/>
+    <e:Label id="isGotRoundLabel" text="未完成" x="617.23" y="10.89" width="200" textAlign="center" fontFamily="SimHei" size="30"  textColor="0xa0522b"/>
+</e:Skin>

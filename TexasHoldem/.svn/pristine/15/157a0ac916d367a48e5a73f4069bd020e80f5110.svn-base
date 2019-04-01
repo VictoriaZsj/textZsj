@@ -1,0 +1,47 @@
+/**
+ * 保险箱面板
+ */
+class SavePanel extends BaseAnmiatePanel
+{ 
+	public SaveTab:TabComponent;
+	public saveGoldGroup:eui.Group;
+	public withdrawGroup:eui.Group;
+	public modifyPwdGroup:eui.Group;
+	public oldPwd: eui.Label;
+	public newPwd:eui.Label;
+	public againPwd:eui.Label;
+	public saveCreatePwd:eui.Label;
+	public saveAgainPwd:eui.Label;
+	
+
+	public constructor()
+	{
+		super();
+		this.skinName = UISkinName.SavePanel;
+	}
+	protected onAwake(event: eui.UIEvent)
+	{
+		super.onAwake(event);
+		let array:Array<eui.Group>=new Array<eui.Group>();		
+		array.push(this.saveGoldGroup);
+        array.push(this.withdrawGroup);
+        array.push(this.modifyPwdGroup);
+        this.SaveTab.init(array); 		
+	}
+	public init(appendData: any)
+	{
+		super.init(appendData);
+	}
+	protected onRender(event: egret.Event)
+	{
+		super.onRender(event);
+	}
+	protected onEnable(event: eui.UIEvent): void
+	{
+		super.onEnable(event);
+	}
+	protected onDisable(event: eui.UIEvent): void
+	{
+		super.onDisable(event);
+	}
+}

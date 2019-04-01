@@ -1,0 +1,11 @@
+/**
+ * 等待下一局
+ */
+class GamblingHeadWiatNext implements IGamblingHeadStateHandler
+{
+	public target: GamblingHeadComponent;
+	public run()
+	{
+		
+	}
+}

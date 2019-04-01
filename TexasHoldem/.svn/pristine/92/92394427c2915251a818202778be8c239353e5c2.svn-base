@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="NewFile" width="780" height="540" xmlns:e="http://ns.egret.com/eui" xmlns:ns1="*" xmlns:w="http://ns.egret.com/wing">
+	<e:Group id="tweenGroup" width="777" height="485" anchorOffsetX="0" anchorOffsetY="0" horizontalCenter="0.5" verticalCenter="27">
+		<e:Image source="bg_page11_png" scale9Grid="17,17,13,10" width="780" height="481.82" horizontalCenter="0" y="0.9199999999999946" anchorOffsetY="0" x="-2" scaleX="1" scaleY="1"/>
+		<e:Image y="-56.11" source="bg_page5_png" horizontalCenter="0" x="194" scaleX="1" scaleY="1"/>
+		<e:Image width="733.48" height="53" x="22" y="181.86" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1"/>
+		<e:Image width="733.48" height="53" x="22" y="238.77999999999997" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1"/>
+		<e:Image width="733.48" height="154.52" x="22" y="299.37999999999994" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" anchorOffsetY="0" scaleX="1" scaleY="1"/>
+		<e:Label text="个人信息" y="-17.189999999999998" size="34" textAlign="center" horizontalCenter="0" x="320" scaleX="1" scaleY="1"/>
+		<ns1:UserInfoComponent id="userInfo" x="33" y="45" skinName="panelSkin15" enabled="true" scaleX="1" scaleY="1"/>
+		<e:Group id="cardGroup" width="250" height="75" x="580" y="100" anchorOffsetX="125" anchorOffsetY="37" scaleX="1" scaleY="1">
+			<e:Image anchorOffsetX="0" anchorOffsetY="0" source="bg_page3_2_png" x="17.939999999999998" height="51" y="15" scaleX="1" scaleY="1"/>
+			<e:Image id="cardImg" anchorOffsetX="0" anchorOffsetY="0" source="button_8_png" scaleX="1" scaleY="1" touchEnabled="true" x="9.259999999999991" y="1"/>
+			<e:Label id="roomCardNumLabel" text="999999" size="30" textAlign="left" fontFamily="SimHei" scaleX="1" scaleY="1" touchEnabled="false" textColor="0xFFC871" x="75" y="25"/>
+			<ns1:GameButton id="addRoomCardBtn" label="Button" skinName="buttonSkin8" scaleX="1" scaleY="1" anchorOffsetX="0" x="176.48000000000002" y="4.670000000000002"/>
+		</e:Group>
+		<e:Label text="当前IP:" x="52.33" y="195.36" size="26" bold="true" textColor="0x4F5D60" fontFamily="SimHei" scaleX="1" scaleY="1"/>
+		<e:Label id="ipLabel" text="255.255.255.255" x="146.44" y="195.36" size="26" bold="true" textColor="0x4F5D60" fontFamily="SimHei" scaleX="1" scaleY="1"/>
+		<e:Label text="等级:" x="54.33" y="253.36" size="26" bold="true" textColor="0x4F5D60" fontFamily="SimHei" scaleX="1" scaleY="1"/>
+		<e:Label id="levelLabel" text="999" x="121.77" y="253.36" size="26" bold="true" textColor="0x4F5D60" fontFamily="SimHei" scaleX="1" scaleY="1"/>
+		<e:Label id="titleLabel" text="称号称号" x="177.14" y="252.68999999999994" size="26" bold="true" textColor="0x4F5D60" fontFamily="SimHei" scaleX="1" scaleY="1"/>
+		<e:Image width="800" height="40" y="255" source="loading_bg_png" scale9Grid="19,18,33,5" scaleY="0.5" x="318" scaleX="0.5"/>
+		<e:Image id="expFill" width="400" height="40" x="318" y="254.5" scaleY="0.5" source="loading_line_png" anchorOffsetX="0" anchorOffsetY="0" scaleX="1" scale9Grid="11,10,50,21"/>
+		<e:Label text="我的会员" x="52.209999999999994" y="310.33" size="26" bold="true" textColor="0x4F5D60" fontFamily="SimHei" scaleX="1" scaleY="1"/>
+		<ns1:GameButton id="vipWealButton" label="会员福利" x="605.48" y="299.94999999999993" skinName="buttonSkin_55" scaleX="1" scaleY="1"/>
+		<e:Label id="noVipLabel" text="您尚未开通会员" x="289.47" y="361.22" size="26" bold="true" textColor="0x4F5D60" fontFamily="SimHei" scaleX="1" scaleY="1"/>
+		<e:Image id="vipImg" width="200" height="80" x="282.47" y="335" source="gang_png" scaleX="1" scaleY="1"/>
+		<e:Group id="vipLeftGroup" width="451" height="36" x="198" y="415" anchorOffsetX="0" anchorOffsetY="0" scaleX="1" scaleY="1">
+			<e:Label id="vipLeftLabel" text="您的会员还有99天99小时" x="0" y="7.380000000000052" size="26" bold="true" textColor="0x4F5D60" fontFamily="SimHei" textAlign="right" scaleX="1" scaleY="1"/>
+			<e:Label text="________" x="340" y="8" size="26" bold="true" textColor="0x0000FF" fontFamily="SimHei" scaleX="1" scaleY="1" width="110" height="26"/>
+			<e:Label id="openVipNowLabel" text="立即开通" x="340" y="6.75" size="26" bold="true" textColor="0x0000ff" fontFamily="SimHei" scaleX="1" scaleY="1"/>
+		</e:Group>
+	</e:Group>
+</e:Skin>

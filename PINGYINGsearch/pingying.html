@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        .highlight {
+            background: red;
+            font-weight: bold;
+            color: white;
+            font-size: 24px;
+        }
+    </style>
+</head>
+
+<body>
+    <form>
+        <table>
+            <tr>
+                <td><span>请输入中文字符串:</span><input type="text" id="txtChinese" size="30" value="万万保重">
+                    <input type="button" onclick="query()" value="查看拼音首字母缩写">
+                </td>
+            </tr>
+        </table>
+    </form>
+    <div id="divName">
+        <span><a class="kb-uname-idx" href="#uid23">陈晓薇</a></span>
+        <span><a class="kb-uname-idx" href="#uid23">张宁宁</a></span>
+        <span><a class="kb-uname-idx" href="#uid23">李序</a></span>
+        <span><a class="kb-uname-idx" href="#uid23">王昌凤</a></span>
+        <span><a class="kb-uname-idx" href="#uid23">刘奇印</a></span>
+        <span><a class="kb-uname-idx" href="#uid23">陈志鑫</a></span>
+        <span><a class="kb-uname-idx" href="#uid23">黄志华</a></span>
+        <span><a class="kb-uname-idx" href="#uid23">高跃华</a></span>
+        <span><a class="kb-uname-idx" href="#uid23">李呈新</a></span>
+        <span><a class="kb-uname-idx" href="#uid23">赵林</a></span>
+        <span><a class="kb-uname-idx" href="#uid23">刘建</a></span>
+        <span><a class="kb-uname-idx" href="#uid23">王缨</a></span>
+        <span><a class="kb-uname-idx" href="#uid23">白锡康</a></span>
+        <span><a class="kb-uname-idx" href="#uid23">张剑波</a></span>
+        <span><a class="kb-uname-idx" href="#uid23">林峰</a></span>
+    </div>
+    <br />
+    <br />
+    <div style="font-size:14px; font-weight:bold;">通过姓名的首字母查找，保持页面拥有焦点，连续按下字母组合，例如：想查找“黄志华”，就可以连续按下字母：HZH</div>
+    <div id="divKeyCache">筛选字母组合：</div>
+</body>
+
+</html>
+
+<script src="pingying.js"></script>

@@ -1,0 +1,20 @@
+/**
+ * 颜色工具
+ */
+class ColorUtil
+{
+	/**
+	 * 获取绿色
+	 */
+	public static get green(): number
+	{
+		return 0x9AFF00;
+	}
+	/**
+	 * 获取红色
+	 */
+	public static get red(): number
+	{
+		return 0xff0000;
+	}
+}

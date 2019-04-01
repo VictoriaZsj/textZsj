@@ -1,0 +1,24 @@
+/**
+ * 成就renderer
+ */
+class AchievementItemRenderer extends BaseItemRenderer<any>
+{
+	public itemImg:eui.Image;
+	public textLabel:eui.Label;
+
+	public constructor()
+	{
+		super();
+		this.skinName = UIRendererSkinName.AchievementItemRenderer;
+	}
+	protected createChildren()
+	{
+		this.dataChanged();
+	}
+	protected dataChanged()
+	{
+		super.dataChanged();
+		
+	}
+
+}

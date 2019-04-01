@@ -1,0 +1,61 @@
+/**
+ * 胡牌之后的亮牌
+ */
+class LiangCard extends BaseComponent<number>
+{
+	protected _cardDef: LiangPaiDefinition;
+	public face: eui.Image;
+
+	public get card(): number
+	{
+		return this.bindData;
+	}
+	/**
+	 * 明杠
+	 */
+	private static paiSource: Array<string> = ["", LiangPaiSkiName.BenJiaLiangCard, LiangPaiSkiName.XiaJiaLiangCard, LiangPaiSkiName.DuiJiaLiangCard, LiangPaiSkiName.ShangJiaLiangCard];
+
+	public constructor(data: LiangPaiDefinition)
+	{
+		super();
+		if (data)
+		{
+			this._cardDef = data;
+			this.x = data.x;
+			this.y = data.y;
+			this.setScale(data.scale);
+			this.skinName = LiangCard.paiSource[data.posType];
+		}
+	}
+	private _matrix: egret.Matrix;
+	protected rendererStart(event: egret.Event)
+	{
+		super.rendererStart(event);
+		if (this.bindData && this.face)
+		{
+			let paiDef: PaiDefinition = PaiDefined.GetInstance().getDefinition(this.bindData, PaiDefined.GetInstance().paiList);
+			this.face.source = paiDef.img + ResSuffixName.PNGSuffix;
+			if (!this._matrix)
+			{
+				this._matrix = this.face.matrix;
+			}
+			this.face.matrix = this._matrix;
+			CardShowUtil.setTilt(this._cardDef.tiltH, this._cardDef.tiltV, this.face);
+		}
+	}
+	public init(card: number)
+	{
+		this.bindData = card;
+		if (this.face)
+		{
+			this.rendererStart(null);
+		}
+	}
+	private setScale(scale: number)
+	{
+		if (scale)
+		{
+			this.scaleX = this.scaleY = scale;
+		}
+	}
+}

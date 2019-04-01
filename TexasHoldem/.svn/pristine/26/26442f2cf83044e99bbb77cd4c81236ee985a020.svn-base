@@ -1,0 +1,37 @@
+/**
+ * 带有选项卡的面板基类
+ */
+class BaseTabComponent extends BaseComponent<Array<eui.Group>>
+{
+    /**
+     * 选项卡数量
+     */
+    public TabNum: number;
+    public tabBar: eui.TabBar;
+    public viewStack: eui.ViewStack;
+    public constructor()
+    {
+        super();
+    }
+
+    protected onAwake(event: eui.UIEvent)
+    {
+        super.onAwake(event);
+
+    }
+
+    protected rendererStart(event: egret.Event)
+	{
+        super.rendererStart(event);
+        this.viewStack = new eui.ViewStack();
+        this.tabBar = new eui.TabBar();
+        for (let i = 0; i < this.TabNum; i++)
+        {
+            this.viewStack.addChild(this.bindData[i]);
+        }
+        this.tabBar.dataProvider = this.viewStack;
+        this.tabBar.itemRendererSkinName = UIComponentSkinName.ButtonSkin2;
+        this.addChild(this.viewStack);
+        this.addChild(this.tabBar);
+	}
+}

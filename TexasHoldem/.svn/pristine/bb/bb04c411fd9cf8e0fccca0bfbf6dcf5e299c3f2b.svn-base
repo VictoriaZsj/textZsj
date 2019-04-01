@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="MailPanelSkin" width="640" height="800" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing" xmlns:ns1="*">
+	<e:Group id="tweenGroup" width="640" height="800" anchorOffsetX="0" anchorOffsetY="0" y="0" horizontalCenter="0">
+		<e:Image id="bg" source="bg_page11_png" scale9Grid="17,17,13,10" width="640" height="800" horizontalCenter="0" y="0" anchorOffsetY="0" x="0" scaleX="1" scaleY="1"/>
+		<e:Label id="title" text="邮箱" x="20" y="20" textColor="0x000000" scaleX="1" scaleY="1" size="35"/>
+		<e:Button id="closeButton" label="Button" y="40" skinName="buttonSkin2" width="150" height="80" scaleX="0.5" scaleY="0.5" x="580" anchorOffsetX="75" anchorOffsetY="40"/>
+		<e:Group id="mailGroup" width="600" height="625" x="20" y="150">
+			<e:List id="mailList" width="600" height="625" x="0" y="0"/>
+			<e:Scroller id="mailScroller" width="600" height="625" x="0" y="0" scrollPolicyH="off">
+			</e:Scroller>
+		</e:Group>
+		<ns1:TabComponent id="tab" width="600" height="700" x="20" y="75" skinName="TabComponentSkin"/>
+	</e:Group>
+</e:Skin>

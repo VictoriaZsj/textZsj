@@ -1,0 +1,220 @@
+[ {
+  "id" : 1,
+  "action" : 1,
+  "pai" : 1,
+  "boy" : "b_1w",
+  "girl" : "g_1w"
+}, {
+  "id" : 2,
+  "action" : 1,
+  "pai" : 2,
+  "boy" : "b_2w",
+  "girl" : "g_2w"
+}, {
+  "id" : 3,
+  "action" : 1,
+  "pai" : 3,
+  "boy" : "b_3w",
+  "girl" : "g_3w"
+}, {
+  "id" : 4,
+  "action" : 1,
+  "pai" : 4,
+  "boy" : "b_4w",
+  "girl" : "g_4w"
+}, {
+  "id" : 5,
+  "action" : 1,
+  "pai" : 5,
+  "boy" : "b_5w",
+  "girl" : "g_5w"
+}, {
+  "id" : 6,
+  "action" : 1,
+  "pai" : 6,
+  "boy" : "b_6w",
+  "girl" : "g_6w"
+}, {
+  "id" : 7,
+  "action" : 1,
+  "pai" : 7,
+  "boy" : "b_7w",
+  "girl" : "g_7w"
+}, {
+  "id" : 8,
+  "action" : 1,
+  "pai" : 8,
+  "boy" : "b_8w",
+  "girl" : "g_8w"
+}, {
+  "id" : 9,
+  "action" : 1,
+  "pai" : 9,
+  "boy" : "b_9w",
+  "girl" : "g_9w"
+}, {
+  "id" : 10,
+  "action" : 1,
+  "pai" : 10,
+  "boy" : "b_1b",
+  "girl" : "g_1b"
+}, {
+  "id" : 11,
+  "action" : 1,
+  "pai" : 11,
+  "boy" : "b_2b",
+  "girl" : "g_2b"
+}, {
+  "id" : 12,
+  "action" : 1,
+  "pai" : 12,
+  "boy" : "b_3b",
+  "girl" : "g_3b"
+}, {
+  "id" : 13,
+  "action" : 1,
+  "pai" : 13,
+  "boy" : "b_4b",
+  "girl" : "g_4b"
+}, {
+  "id" : 14,
+  "action" : 1,
+  "pai" : 14,
+  "boy" : "b_5b",
+  "girl" : "g_5b"
+}, {
+  "id" : 15,
+  "action" : 1,
+  "pai" : 15,
+  "boy" : "b_6b",
+  "girl" : "g_6b"
+}, {
+  "id" : 16,
+  "action" : 1,
+  "pai" : 16,
+  "boy" : "b_7b",
+  "girl" : "g_7b"
+}, {
+  "id" : 17,
+  "action" : 1,
+  "pai" : 17,
+  "boy" : "b_8b",
+  "girl" : "g_8b"
+}, {
+  "id" : 18,
+  "action" : 1,
+  "pai" : 18,
+  "boy" : "b_9b",
+  "girl" : "g_9b"
+}, {
+  "id" : 19,
+  "action" : 1,
+  "pai" : 19,
+  "boy" : "b_1t",
+  "girl" : "g_1t"
+}, {
+  "id" : 20,
+  "action" : 1,
+  "pai" : 20,
+  "boy" : "b_2t",
+  "girl" : "g_2t"
+}, {
+  "id" : 21,
+  "action" : 1,
+  "pai" : 21,
+  "boy" : "b_3t",
+  "girl" : "g_3t"
+}, {
+  "id" : 22,
+  "action" : 1,
+  "pai" : 22,
+  "boy" : "b_4t",
+  "girl" : "g_4t"
+}, {
+  "id" : 23,
+  "action" : 1,
+  "pai" : 23,
+  "boy" : "b_5t",
+  "girl" : "g_5t"
+}, {
+  "id" : 24,
+  "action" : 1,
+  "pai" : 24,
+  "boy" : "b_6t",
+  "girl" : "g_6t"
+}, {
+  "id" : 25,
+  "action" : 1,
+  "pai" : 25,
+  "boy" : "b_7t",
+  "girl" : "g_7t"
+}, {
+  "id" : 26,
+  "action" : 1,
+  "pai" : 26,
+  "boy" : "b_8t",
+  "girl" : "g_8t"
+}, {
+  "id" : 27,
+  "action" : 1,
+  "pai" : 27,
+  "boy" : "b_9t",
+  "girl" : "g_9t"
+}, {
+  "id" : 28,
+  "action" : 1,
+  "pai" : 28,
+  "boy" : "b_hongzhong",
+  "girl" : "g_hongzhong"
+}, {
+  "id" : 29,
+  "action" : "peng",
+  "boy" : "b_peng1;b_peng2;b_peng3",
+  "girl" : "g_peng1;g_peng2;g_peng3"
+}, {
+  "id" : 30,
+  "action" : "gang",
+  "boy" : "b_gang1;b_gang2",
+  "girl" : "g_gang1;g_gang2"
+}, {
+  "id" : 31,
+  "action" : "hu",
+  "boy" : "b_hu1;b_hu4;b_hu5",
+  "girl" : "g_hu1;g_hu2;g_hu4"
+}, {
+  "id" : 32,
+  "action" : "maima",
+  "boy" : "b_maima",
+  "girl" : "g_maima"
+}, {
+  "id" : 33,
+  "action" : "ting"
+}, {
+  "id" : 34,
+  "action" : "hall_bg",
+  "boy" : "hall_bg"
+}, {
+  "id" : 35,
+  "action" : "bg_playing",
+  "boy" : "bg_playing"
+}, {
+  "id" : 36,
+  "action" : "buttonClick",
+  "boy" : "buttonClick"
+}, {
+  "id" : 37,
+  "action" : "cardClick",
+  "boy" : "cardClick"
+}, {
+  "id" : 38,
+  "action" : "fapai",
+  "boy" : "fapai"
+}, {
+  "id" : 39,
+  "action" : "lost",
+  "boy" : "lost"
+}, {
+  "id" : 40,
+  "action" : "win",
+  "boy" : "win"
+} ]

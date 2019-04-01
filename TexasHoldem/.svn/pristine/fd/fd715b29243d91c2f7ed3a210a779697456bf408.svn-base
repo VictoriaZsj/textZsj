@@ -1,0 +1,14 @@
+/**
+ * 赛事报名人数信息
+*/
+class MTTJoinNumInfo
+{
+    /**
+     * 赛事id
+    */
+    public id: number;
+    /**
+     * 报名的人数
+    */
+    public num: number;
+}

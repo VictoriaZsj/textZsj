@@ -1,0 +1,202 @@
+/**
+ * 房间信息
+ */
+class RoomInfo extends BaseServerValueInfo
+{
+	/**
+	 * 房间号
+	 */
+	public id: number;
+	/**
+	 * 庄家位置
+	 */
+	public buttonPos: number;
+	/**
+	 * 底池筹码
+	 */
+	public potChips: Array<number>;
+
+	private _roomId: number;
+	/**
+	 * 房间的配置ID
+	 */
+	public get roomId(): number
+	{
+		return this._roomId;
+	}
+	public set roomId(value: number)
+	{
+		this._roomId = value;
+		this._definition = RoomDefined.GetInstance().getDefinition(value);
+	}
+	/**
+ 	* 房间定义
+ 	*/
+	private _definition: RoomDefinition;
+	/**
+	 * 前注
+	 */
+	public ante: number;
+	/**
+	 * 小盲
+	 */
+	public sBlind: number;
+
+	private _bBlind: number;
+	/**
+	 * 大盲
+	 */
+	public get bBlind(): number
+	{
+		if (this._bBlind == undefined || this._bBlind == 0 && this._definition)
+		{
+			this._bBlind = this._definition.bBlind;
+		}
+		return this._bBlind;
+	}
+	public set bBlind(value: number)
+	{
+		this._bBlind = value;
+	}
+
+	/**
+	 * 1.常规 2.比赛 3.私人
+	 */
+	public gamblingType: GamblingType;
+	/**
+	 * 操作(说话)位置
+	 */
+	public pos: number;
+	/**
+	 * 操作(说话)开始时间戳
+	 */
+	public posTime: number;
+	/**
+	 * 房间开始时间戳
+	 */
+	public startTime: number;
+	/**
+	 * 公共牌列表
+	 */
+	public cardList: Array<Array<number>>;
+	/**
+	 * 玩家列表
+	 */
+	public playerList: Array<PlayerInfo>;
+	/**
+	 * 边池
+	 */
+	public sidePot: Array<number>;
+	/**
+	 * 结束时亮牌标记
+	 */
+	public isShowCard: boolean;
+	/**
+	 * 手牌列表
+	 */
+	public handCardList: Array<Array<number>>;
+	/**
+	 * 小盲注位置
+	 */
+	public sBlindPos: number;
+	/**
+	 * 大盲注位置
+	 */
+	public bBlindPos: number;
+	/**
+	 * 是否自动买入
+	 */
+	public isAutoBuy: boolean;
+	/**
+	 * 该房间已进行的局数
+	 */
+	public roundNum: number;
+	private _maxAnte: number;
+	/**
+	 * 当前圈注最大下注额度
+	 */
+	public get maxAnte(): number
+	{
+		if (this._maxAnte == undefined || this._maxAnte == 0)
+		{
+			this._maxAnte = this.bBlind;
+		}
+		return this._maxAnte;
+	}
+	public set maxAnte(value: number)
+	{
+		this._maxAnte = value;
+	}
+	private _minRaiseNum: number;
+	/**
+	 * 最小加注额度
+	 */
+	public get minRaiseNum(): number
+	{
+		if (this._minRaiseNum == undefined || this._minRaiseNum <= 0)
+		{
+			this._minRaiseNum = this.bBlind * 2;
+		}
+		if (this._minRaiseNum < this.bBlind)
+		{
+			this._minRaiseNum = this.bBlind + this._minRaiseNum;
+		}
+		return this._minRaiseNum;
+	}
+	/**
+	 * 当前最小加注额度
+	 */
+	public set minRaiseNum(value: number)
+	{
+		this._minRaiseNum = value;
+	}
+
+	public get definition(): RoomDefinition
+	{
+		return this._definition;
+	}
+	public reset()
+	{
+		this.id = 0;
+		this.buttonPos = 0;
+		this.potChips = undefined;
+		this.roomId = 0;
+		this.ante = 0;
+		this.sBlind = 0;
+		this.bBlind = 0;
+		this.gamblingType = 0;
+		this.pos = 0;
+		this.posTime = 0;
+		this.startTime;
+		this.cardList = undefined;
+		this.playerList = undefined;
+		this.sidePot = undefined;
+		this.isShowCard = undefined;
+		this.handCardList = undefined;
+		this.bBlindPos = undefined;
+		this.sBlindPos = undefined;
+		this.isAutoBuy = undefined;
+		this._definition = undefined;
+		this.roundNum = 0;
+		this.maxAnte = 0;
+		this.minRaiseNum = 0;
+	}
+}
+/**
+ * 牌局类型
+ */
+enum GamblingType
+{
+	/**
+	 * 普通房间
+	 */
+	Common = 1,
+	/**
+	 * 锦标赛房间
+	 */
+	Championship = 2,
+	/**
+	 * 私人房间
+	 */
+	Personal = 3
+}

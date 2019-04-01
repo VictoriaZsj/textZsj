@@ -1,0 +1,197 @@
+/**
+ * 锦标赛面板
+ */
+class ChampionshipPanel extends BackHomeAnimePanel
+{
+	public matchTab: TabComponent;
+	/**
+	 * 帮助按钮
+	*/
+	private helpBtn: eui.Button;
+	/**
+	 * 赛事列表信息
+	*/
+	public matchGroup: eui.Group;
+	public hasMatchGroup: eui.Group;
+	public noMatchGroup: eui.Group;
+	public matchList: eui.List;
+	public matchScroller: eui.Scroller;
+	/**
+	 * 已报名信息
+	*/
+	public signedUpGroup: eui.Group;
+	public hasSignedUpGroup: eui.Group;
+	public noSignedUpGroup: eui.Group;
+	public signedUpList: eui.List;
+	public signedUpScroller: eui.Scroller;
+	/**
+	 * 我的门票信息
+	*/
+	public ticketsGroup: eui.Group;
+	public hasTicketGroup: eui.Group;
+	public noTicketGroup: eui.Group;
+	public ticketList: eui.List;
+	public ticketScroller: eui.Scroller;
+	/**
+	 * 最近赛况信息
+	*/
+	public resultsGroup: eui.Group;
+
+	public constructor()
+	{
+		super();
+		this.skinName = UISkinName.ChampionshipPanel;
+	}
+	protected onAwake(event: eui.UIEvent)
+	{
+		super.onAwake(event);
+		UIUtil.listRenderer(this.matchList, this.matchScroller, ChampionshipItemRenderer, ScrollViewDirection.Vertical_T_D, eui.ScrollPolicy.ON, null, true);
+		UIUtil.listRenderer(this.signedUpList, this.signedUpScroller, ChampionshipItemRenderer, ScrollViewDirection.Vertical_T_D, eui.ScrollPolicy.ON, null, true);
+		UIUtil.listRenderer(this.ticketList, this.ticketScroller, MyTicketItemRenderer, ScrollViewDirection.Vertical_T_D, eui.ScrollPolicy.ON, null, true);
+		this.matchScroller.scrollPolicyH = this.signedUpScroller.scrollPolicyH = this.ticketScroller.scrollPolicyH = eui.ScrollPolicy.OFF;
+		this.hasMatchGroup.visible = this.noMatchGroup.visible = this.hasSignedUpGroup.visible = this.noSignedUpGroup.visible = this.hasTicketGroup.visible = this.noTicketGroup.visible = false;
+		let array: Array<eui.Group> = new Array<eui.Group>();
+		array.push(this.matchGroup);
+		array.push(this.signedUpGroup);
+		array.push(this.ticketsGroup);
+		// array.push(this.resultsGroup);
+		this.matchTab.init(array);
+	}
+	protected onRender(event: egret.Event)
+	{
+		super.onRender(event);
+		//发送获取赛事列表请求
+		// ChampionshipManager.reqMatchListInfo();
+		this.setMatchListInfo();  //todo 测试代码
+	}
+	protected onEnable(event: eui.UIEvent): void
+	{
+		super.onEnable(event);
+		this.matchTab.tabBar.addEventListener(eui.ItemTapEvent.ITEM_TAP, this.onTabClickHandler, this);
+		this.matchList.addEventListener(eui.ItemTapEvent.ITEM_TAP, this.getMatchDetail, this);
+		ChampionshipManager.onGetMatchListEvent.addListener(this.setMatchListInfo, this);
+	}
+	protected onDisable(event: eui.UIEvent): void
+	{
+		super.onDisable(event);
+		this.matchTab.tabBar.removeEventListener(eui.ItemTapEvent.ITEM_TAP, this.onTabClickHandler, this);
+		this.matchList.removeEventListener(eui.ItemTapEvent.ITEM_TAP, this.getMatchDetail, this);
+		ChampionshipManager.onGetMatchListEvent.removeListener(this.setMatchListInfo);
+	}
+	/**
+	 * 点击赛事列表获取赛事详细信息
+	*/
+	private getMatchDetail(event: egret.TouchEvent)
+	{
+		SoundManager.playEffect(Sex.Male, MusicAction.buttonClick);
+		if (this.matchList.selectedItem)
+		{
+			// ChampionshipManager.reqGetMatchDetailInfo(this.matchList.selectedItem.id);
+			UIManager.showFloatTips('发送获取赛事详细信息的请求' + this.matchList.selectedItem.id); //todo 测试代码
+		}
+	}
+	/**
+	 * 设置赛事列表信息
+	*/
+	private setMatchListInfo()
+	{
+		//todo 测试代码
+		if (!ChampionshipManager.matchList)
+		{
+			ChampionshipManager.matchList = new Array<MatchRoomInfo>();
+		}
+		if (!ChampionshipManager.applicationList)
+		{
+			ChampionshipManager.applicationList = new Array<MatchRoomInfo>();
+		}
+		ChampionshipManager.matchList = [];
+		ChampionshipManager.applicationList = [];
+		let arr1: MatchRoomInfo = new MatchRoomInfo();
+		arr1.id = 1;
+		arr1.icon = ImageSource.TestImg;
+		arr1.name = "免费-10元话费赛";
+		arr1.price = 10000;
+		arr1.tax = 1000;
+		arr1.applyNum = 123;
+		arr1.allNum = 500;
+		arr1.isAddon = 1;
+		arr1.isRebuy = 1;
+		arr1.startTime = 1502692427;
+		arr1.delayTime = 600;
+		arr1.isApply = 1;
+		let arr2: MatchRoomInfo = new MatchRoomInfo();
+		arr2.id = 2;
+		arr2.icon = ImageSource.TestImg;
+		arr2.name = "免费-100元话费赛";
+		arr2.price = 1000;
+		arr2.tax = 100;
+		arr2.applyNum = 223;
+		arr2.allNum = 600;
+		arr2.isAddon = 1;
+		arr2.isRebuy = 1;
+		arr2.startTime = 1502792427;
+		arr2.delayTime = 600;
+		arr2.isApply = 0;
+		ChampionshipManager.matchList.push(arr1);
+		ChampionshipManager.matchList.push(arr2);
+		for (let def of ChampionshipManager.matchList)
+		{
+			if (def.isApply == 1)
+			{
+				ChampionshipManager.applicationList.push(def);
+			}
+		}
+		//
+		if (ChampionshipManager.matchList && ChampionshipManager.matchList.length > 0)
+		{
+			this.hasMatchGroup.visible = true;
+			this.noMatchGroup.visible = false;
+			this.matchList.dataProvider = new eui.ArrayCollection(ChampionshipManager.matchList);
+		} else
+		{
+			this.noMatchGroup.visible = true;
+			this.hasMatchGroup.visible = false;
+		}
+	}
+	/**
+     * 选项卡按钮点击事件
+    */
+	private onTabClickHandler(e: eui.ItemTapEvent): void
+	{
+		if (e.itemIndex == 0)
+		{
+			// ChampionshipManager.reqMatchListInfo();
+		} else if (e.itemIndex == 1)
+		{
+			if (ChampionshipManager.applicationList && ChampionshipManager.applicationList.length > 0)
+			{
+				this.hasSignedUpGroup.visible = true;
+				this.noSignedUpGroup.visible = false;
+				this.signedUpList.dataProvider = new eui.ArrayCollection(ChampionshipManager.applicationList);
+			} else
+			{
+				this.noSignedUpGroup.visible = true;
+				this.hasSignedUpGroup.visible = false;
+			}
+		} else if (e.itemIndex == 2)
+		{
+			UIManager.showFloatTips("userinfo中待添加");  //todo 测试代码  我的门票信息从userinfo信息中那到id然后循环读表获取详细信息后保存
+			/*if (1)    // todo 判空
+			{
+				for (let def of )     //todo 待定
+				{
+					if (def.id == EntranceTicketType.TenTelephoneCharge || def.id == EntranceTicketType.MillionGold || def.id == EntranceTicketType.HundredDiamond)
+					{
+						let info: ItemDefinition = ItemDefined.GetInstance().getItemDefinition(def.id);
+						let ticket: MyTicket = new MyTicket;
+						//  TODO 待完成
+						ChampionshipManager.myTicketList.push(def);
+					}
+				}
+			}*/
+		} else if (e.itemIndex == 3)
+		{
+
+		}
+	}
+}

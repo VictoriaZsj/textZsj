@@ -1,0 +1,29 @@
+class SaveManager{
+    public static saveWithdrawOverEvent:ActionDispatcher = new ActionDispatcher();
+    public static reqSaveGold(num:number,type:number,pwd?:number)
+    {
+        let successCallBack:Function=function (result: SpRpcResult)
+        {
+            console.log(result);
+            SocketManager.RemoveCommandListener(Command.Req_buyGoldDiamond_3014, successCallBack);
+            if(type==1)
+            {
+             	UIManager.showFloatTips("存入成功");
+            }else if(type==2)
+            {
+                UIManager.showFloatTips("取出成功");
+            }
+            SaveManager.saveWithdrawOverEvent.dispatch();//协议发送后抛出存取完事件       
+        } 
+        let errorCallBack:Function=function(result:SpRpcResult)
+        {
+            if(result.error==3004){
+                AlertManager.showSingleAlert("您输入的密码错误，请重新输入！");
+            }
+        }
+        //todo
+		SocketManager.AddCommandListener(Command.Req_buyGoldDiamond_3014, successCallBack);
+        SocketManager.AddErrorListener(Command.Req_buyGoldDiamond_3014, errorCallBack);
+		SocketManager.Send(Command.Req_buyGoldDiamond_3014, { "num": num,"type":type,"pwd":pwd});
+    }
+}

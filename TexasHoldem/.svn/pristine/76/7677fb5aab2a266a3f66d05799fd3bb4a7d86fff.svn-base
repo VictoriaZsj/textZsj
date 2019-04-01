@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="PayItemRenderer" width="224" height="400" xmlns:e="http://ns.egret.com/eui" xmlns:ns1="*"
+        xmlns:w="http://ns.egret.com/wing">
+	<ns1:GameButtonGroup>
+		<e:Group id="btnGroup" width="224" height="388">
+			<e:Image width="224" height="351" horizontalCenter="0" verticalCenter="18.5" source="bg_page21_png"
+			          scale9Grid="24,23,33,34"/>
+			<e:Image id="titleImg" horizontalCenter="0" verticalCenter="-148" source="fangka1_png" scale9Grid="0,0,0,0" scaleX="0.8"
+			         scaleY="0.8" />
+			<e:Image id="itemImg" horizontalCenter="0" verticalCenter="-46" scale9Grid="9,8,25,7" source="fangka_png" scaleX="0.8" scaleY="0.8"/>
+			<e:Group id="countGroup" width="108" height="38" x="58" y="225" anchorOffsetX="0" anchorOffsetY="0">
+				<e:Image width="108" height="38" horizontalCenter="0" x="0" y="0" scaleX="1" scaleY="1" source="bg_page4_png" scale9Grid="10,10,126,126"/>
+				<e:Label id="countLabel" text="20张" horizontalCenter="0" fontFamily="SimHei" x="24" y="5" scaleX="1" scaleY="1" textColor="0xea9f48" size="28"/>
+			</e:Group>
+			<e:Button id="paytBtn" label="11元" horizontalCenter="-0.5" y="280" scaleX="0.9" scaleY="0.9" skinName="buttonSkin41"/>
+			<e:Label id="remainLabel" text="今日限购99次" size="20" horizontalCenter="0" fontFamily="SimHei" verticalCenter="169" textColor="0xa0522b"/>
+			<e:Label id="desLabel" text="label" x="40" y="205" anchorOffsetX="0" width="150" height="70" size="22" textAlign="center" textColor="0x661d0a" fontFamily="SimHei"/>
+		</e:Group>
+	</ns1:GameButtonGroup>
+</e:Skin>

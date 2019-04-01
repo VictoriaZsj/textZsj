@@ -1,0 +1,37 @@
+/**
+ * 函数调用工具
+ */
+class CallUtil
+{
+	/**
+	 * 调用函数
+	 */
+	public static runFunc(callBack: Function, thisObj: any, params?: any)
+	{
+		if (callBack)
+		{
+			if (thisObj)
+			{
+				if (params)
+				{
+					callBack.call(thisObj, params);
+				}
+				else
+				{
+					callBack.call(thisObj);
+				}
+			}
+			else
+			{
+				if (params)
+				{
+					callBack(params);
+				}
+				else
+				{
+					callBack();
+				}
+			}
+		}
+	}
+}

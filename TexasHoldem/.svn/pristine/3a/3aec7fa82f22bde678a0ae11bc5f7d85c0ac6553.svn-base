@@ -1,0 +1,140 @@
+/**
+ * 牌面显示组件
+ */
+class CardFaceComponent extends BaseComponent<CardInfo>
+{
+	public backFace: eui.Image;
+	public cardGroup: eui.Group;
+	public numImg: eui.Image;
+	public flushBigImg: eui.Image;
+	public flushSmallImg: eui.Image;
+	public frontFaceImg: eui.Image;
+
+	private _actionList: Dictionary<AnimationType, IAnimationHandler<any>>;
+	public initMatrix: egret.Matrix;
+
+	public constructor()
+	{
+		super();
+		this.skinName = UIComponentSkinName.CardFaceComponent;
+	}
+	protected onAwake(event: eui.UIEvent)
+	{
+		super.onAwake(event);
+		this.anchorOffsetX = this.width / 2;
+		this.anchorOffsetY = this.height / 2;
+	}
+	protected onDisable(event: eui.UIEvent): void
+	{
+		super.onDisable(event);
+		/**
+		 * 动画清理
+		 */
+		if (this._actionList)
+		{
+			let list: Array<BaseAnimation<CardFaceComponent>> = this._actionList.getValues();
+			for (let anim of list)
+			{
+				anim.clear();
+			}
+		}
+	}
+	protected rendererStart(event: egret.Event)
+	{
+		super.rendererStart(event);
+
+		this.backFace.visible = true;
+		this.cardGroup.visible = false;
+
+		if (this.bindData)
+		{
+			let numRes: string = StringConstant.empty;
+			let bigRes: string = StringConstant.empty;
+
+			if (this.bindData.flush > 2)
+			{
+				numRes = ResPrefixName.card + ResPrefixName.FlushBlack + this.bindData.index + ResSuffixName.PNGSuffix;
+			}
+			else
+			{
+				numRes = ResPrefixName.card + ResPrefixName.FlushRed + this.bindData.index + ResSuffixName.PNGSuffix;
+			}
+
+			this.numImg.source = numRes;
+			this.flushSmallImg.source = ResPrefixName.Flush + this.bindData.flush + ResSuffixName.PNGSuffix;
+
+			//大于10，小于A
+			if (this.bindData.index > GamblingManager.FlushSplitIndex && this.bindData.index < CardDefined.GetInstance().maxCardIndex)
+			{
+				bigRes = ResPrefixName.card + this.bindData.flush + "_" + this.bindData.index + ResSuffixName.PNGSuffix;
+			}
+			else
+			{
+				bigRes = ResPrefixName.Flush + this.bindData.flush + ResSuffixName.PNGSuffix;
+			}
+			this.flushBigImg.source = bigRes;
+		}
+		else
+		{
+			this.numImg.source = "";
+			this.flushBigImg.source = "";
+			this.flushSmallImg.source = "";
+		}
+	}
+	public disappear()
+	{
+		this.visible = false;
+	}
+	public initElementsShow()
+	{
+		this.backFace.visible = true;
+		this.cardGroup.visible = false;
+		this.frontFaceImg.visible = false;
+	}
+	public initElementsShow2()
+	{
+		this.backFace.visible = false;
+		this.frontFaceImg.visible = false;
+		this.cardGroup.visible = true;
+	}
+	/**
+	 * 一局完了出牌
+	 */
+	public runMoveToPoint(point: egret.Point, delay: number, rotation: number, y: number)
+	{
+		let run: CardFaceMoveToPoint = <CardFaceMoveToPoint>this.getAnimation(AnimationType.CardFaceMoveToPoint);
+		run.nextAnimation = this.getAnimation(AnimationType.CardFaceBright);
+		run.run(point, delay, rotation, y);
+	}
+	/**
+	 * 跑公共牌动画
+	 */
+	public runBoardAppearAnim(point: egret.Point)
+	{
+		let run: CardFaceBoardAppear = <CardFaceBoardAppear>this.getAnimation(AnimationType.CardFaceBoardAppear);
+		run.nextAnimation = this.getAnimation(AnimationType.CardFaceTurnToFace);
+		run.run(point);
+	}
+	/**
+	 * 手牌动画
+	 */
+	public runSelfCardAnimation(type: AnimationType)
+	{
+		let animation: IAnimationHandler<CardFaceComponent> = this.getAnimation(type);
+		animation.run();
+	}
+	private getAnimation(type: AnimationType): IAnimationHandler<CardFaceComponent>
+	{
+		if (!this._actionList)
+		{
+			this._actionList = new Dictionary<AnimationType, IAnimationHandler<any>>();
+		}
+		if (!this._actionList.containsKey(type))
+		{
+			let run: IAnimationHandler<CardFaceComponent> = AnimationFactory.getCardFaceAnimation(type);
+			run.setTarget(this);
+			this._actionList.add(type, run);
+		}
+		return this._actionList.getValue(type);
+	}
+}

@@ -1,0 +1,144 @@
+/**
+ * 商城面板
+*/
+class ShoppingPanel extends BasePanel{
+    public goldCoinsBtn:eui.ToggleButton;
+    public diamondBtn:eui.ToggleButton;
+    public returnBtn:eui.ToggleButton;
+
+    public goldGroup:eui.Group;
+    public goldList:eui.List;
+
+    public diamondGroup:eui.Group;
+    public diamondList:eui.List;
+
+    public activeBtnFlage;
+
+    public gold_scroller: eui.Scroller;
+    public diamond_scroller: eui.Scroller;
+
+    private gold_dp: eui.ArrayCollection;
+    private diamond_dp:eui.ArrayCollection;
+ 
+    public constructor(){
+        super();
+        this._isMaskClickClose=true;
+        this.skinName=UISkinName.ShoppingPanel;
+    }
+
+    // 只执行一次
+    protected onAwake(event: eui.UIEvent)
+	{   
+		super.onAwake(event);
+        // this.goldList.touchEnabled=this.diamondList.touchEnabled=true;
+    
+        // 列表项渲染
+        UIUtil.listRenderer(this.goldList, this. gold_scroller, GoldListItemRenderer, ScrollViewDirection.Vertical_T_D);
+        UIUtil.listRenderer(this.diamondList, this.diamond_scroller, DiamondListItemRenderer, ScrollViewDirection.Vertical_T_D);
+       //滚动设置
+		this.gold_scroller.scrollPolicyH = eui.ScrollPolicy.OFF;
+        this.diamond_scroller.scrollPolicyH = eui.ScrollPolicy.OFF;
+        console.log("onAwake");
+	}
+
+    // 每次打开都会执行
+	public init(appendData: any)
+	{
+		super.init(appendData);
+        if (!this.gold_dp)
+		{
+			this.gold_dp = new eui.ArrayCollection();
+		}
+         if (!this.diamond_dp)
+		{
+			this.diamond_dp = new eui.ArrayCollection();
+		};
+        UIUtil.listRenderer(this.goldList,this.gold_scroller,GoldListItemRenderer, ScrollViewDirection.Vertical_T_D, eui.ScrollPolicy.ON, null, true);
+        UIUtil.listRenderer(this.diamondList,this.diamond_scroller,DiamondListItemRenderer, ScrollViewDirection.Vertical_T_D, eui.ScrollPolicy.ON, null, true);
+
+        this.activeBtnFlage=this.goldCoinsBtn;      
+
+        this.goldCoinsBtn.selected=true;
+        this.diamondBtn.selected=false;
+
+        this.goldGroup.visible=true;
+        this.diamondGroup.visible=false;     
+        
+        this.goldGroup.visible=true;
+
+        if(appendData&&appendData==ShoppingType.diamond){
+             this.diamondGroup.visible=true;
+             this.goldGroup.visible=false; 
+             this.activeBtnFlage=this.diamondBtn;   
+             this.goldCoinsBtn.selected=false;
+             this.diamondBtn.selected=true;
+        }
+        this.refreshUI();
+  
+	}
+	protected onEnable(event: eui.UIEvent): void
+	{
+		super.onEnable(event);
+        this.goldCoinsBtn.addEventListener(egret.Event.CHANGE, this.changeActive, this);
+		this.diamondBtn.addEventListener(egret.Event.CHANGE, this.changeActive, this);
+
+        this.goldCoinsBtn.addEventListener(egret.TouchEvent.TOUCH_TAP, this.clickHandler, this);
+		this.diamondBtn.addEventListener(egret.TouchEvent.TOUCH_TAP, this.clickHandler, this);       
+        this.returnBtn.addEventListener(egret.TouchEvent.TOUCH_TAP, this.clickHandler, this);
+
+        UIUtil.hideScrollerBar(this.gold_scroller);
+        UIUtil.hideScrollerBar(this.diamond_scroller);
+        
+        console.log("onEnable")
+	}
+	protected onDisable(event: eui.UIEvent): void
+	{
+		super.onDisable(event);
+        this.goldCoinsBtn.removeEventListener(egret.Event.CHANGE, this.changeActive, this);
+		this.diamondBtn.removeEventListener(egret.Event.CHANGE, this.changeActive, this);
+
+        this.goldCoinsBtn.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.clickHandler, this);
+		this.diamondBtn.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.clickHandler, this);
+        this.returnBtn.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.clickHandler, this)
+        console.log("onDisable")
+	}
+
+/**
+ * 点击按钮事件处理
+*/
+    private clickHandler(event:egret.TouchEvent){
+       switch (event.target)
+       {
+        case this.goldCoinsBtn:
+        this.goldGroup.visible=true;       
+        this.diamondGroup.visible=false;
+        break;
+        case this.diamondBtn: 
+        this.diamondGroup.visible=true;
+        this.goldGroup.visible=false;                
+        break;   
+
+        case this.returnBtn:
+        UIManager.closePanel(this);  
+       }
+    }
+
+/**
+ * 点击按钮状态改变事件处理
+*/
+   private changeActive(event:egret.TouchEvent){  
+       event.target.selected==true;
+       if (event.target.selected!=this.activeBtnFlage)
+           this.activeBtnFlage.selected = false;
+		   this.activeBtnFlage = event.target;
+   }
+/**
+ * 渲染信息
+*/
+   private refreshUI(){
+       this.gold_dp = new eui.ArrayCollection(ShoppingManager.getListByType(ShoppingType.gold));
+       this.goldList.dataProvider=this.gold_dp;
+       this.diamond_dp=new eui.ArrayCollection(ShoppingManager.getListByType(ShoppingType.diamond));
+       this.diamondList.dataProvider=this.diamond_dp;      
+   } 
+}

@@ -1,0 +1,39 @@
+/**
+ * 好友消息面板
+ */
+class FriendMsgPanel extends BasePanel
+{
+	public msg_bg:eui.Image;
+	public constructor()
+	{
+		super();
+		this.setGrayMask(false);
+		this.skinName = UISkinName.FriendMsgPanel;
+	}
+	protected onAwake(event: eui.UIEvent)
+	{
+		super.onAwake(event);
+	}
+	public init(appendData: any)
+	{
+		super.init(appendData);
+	}
+	protected onRender(event: egret.Event)
+	{
+		super.onRender(event);
+	}
+	protected onEnable(event: eui.UIEvent): void
+	{
+		this.addEventListener(egret.TouchEvent.TOUCH_TAP, this.checkMsg, this);
+		super.onEnable(event);
+	}
+	protected onDisable(event: eui.UIEvent): void
+	{
+		super.onDisable(event);
+	}
+	protected checkMsg(event: egret.TouchEvent)
+	{
+		UIManager.closePanel(this);	
+		UIManager.showPanel(UIModuleName.InviteMsgPanel);
+	}
+}

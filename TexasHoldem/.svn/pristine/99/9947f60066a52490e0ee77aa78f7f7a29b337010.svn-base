@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="itemRenderer5" width="1189" height="63" xmlns:ns1="*" xmlns:e="http://ns.egret.com/eui"
+        xmlns:w="http://ns.egret.com/wing">
+    <e:Label id="roundLabel" text="1" size="24"  fontFamily="SimHei" textColor="0x4f5d60" horizontalCenter="-567.5" verticalCenter="0.5"/>
+	<e:Label id="timeLabel" text="2017-5-27 16.18.27" size="24" fontFamily="SimHei" textColor="0x4F5D60" horizontalCenter="-409.5" verticalCenter="0.5"/>
+	<e:Label id="scoreLabel1" text="0" size="24" fontFamily="SimHei" textColor="0x4F5D60" textAlign="center" x="367" width="100" y="20"/>
+	<e:Label id="scoreLabel2" text="0" size="24" fontFamily="SimHei" textColor="0x4F5D60" x="542" textAlign="center" width="100" y="20"/>
+	<e:Label id="scoreLabel3" text="0" size="24" fontFamily="SimHei" textColor="0x4F5D60" x="716" textAlign="center" width="100" y="20"/>
+	<e:Label id="scoreLabel4" text="0000" size="24" fontFamily="SimHei" textColor="0x4F5D60" x="890.02" textAlign="center" width="100" y="20"/>
+	<ns1:GameButton id="shareBtn" label="分享游戏" horizontalCenter="500.5"  verticalCenter="0" skinName="buttonSkin31" scaleX="0.8" scaleY="0.8"/>
+</e:Skin>

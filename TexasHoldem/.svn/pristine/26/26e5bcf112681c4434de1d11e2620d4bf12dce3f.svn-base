@@ -1,0 +1,161 @@
+{
+  "role": {
+    "card": 10
+  },
+  "isTest": true,
+  "mjMaxPlayer": 2,
+  "testcard": [
+    1,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    16,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    13,
+    14,
+    1
+  ],
+  "vipLevel":[
+    0,
+    600,
+    1800,
+    3600,
+    6000
+  ],
+  "vipSpeed":[
+    {
+      "type":0,
+      "speed":0
+    },
+    {
+      "type":1,
+      "speed":5
+    },
+    {
+      "type":2,
+      "speed":15
+    },
+    {
+      "type":3,
+      "speed":5
+    }
+],
+
+  "round": [
+    {
+      "cost": 1,
+      "num": 8,
+      "des": "8局"
+    },
+    {
+      "cost": 2,
+      "num": 16,
+      "des": "16局"
+    }
+  ],
+  "playWay": [
+    {
+      "type": 1,
+      "des": "普通玩法"
+    },
+    {
+      "type": 2,
+      "des": "胡八字"
+    }
+  ],
+  "antes": [
+    {
+      "score": 10,
+      "des": "10分"
+    },
+    {
+      "score": 20,
+      "des": "20分"
+    },
+    {
+      "score": 30,
+      "des": "30分"
+    }
+  ],
+  "bringRoomCard": [
+    {
+      "type": "bind",
+      "friend": 3,
+      "your": 3
+    },
+    {
+      "type": "play",
+      "friend": 6,
+      "your": 3
+    }
+  ],
+  "gameFeedback":{
+    "forum":11111,
+    "QQ":22222,
+    "customerService":33333
+  },
+  "version": "0.1.0",
+  "onTimeOut": 1500000,
+  "serverCrowded": 500,
+  "intranetIp": "10.0.0.211",
+  "intranetIp1": "10.0.0.211",
+  "intranetIp2": "120.132.59.215",
+  "intranetPort": 8004,
+  "testAddress": "10.0.0.211",
+  "address": "120.132.59.215",
+  "testPort": 8004,
+  "port": 8004,
+  "waitStartTime": 30,
+  "initPutTimeOut": 86400,
+  "initPutTimeOutClient": 30,
+  "putTimeout": 86400,
+  "putTimeoutClient": 15,
+  "putTimeoutTimes": 86400,
+  "hostedPutTime": 2,
+  "waitActionTime": 86400,
+  "waitActionTimeClient": 9,
+  "waitReadyTime": 86400,
+  "waitDisbandTime": 300,
+  "angangRate": 1,
+  "minggangRate": 1.5,
+  "jiagangRate": 1,
+  "hupaiRate": 1,
+  "jiaganghuRate": 1.5,
+  "maimaRate": 1,
+  "getShareCardMaxNum": 50,
+  "chatMaxRecordTime": 15000,
+  "voiceHost": "http://120.132.59.215:8091",
+  "voiceHostTest": "http://120.132.59.215:8091",
+  "voicePath": "/uploadvoice.php",
+  "versionUrl":"http://dzpk.qipaient.com/hotupdate/version.json",
+  "maintainUrl":"http://dzpk.qipaient.com/hotupdate/maintain.json",
+  "updateUrl":"http://dzpk.qipaient.com/hotupdate/update.json",
+  "weekMemberExpRate" : 1.5,
+  "monthMemberExpRate" : 2,
+  "huPaiExp":30,
+  "gangPaiExp":30,
+  "roundHostExp":30,
+  "roundExp":10,
+  "giveOnceGoldNum":500
+}

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="getCardToggleSwitchSkin" states="up,down,disabled,upAndSelected,downAndSelected,disabledAndSelected" xmlns:e="http://ns.egret.com/eui">
+    <e:Image source="kelinqu_1_png"
+             source.up="kelinqu_2_png"
+             source.down="kelinqu_2_png"
+             source.disabled="fengxiang_2_png"/>
+</e:Skin>

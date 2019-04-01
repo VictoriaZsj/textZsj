@@ -1,0 +1,98 @@
+/**
+ * 打出去的牌的逻辑控制
+ */
+class OutCardController
+{
+	private _benJiaHandler: OutCardHandler;
+	private _xiaJiaHandler: OutCardHandler;
+	private _duiJiaHandler: OutCardHandler;
+	private _shangJiaHandler: OutCardHandler;
+
+
+	private _handleMap: Dictionary<PosType, OutCardHandler>;
+
+
+	constructor(lc: LayerController)
+	{
+		this._handleMap = new Dictionary<PosType, OutCardHandler>();
+
+		this._benJiaHandler = new OutCardHandler(PosType.BenJia, lc, GameSetting.OutBenJiaLayer);
+		this._xiaJiaHandler = new OutCardHandler(PosType.XiaJia, lc, GameSetting.OutXiaJiaLayer);
+		this._duiJiaHandler = new OutCardHandler(PosType.DuiJia, lc, GameSetting.OutDuiJiaLayer);
+		this._shangJiaHandler = new OutCardHandler(PosType.ShangJia, lc, GameSetting.OutShangJiaLayer);
+
+		this._handleMap.add(PosType.BenJia, this._benJiaHandler);
+		this._handleMap.add(PosType.XiaJia, this._xiaJiaHandler);
+		this._handleMap.add(PosType.DuiJia, this._duiJiaHandler);
+		this._handleMap.add(PosType.ShangJia, this._shangJiaHandler);
+	}
+
+	public showPai()
+	{
+		if (RoomManager.roomInfo && RoomManager.roomInfo.playerList)
+		{
+			let pInfo: PlayerInfo;
+			for (let i: number = 0; i < RoomManager.roomInfo.playerList.length; i++)
+			{
+				pInfo = RoomManager.roomInfo.playerList[i];
+				let posType: PosType = RoomManager.getPosTypeForMine(pInfo.pos);
+				let handler: OutCardHandler = this._handleMap.getValue(posType);
+				if (handler)
+				{
+					handler.showPai(pInfo.outCard);
+				}
+			}
+		}
+	}
+	public addPai(posType: PosType, card: number, isUnBuyHorse: boolean = true)
+	{
+		let handler: OutCardHandler = this._handleMap.getValue(posType);
+		if (handler)
+		{
+			handler.addPai(card, undefined, isUnBuyHorse);
+		}
+		if (RoomManager.mineInfo)
+		{
+			let pos: number = RoomManager.getPosByPosTypeForMine(posType);
+			let pInfo: PlayerInfo = RoomManager.getPlayerInfoByPos(pos);
+			if (pInfo)
+			{
+				if (!pInfo.outCard)
+				{
+					pInfo.outCard = new Array<number>();
+				}
+				if (isUnBuyHorse)
+				{
+					pInfo.outCard.push(card);
+				}
+			}
+		}
+	}
+	public removePai(posType: PosType, card: number)
+	{
+		let handler: OutCardHandler = this._handleMap.getValue(posType);
+		if (handler)
+		{
+			handler.removePai(card);
+		}
+	}
+	public shoBuyHorse(posType: PosType, card1: number, card2: number)
+	{
+		if (card1 != undefined && card1 != 0)
+		{
+			this.addPai(posType, card1, false);
+		}
+		if (card2 != undefined && card2 != 0)
+		{
+			this.addPai(posType, card2, false);
+		}
+	}
+	public clear()
+	{
+		let array: Array<OutCardHandler> = this._handleMap.getValues();
+		for (let oc of array)
+		{
+			oc.clear();
+		}
+	}
+}

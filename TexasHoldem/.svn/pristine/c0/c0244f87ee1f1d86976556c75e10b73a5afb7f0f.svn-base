@@ -1,0 +1,57 @@
+<e:Skin class="panelSkin13" width="720" height="1280" xmlns:e="http://ns.egret.com/eui"
+        xmlns:w="http://ns.egret.com/wing" xmlns:ns1="*">
+	<e:Group id="anmGroup1" x="0" y="100" height="1180" width="720">
+		<e:Image width="720" height="1180" source="bg_page2_png" scale9Grid="24,21,101,105" anchorOffsetY="0" x="0"/>
+		<ns1:TabComponent id="friendTabCompontent" width="720" height="1144" x="0" y="28" anchorOffsetY="0"/>
+		<e:Group id="tabGroup" x="1" y="208" anchorOffsetY="0" height="965" name="好友">
+		<e:Group id="hasFriendGroup" x="0" y="0" anchorOffsetY="0" height="957">
+			<e:Scroller id="scroller" width="720" height="948.24" x="0.9700000000000273" anchorOffsetX="0" anchorOffsetY="0" y="0"/>
+			<e:List id="list" width="720" height="945.33" x="0" anchorOffsetX="0" anchorOffsetY="0" y="0"/>
+		</e:Group>
+		<e:Group id="noFriendGroup" width="720" height="955" x="0" y="0" scaleX="1" scaleY="1" anchorOffsetY="0">
+			<e:Label text="您暂时还没有添加好友，点击上方按钮邀请好友一起游戏吧！" anchorOffsetY="0" height="122" anchorOffsetX="0" width="532" textAlign="center" horizontalCenter="0" verticalCenter="0" verticalAlign="middle" lineSpacing="5"/>
+		</e:Group>
+		</e:Group>
+		<e:Group id="giftTabGroup" x="1" y="208" anchorOffsetY="0" height="965" name="收到礼物">
+			<e:Group id="hasGiftGroup" x="0" y="0" anchorOffsetY="0" height="821">
+			<e:Scroller id="giftScroller" width="720" height="815" x="0.9700000000000273" anchorOffsetX="0" anchorOffsetY="0" y="0"/>
+			<e:List id="giftList" width="720" height="817" x="0" anchorOffsetX="0" anchorOffsetY="0" y="0"/>
+			</e:Group>
+			<e:Group id="noGiftGroup" width="720" height="823" x="0" y="0" scaleX="1" scaleY="1" anchorOffsetY="0">
+			<e:Label text="暂时未收到好友金币先给好友赠送金币吧" anchorOffsetY="0" height="122" anchorOffsetX="0" width="296" textAlign="center" verticalCenter="0.5" verticalAlign="middle" lineSpacing="5" horizontalCenter="0"/>
+			</e:Group>
+			<e:Label text="每份好友金币将为您保留7天时间" y="848" size="24" horizontalCenter="0.5"/>
+			<e:Button id="fastReceiveBtn" label="Button" y="896" scaleY="0.6" horizontalCenter="0.5"/>
+		</e:Group>
+		<e:Group id="requestTabGroup" x="1" y="208" anchorOffsetY="0" height="965" name="好友请求">
+			<e:Group id="hasRequestGroup" x="0" y="0" anchorOffsetY="0" height="957">
+			<e:Scroller id="requestScroller" width="720" height="954.24" x="0.9700000000000273" anchorOffsetX="0" anchorOffsetY="0" y="0"/>
+			<e:List id="requestList" width="720" height="951.33" x="0" anchorOffsetX="0" anchorOffsetY="0" y="0"/>
+			</e:Group>
+			<e:Group id="noRequestGroup" width="720" height="955" x="0" y="0" scaleX="1" scaleY="1" anchorOffsetY="0">
+			<e:Label text="暂无好友请求" anchorOffsetY="0" height="122" anchorOffsetX="0" width="532" textAlign="center" horizontalCenter="0" verticalCenter="0" verticalAlign="middle" lineSpacing="5"/>
+			</e:Group>
+		</e:Group>
+		<e:Group id="addTabGroup" x="1" y="208" anchorOffsetY="0" height="965" name="添加">
+			<e:Group verticalCenter="-422.5" anchorOffsetY="0" horizontalCenter="0.5" height="90">
+				<e:EditableText id="searchText" width="404" height="80" text="" x="94" y="4" anchorOffsetX="0" border="true" borderColor="0x6b6464" verticalAlign="middle" anchorOffsetY="0" prompt="请输入对方用户名或ID！"/>
+				<e:Image width="76" height="70" x="4" y="10" anchorOffsetX="0" anchorOffsetY="0" source="fangka_png"/>
+				<e:Button id="searchBtn" label="Button" x="506.1" y="20.9" scaleX="0.4" scaleY="0.7"/>
+			</e:Group>
+			<e:List id="addList" width="720" x="0" anchorOffsetX="0" anchorOffsetY="0" y="122" scaleX="1" scaleY="1"/>
+			<e:Scroller id="addScroller" width="720" height="837" x="0" y="122" anchorOffsetY="0">
+				<e:Group/>
+			</e:Scroller>
+		</e:Group>
+	</e:Group>
+    <e:Group id="anmGroup" x="-3" y="-2" width="720" height="100">
+        <e:Image id="bg" width="720" height="100" anchorOffsetX="0" anchorOffsetY="0" y="0" scaleX="1" scaleY="1"
+                 scale9Grid="19,18,23,23" source="bg_page19_png" x="0" />
+        <e:Label id="titleImg" text="好友" y="41" size="50" textColor="0x09f2c0" textAlign="center" verticalAlign="middle"
+                 x="288" />
+        <ns1:GameButton id="closeButton" label="Button" skinName="buttonSkin4" x="-4" y="0" />
+        <e:Label text="___" x="626.5" y="59" anchorOffsetY="0" height="36" textColor="0x110202" />
+        <e:Label id="inviteLabel" text="邀请" x="622" y="56" textColor="0x140404" />
+    </e:Group>
+
+</e:Skin>

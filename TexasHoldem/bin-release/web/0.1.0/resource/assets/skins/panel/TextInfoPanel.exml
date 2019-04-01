@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="panelSkin9" width="1280" height="720" xmlns:e="http://ns.egret.com/eui"
+        xmlns:w="http://ns.egret.com/wing" xmlns:ns1="*" xmlns:tween="egret.tween.*">
+	<e:Group id="tweenGroup" horizontalCenter="0" verticalCenter="0" width="1280" height="720">
+		<e:Group id="anmGroup" width="1280" height="90" x="0" y="0">
+			<e:Image width="1280" height="90" horizontalCenter="0" source="bg_page8_png" anchorOffsetX="0" anchorOffsetY="0"
+			         scale9Grid="228,0,12,80" y="-7" x="0" scaleX="1" scaleY="1" />
+			<e:Image width="419" scaleX="1" scaleY="1" source="bg_page14_png" scale9Grid="169,0,7,69" y="0" horizontalCenter="0" />
+			<e:Image id="titleImg" horizontalCenter="0" source="h_wfjs_png" y="12" />
+			<ns1:GameButton id="closeButton" label="Button" skinName="buttonSkin42" x="16" y="10" scaleX="1.1" scaleY="1.1" />
+		</e:Group>
+		<e:Group id="anmGroup1" width="1280" height="630" x="0" y="90">
+			<e:Image width="1222" height="641" source="bg_page9_png" scale9Grid="17,16,14,15" horizontalCenter="0"
+			         verticalCenter="11.5" x="29" y="11" scaleX="1" scaleY="1" />
+			<e:Image width="1189" height="607" horizontalCenter="0.5" verticalCenter="11.5" source="bg_page10_png"
+			         scale9Grid="8,11,16,12" />
+			<e:Scroller id="txtGroupScroller" width="1036.67" height="520" horizontalCenter="6.5" verticalCenter="20"
+			            anchorOffsetX="0"></e:Scroller>
+			<e:List id="txtList" anchorOffsetX="0" width="1027" anchorOffsetY="0" height="529" horizontalCenter="0.5"
+			        verticalCenter="20.5" />
+			<e:Group id="txtGroup" anchorOffsetY="0" height="518.64" anchorOffsetX="0" width="1028.22" x="131.82" y="77.27">
+				<e:Label id="txtLabel" text="5555" width="1029" textColor="0x308a95" fontFamily="SimHei" size="30" multiline="true"
+				         textAlign="left" verticalAlign="justify" x="0" y="0" />
+			</e:Group>
+		</e:Group>
+	</e:Group>
+</e:Skin>

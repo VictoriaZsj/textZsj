@@ -1,0 +1,104 @@
+/**
+ * 我的奖品面板
+ */
+class MyPrizePanel extends BasePanel
+{
+	public tabComponent:TabComponent;
+    //标签组
+    public notTakeGroup:eui.Group;
+	public HavetakenGroup:eui.Group
+    public prizeInfoGroup:eui.Group;
+
+	//奖品列表
+    public notTakeList:eui.List;
+	public notTakeScroller:eui.Scroller;
+    public haveTakenList:eui.List;
+	public haveTakenScroller:eui.Scroller;
+
+    //无礼品
+    public noPrizeGroup:eui.Group;
+    public noPrizeBtn:eui.Button;
+    public noPrizeLabel:eui.Label;
+
+    //领奖信息
+    public recipients:eui.EditableText;
+    public phoneNum:eui.EditableText;
+    public qqNum:eui.EditableText;
+    public eMail:eui.EditableText;
+    public address:eui.EditableText;
+    //确认
+    public confirmBtn:eui.Button;
+
+	public constructor()
+	{
+		super();
+		this.setGrayMask(false);
+		this.skinName = UISkinName.MyPrizePanel;
+	}
+
+    protected onAwake(event: eui.UIEvent)
+	{
+		super.onAwake(event);
+
+	}
+	public init(appendData: any)
+	{
+		super.init(appendData);
+
+		let groups:Array<eui.Group> = new Array<eui.Group>();
+		groups.push(this.notTakeGroup);
+		groups.push(this.HavetakenGroup);
+		groups.push(this.prizeInfoGroup);
+		this.tabComponent.init(groups);
+
+		//限制输入类型
+		this.phoneNum.inputType = egret.TextFieldInputType.TEL;
+		this.qqNum.inputType = egret.TextFieldInputType.TEL;
+		this.qqNum.restrict = "0-9";
+	}
+	protected onRender(event: egret.Event)
+	{
+		super.onRender(event);
+		this.refreshAddressInfo();
+	}
+	protected onEnable(event: eui.UIEvent): void
+	{
+		super.onEnable(event);
+		this.addEventListener(egret.TouchEvent.TOUCH_TAP,this.clickHandler,this);
+	}
+	protected onDisable(event: eui.UIEvent): void
+	{
+		super.onDisable(event);
+		this.removeEventListener(egret.TouchEvent.TOUCH_TAP,this.clickHandler,this);
+	}
+	
+	/**
+	 * 点击面板按钮事件处理
+	*/
+	private clickHandler(event: egret.TouchEvent)
+	{
+		SoundManager.playButtonEffect(event.target);
+		switch(event.target)
+		{
+			case this.noPrizeBtn:
+
+			break;
+			case this.confirmBtn:
+				UserManager.userAddressInfo.name = this.recipients.text;
+				UserManager.userAddressInfo.phoneNum = this.phoneNum.text;
+				UserManager.userAddressInfo.qqNum = this.qqNum.text;
+				UserManager.userAddressInfo.eMail = this.eMail.text;
+				UserManager.userAddressInfo.address = this.address.text;
+			break;
+		}
+	}
+
+	private refreshAddressInfo()
+	{
+		this.recipients.text = UserManager.userAddressInfo.name;
+		this.phoneNum.text = UserManager.userAddressInfo.phoneNum;
+		this.qqNum.text = UserManager.userAddressInfo.qqNum;
+		this.eMail.text = UserManager.userAddressInfo.eMail;
+		this.address.text = UserManager.userAddressInfo.address;
+	}
+}

@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="panelSkin19" width="1280" height="720" xmlns:e="http://ns.egret.com/eui"
+        xmlns:w="http://ns.egret.com/wing" xmlns:ns1="*" xmlns:tween="egret.tween.*">
+	<w:Config id="15c3023a6dd" />
+	<w:Declarations>
+		<tween:TweenGroup id="benjiaAnimate">
+			<tween:TweenItem target="{benJiaWind}">
+				<tween:Set/>
+				<tween:To duration="750">
+					<tween:props>
+						<e:Object alpha="{0.3}" />
+					</tween:props>
+				</tween:To>
+				<tween:To duration="750">
+					<tween:props>
+						<e:Object alpha="{1}" />
+					</tween:props>
+				</tween:To>
+				<tween:props>
+					<e:Object loop="{true}" />
+				</tween:props>
+			</tween:TweenItem>
+		</tween:TweenGroup>
+		<tween:TweenGroup id="xiajiaAnimate">
+			<tween:TweenItem target="{xiaJiaWind}">
+				<tween:Set>
+					<tween:props>
+						<e:Object alpha="{1}" />
+					</tween:props>
+				</tween:Set>
+				<tween:To duration="750">
+					<tween:props>
+						<e:Object alpha="{0.3}" />
+					</tween:props>
+				</tween:To>
+				<tween:To duration="750">
+					<tween:props>
+						<e:Object alpha="{1}" />
+					</tween:props>
+				</tween:To>
+				<tween:props>
+					<e:Object loop="{true}" />
+				</tween:props>
+			</tween:TweenItem>
+		</tween:TweenGroup>
+		<tween:TweenGroup id="duijiaAnimate">
+			<tween:TweenItem target="{duiJiaWind}">
+				<tween:Set>
+					<tween:props>
+						<e:Object alpha="{1}" />
+					</tween:props>
+				</tween:Set>
+				<tween:To duration="750">
+					<tween:props>
+						<e:Object alpha="{0.3}" />
+					</tween:props>
+				</tween:To>
+				<tween:To duration="750">
+					<tween:props>
+						<e:Object alpha="{1}" />
+					</tween:props>
+				</tween:To>
+				<tween:props>
+					<e:Object loop="{true}" />
+				</tween:props>
+			</tween:TweenItem>
+		</tween:TweenGroup>
+		<tween:TweenGroup id="shangjiaAnimate">
+			<tween:TweenItem target="{shangJiaWind}">
+				<tween:Set>
+					<tween:props>
+						<e:Object alpha="{1}" />
+					</tween:props>
+				</tween:Set>
+				<tween:To duration="750">
+					<tween:props>
+						<e:Object alpha="{0.3}" />
+					</tween:props>
+				</tween:To>
+				<tween:To duration="750">
+					<tween:props>
+						<e:Object alpha="{1}" />
+					</tween:props>
+				</tween:To>
+				<tween:props>
+					<e:Object loop="{true}" />
+				</tween:props>
+			</tween:TweenItem>
+		</tween:TweenGroup>
+	</w:Declarations>
+	<e:Group id="tweenGroup">
+		<e:Image width="1280" height="720" x="0" y="0" source="desktop_bg_png" />
+		<e:Group id="cardGroup" />
+		<e:Group id="gameGroup" x="1" y="-1" touchEnabled="false">
+			<e:Group id="btnGroup" touchEnabled="false" anchorOffsetY="0" height="168" x="412.35" y="440.67" width="652"
+			         anchorOffsetX="0">
+				<e:Button id="huBtn" label="Button" skinName="buttonSkin20" />
+				<e:Button id="tingBtn" label="Button" skinName="TingBtn" x="470" />
+				<e:Button id="gangBtn" label="Button" skinName="GangBtn" x="313" />
+				<e:Button id="pengBtn" label="Button" skinName="PengBtn" x="157" />
+			</e:Group>
+			<e:Label id="actionTimeLabel" text="9999" x="635" y="280" width="80" anchorOffsetX="40" textAlign="center"
+			         verticalAlign="justify" />
+			<e:Button id="cancelBtn" label="Button" x="1058" y="459.34" skinName="buttonSkin21" scaleX="0.9" scaleY="0.9" />
+			<e:Button id="guoBtn" label="Button" x="1049" y="452.64" scaleX="0.9" scaleY="0.9" skinName="guoBtn" />
+			<e:DataGroup id="shouPaiGroup" bottom="-86" left="124" />
+			<e:Group touchEnabled="false" id="hostGroup" height="200" y="517" scaleX="1" scaleY="1" width="1279" x="0">
+				<e:Image id="hostFlagBg" width="245" height="1280" x="-1" y="204" source="bg_page7_png" anchorOffsetX="0"
+				         anchorOffsetY="0" rotation="270" scaleX="1" scaleY="1" />
+				<ns1:GameButton id="cancelHostedBtn" skinName="buttonSkin40" scaleX="1" scaleY="1" horizontalCenter="0"
+				                verticalCenter="0" />
+				<e:Label id="hostFlagLabel" text="托管中，系统将自动进行摸打，不进行其他操作！" x="307.85" y="133.30999999999995" scaleX="1" scaleY="1"
+				         fontFamily="SimHei" />
+			</e:Group>
+			<e:Button id="xiaJiaHostedImg" skinName="buttonSkin5" horizontalCenter="500" verticalCenter="-37.5" x="1080"
+			          y="269.00000000000006" scaleX="1" scaleY="1" />
+			<e:Button id="duiJiaHostedImg" skinName="buttonSkin5" horizontalCenter="0" verticalCenter="-281.5" x="580" y="25"
+			          scaleX="1" scaleY="1" />
+			<e:Button id="shangJiaHostedImg" skinName="buttonSkin5" horizontalCenter="-500" verticalCenter="-37.5" x="80" y="269"
+			          scaleX="1" scaleY="1" />
+		</e:Group>
+		<e:Group id="pubGroup" touchEnabled="false" anchorOffsetY="0" height="720" width="1280">
+			<e:Image width="204.33" height="93.34" x="11.45" y="9.08" scaleX="1"
+			         scaleY="1" anchorOffsetX="0" anchorOffsetY="0"  source="bg_page4_png" scale9Grid="10,10,126,126"/>
+			<e:Label text="房号:" textAlign="left" anchorOffsetX="0" size="24" anchorOffsetY="0" fontFamily="Microsoft YaHei"
+			         width="95" height="28.33" y="13.33" x="24" textColor="0x01ad00" />
+			<e:Label text="玩法:" textAlign="left" anchorOffsetX="0" size="24" anchorOffsetY="0" fontFamily="Microsoft YaHei"
+			         width="95" height="28.33" y="42" x="24" textColor="0x01ad00" />
+			<e:Label text="局数:" textAlign="left" anchorOffsetX="0" size="24" anchorOffsetY="0" fontFamily="Microsoft YaHei"
+			         width="95" height="28.33" y="72.33" x="24" textColor="0x01ad00" />
+			<e:Label id="timeLabel" text="17:59:13" x="28.36" y="103.73" textAlign="center" anchorOffsetX="0" size="30"
+			         anchorOffsetY="0" width="168" height="31.5" fontFamily="Microsoft YaHei" />
+			<e:Label id="roomIdLabel" text="999999" textAlign="left" anchorOffsetX="0" size="24" anchorOffsetY="0"
+			         fontFamily="Microsoft YaHei" height="27.33" x="87" y="13.33" textColor="0xff8800" />
+			<ns1:GameButton x="1201" y="505" skinName="buttonSkin22" width="57" height="57" visible="false" />
+			<e:Image id="benJiaWind" width="168" height="40" x="555.52" y="312.52" source="e_down_1_png" />
+			<e:Image id="xiaJiaWind" width="59" height="99" x="672" y="248" source="e_right_1_png" />
+			<e:Image id="duiJiaWind" width="150" height="31" x="564" y="243" source="e_up_1_png" />
+			<e:Image id="shangJiaWind" width="59" height="99" x="546" y="248" source="e_left_1_png" />
+			<e:Label id="roundTypeLabel" text="胡八字" y="42" size="24" anchorOffsetY="0" anchorOffsetX="0" width="124.3" scaleX="1"
+			         scaleY="1" fontFamily="Microsoft YaHei" height="23" x="87" textColor="0xff8800" />
+			<e:Label id="roundNumLabel" text="第15/16局" y="71.43" textAlign="left" size="24" anchorOffsetY="0" anchorOffsetX="0"
+			         width="132" scaleX="1" scaleY="1" fontFamily="Microsoft YaHei" height="25.67" x="87" textColor="0xff8800" />
+			<e:Image width="140.66" height="38.7" x="227.14" y="12.17" scaleX="1"
+			         scaleY="1" anchorOffsetX="0" anchorOffsetY="0"  source="bg_page4_png" scale9Grid="10,10,126,126"/>
+			<e:Image width="30" height="35" x="242.14" y="14" source="up_mj_png" scaleX="1" scaleY="1" />
+			<e:Label id="remainLabel" text="112" x="287.17" y="14" scaleX="1" scaleY="1" fontFamily="Microsoft YaHei" />
+			<e:Image id="tingHelpBtn" x="1210.52" y="359.82" source="button_notice_png" />
+			<ns1:GameButton id="voiceBtn" x="1210" y="430" skinName="buttonSkin39" scaleX="1" scaleY="1" />
+			<e:Image id="duiJiaReadyImg" x="603.85" y="135" source="ready_png" scaleX="1" scaleY="1" />
+			<e:Image id="shangJiaReadyImg" x="294.15" y="295" source="ready_png" scaleX="1" scaleY="1" />
+			<e:Image id="benJiaReadyImg" x="601.73" y="470.76" source="ready_png" scaleX="1" scaleY="1" />
+			<e:Image id="xiaJiaReadyImg" x="907.79" y="302.58" source="ready_png" scaleX="1" scaleY="1" />
+			<e:Group id="waitShowGroup" scaleX="1" scaleY="1" anchorOffsetX="0" width="853.67" height="114.35" anchorOffsetY="0"
+			         horizontalCenter="0" x="214" y="360">
+				<e:Image id="dengdaiImg0" source="dengdai_png" horizontalCenter="0" x="383" y="0" scaleX="0.7" scaleY="0.7"  visible="false"/>
+			</e:Group>
+			<e:Component id="maimaComponent" skinName="maimaSkin" verticalCenter="-24" horizontalCenter="0" x="441"
+			             y="208" scaleX="1" scaleY="1" />
+			<ns1:GameButton id="settingBtn" label="" anchorOffsetX="0" anchorOffsetY="0" scaleX="1" scaleY="1"
+			                horizontalCenter="578.5" skinName="buttonSkin14" x="1172" y="10.44" />
+			<ns1:GameButton id="testPengBtn" label="碰牌" x="394" y="177" skinName="PengBtn" visible="false" />
+		</e:Group>
+		<e:Group id="waitGroup" verticalCenter="0" horizontalCenter="0">
+			<ns1:GameButton id="closeButton" label="" anchorOffsetX="0" anchorOffsetY="0" skinName="buttonSkin37" scaleX="0.7"
+			                scaleY="0.7" horizontalCenter="427" verticalCenter="-139.5" />
+			<ns1:GameButton id="exitBtn" label="" skinName="buttonSkin36" scaleX="0.8" scaleY="0.8" horizontalCenter="409"
+			                verticalCenter="247.5" />
+			<ns1:GameButton id="disbandedBtn" label="" scaleX="0.8" scaleY="0.8" horizontalCenter="408.5" verticalCenter="247.5"
+			                skinName="buttonSkin34" />
+			<ns1:GameButton id="testGangPai" label="杠牌" x="586" y="178" skinName="GangBtn" visible="false" />
+			<ns1:GameButton id="invitBtn" label="微信邀请好友" horizontalCenter="0" skinName="buttonSkin35" verticalCenter="72"
+			                scaleX="0.9" scaleY="0.9" />
+		</e:Group>
+		<e:Group id="paiPosGroup">
+			<e:Component id="promptComponet" x="0" y="29" skinName="PromptComponent" />
+		</e:Group>
+	</e:Group>
+</e:Skin>

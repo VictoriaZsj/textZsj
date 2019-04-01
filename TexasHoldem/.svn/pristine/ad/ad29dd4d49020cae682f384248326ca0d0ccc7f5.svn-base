@@ -1,0 +1,55 @@
+/**
+ * 充值面板项渲染
+ */
+class PlayingFieldItemRenderer extends BaseItemRenderer<PlayingFieldRoomInfo>{
+    /**
+     * 模式
+    */
+    public patternImage: eui.Image;
+    /**
+     * 房间Id
+    */
+    public roomIdLabel: eui.Label;
+    /**
+     * 房间玩家人数
+    */
+    public roomPlayNumImage: eui.Image;
+    /**
+     * 房间最大玩家人数
+    */
+    public roomMaxPlayNumImage: eui.Image;
+    /**
+     * 盲注
+    */
+    public blindLabel: eui.Label;
+    /**
+     * 买入
+    */
+    public buyLabel: eui.Label;
+
+    public constructor()
+    {
+        super();
+        this.skinName = UIRendererSkinName.PlayingFieldItemRenderer;
+    }
+    protected createChildren()
+    {
+        this.dataChanged();
+    }
+    protected dataChanged()
+    {
+        super.dataChanged();
+        if (this.bindData)
+        {
+            if (this.bindData.roomId.toString().length < 5)
+            {
+                this.roomIdLabel.text = (Array(5).join('0') + this.bindData.roomId).slice(-5);
+            } else
+            {
+                this.roomIdLabel.text = this.bindData.roomId.toString();
+            }
+            this.blindLabel.text = MathUtil.formatNum(this.bindData.smallBlind) + "/" + MathUtil.formatNum(this.bindData.bigBlind);
+            this.buyLabel.text = MathUtil.formatNum(this.bindData.minBuy) + "/" + MathUtil.formatNum(this.bindData.maxBuy);
+        }
+    }
+}

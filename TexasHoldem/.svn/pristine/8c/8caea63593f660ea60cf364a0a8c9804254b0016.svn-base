@@ -1,0 +1,205 @@
+/**
+ * 锦标赛赛事列表项面板
+*/
+class ChampionshipItemRenderer extends BaseItemRenderer<MatchRoomInfo>
+{
+    /**
+     * 比赛时间还未开始group
+    */
+    private notStartGroup: eui.Group;
+    /**
+     * 赛事icon
+    */
+    private iconImg: eui.Image;
+    /**
+     * 金币icon
+    */
+    private goldImg: eui.Image;
+    /**
+     * 重购图标
+    */
+    private rebuyImg: eui.Image;
+    /**
+     * 增购图标
+    */
+    private addonImg: eui.Image;
+    /**
+     * 名称
+    */
+    private nameLabel: eui.Label;
+    /**
+     * 报名费
+    */
+    private priceLabel: eui.Label;
+    /**
+     * 人数信息
+    */
+    private numLabel: eui.Label;
+    /**
+     * 还未开始的比赛时间信息描述
+    */
+    private timeDesLabel: eui.Label;
+    /**
+     * 还未开始的比赛时间
+    */
+    private timeLabel: eui.Label;
+    /**
+     * 正在进行中
+    */
+    private underwayLabel: eui.Label;
+    /**
+     * 等待开始
+    */
+    private waitLabel: eui.Label;
+    /**
+     * 立即进入按钮
+    */
+    private enterBtn: eui.Button;
+    /**
+     * 立即报名按钮
+    */
+    private applyBtn: eui.Button;
+
+    private countDownNum: number;
+    private flag: boolean = false;
+
+    public constructor()
+    {
+        super();
+        this.skinName = UIRendererSkinName.ChampionshipItemRenderer;
+    }
+    protected createChildren()
+    {
+        this.dataChanged();
+    }
+    protected dataChanged()
+    {
+        super.dataChanged();
+        // todo 测试代码
+        console.log(TimeManager.GetServerUtcTimestamp());
+        if (this.bindData)
+        {
+            this.rebuyImg.visible = false;
+            this.addonImg.visible = false;
+            this.notStartGroup.visible = false;
+            this.underwayLabel.visible = false;
+            this.enterBtn.visible = false;
+            this.applyBtn.visible = false;
+            this.waitLabel.visible = false;
+            this.iconImg.source = this.bindData.icon;
+            this.nameLabel.text = this.bindData.name;
+            this.numLabel.text = this.bindData.applyNum + "/" + this.bindData.allNum;
+            //判断该用户的道具中是否有参加赛事对应的门票    应该要读表判断 
+            if (1)  // todo 测试代码
+            {
+                this.priceLabel.text = this.bindData.name + "门票";
+            } else
+            {
+                this.priceLabel.text = this.bindData.price + "+" + this.bindData.tax;
+            }
+            if (this.bindData.isAddon)
+            {
+                this.addonImg.visible = true;
+            }
+            if (this.bindData.isRebuy)
+            {
+                this.rebuyImg.visible = true;
+            }
+            if (TimeManager.GetServerUtcTimestamp() >= this.bindData.startTime)  //比赛进行中
+            {
+                this.underwayLabel.visible = true;
+                this.notStartGroup.visible = false;
+                this.enterBtn.visible = false;
+                this.applyBtn.visible = false;
+                this.waitLabel.visible = false;
+                this.underwayLabel.text = "比赛进行中";
+
+            } else if ((this.bindData.startTime - TimeManager.GetServerUtcTimestamp()) <= 300)  //比赛开始前5分钟
+            {
+                this.notStartGroup.visible = true;
+                this.timeDesLabel.text = "即将开始";
+                this.countDownNum = Math.floor(this.bindData.startTime - TimeManager.GetServerUtcTimestamp());
+                Tick.getInstance().AddSecondsInvoke(this.countDown, this);
+                if ((this.bindData.startTime - TimeManager.GetServerUtcTimestamp()) < 60)  //比赛前一分钟
+                {
+                    if (this.flag)
+                    {
+                        this.waitLabel.visible = false;
+                        this.enterBtn.visible = true;
+                    }
+                }
+            } else
+            {
+                this.notStartGroup.visible = true;
+                let date: Date = new Date(this.bindData.startTime);
+                if (this.bindData.startTime - TimeManager.GetServerUtcTimestamp() > 3600 * 24)  //大于一天
+                {
+                    this.timeDesLabel.text = (date.getMonth() + 1) + "-" + date.getDate();
+                } else  // 少于一天
+                {
+                    this.timeDesLabel.text = "今日";
+                }
+                /*for (let adef of ChampionshipManager.applicationList)
+                {
+                    for (let mdef of ChampionshipManager.matchList)
+                    {
+                        if (mdef.id == adef.id)
+                        {
+                            this.flag = true;
+                        }
+                    }
+                }*/
+                if (this.flag)
+                {
+                    this.waitLabel.visible = true;
+                } else
+                {
+                    this.applyBtn.visible = true;
+                }
+                this.timeLabel.text = DateTimeUtil.formatDate(date, DateTimeUtil.Format_Standard_NoSecond).split(" ")[1];
+            }
+            this.addEventListener(egret.Event.REMOVED_FROM_STAGE, this.onDisable, this);
+        }
+    }
+    private onDisable(event: egret.Event)
+    {
+        this.removeEventListener(egret.Event.REMOVED_FROM_STAGE, this.onDisable, this);
+        Tick.getInstance().RemoveSecondsInvoke(this.countDown);
+    }
+    private cancelBubble(event: egret.TouchEvent)
+    {
+        event.stopImmediatePropagation();
+    }
+    /**
+     * 倒计时
+    */
+    private countDown()
+    {
+        this.countDownNum--;
+        this.timeLabel.text = this.countDownFormat(this.countDownNum.toString());
+        if (this.countDownNum == 0)
+        {
+            Tick.getInstance().RemoveSecondsInvoke(this.countDown);
+            this.notStartGroup.visible = false;
+            this.underwayLabel.visible = true;
+            this.underwayLabel.text = "比赛进行中";
+        }
+    }
+    /**
+     * 倒计时格式化
+    */
+    private countDownFormat(number)
+    {
+        let m: string;
+        let s: string;
+        m = "0" + Math.floor(number / 60);
+        if (number % 60 < 10)
+        {
+            s = "0" + number % 60;
+        } else
+        {
+            s = (number % 60) + "";
+        }
+        return m + ":" + s;
+    }
+}

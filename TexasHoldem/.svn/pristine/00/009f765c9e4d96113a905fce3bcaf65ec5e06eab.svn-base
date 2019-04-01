@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="GetItemRendererSkin" width="100" height="150" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing">
+	<e:Image id="itemImg" width="100" height="100" x="0" y="0"/>
+	<e:Label id="nameLabel" text="金币" y="105" size="20" x="0" width="100" textAlign="center" verticalAlign="top" anchorOffsetY="0" height="40"/>
+	<e:Label id="numLabel" text="99999" x="0" y="78" size="20" height="20" width="95" textAlign="right"/>
+</e:Skin>

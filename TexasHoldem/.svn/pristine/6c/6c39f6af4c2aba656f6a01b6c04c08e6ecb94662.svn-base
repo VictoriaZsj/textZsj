@@ -1,0 +1,89 @@
+
+class UpdateHandler
+{
+	private _updateChannelUrl: string;
+	private _updateCallback: Function;
+	
+	/// <summary>
+	/// 获取渠道客户端URL地址
+	/// </summary>
+	/// <param name="callback"></param>
+	public GetUpdateChannelURL(callback: Function)
+	{
+		if (StringUtil.isNull(this._updateChannelUrl))
+		{
+			this._updateCallback = callback;
+			RES.getResByUrl(ProjectDefined.GetInstance().getValue(ProjectDefined.updateUrl), this.OnGetUpdateChannelCompdate, this, RES.ResourceItem.TYPE_JSON);
+		}
+		else
+		{
+			if (callback != null)
+			{
+				callback(this._updateChannelUrl);
+			}
+			this._updateCallback = null;
+		}
+	}
+	private OnGetUpdateChannelCompdate(text: string)
+	{
+		this.ParseUpdate(text);
+		if (this._updateCallback != null && StringUtil.isNull(this._updateChannelUrl) == false)
+		{
+			this._updateCallback(this._updateChannelUrl);
+			this._updateCallback = null;
+		}
+	}
+
+	/// <summary>
+	/// 前往下载新版本安装包
+	/// </summary>
+	public OpenUpdateUrl()
+	{
+		if (StringUtil.isNull(this._updateChannelUrl))
+		{
+			RES.getResByUrl(ProjectDefined.GetInstance().getValue(ProjectDefined.updateUrl), this.OnUpdateCompdate, this, RES.ResourceItem.TYPE_JSON);
+		}
+		else
+		{
+			window.location.href = this._updateChannelUrl;
+		}
+	}
+	private OnUpdateCompdate(text: string)
+	{
+		this.ParseUpdate(text, true);
+		if (StringUtil.isNull(this._updateChannelUrl) == false)
+		{
+			window.location.href = this._updateChannelUrl;
+		}
+	}
+	private ParseUpdate(text: string, isAlert: boolean = false)
+	{
+		if(StringUtil.isNull(text))
+		{
+			if (isAlert)
+			{
+				this.exceptionAlert();
+			}
+		}
+		else
+		{
+			try
+			{
+				let data:any = JSON.parse(text);
+				this._updateChannelUrl = data[ChannelManager.bundleId];
+			}
+			catch (Exception)
+			{
+				if (isAlert)
+				{
+					this.exceptionAlert();
+				}
+			}
+		}
+	}
+	private exceptionAlert()
+	{
+		AlertManager.showSingleAlert("下载出错，请到应用商店下载");
+		this._updateCallback = null;
+	}
+}

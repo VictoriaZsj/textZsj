@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="blindItemRendererSkin" width="600" height="90" xmlns:ns1="*"
+        xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing">
+    <e:Image id="bgImg" width="600" height="90" anchorOffsetX="0" anchorOffsetY="0" source="bg_page19_3_png" y="0"
+             scale9Grid="10,9,276,25" />
+    <e:Image id="rebuyImg" width="80" height="80" x="55" y="37" source="fangka_png"  scaleX="0.3" scaleY="0.3"/>
+	<e:Image id="addonImg" width="80" height="80" x="55" y="39" source="fangka_png" scaleX="0.3" scaleY="0.3"/>
+    <e:Label id="rankLabel" text="11" x="7" y="36" height="30" width="50" size="24"  textAlign="center"/>
+    <e:Label id="blindLabel" text="1500/3000" x="88" y="36" height="30" width="240" size="24" textAlign="center" />
+    <e:Label id="anteLabel" text="999999" x="337" y="36" height="30" width="100" size="24" textAlign="center" />
+	<e:Label id="timeLabel" text="120秒" x="478" y="36" width="100" textAlign="center" size="24"/>
+</e:Skin>

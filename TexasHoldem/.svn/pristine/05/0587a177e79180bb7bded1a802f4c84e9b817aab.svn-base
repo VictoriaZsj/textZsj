@@ -1,0 +1,38 @@
+class ChipsManager
+{
+    public static chipsList:Array<ChipsInfo> = new Array<ChipsInfo>();
+	public static initialize()
+	{
+		ArrayUtil.Clear(ChipsManager.chipsList);
+		let def: ChipsInfo;
+		for (let i: number = 0; i < ChipsDefined.GetInstance().dataList.length; i++)
+		{		
+			def=new ChipsInfo();	 
+			def.id = ChipsDefined.GetInstance().dataList[i].id;
+			ChipsManager.chipsList.push(def); 
+		}
+	}
+}
+
+class ChipsInfo 
+{
+	private _id: number = 0;
+	public get id(): number
+	{
+		return this._id;
+	}
+	public set id(value: number)
+	{
+		this._id = value;
+		this._definition = ChipsDefined.GetInstance().getDefinition(value);
+	}		
+	private _definition: ChipsDefinition
+	public get definition(): ChipsDefinition
+	{
+		return this._definition;
+	}
+	public set definition(value: ChipsDefinition)
+	{
+		this._definition = value;
+	}
+}

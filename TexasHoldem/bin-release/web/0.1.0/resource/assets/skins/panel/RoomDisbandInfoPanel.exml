@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="panelSkin4" width="1280" height="720" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing">
+	<e:Group id="tweenGroup" width="700" height="350" y="185" x="290">
+		<e:Image width="831" height="451" source="bg_page2_png" horizontalCenter="0" verticalCenter="10" scale9Grid="23,24,99,99"/>
+		<e:Image source="bg_page5_png" anchorOffsetX="200" verticalCenter="-205.5" horizontalCenter="0" scale9Grid="73,0,143,73"/>
+		<e:Image width="786" height="357.79" anchorOffsetX="0" anchorOffsetY="0" y="13.61" scaleX="1" scaleY="1" scale9Grid="19,18,23,23" source="bg_page19_png" horizontalCenter="0"/>
+		<e:Image scaleX="1" scaleY="1" anchorOffsetX="0" horizontalCenter="0" verticalCenter="-204.5" source="h_jsfj_png"/>
+		<e:Label id="headLabel" text="大法师地方" anchorOffsetX="0" width="657" anchorOffsetY="0" height="58.67"
+		         verticalAlign="middle" textAlign="center" size="26"  horizontalCenter="0.5" verticalCenter="-81.5" fontFamily="SimHei" textColor="0xa0522b"/>
+		<e:Label id="infoLabel" text="大法师地方" anchorOffsetX="0" width="676" anchorOffsetY="0" height="140.36"
+		         verticalAlign="middle" textAlign="center" size="30"  horizontalCenter="0" verticalCenter="31" fontFamily="SimHei" textColor="0xa0522b"/>
+		<e:Label id="timeLabel" text="大法师地方" anchorOffsetX="0" width="441" anchorOffsetY="0" height="43" verticalAlign="middle" textAlign="center" size="35" horizontalCenter="0.5" verticalCenter="128.5" fontFamily="SimHei" textColor="0xea9f48"/>
+	</e:Group>
+</e:Skin>

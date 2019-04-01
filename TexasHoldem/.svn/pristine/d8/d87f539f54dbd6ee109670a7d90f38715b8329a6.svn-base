@@ -1,0 +1,29 @@
+/**
+ * 基础手牌定义
+ */
+abstract class BaseShouCardContainer extends egret.DisplayObjectContainer
+{
+	private _dataList: Array<ShouPaiDefinition>;
+	/**
+	 * 位置类型
+	 */
+	private _posType: PosType;
+	/**
+	 * 手牌总数
+	 */
+	private _shouPaiNum: number;
+
+	public constructor()
+	{
+		super();
+	}
+	public init(posType: PosType)
+	{
+		this._posType = posType;
+		this._dataList = CardShowDefined.GetInstance().shouPaiMap.getValue(this._posType);
+		if (this._dataList)
+		{
+
+		}
+	}
+}

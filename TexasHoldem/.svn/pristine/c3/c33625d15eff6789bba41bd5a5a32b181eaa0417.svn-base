@@ -1,0 +1,87 @@
+/**
+ * 会员管理
+ */
+class VipManager
+{
+    public static weekVipTime: number; //周会员到期时间
+    public static monthVipTime: number; //月会员到期时间
+    public static vipType: VipType;
+
+    /**
+     * 计算vip等级
+     */
+    public static getVipLevel(vipExp: number): number
+    {
+        let vipLevelArray:Array<number> = ProjectDefined.GetInstance().getValue(ProjectDefined.vipLevel);
+        for(let i = 0;i<vipLevelArray.length;i++)
+        {
+            if(vipExp>vipLevelArray[i])
+            {
+                continue;
+            }
+            return i;
+        }
+    }
+    
+    public static initialize(data: SpRpcResult)
+    {
+        SocketManager.RemoveCommandListener(Command.Rec_GetVipTime_2027, this.onGetVipTime);
+        SocketManager.AddCommandListener(Command.Rec_GetVipTime_2027, this.onGetVipTime);
+
+        VipManager.onGetVipTime(data);
+    }
+
+    private static onGetVipTime(result: SpRpcResult)
+    {
+        VipManager.weekVipTime = parseInt(result.data["weekTime"]);
+        VipManager.monthVipTime = parseInt(result.data["monthTime"]);
+        let serverTimeNow: number = TimeManager.GetServerUtcTimestamp();
+        if (VipManager.monthVipTime && VipManager.monthVipTime > serverTimeNow)
+        {
+            VipManager.vipType = VipType.MonthVip;
+        }
+        else if (VipManager.weekVipTime && VipManager.weekVipTime > serverTimeNow)
+        {
+            VipManager.vipType = VipType.WeekVip;
+        }
+        else
+        {
+            VipManager.vipType = VipType.NoVip;
+        }
+        VipManager.vipUpgrade.dispatch();
+    }
+
+    public static GetLeftTime(): number
+    {
+        let serverTimeNow: number = TimeManager.GetServerUtcTimestamp();
+        switch (VipManager.vipType)
+        {
+            case VipType.NoVip:
+                return 0;
+            case VipType.MonthVip:
+                if (VipManager.weekVipTime > serverTimeNow)
+                {
+                    return VipManager.weekVipTime;
+                }
+                else
+                {
+                    return VipManager.monthVipTime;
+                }
+            case VipType.WeekVip:
+                return VipManager.weekVipTime;
+        }
+    }
+
+    /**
+    * vip时间变更事件
+    */
+    public static vipUpgrade: ActionDispatcher = new ActionDispatcher();
+}
+
+//vip类型
+enum VipType
+{
+    NoVip = 0,
+    WeekVip = 1,
+    MonthVip = 2,
+}

@@ -1,0 +1,18 @@
+<e:Skin class="panelSkin13" width="720" height="1280" xmlns:e="http://ns.egret.com/eui"
+        xmlns:w="http://ns.egret.com/wing" xmlns:ns1="*">
+	<e:Group id="anmGroup" x="-10.000000000000034" y="816" height="470">
+		<e:Image id="bgImg" width="740" height="470" anchorOffsetX="0" anchorOffsetY="0" y="0" scaleX="1" scaleY="1" source="bg_page19_png" scale9Grid="13,18,121,116" x="0"/>
+		<ns1:GameButton id="numBtn1" label="1" skinName="buttonSkin2" scaleX="1" scaleY="1" x="75.99999999999994" y="46.90999999999997"/>
+		<ns1:GameButton id="numBtn2" label="2" skinName="buttonSkin2" scaleX="1" scaleY="1" x="295.0000000000001" y="46.90999999999997"/>
+		<ns1:GameButton id="numBtn3" label="3" skinName="buttonSkin2" scaleX="1" scaleY="1" x="514.0000000000002" y="46.90999999999997"/>
+		<ns1:GameButton id="numBtn4" label="4" skinName="buttonSkin2" scaleX="1" scaleY="1" x="75.99999999999994" y="154.90999999999997"/>
+		<ns1:GameButton id="numBtn5" label="5" skinName="buttonSkin2" scaleX="1" scaleY="1" x="295.0000000000001" y="154.90999999999997"/>
+		<ns1:GameButton id="numBtn6" label="6" skinName="buttonSkin2" scaleX="1" scaleY="1" x="514.0000000000002" y="154.90999999999997"/>
+		<ns1:GameButton id="numBtn7" label="7" skinName="buttonSkin2" scaleX="1" scaleY="1" x="75.99999999999994" y="262.90999999999997"/>
+		<ns1:GameButton id="numBtn8" label="8" skinName="buttonSkin2" scaleX="1" scaleY="1" x="295.0000000000001" y="262.90999999999997"/>
+		<ns1:GameButton id="numBtn9" label="9" skinName="buttonSkin2" scaleX="1" scaleY="1" x="514.0000000000002" y="262.90999999999997"/>
+		<ns1:GameButton id="resetBtn" label="重输" skinName="buttonSkin26" scaleX="1" scaleY="1" x="75.99999999999994" y="371.90999999999997"/>
+		<ns1:GameButton id="numBtn0" label="0" skinName="buttonSkin2" scaleX="1" scaleY="1" x="295.0000000000001" y="371.90999999999997"/>
+		<ns1:GameButton id="delBtn" label="删除" skinName="buttonSkin25" scaleX="1" scaleY="1" x="514.0000000000002" y="371.90999999999997"/>
+	</e:Group>
+</e:Skin>

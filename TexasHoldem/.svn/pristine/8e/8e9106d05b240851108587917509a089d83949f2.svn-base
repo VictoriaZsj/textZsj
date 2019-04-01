@@ -1,0 +1,18 @@
+/**
+ * 通用基于当前相对位置移动
+ */
+class CommonMoveToRelativelyPos extends BaseAnimation<egret.DisplayObject>
+{
+	public RunOverEvent: ActionDispatcher = new ActionDispatcher();
+	public run(hcenter: number, vcenter: number)
+	{
+		super.run(hcenter, vcenter);
+		let tween: egret.Tween = egret.Tween.get(this.target);
+		tween.to({ horizontalCenter: hcenter, verticalCenter: vcenter }, 300, egret.Ease.sineIn).call(this.runOver, this);
+	}
+	public runOver()
+	{
+		super.runOver();
+		this.RunOverEvent.dispatch();
+	}
+}

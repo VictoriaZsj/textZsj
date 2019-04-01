@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="InvitefriendItemRenderer" width="660" height="89" xmlns:e="http://ns.egret.com/eui" xmlns:ns1="*"
+        xmlns:w="http://ns.egret.com/wing">
+    <e:Image id="bgImage" width="660" height="89.04" anchorOffsetX="0" anchorOffsetY="0" scale9Grid="2,2,8,8"
+             source="bg_page19_3_png" y="0" horizontalCenter="0" />
+    <e:Label id="nameLabel" text="好友名字六字" x="128.8" y="16.52" fontFamily="SimHei" size="25" textColor="0xa0522b"
+             anchorOffsetX="0" width="194" />
+
+
+
+
+    <e:ToggleButton id="isOnlinetoggleBtn" label="在线" skinName="RadioButtonSkin1" anchorOffsetX="0" x="128.8" y="52" width="39"
+                    anchorOffsetY="0" height="45" scaleX="0.6" scaleY="0.6" />
+    <e:Image id="headImg" horizontalCenter="-278" verticalCenter="-0.5" scale9Grid="9,8,25,7" source="fangka_png"
+             scaleX="0.7" scaleY="0.7" />
+	<e:CheckBox id="isCheckedBtn" label="" x="566" y="13.52" skinName="CheckBoxSkin1" anchorOffsetX="0" width="44" anchorOffsetY="0" height="40" scaleX="0.7" scaleY="0.7"/>
+</e:Skin>

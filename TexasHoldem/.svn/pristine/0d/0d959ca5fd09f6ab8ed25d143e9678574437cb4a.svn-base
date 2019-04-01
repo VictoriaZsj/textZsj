@@ -1,0 +1,60 @@
+/**
+ * 邮件渲染项
+ */
+class MailItemRenderer extends BaseItemRenderer<MailInfo>
+{
+    public itemImg:eui.Image//附件图片
+    public itemTitleLabel:eui.Label//邮件标题
+    public itemDesLabel//邮件描述
+    public takePrizeBtn:eui.Button//领取附件
+    public takeDesLabel:eui.Label//附件状态
+
+    public constructor()
+	{
+		super();
+		this.skinName = UIRendererSkinName.MailItemRenderer;
+	}
+    protected createChildren()
+	{
+		this.dataChanged();
+	}
+    protected dataChanged(): void
+	{
+        super.dataChanged();
+        this.refresh();
+    }
+
+    private refresh()
+    {
+        if(this.bindData)
+        {
+            this.itemTitleLabel.text = this.bindData.title;
+            this.itemDesLabel.text = this.bindData.des;
+            //this.itemImg.source = this.bindData.item;
+            if(this.bindData.isTake)
+            {
+                this.takePrizeBtn.visible = false;
+                this.takeDesLabel.visible = true;
+            }
+            else
+            {
+                this.takePrizeBtn.visible = true;
+                this.takeDesLabel.visible = false;
+            }
+        }
+    }
+
+    //领取礼物
+    private onTakePrize()
+    {
+
+    }
+    private onDisable(event: egret.Event)
+    {
+        this.removeEventListener(egret.Event.REMOVED_FROM_STAGE, this.onDisable, this);
+		if (this.takePrizeBtn)
+		{
+			this.takePrizeBtn.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.onTakePrize, this);
+		}
+    }
+}

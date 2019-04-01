@@ -1,0 +1,1515 @@
+enum LoginMode
+{
+	/// <summary>
+	/// 游客登录
+	/// </summary>
+	Guest = 0,
+	/// <summary>
+	/// 账号登录
+	/// </summary>
+	Account = 1,
+	/// <summary>
+	/// token登录
+	/// </summary>
+	Token = 2,
+	/// <summary>
+	/// token调试登录
+	/// </summary>
+	TokenDebug = 3,
+}
+/// <summary>
+/// 渠道登录类型
+/// </summary>
+class ChannelLoginType
+{
+	/**
+	 * 游客
+	 */
+	public static Guest: string = "guest";
+	/// <summary>
+	/// 内网游客登录
+	/// </summary>
+	public static IntranetGuest: string = "intranetGuest";
+	/**
+	 *  内网账号登录
+	 */
+	public static IntranetAccount: string = "intranetAccount";
+	/**
+	 * 微信登录
+	 */
+	public static Weixin: string = "weixin";
+	/**
+	 * 外网游戏账号登录
+	 */
+	public static Account: string = "account";
+	/**
+	 * 客户端标识的渠道登录,Token登录
+	 */
+	public static Normal: string = "";
+
+	public static IsViewAccount(loginType: string): boolean
+	{
+		switch (loginType)
+		{
+			case ChannelLoginType.Guest:
+			case ChannelLoginType.Account:
+			case ChannelLoginType.IntranetGuest:
+			case ChannelLoginType.IntranetAccount:
+				return true;
+		}
+		return false;
+	}
+	/// <summary>
+	/// 获取渠道登录列表
+	/// </summary>
+	/// <param name="isDebug"></param>
+	/// <param name="isSafe"></param>
+	/// <param name="operatePlatform"></param>
+	/// <returns></returns>
+	public static GetChannelLoginList(isDebug: boolean, isSafe: boolean, operatePlatform: string, channelType: string): Array<string>
+	{
+		let list: Array<string> = new Array<string>();
+		if (operatePlatform == OperatePlatform.qin)
+		{
+			list.push(ChannelLoginType.Account);
+			list.push(ChannelLoginType.Guest);
+			if (egret.Capabilities.runtimeType == egret.RuntimeType.NATIVE)
+			{
+			 	list.push(ChannelLoginType.Weixin);
+			}
+			if (isDebug)
+			{
+				list.push(ChannelLoginType.IntranetAccount);
+				list.push(ChannelLoginType.IntranetGuest);
+			}
+		}
+		else
+		{
+			if (isSafe)
+			{
+				list.push(ChannelLoginType.Guest);
+				if(isDebug)
+				{
+					if (egret.Capabilities.runtimeType == egret.RuntimeType.NATIVE)
+					{
+						list.push(ChannelLoginType.Weixin);
+					}
+				}
+			}
+			else
+			{
+				if(isDebug)
+				{
+					list.push(ChannelLoginType.Guest);
+				}
+				if (egret.Capabilities.runtimeType == egret.RuntimeType.NATIVE)
+				{
+					list.push(ChannelLoginType.Weixin);
+				}
+			}
+		}
+		if (list.length <= 0)
+		{
+			throw new Error("登录类型列表长度不可能为0");
+		}
+		return list;
+	}
+}
+/**
+ * UI层枚举
+ */
+enum UILayerType
+{
+	// 无
+	None = 0,
+	// 内容层
+	GameContent = 1,
+	// 主UI层
+	MainUI = 2,
+	// 面板模块层
+	Module = 3,
+	// tips层
+	Tips = 4,
+	// 引导层
+	Guide = 5,
+	// 警告层
+	Warn = 6,
+}
+/**
+ * 面板对齐方式
+ * */
+enum PanelAlignType
+{
+	/*空*/
+	None = 0,
+	/*中上*/
+	Center_Top = 1,
+	/*中中*/
+	Center_Center = 2,
+	/*中下*/
+	Center_Bottom = 3,
+	/*左上*/
+	Left_Top = 4,
+	/*左中*/
+	Left_Center = 5,
+	/*左下*/
+	Left_Bottom = 6,
+	/*右下*/
+	Right_Top = 7,
+	/*右中*/
+	Right_Center = 8,
+	/*右下*/
+	Right_Bottom = 9,
+}
+/**
+ * 场景层枚举
+ * */
+enum SceneLayer
+{
+	/*无*/
+	None = 0,
+	/*地图层*/
+	Map = 1,
+	/*模型层*/
+	Model = 2,
+	/*特效层*/
+	Effect = 3,
+	/*数字层*/
+	Text = 4,
+}
+/**
+ * 场景类型枚举
+ * */
+enum SceneType
+{
+	None = 0,
+	/**
+	 * 登录场景
+	 */
+	Login = 1,
+	/**
+	 * 大厅
+	 */
+	Hall = 2,
+	/**
+	 * 游戏场景
+	 */
+	Game = 3,
+}
+/**
+ * 面板名枚举 
+ */
+class UIModuleName
+{
+	public static NetworkPanel = "NetworkPanel";
+	/**
+	 * 文本tips面板
+	 */
+	public static TextTipsPanel = "TextTipsPanel";
+	/**
+	 * 提示框
+	 */
+	public static AlertInfoPanel = "AlertInfoPanel";
+	/**
+	 * 加载界面
+	 */
+	public static LoadingPanel = "LoadingPanel";
+	/**
+	 * 登录界面
+	 */
+	public static LoginPanel = "LoginPanel";
+	/**
+	 * 用户协议界面
+	 */
+	public static UserAngreementPanel = "UserAngreementPanel";
+	/**
+	 * 游戏大厅界面
+	 */
+	public static GameHallPanel = "GameHallPanel";
+	/**
+	 * 跑马灯
+	 */
+	public static MarqueePanel = "MarqueePanel";
+	/**
+	 * 充值面板
+	 */
+	public static PayPanel = "PayPanel";
+	/**
+	 * 创建房间面板
+	 */
+	public static CreateRoomPanel = "CreateRoomPanel";
+	/**
+	 * 设置面板
+	 */
+	public static SettingPanel = "SettingPanel";
+	/**
+	 * 文本信息面板 如规则面板
+	 */
+	public static TextInfoPanel = "TextInfoPanel";
+	/**
+	 * 加入房间
+	 */
+	public static JoinInRoomPanel = "JoinInRoomPanel";
+	/**
+	 * 注册面板
+	 */
+	public static RegisterPanel = "RegisterPanel";
+	/**
+	 * 本地登录面板
+	 */
+	public static LoginLocalPanel = "LoginLocalPanel";
+	/**
+	 * 登录场景面板
+	 */
+	public static LoginBar = "LoginBar";
+	/**
+	 * 选择登录方式面板
+	 */
+	public static EnterLoginPanel = "EnterLoginPanel";
+	/**
+	 * 战绩信息面板
+	 */
+	public static RoundInfoPanel = "RoundInfoPanel";
+	/**
+	 * 游戏场景面板
+	 */
+	public static GameScenePanel = "GameScenePanel";
+	/**
+	 * 场景加载切换面板
+	 */
+	public static LoadingSwitchPanel = "LoadingSwitchPanel";
+	/**
+	 * 听牌的详细信息面板
+	 */
+	public static TingInfoPanel = "TingInfoPanel";
+	/**
+	 * 一局的结算信息面板
+	 */
+	public static OnceResultPanel = "OnceResultPanel";
+	/**
+	 * 游戏结束面板
+	 */
+	public static GameOverPanel = "GameOverPanel";
+	/**
+	 * 杠牌选择面板
+	 */
+	public static GangSelectPanel = "GangSelectPanel";
+	/**
+	 * 用户信息面板
+	 */
+	public static UserInfoPanel = "UserInfoPanel";
+	/**
+	 * 登录场景背景界面
+	 */
+	public static LoginSceneBgPanel = "LoginSceneBgPanel";
+	/**
+	 * 房间解散信息面板 只有解散房间的人可以看到
+	 */
+	public static RoomDisbandInfoPanel = "RoomDisbandInfoPanel";
+	/**
+	 * 房间解散操作面板
+	 */
+	public static RoomDisbandOperPanel = "RoomDisbandOperPanel";
+	/**
+	 * 战绩详情面板
+	 */
+	public static RoundDetialsPanel = "RoundDetialsPanel";
+	/**
+	 *游戏分享面板
+	 */
+	public static ShareGamePanel = "ShareGamePanel";
+	/**
+	 *领取房卡功能面板
+	 */
+	public static ActivityPanel = "ActivityPanel";
+    /**
+	 * 正在录音面板
+	 */
+	public static AudioRecordingPanel = "AudioRecordingPanel";
+	 /**
+	 * 会员福利面板
+	 */
+	public static VipWealthPanel="VipWealthPanel"
+	 /**
+	 * 我的奖品面板
+	 */
+	public static MyPrizePanel = "MyPrizePanel";
+	 /**
+	 * 创建角色面板
+	 */
+	public static CreateRolePanel="CreateRolePanel";
+	/**
+	 * 编辑资料面板
+	 */
+	public static EditUserInfoPanel = "EditUserInfoPanel";
+	/**
+	 * 修改昵称面板
+	 */
+	public static ChangeUserNamePanel = "ChangeUserNamePanel";
+	/**
+	 * 商城面板
+	 */
+	public static ShoppingPanel = "ShoppingPanel";
+	/**
+	 * 游戏场面板
+	 */
+	public static PlayingFieldPanel = "PlayingFieldPanel";
+	/**
+	 * 键盘面板
+	 */
+	public static KeyBoardPanel = "KeyBoardPanel";
+	/**
+	 * 进入私人房输入密码面板
+	 */
+	public static EnterRoomPwdPanel = "EnterRoomPwdPanel";
+
+	/**
+	 * 设置面板
+	 */
+	public static SetPanel = "SetPanel";
+	/**
+	 * 玩法面板
+	 */
+	public static GameRulePanel = "GameRulePanel";
+	/**
+	 *  创建私人房输入密码面板
+	 */
+	public static CreateRoomPwdPanel = "CreateRoomPwdPanel";
+	/**
+	 * 保险箱面板
+	*/
+	public static SavePanel = "SavePanel";
+	/**
+	 * 好友面板
+	*/
+	public static FriendPanel = "FriendPanel";
+	/**
+	 * 邮件面板
+	 */
+	public static MailPanel = "MailPanel";
+}
+/**
+ * 皮肤路径枚举
+ * */
+class UISkinName
+{
+	/**
+	 * 文本tips面板
+	 */
+	public static TextTipsPanel = "resource/assets/skins/panel/TextTipsSkin.exml";
+	/**
+	 * 我的奖品面板
+	 */
+	public static MyPrizePanel = "resource/assets/skins/panel/MyPrizePanel.exml";
+	/**
+	 * 确定提示框
+	 */
+	public static AlertInfoPanel = "resource/assets/skins/panel/AlertInfoPanel.exml";
+	/**
+	 * 加载界面
+	 */
+	public static LoadingPanel = "resource/assets/skins/panel/LoadingPanel.exml";
+	/**
+	 * 登录界面
+	 */
+	public static LoginPanel = "resource/assets/skins/panel/LoginPanel.exml";
+	/**
+	 * 用户同意界面
+	 */
+	public static UserAngreementPanel = "resource/assets/skins/panel/UserAngreementPanel.exml";
+	/**
+	 * 游戏大厅界面
+	 */
+	public static GameHallPanel = "resource/assets/skins/panel/GameHallPanel.exml";
+	/**
+	 * 跑马灯界面
+	 */
+	public static MarqueePanel = "resource/assets/skins/panel/MarqueePanel.exml";
+	/**
+	 * 充值面板
+	 */
+	public static PayPanel = "resource/assets/skins/panel/PayPanel.exml";
+	/**
+	 * 创建房间面板
+	 */
+	public static CreateRoomPanel = "resource/assets/skins/panel/CreateRoomPanel.exml";
+	/**
+	 * 设置面板
+	 */
+	public static SettingPanel = "resource/assets/skins/panel/SettingPanel.exml";
+	/**
+	 * 文本信息面板
+	 */
+	public static TextInfoPanel = "resource/assets/skins/panel/TextInfoPanel.exml";
+	/**
+	 * 加入房间
+	 */
+	public static JoinInRoomPanel = "resource/assets/skins/panel/JoinInRoomPanel.exml";
+	/**
+	 * 注册面板
+	 */
+	public static RegisterPanel = "resource/assets/skins/panel/RegisterPanel.exml";
+	/**
+	 * 本地登录面板
+	 */
+	public static LoginLocalPanel = "resource/assets/skins/panel/LoginLocalPanel.exml";
+	/**
+	 * 登录场景面板
+	 */
+	public static LoginBar = "resource/assets/skins/panel/LoginBar.exml";
+	/**
+	 * 选择登录方式面板
+	 */
+	public static EnterLoginPanel = "resource/assets/skins/panel/EnterLoginPanel.exml";
+	/**
+	 * 战绩信息面板
+	 */
+	public static RoundInfoPanel = "resource/assets/skins/panel/RoundInfoPanel.exml";
+	/**
+	 * 游戏场景面板
+	 */
+	public static GameScenePanel = "resource/assets/skins/panel/GameScenePanel.exml";
+	/**
+	 * 场景加载切换面板
+	 */
+	public static LoadingSwitchPanel = "resource/assets/skins/panel/LoadingSwitchPanel.exml";
+	/**
+	 * 显示听牌的详细面板
+	 */
+	public static TingInfoPanel = "resource/assets/skins/panel/TingInfoPanel.exml";
+	/**
+	 * 一局的结算信息面板
+	 */
+	public static OnceResultPanel = "resource/assets/skins/panel/OnceResultPanel.exml";
+	/**
+	 * 游戏结束面板
+	 */
+	public static GameOverPanel = "resource/assets/skins/panel/GameOverPanel.exml";
+	/**
+	 * 杠牌选择面板
+	 */
+	public static GangSelectPanel = "resource/assets/skins/panel/GangSelectPanel.exml";
+	/**
+	 * 用户信息面板
+	 */
+	public static UserInfoPanel = "resource/assets/skins/panel/UserInfoPanel.exml";
+	/**
+	 * 登录场景背景界面
+	 */
+	public static LoginSceneBgPanel = "resource/assets/skins/panel/LoginSceneBgPanel.exml";
+	/**
+	 * 房间解散操作面板
+	 */
+	public static RoomDisbandOperPanel = "resource/assets/skins/panel/RoomDisbandOperPanel.exml";
+	/**
+	 * 房间解散信息面板
+	 */
+	public static RoomDisbandInfoPanel = "resource/assets/skins/panel/RoomDisbandInfoPanel.exml";
+	/**
+	 * 战绩详情面板
+	 */
+	public static RoundDetialsPanel = "resource/assets/skins/panel/RoundDetialsPanel.exml";
+	/**
+	 * 游戏分享面板
+	 */
+	public static ShareGamePanel = "resource/assets/skins/panel/ShareGamePanel.exml";
+	/**
+	 * 领取房卡功能面板
+	 */
+	public static ActivityPanel = "resource/assets/skins/panel/ActivityPanel.exml";
+	/**
+	 * 正在录音面板
+	 */
+	public static AudioRecordingPanel = "resource/assets/skins/panel/AudioRecordingPanel.exml";
+	/**
+	 * 会员福利面板
+	 */
+	public static VipWealthPanel="resource/assets/skins/panel/VipWealthPanel.exml";
+	/**
+	 * 创建角色面板
+	 */
+	public static CreateRolePanel="resource/assets/skins/panel/CreateRolePanel.exml";
+	/**
+	 * 编辑资料面板
+	 */
+	public static EditUserInfoPanel = "resource/assets/skins/panel/EditUserInfoPanel.exml";
+	/**
+	 * 修改昵称面板
+	 */
+	public static ChangeUserNamePanel = "resource/assets/skins/panel/ChangeUserNamePanel.exml";
+	/**
+	 * 商城面板
+	 */
+	public static ShoppingPanel = "resource/assets/skins/panel/ShoppingPanel.exml";
+	/**
+	 * 游戏场面板
+	 */
+	public static PlayingFieldPanel = "resource/assets/skins/panel/PlayingFieldPanel.exml";
+	/**
+	 * 键盘面板
+	 */
+	public static KeyBoardPanel = "resource/assets/skins/panel/KeyBoardPanel.exml";
+	/**
+	 * 设置面板
+	 */
+	public static SetPanel = "resource/assets/skins/panel/SetPanel.exml";
+   	/**
+	 * 玩法面板
+	 */
+    public static GameRulePanel = "resource/assets/skins/panel/GameRulePanel.exml";
+	/**
+	 * 加入私人房密码面板
+	 */
+    public static EnterRoomPwdPanel = "resource/assets/skins/panel/EnterRoomPwdPanel.exml";
+	/**
+	 * 创建私人房密码面板
+	 */
+    public static CreateRoomPwdPanel = "resource/assets/skins/panel/CreateRoomPwdPanel.exml";
+	/**
+	 * 保险箱面板
+	*/
+	public static SavePanel = "resource/assets/skins/panel/SavePanel.exml";
+	/**
+	 * 好友面板
+	*/
+	public static FriendPanel = "resource/assets/skins/panel/FriendPanel.exml";
+	/**
+	 * 邮箱面板
+	 */
+	public static MailPanel="resource/assets/skins/panel/MailPanel.exml";
+}
+
+/**
+ * 项皮肤枚举
+ * */
+class UIRendererSkinName
+{
+	/**
+	 * 充值面板项渲染
+	 */
+	public static PayPanelItemRenderer = "resource/assets/skins/renderer/PayPanelItemRenderer.exml";
+	/**
+	 * 创建房间面板项渲染
+	 */
+	public static CreateRoomPanelRenderer = "resource/assets/skins/renderer/CreateRoomPanelRenderer.exml";
+	/**
+	 * 战绩列表用户信息项
+	 */
+	public static RoundUserItemRenderer = "resource/assets/skins/renderer/RoundUserItemRenderer.exml";
+	/**
+	 * 战绩列表项
+	 */
+	public static RoundUserListItemRenderer = "resource/assets/skins/renderer/RoundUserListItemRenderer.exml";
+	/**
+	 * 手牌项
+	 */
+	public static ShouPaiItemRenderer = "resource/assets/skins/renderer/ShouPaiItemRenderer.exml";
+	/**
+	 * 听牌信息项
+	 */
+	public static TingRenderer = "resource/assets/skins/renderer/tingRenderer.exml";
+	/**
+	 * 结算信息项
+	 */
+	public static OnceResultItemRenderer = "resource/assets/skins/renderer/OnceResultItemRenderer.exml";
+	/**
+	 * 游戏结束一局的积分信息项
+	 */
+	public static OneRoundScoreItemRenderer = "resource/assets/skins/renderer/OneRoundScoreItemRenderer.exml";
+	/**
+	 * 游戏结束项
+	 */
+	public static GameOverItemRenderer = "resource/assets/skins/renderer/GameOverItemRenderer.exml";
+	/**
+	 * 选择杠牌项
+	 */
+	public static GangPaiSelectItemRenderer = "resource/assets/skins/renderer/GangPaiSelectItemRenderer.exml";
+	/**
+	 * 文本项
+	 */
+	public static TextRenderer = "resource/assets/skins/renderer/TextRenderer.exml";
+	/**
+	 * 文本项
+	 */
+	public static RoundDetialsItemRenderer = "resource/assets/skins/renderer/RoundDetialsItemRenderer.exml";
+	/**
+	 * 绑定好友项
+	 */
+	public static BindFriendItemRenderer = "resource/assets/skins/renderer/BindFriendItemRenderer.exml";
+	/**
+	 * 我的礼物项
+	 */
+	public static MyPrizePanelItemRenderer = "resource/assets/skins/renderer/MyPrizePanelItemRenderer.exml";
+	/**
+	 * 商城金币项
+	 */
+	public static GoldListItemRenderer = "resource/assets/skins/renderer/GoldListItemRenderer.exml";
+	/**
+	 * 商城钻石项
+	 */
+	public static DiamondListItemRenderer = "resource/assets/skins/renderer/DiamondListItemrenderer.exml";
+	/**
+	 * 房间列表项
+	 */
+	public static PlayingFieldItemRenderer = "resource/assets/skins/renderer/PlayingFieldItemRenderer.exml";
+	/**
+	 * 好友列表项
+	 */
+	public static FriendItemRenderer = "resource/assets/skins/renderer/FriendItemRenderer.exml";
+	/**
+	 * 成就项
+	 */
+	public static AchievementItemRenderer = "resource/assets/skins/renderer/AchievementItemRenderer.exml";
+	/**
+	 * 邮件项
+	 */
+	public static MailItemRenderer = "resource/assets/skins/renderer/MailItemRenderer.exml";
+	/**
+	 * 礼物项
+	 */
+	public static GiftItemRenderer = "resource/assets/skins/renderer/GiftItemRenderer.exml";
+	/**
+	 * 好友请求项
+	 */
+	public static FriendRequestItemRenderer = "resource/assets/skins/renderer/FriendRequestItemRenderer.exml";
+
+}
+
+/**
+ * 组件皮肤枚举
+ */
+class UIComponentSkinName
+{
+	/**
+	 * 房间玩家信息项
+	 */
+	public static RoomUserHeadInfoComponent: string = "resource/assets/skins/component/RoomUserHeadInfoComponent.exml";
+	/**
+	 * 骰子动画
+	 */
+	public static TouZiComponent: string = "resource/assets/skins/component/TouZiComponent.exml";
+	/**
+	 * 积分特效
+	 */
+	public static ScoreEffectComponent: string = "resource/assets/skins/component/ScoreEffectComponent.exml";
+	/**
+	 * 行为特效
+	 */
+	public static ActionEffectComponent: string = "resource/assets/skins/component/ActionEffectComponent.exml";
+	/**
+	 * 输入数字组件
+	 */
+	public static NumComponent: string = "resource/assets/skins/component/NumComponent.exml";
+	//===========================================================
+	// cardface
+	//===========================================================
+	/**
+	 * 结算的牌面皮肤
+	 */
+	public static OnceResultCardComponet: string = "resource/assets/skins/cardface/ShouPaiSkin.exml";
+    /**
+	 * 通用Icon组件
+	 */
+	public static CommonIcon:string = "resource/assets/skins/component/CommonIcon.exml";
+	/**
+	 * 用户头像信息组件
+	 */
+	public static UserInfoComponent:string = "resource/assets/skins/component/UserInfoComponent.exml";
+	/**
+	 * 按钮
+	 */
+	public static ButtonSkin2:string = "resource/assets/skins/component/buttonSkin2.exml";
+}
+/**
+ * 打出去的牌的皮肤
+ */
+class OutCardSkinName
+{
+	/**
+	 * 本家出牌皮肤
+	 */
+	public static BenJiaOutCard: string = "resource/assets/skins/cardface/BenJiaOutCard.exml";
+	/**
+	 * 下家出牌皮肤
+	 */
+	public static XiaJiaOutCard: string = "resource/assets/skins/cardface/XiaJiaOutCard.exml";
+	/**
+	 * 对家出牌皮肤 
+	 */
+	public static DuiJiaOutCard: string = "resource/assets/skins/cardface/DuiJiaOutCard.exml";
+	/**
+	 * 上家出牌皮肤
+	 */
+	public static ShangJiaOutCard: string = "resource/assets/skins/cardface/ShangJiaOutCard.exml";
+}
+/**
+ * 亮牌皮肤
+ */
+class LiangPaiSkiName
+{
+	/**
+	 * 本家亮牌皮肤
+	 */
+	public static BenJiaLiangCard: string = "resource/assets/skins/cardface/BenJia_LiangPaiSkin.exml";
+	/**
+	 * 下家亮牌皮肤
+	 */
+	public static XiaJiaLiangCard: string = "resource/assets/skins/cardface/XiaJia_LiangPaiSkin.exml";
+	/**
+	 * 对家亮牌皮肤 
+	 */
+	public static DuiJiaLiangCard: string = "resource/assets/skins/cardface/DuiJia_LiangPaiSkin.exml";
+	/**
+	 * 上家亮牌皮肤
+	 */
+	public static ShangJiaLiangCard: string = "resource/assets/skins/cardface/ShangJia_LiangPaiSkin.exml";
+}
+/**
+ * 图片资源路径
+ * */
+class ImageSource
+{
+	/**
+	 * 灰色背景
+	 */
+	public static GrayBg: string = "bg_page4_2_png";
+	/**
+	 * 乘号资源
+	 */
+	public static YellowCheng: string = "yellow_cheng_png";
+	/**
+	 * 暗杠
+	 */
+	public static AnGang: string = "h_angang_png";
+	/**
+	 * 明杠
+	 */
+	public static MingGang: string = "h_minggang_png";
+	/**
+	 * 点杠
+	 */
+	public static DianGang: string = "h_diangang_png";
+	/**
+	 * 买马资源
+	 */
+	public static MaiMa: string = "h_maima_png";
+	/**
+	 * 胡加杠
+	 */
+	public static HuJiaGang: string = "h_hujiagang_png";
+	/**
+	 * 加杠
+	 */
+	public static JiaGang: string = "h_jiagang_png";
+	/**
+	 * 男性图片
+	 */
+	public static MaleImg: string = "boy_png";
+	/**
+	 * 女性图片
+	 */
+	public static FemaleImg: string = "gril_png";
+	/**
+	 * 对家牌墙图片
+	 */
+	public static Card_Wall_DuiJia: string = "up_qiang_png";
+	/**
+	 * 本家牌墙图片
+	 */
+	public static Card_Wall_BenJia: string = "down_qiang_png";
+	/**
+	 * 上家牌墙图片
+	 */
+	public static Card_Wall_ShangJia: string = "L_qiang_png";
+	/**
+	 * 下家牌墙图片
+	 */
+	public static Card_Wall_XiaJia: string = "R_qiang_png";
+	/**
+	 * 本家手牌背景
+	 */
+	public static BenJia_ShouCard_Bg: string = "mj_bg_png";
+	/**
+	 * 下家手牌背景
+	 */
+	public static XiaJia_ShouCard_Bg: string = "L_mj_png";
+	/**
+	 * 对家手牌背景
+	 */
+	public static DuiJia_ShouCard_Bg: string = "up_mj_png";
+	/**
+	 * 上家手牌背景
+	 */
+	public static ShangJia_ShouCard_Bg: string = "L_mj_png";
+	/**
+	 * 打出去的牌的本家背景
+	 */
+	public static Out_BenJia_Bg: string = "down_chu_png";
+	/**
+	 * 打出去的牌的下家背景
+	 */
+	public static Out_XiaJia_Bg: string = "L_chu_png";
+	/**
+	 * 打出去的牌的对家背景
+	 */
+	public static Out_DuiJia_Bg: string = "up_chu_png";
+	/**
+	 * 打出去的牌的上家背景
+	 */
+	public static Out_ShangJia_Bg: string = "L_chu_png";
+	/**
+	 * 听牌的箭头资源
+	 */
+	public static ListenerArrow: string = "h_jt_png";
+
+	/**
+	 * 胡特效
+	 */
+	public static Effect_Hu: string = "effect_hu_png";
+	/**
+	 * 听特效
+	 */
+	public static Effect_Ting: string = "effect_ting_png";
+	/**
+	 * 买马
+	 */
+	public static Effect_MaiMa: string = "effect_maima_png";
+	/**
+	 * 碰特效
+	 */
+	public static Effect_Peng: string = "effect_peng_png";
+	/**
+	 * 杠特效
+	 */
+	public static Effect_Gang: string = "effect_gang_png";
+	/**
+	 * 吃特效
+	 */
+	public static Effect_Chi: string = "effect_chi_png";
+	/**
+	 * 头像
+	 */
+	public static Default_Head: string = "1001_png";
+	/**
+	 * 黄色冒号资源
+	 */
+	public static Yellow_MaoHao: string = "yellow_maohao_png";
+	/**
+	 * 获取行为资源类型
+	 */
+	public static getActionEffectImgSource(action: ActionType)
+	{
+		switch (action)
+		{
+			case ActionType.AnGang:
+			case ActionType.BuGang:
+			case ActionType.Gang:
+				return ImageSource.Effect_Gang;
+			case ActionType.Peng:
+				return ImageSource.Effect_Peng;
+			case ActionType.Hu:
+				return ImageSource.Effect_Hu;
+			case ActionType.Ting:
+				return ImageSource.Effect_Ting;
+			case ActionType.MaiMa:
+				return ImageSource.Effect_MaiMa;
+		}
+	}
+}
+/**
+ * 资源组名
+ */
+class ResGroupName
+{
+	/**
+	 * 游戏启动前的资源
+	 */
+	public static Preload: string = "preload";
+	/**
+	 * 公共资源
+	 */
+	public static Pub: string = "pub";
+	/**
+	 * 游戏大厅资源
+	 */
+	public static Hall: string = "hall";
+	/**
+	 * 麻将牌桌场景资源
+	 */
+	public static Carddesk: string = "carddesk";
+}
+/**
+ * 资源前缀
+ * */
+class ResPrefixName
+{
+	/*地图*/
+	public static Map: string = "map_";
+	/**
+	 * 碰牌杠牌皮肤资源前缀
+	 */
+	public static CardGroup: string = "resource/assets/skins/cardface/";
+	/**
+	 * 红色数字资源前缀
+	 */
+	public static NumRed: string = "red_";
+	/**
+	 * 绿色资源数字前缀
+	 */
+	public static NumGreen: string = "greed_";
+	/**
+	 * 黄色数字资源前缀
+	 */
+	public static NumYellow: string = "yellow_";
+	/**
+	 * 积分 
+	 */
+	public static JiFen: string = "jifen";
+	/**
+	 * 分
+	 */
+	public static Fen: string = "fen";
+}
+/**
+ * 后缀名
+ * */
+class ResSuffixName
+{
+	/*json格式*/
+	public static JSONSuffix: string = "_json";
+	/*png格式*/
+	public static PNGSuffix: string = "_png";
+	/**
+	 * MP3 资源格式
+	 */
+	public static Mp3Suffix: string = ".mp3";
+	/**
+	 * json 资源格式
+	 */
+	public static Json: string = ".json";
+}
+/**
+ * 路径名
+ * */
+class PathName
+{
+	/*地图背景资源路径*/
+	public static Map: string = "resource/assets/map/map_";
+	/**
+	 * 小图片资源
+	 */
+	public static Piece: string = "resource/assets/images/ui/piece/";
+	/**
+	 * 骰子图片
+	 */
+	public static Touzi: string = "dice_";
+	/**
+	 * 音效
+	 */
+	public static Sound: string = "resource/assets/sound/";
+	/**
+	 * 配置表路径
+	 */
+	public static Config: string = "resource/config/";
+}
+/**
+ * 麻将牌型
+ * */
+enum MahJongType
+{
+	None = 0,
+	/*条*/
+	Tiao = 1,
+	/*万*/
+	Wan = 2,
+	/*饼*/
+	Bin = 3,
+	/*箭牌*/
+	Baida = 4
+}
+/**
+ * 字符串静态常量枚举
+ * */
+class StringConstant
+{
+	/*空字符串*/
+	public static empty: string = "";
+	/**
+	 * 点
+	 */
+	public static Dot: string = ".";
+	/**
+	 * 下划线
+	 */
+	public static UnderLine: string = "_";
+	/**
+	 * 逗号
+	 */
+	public static Comma: string = ',';
+}
+/**
+ * 文本信息ID
+ */
+enum TextId
+{
+	None = 0,
+	/**
+	 * 用户协议
+	 */
+	UserAngreement = 1,
+	/**
+	 * 玩法 todo
+	 */
+	PlayWay = 2,
+	/**
+	 * 房卡
+	 */
+	RoomCard = 101,
+	/**
+	 * 版本信息 
+	 */
+	Version = 201,
+	/**
+	 * 信息
+	 */
+	Info = 301,
+}
+/**
+ * 滚动方向
+ */
+enum ScrollViewDirection
+{
+	None = 0,
+	/**
+	 * 水平 从左向右
+	 */
+	Horizontal_L_R = 1,
+	/**
+	 * 垂直从上到下
+	 */
+	Vertical_T_D = 2
+}
+/// <summary>
+/// 运营平台（值要全小写。配置表、服务器连接、版本管理）
+/// </summary>
+class OperatePlatform
+{
+	/**
+	 * 沁游外网-测试的平台
+	 */
+	public static qin = "qin";
+	/**
+	 * 中国
+	 */
+	public static cn = "cn";
+	/**
+	 * 获取当前运营平台
+	 */
+	public static get current()
+	{
+		return OperatePlatform.qin;
+	}
+}
+/// <summary>
+/// 渠道类型(唯一的)
+/// 命名规则为：平台/地区+渠道类型
+/// </summary>
+class ChannelType
+{
+	/// <summary>
+	/// 游客渠道标识，所有平台的游客都是这个标识
+	/// </summary>
+	public static guest = "guest";
+	/// <summary>
+	/// 沁游发行-沁游外网测试的
+	/// </summary>
+	public static qin = "qin";
+}
+/// <summary>
+/// 系统重进类型
+/// </summary>
+enum SystemReenterType
+{
+	/// <summary>
+	/// 正常进入
+	/// </summary>
+	Normal = 1,
+	/// <summary>
+	/// 登出
+	/// </summary>
+	Logout = 2,
+	/// <summary>
+	/// 语言设置
+	/// </summary>
+	LangSetting = 3
+}
+/**
+ * 性别
+ */
+enum Sex
+{
+	/**
+	 * 未知
+	 */
+	Unknown = 0,
+	/**
+	 * 男性
+	 */
+	Male = 1,
+	/**
+	 * 女性
+	 */
+	Female = 2
+}
+/**
+ * 游戏模式
+*/
+enum Pattern
+{
+	/**
+	 * 全下/弃牌模式
+	*/
+	AllIn = 0,
+	/**
+	 * 快速出牌模式
+	*/
+	Fast = 1,
+	/**
+	 * 前注模式
+	*/
+	Ante = 2,
+	/**
+	 * 无上限模式
+	*/
+	NoUpperLimit = 3
+}
+/**
+ * 位置类型
+ */
+enum PosType
+{
+	/**
+	 * 本家
+	 */
+	BenJia = 1,
+	/**
+	 * 下家
+	 */
+	XiaJia = 2,
+	/**
+	 * 对家
+	 */
+	DuiJia = 3,
+	/**
+	 * 上家
+	 */
+	ShangJia = 4
+}
+/**
+ * 碰牌杠牌位置类型
+ */
+enum GroupCardType
+{
+	/**
+	 * 碰下家
+	 */
+	PengXiaJia = 1,
+	/**
+	 * 碰对家
+	 */
+	PengDuiJia = 2,
+	/**
+	 * 碰上家 
+	 */
+	PengShangJia = 3,
+	/**
+	 * 杠下家
+	 */
+	GangXiaJia = 4,
+	/**
+	 * 杠对家
+	 */
+	GangDuiJia = 5,
+	/**
+	 * 杠上家 
+	 */
+	GangShangJia = 6,
+	/**
+	 * 暗杠 
+	 */
+	AnGang = 7
+}
+/**
+ * 行为类型
+ */
+enum ActionType
+{
+	/**
+	 * 碰
+	 */
+	Peng = 1,
+	/**
+	 * 明杠 
+	 */
+	Gang = 2,
+	/**
+	 * 暗杠
+	 */
+	AnGang = 3,
+	/**
+	 * 补杠
+	 */
+	BuGang = 4,
+	/**
+	 * 听牌
+	 */
+	Ting = 5,
+	/**
+	 * 胡牌
+	 */
+	Hu = 6,
+	/**
+	 * 过牌
+	 */
+	Pass = 7,
+	/**
+	 * 买马
+	 */
+	MaiMa = 8,
+}
+/**
+ * 玩家状态
+ */
+enum RoomState
+{
+	/**
+	 * --摸牌
+	 */
+	TAKE = 1,
+	/**
+	 * --出牌
+	 */
+	PUT = 2,
+	/**
+	 * 胡牌
+	 */
+	HU = 3,
+	/**
+	 * 等待的玩家
+	 */
+	WAIT = 4,
+	/**
+	 * 一局结束了
+	 */
+	NIL = 5,
+}
+/**
+ * 玩法的类型
+ */
+enum PlayModeType
+{
+	/**
+	 * 普通玩法
+	 */
+	Usual = 1,
+	/**
+	 * 胡8张
+	 */
+	Hu8 = 2
+}
+/**
+ * 胡牌的结果类型
+ */
+enum HuResultType
+{
+	/**
+	 * 流局 未胡牌
+	 */
+	LiuJu = 0,
+	/**
+	 * 自摸胡
+	 */
+	Usual = 1,
+	/**
+	 * 加杠胡
+	 */
+	JiaGang = 2,
+}
+/**
+ * 资源类型
+ */
+enum NumResType
+{
+	/**
+	 * 红
+	 */
+	Red = 1,
+	/**
+	 * 绿
+	 */
+	Green = 2,
+	/**
+	 * 黄
+	 */
+	Yellow = 3,
+}
+/**
+ * 音效枚举
+ */
+class MusicAction
+{
+	/**
+	 * 牌
+	 */
+	public static pai: string = "1";
+	/**
+	 * 碰
+	 */
+	public static peng: string = "peng";
+	/**
+	 * 胡
+	 */
+	public static hu: string = "hu";
+	/**
+	 * 买马
+	 */
+	public static maima: string = "maima";
+	/**
+	 * 听
+	 */
+	public static ting: string = "ting";
+	/**
+	 * 杠
+	 */
+	public static gang: string = "gang";
+	/**
+	 * 失败
+	 */
+	public static lost: string = "lost";
+	/**
+	 * 胜利
+	 */
+	public static win: string = "win";
+	/**
+	 * 按钮点击
+	 */
+	public static buttonClick: string = "buttonClick";
+	/**
+	 * 卡牌点击
+	 */
+	public static cardClick: string = "cardClick";
+	/**
+	 * 发牌
+	 */
+	public static fapai: string = "fapai";
+}
+/**
+ * 音乐，音效名枚举
+ */
+class MusicResEnum
+{
+	/**
+	 * 登录&大厅
+	 */
+	public static Login_Hall: string = "bg_hall";
+	/**
+	 * 游戏
+	 */
+	public static Game: string = "bg_playing";
+	/**
+	 * 获取背景音乐音效资源
+	 */
+	public static getBgSoundRes(type: SceneType): string
+	{
+		switch (type)
+		{
+			case SceneType.Login:
+			case SceneType.Hall:
+				return MusicResEnum.Login_Hall;
+			case SceneType.Game:
+				return MusicResEnum.Game;
+		}
+		return StringConstant.empty;
+	}
+}
+/**
+ * 积分变化类型
+ */
+enum ScoreChangeType
+{
+	None = 0,
+	/**
+	 * 买马
+	 */
+	MaiMa = 1,
+}
+/**
+ * 分隔符类型
+ */
+class SeparatorType
+{
+	/**
+	 * 分号
+	 */
+	public static semicolon: string = ";";
+}
+/**
+ * 处理房间解散请求的状态标记
+ */
+enum RoomQuitState
+{
+	/**
+	 * 等待选择
+	 */
+	Wait = 0,
+	/**
+	 * 已拒绝
+	 */
+	Refuse = 1,
+	/**
+	 * 已同意
+	 */
+	Argree = 2,
+	/**
+	 * 请求退出标记
+	 */
+	ReqQuit = 3,
+
+}
+/**
+ * 动画数据
+ */
+class MovieClipData
+{
+	/** 
+	 * 骰子动画数据 
+	 */
+	public static SaiZi_Json: string = "saizi_json";
+	/**
+	 * 骰子动画图片
+	 */
+	public static SaiZi_Png: string = "saizi_png";
+}
+
+enum VipCard
+{
+	//周卡id
+	WeekVip = 101,
+	//月卡id
+	MonthVip = 102,
+}
+enum PlayingFieldPattern
+{
+	/**
+	 * 初级场
+	*/
+	PrimaryPattern = 0,
+	/**
+	 * 中级场
+	*/
+	MiddlePattern = 1,
+	/**
+	 * 高级场
+	*/
+	HighPattern = 2
+}

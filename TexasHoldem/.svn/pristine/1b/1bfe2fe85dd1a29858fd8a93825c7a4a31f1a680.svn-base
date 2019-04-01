@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="MatchPanelSkin" width="720" height="856" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing"
+        xmlns:ns1="*" xmlns:tween="egret.tween.*">
+	<w:Config id="15dca2ee5d9" />
+	<e:Group id="anmGroup" width="720" height="100" x="0" y="0">
+		<e:Image id="bg" width="720" height="100" x="0" y="0" source="bg_page4_png"/>
+		<e:Image id="titleImg" width="300" height="80" y="10" source="bg_page3_2_png" x="210" scaleX="1" scaleY="1"/>
+		<e:Button id="closeButton" label="返回" x="50" y="50" skinName="buttonSkin2" width="150" scaleX="0.5" height="80" scaleY="0.9" anchorOffsetX="75" anchorOffsetY="40"/>
+	</e:Group>
+	<e:Group id="anmGroup1" width="720" height="757" x="0" y="100" anchorOffsetY="0">
+		<e:Image width="720" height="751" x="3.67" y="4.03" source="bg_page2_png" scale9Grid="21,20,106,107" anchorOffsetY="0" />
+		<e:Label text="邀请好友" x="50" y="36.67" size="41" bold="true"  textColor="0xfcd232"/>
+		<e:Label text="请选择你要邀请的好友" x="50" y="92.33" size="25"/>
+        <e:Group id="InviteFriendGroup" width="700" height="558" y="179" anchorOffsetX="0" anchorOffsetY="0" name="VIP" x="10">
+			<e:Scroller id="InviteFriend_scroller" width="660" height="474" y="20" anchorOffsetX="0" x="20">	
+			</e:Scroller>
+			<e:List id="InviteFriendList" width="660" height="474" anchorOffsetX="0" anchorOffsetY="0" y="20" x="20">
+			<e:layout>
+				<e:VerticalLayout gap="12" horizontalAlign="center" verticalAlign="top" paddingLeft="0"/>
+			</e:layout>
+			</e:List>
+					<e:CheckBox id="checkAll" label="全选" x="77.5" y="494" anchorOffsetX="0" width="95.33" anchorOffsetY="0" height="51" skinName="CheckBoxSkin1" scaleX="0.8" scaleY="0.8"/>
+					<e:Button id="InviteBtn" label="Button" x="424.5" y="495" skinName="buttonSkin2" anchorOffsetY="0" height="66.33" scaleX="1" scaleY="0.6"/>
+					<e:Label text="发送邀请" x="584" y="510.8" size="24"/>
+		</e:Group>
+	</e:Group>
+</e:Skin>

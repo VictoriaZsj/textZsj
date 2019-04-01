@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="CreateRoomPanelRenderer" width="467" height="91" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing">
+	<e:Group x="130" y="10" anchorOffsetX="0" width="333">
+		<e:Label id="costLabel" text="房卡(     x1)" fontFamily="SimHei" size="30" height="30" x="143.5" textAlign="center" anchorOffsetX="0" textColor="0xa0522b" y="21"/>
+		<e:Image id="costImg" x="228" source="button_8_png" y="1"/>
+		<e:RadioButton id="radioBtn1" label="16局" skinName="RadioButtonSkin1" anchorOffsetX="0" x="0" y="0" width="333"/>
+	</e:Group>
+</e:Skin>

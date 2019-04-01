@@ -1,0 +1,588 @@
+/**
+ * 锦标赛管理
+ */
+class ChampionshipManager
+{
+    /**
+     * 锦标赛赛事列表
+    */
+    public static matchList: Array<MatchRoomInfo>;
+    /**
+     * 锦标赛已报名赛事列表
+    */
+    public static applicationList: Array<MatchRoomInfo>;
+    /**
+     * 我的门票列表
+    */
+    public static myTicketList: Array<ItemInfo>;
+    /**
+     * 最近赛况列表
+    */
+    public static outsList: Array<OutsInfo>;
+    /**
+     * 最近赛况正在展开的列表
+    */
+    public static spreadItem: eui.ToggleSwitch;
+    /**
+     * 最近赛况项子列表
+    */
+    public static childlist: eui.List;
+    /**
+     * 赛况信息
+    */
+    public static matchOutsInfo: MatchOutsInfo;
+    /**
+     * 排名列表
+    */
+    public static rankList: Array<ChampionshipRankInfo>;
+    /**
+     * 盲注列表
+    */
+    public static blindList: Array<ChampionshipBlindDefinition>;
+    /**
+     * 奖品列表
+    */
+    public static awardList: Array<ChampionshipAwardInfo>
+    /**
+     * 进入界面是当前盲注级别
+    */
+    public static nowBlindRank: number;
+
+    /**
+     * 重置数据
+    */
+    public static reset()
+    {
+        ArrayUtil.Clear(ChampionshipManager.applicationList);
+    }
+    public static initialize(result: SpRpcResult)
+    {
+        ChampionshipManager.reset();
+        if (result.data)
+        {
+            if (!ChampionshipManager.applicationList)
+            {
+                ChampionshipManager.applicationList = new Array<MatchRoomInfo>();
+            }
+            for (let def of result.data["applicationList"])
+            {
+                let matchinfo: MatchRoomInfo = new MatchRoomInfo();
+                matchinfo.id = def.id;
+                ChampionshipManager.applicationList.push(matchinfo);
+            }
+        }
+    }
+    /**
+     * 读表获得赛事列表
+    */
+    public static getMatchListInfo()  //todo 赛事的报名人数通过推送过来的数据拿   
+    {
+        ArrayUtil.Clear(ChampionshipManager.matchList);
+        if (!ChampionshipManager.matchList)
+        {
+            ChampionshipManager.matchList = new Array<MatchRoomInfo>();
+        }
+        for (let def of ChampionshipDefined.GetInstance().dataList)
+        {
+            let startTime: number = (<Date>SystemTimeManager.IsInTime(def.timeId, def.displayTime * 1000, true)).getTime();
+            if (startTime != (<Date>TimeManager.Utc1970).getTime())
+            {
+                if ((<Date>SystemTimeManager.GetTodayLastTime(def.timeId)).getTime() >= TimeManager.GetServerUtcTimestamp() * 1000)
+                {
+                    let matchinfo: MatchRoomInfo = new MatchRoomInfo();
+                    let realstartTime: number = ChampionshipManager.isInTime(startTime, def.displayTime * 1000, def.intervalTime * 1000, def.delaySign * 1000, def.loopTimes);
+                    if (realstartTime != (<Date>TimeManager.Utc1970).getTime())
+                    {
+                        //  判断是否已报名该赛事
+                        if (ChampionshipManager.applicationList && ChampionshipManager.applicationList.length > 0)
+                        {
+                            for (let application of ChampionshipManager.applicationList)
+                            {
+                                if (def.id == application.id)
+                                {
+                                    matchinfo.isApply = 1;
+                                    break;
+                                }
+                            }
+                        }
+                        matchinfo.definition = def;
+                        matchinfo.id = def.id;
+                        matchinfo.startTime = Math.floor(realstartTime / 1000);
+                        ChampionshipManager.matchList.push(matchinfo);
+                    }
+                }
+            }
+        }
+        ChampionshipManager.onGetMatchListEvent.dispatch();
+    }
+    /**
+     * return 赛事开始时间的毫秒数
+    * 判断赛事是否显示在列表中
+   */
+    public static isInTime(startTime: number, displayTime: number, intervalTime: number, delaySign: number, loopTimes: number): number
+    {
+        let realstartTime: number;
+        let serverTime: Date = TimeManager.GetServerLocalDateTime();
+        if (intervalTime)
+        {
+            let count: number = Math.floor((TimeManager.GetServerUtcTimestamp() * 1000 - startTime) / intervalTime);
+            if (count < loopTimes)
+            {
+                if (serverTime.getTime() < startTime + intervalTime * count + delaySign)
+                {
+                    realstartTime = startTime + intervalTime * count;
+                } else
+                {
+                    realstartTime = startTime + intervalTime * (count + 1);
+                }
+            } else
+            {
+                return TimeManager.Utc1970.getTime();
+            }
+        } else
+        {
+            realstartTime = startTime;
+        }
+        return realstartTime;
+    }
+    /**
+     * 发送获取赛事详细信息请求
+    */
+    public static reqGetMatchDetailInfo(id: number)
+    {
+        //todo 协议待添加
+        SocketManager.Send(Command.Req_RoomInfo_3002, { id: id }, ChampionshipManager.getMatchDetailInfoResponse);
+    }
+    public static getMatchDetailInfoResponse(result: SpRpcResult)
+    {
+        if (result.data)
+        {
+            //  数据写入待添加
+            ChampionshipManager.onGetMatchDetailEvent.dispatch();
+        }
+    }
+    /*发送获取最近赛况信息请求*/
+    public static reqGetRecentActionInfo()
+    {
+        //todo 协议待添加
+        SocketManager.Send(Command.Req_RoomInfo_3002, ChampionshipManager.getGetRecentActionInfoResponse);
+    }
+    public static getGetRecentActionInfoResponse(result: SpRpcResult)
+    {
+        if (result.data)
+        {
+            ArrayUtil.Clear(ChampionshipManager.outsList);
+            if (!ChampionshipManager.outsList)
+            {
+                ChampionshipManager.outsList = new Array<OutsInfo>();
+            }
+            for (let def of result.data["outsList"])
+            {
+                let championshipPrizeList: Array<ChampionshipPrizeDefinition> = ChampionshipManager.getAwardList(def.id);
+                if (def.rankList && def.rankList.length > 0)
+                {
+                    for (let rank of def.rankList)
+                    {
+                        if (championshipPrizeList && championshipPrizeList.length > 0)
+                        {
+                            for (let championshipPrize of championshipPrizeList)
+                            {
+                                if (rank.rank == championshipPrize.start)
+                                {
+                                    let str: string = "获得";
+                                    let des = ChampionshipManager.getAwardName(def);
+                                    if (des)
+                                    {
+                                        str += des;
+                                        rank.award = str;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                ChampionshipManager.outsList.push(def);
+            }
+            ChampionshipManager.onGetRecentActionInfoEvent.dispatch();
+        }
+    }
+    /**
+     * 发送立即报名的请求
+    */
+    public static reqRequestJoin(id: number, flag: number)
+    {
+        let callback: Function = function (result: SpRpcResult)
+        {
+            let info: MatchRoomInfo = new MatchRoomInfo();
+            for (let def of ChampionshipManager.matchList)
+            {
+                if (def.id == id)
+                {
+                    def.isApply = 1;
+                    def.applyNum++;
+                    info = def;
+                    ChampionshipManager.applicationList.push(info);
+                    break;
+                }
+            }
+            UIManager.showPanel(UIModuleName.JoinChampionshipSuccessPanel, { name: info.definition.name, time: info.startTime, applyNum: info.applyNum, bNum: info.definition.bNum, chip: info.definition.initialChips });
+            ChampionshipManager.onRequestJoinEvent.dispatch();
+        };
+        //todo 协议待添加
+        SocketManager.Send(Command.Req_RoomInfo_3002, callback);
+    }
+    /**
+     * 发送获取赛况请求
+    */
+    public static reqOutsInfo(id: number)
+    {
+        let callback: Function = function (result: SpRpcResult)
+        {
+            if (result.data)
+            {
+                if (!ChampionshipManager.matchOutsInfo)
+                {
+                    ChampionshipManager.matchOutsInfo = new MatchOutsInfo();
+                }
+                if (result.data["blindId"])  //如果赛事尚未开始  盲注id应该返回 1
+                {
+                    ChampionshipManager.nowBlindRank = result.data["blindId"];
+                    let blindInfo: ChampionshipBlindDefinition = ChampionshipBlindDefined.GetInstance().getDefinition(result.data["blindId"]);
+                    if (!blindInfo.preBet)
+                    {
+                        ChampionshipManager.matchOutsInfo.nowAnte = blindInfo.preBet;
+                    }
+                    ChampionshipManager.matchOutsInfo.nowSBlind = blindInfo.sBlind;
+                    ChampionshipManager.matchOutsInfo.nowBBlind = blindInfo.bBlind;
+                    if (ChampionshipManager.blindList && ChampionshipManager.blindList.length > 0 && result.data["blindId"] < ChampionshipManager.blindList.length)
+                    {
+                        blindInfo = ChampionshipBlindDefined.GetInstance().getDefinition(result.data["blindId"] + 1);
+
+                    }
+                    if (!blindInfo.preBet)
+                    {
+                        ChampionshipManager.matchOutsInfo.nextAnte = blindInfo.preBet;
+                    }
+                    ChampionshipManager.matchOutsInfo.nextSBlind = blindInfo.sBlind;
+                    ChampionshipManager.matchOutsInfo.nextBBlind = blindInfo.bBlind;
+                }
+                ChampionshipManager.matchOutsInfo.rank = result.data["rank"];
+                ChampionshipManager.matchOutsInfo.addBlindTime = result.data["addBlindTime"];
+                ChampionshipManager.OnOutsInfoEvent.dispatch();
+            }
+        };
+        //todo 协议待添加
+        SocketManager.Send(Command.Req_RoomInfo_3002, { id: id }, callback);
+    }
+    /**
+     * 发送获取排名的请求
+    */
+    public static reqRankInfo(id: number)
+    {
+        //todo 协议待添加
+        SocketManager.Send(Command.Req_RoomInfo_3002, { id: id }, ChampionshipManager.RankInfoResponse);
+    }
+    public static RankInfoResponse(result: SpRpcResult)
+    {
+        if (result.data && result.data["rankList"])
+        {
+            ArrayUtil.Clear(ChampionshipManager.rankList);
+            if (!ChampionshipManager.rankList)
+            {
+                ChampionshipManager.rankList = new Array<ChampionshipRankInfo>();
+            }
+            for (let def of result.data["rankList"])
+            {
+                let info: ChampionshipRankInfo = new ChampionshipRankInfo();
+                info.copyValueFrom(def);
+                ChampionshipManager.rankList.push(info);
+            }
+        }
+        ChampionshipManager.OnRankInfoEvent.dispatch();
+    }
+
+    /**
+     * 倒计时格式化
+    */
+    public static countDownFormat(number: number, isShowH: boolean)
+    {
+        let h: string;
+        let m: string;
+        let s: string;
+        h = DateTimeUtil.formatCountdown(Math.floor(number / 3600));
+        m = DateTimeUtil.formatCountdown(Math.floor(number / 60));
+        s = DateTimeUtil.formatCountdown(number % 60);
+        if (isShowH)
+        {
+            return h + ":" + m + ":" + s;
+        } else
+        {
+            return m + ":" + s;
+        }
+    }
+    /**
+     * 根据赛事id获得奖励列表
+    */
+    public static getAwardList(id: number): Array<ChampionshipPrizeDefinition>
+    {
+        let championship: ChampionshipDefinition = ChampionshipDefined.GetInstance().getDefinition(id);
+        if (championship)
+        {
+            let championshipPrizeList: Array<ChampionshipPrizeDefinition> = ChampionshipPrizeDefined.GetInstance().getChampionshipPrizeList(championship.prize);
+            if (championshipPrizeList)
+            {
+                return championshipPrizeList;
+            }
+        }
+    }
+    /**
+     * 根据奖品信息获得对应名次的奖励名称
+    */
+    public static getAwardName(championshipPrize: ChampionshipPrizeDefinition): string
+    {
+        let award: AwardDefinition = AwardDefined.GetInstance().getDefinition(championshipPrize.awardId);
+        if (award && award.rewardList && award.rewardList.length > 0)
+        {
+            let str: string = "";
+            for (let i: number = 0; i < award.rewardList.length; i++)
+            {
+                let name: string = ItemDefined.GetInstance().getDefinition(award.rewardList[i].id).name;
+                let count: number = award.rewardList[i].count;
+                if (name && count)
+                {
+                    if (count < 2)
+                    {
+                        str += name;
+                    } else
+                    {
+                        str += count + name;
+                    }
+                    if (award.rewardId && i < award.rewardId.length - 1)
+                    {
+                        str += "、";
+                    }
+                }
+            }
+            return str;
+        }
+    }
+
+    /**
+	 * 请求赛事列表广播事件
+	 */
+    public static onGetMatchListEvent: ActionDispatcher = new ActionDispatcher();
+    /**
+     * 请求赛事详细信息广播事件
+    */
+    public static onGetMatchDetailEvent: ActionDispatcher = new ActionDispatcher();
+    /**
+     * 请求最近赛况信息广播事件
+    */
+    public static onGetRecentActionInfoEvent: ActionDispatcher = new ActionDispatcher();
+    /**
+     * 刷新UI广播事件
+    */
+    public static onRefreshUIEvent: ActionDispatcher = new ActionDispatcher();
+    /**
+     * 立即报名成功广播事件
+    */
+    public static onRequestJoinEvent: ActionDispatcher = new ActionDispatcher();
+    /**
+     * 最近赛况列表点击事件广播
+    */
+    public static onOutsItemClickEvent: ActionDispatcher = new ActionDispatcher();
+    /**
+     * 请求赛况信息广播事件
+    */
+    public static OnOutsInfoEvent: ActionDispatcher = new ActionDispatcher();
+    /**
+     * 请求排名信息广播事件
+    */
+    public static OnRankInfoEvent: ActionDispatcher = new ActionDispatcher();
+}
+
+/**
+ * 锦标赛赛事信息
+*/
+class MatchRoomInfo extends BaseServerValueInfo 
+{
+
+    private _id: number;
+    public get id(): number
+    {
+        return this._id;
+    }
+    public set id(value: number)
+    {
+        this._id = value;
+        this._definition = ChampionshipDefined.GetInstance().getDefinition(value);
+    }
+    private _definition: ChampionshipDefinition
+    public get definition(): ChampionshipDefinition
+    {
+        return this._definition;
+    }
+    public set definition(value: ChampionshipDefinition)
+    {
+        this._definition = value;
+    }
+
+    /**
+     * 已报名人数
+    */
+    public applyNum: number;
+    /**
+     * 赛事开始时间
+    */
+    public startTime: number;
+    /**
+     * 该用户是否已报名该赛事  已报名1 未报名0
+    */
+    public isApply: number;
+
+    public reset()
+    {
+
+    }
+}
+/**
+ * 最近赛况
+*/
+class OutsInfo
+{
+    /**
+     * 赛事id
+    */
+    public id: number;
+    /**
+     * 赛事时间
+    */
+    public time: number;
+    /**
+     * 名字
+    */
+    public name: string;
+    /**
+     * 排名列表
+    */
+    public rankList: Array<ChampionshipRankInfo>;
+}
+/**
+ * 比赛前10或前5玩家信息
+*/
+class ChampionshipRankInfo extends BaseServerValueInfo
+{
+    /**
+     * 玩家id
+    */
+    public id: number
+    /**
+     * 名次
+    */
+    public rank: number;
+    /**
+     * 头像
+    */
+    public head: string;
+    /**
+     * 昵称
+    */
+    public name: string;
+    /**
+     * 奖励的描述
+    */
+    public award: string;
+    /**
+     * 筹码
+    */
+    public num: number;
+
+    public reset()
+    {
+
+    }
+}
+/**
+ * 赛况信息
+*/
+class MatchOutsInfo
+{
+    /**
+     * 我的名次
+    */
+    public rank: number;
+    /**
+     * 涨盲剩余时间
+    */
+    public addBlindTime: number;
+    /**
+     * 当前盲注小盲注
+    */
+    public nowSBlind: number;
+    /**
+     * 当前盲注大盲注
+    */
+    public nowBBlind: number;
+    /**
+     * 当前盲注前注
+    */
+    public nowAnte: number;
+    /**
+     * 下级盲注小盲注
+    */
+    public nextSBlind: number;
+    /**
+     * 下级盲注大盲注
+    */
+    public nextBBlind: number;
+    /**
+     * 下级盲注前注
+    */
+    public nextAnte: number;
+}
+/**
+ * 锦标赛奖励信息
+*/
+class ChampionshipAwardInfo
+{
+    /**
+     * 名次
+    */
+    public rank: number;
+    /**
+     * 奖励名称
+    */
+    public des: string;
+}
+/**
+ * 门票种类
+*/
+enum EntranceTicketType
+{
+    /**
+     * 10元话费门票
+    */
+    TenTelephoneCharge = 101,
+    /**
+     * 100钻石门票
+    */
+    HundredDiamond = 102,
+    /**
+     * 100万金币欢乐赛门票
+    */
+    MillionGold = 103
+}
+/**
+ * 报名该赛事的方式枚举
+*/
+enum JoinChampionshipWay
+{
+    /**
+     * 金币
+    */
+    Gold = 1,
+    /**
+     * 门票
+    */
+    Ticket = 2
+}

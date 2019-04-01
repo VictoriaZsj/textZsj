@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="panelSkin4" width="1280" height="720" xmlns:ns1="*" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing">
+	<e:Group id="tweenGroup" width="700" height="350" verticalCenter="0" horizontalCenter="0">
+		<e:Image width="831" height="482.82" source="bg_page2_png" horizontalCenter="0.5" verticalCenter="26.5" scale9Grid="23,24,99,99" anchorOffsetY="0"/>
+		<e:Image source="bg_page5_png" anchorOffsetX="237.61" verticalCenter="-205.5" horizontalCenter="0" scale9Grid="73,0,143,73" width="344.55"/>
+		<e:Image width="786" height="318.4" anchorOffsetX="0" anchorOffsetY="0" y="13.61" scaleX="1" scaleY="1" scale9Grid="19,18,23,23" source="bg_page19_png" horizontalCenter="0"/>
+		<e:Image scaleX="0.9" scaleY="0.9" anchorOffsetX="0" horizontalCenter="0.5" verticalCenter="-205.5" source="h_jsfjsq_png"/>
+		<e:Label id="infoLabel" text="玩家名字 申请解散放假，请选择是否同意。（超过5分钟未选择，则默认同意）" anchorOffsetX="0" width="603" anchorOffsetY="0" height="143"
+		         verticalAlign="middle" textAlign="center" size="30"  horizontalCenter="0.5" verticalCenter="-58.5" fontFamily="SimHei" textColor="0xa0522b"/>
+		<e:Label id="timeLabel" text="大法师地方" anchorOffsetX="0" width="441" anchorOffsetY="0" height="43" verticalAlign="middle" textAlign="center" size="35" horizontalCenter="0" verticalCenter="40" fontFamily="SimHei" textColor="0xea9f48"/>
+		<ns1:GameButton id="agreeBtn" label="Button" anchorOffsetX="0" skinName="buttonSkin46" y="345.86" x="408.0000000000001"/>
+		<ns1:GameButton id="cancelBtn" label="Button" anchorOffsetX="0" skinName="buttonSkin45" y="345.86" x="95.00000000000006"/>
+		<e:Image id="agreeImg" scaleX="0.9" scaleY="0.9" source="h_yty_png" width="109" height="42" x="301" y="258"/>
+		<e:Image id="refuseImg" scaleX="0.9" scaleY="0.9" source="h_yjj_png" width="109" height="42" y="258" x="301"/>
+	</e:Group>
+</e:Skin>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="huiyuanfuli" width="780" height="540" xmlns:e="http://ns.egret.com/eui">
+	<e:Image source="bg_page11_png" scale9Grid="17,17,13,10" width="780" height="481.82" horizontalCenter="0" y="55.92" anchorOffsetY="0"/>
+	<e:Image y="-1.11" source="bg_page5_png" horizontalCenter="0"/>
+	<e:Label text="会员福利" x="328.85" y="45.06"/>
+	<e:Image width="674.52" height="135" x="48.97" y="160.5" source="bg_page1_png" anchorOffsetX="0" scale9Grid="21,28,53,27"/>
+	<e:Image width="674.52" height="135" x="51.37" y="349.28" source="bg_page1_png" anchorOffsetX="0" scale9Grid="21,28,53,27"/>
+	<e:Label text="会员特权" x="55.92" y="124.04" textColor="0x000000"/>
+	<e:Label text="会员功能权限" x="59.86" y="305.25" textColor="0x000000"/>
+</e:Skin>

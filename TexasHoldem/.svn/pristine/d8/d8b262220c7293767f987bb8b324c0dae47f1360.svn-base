@@ -1,0 +1,19 @@
+/**
+ * 游戏大厅
+ */
+class HallScene extends BaseScene
+{
+	public clear()
+	{
+		UIManager.closePanel(UIModuleName.GameHallPanel);
+	}
+	public initialize(resGpName?: string, isNeedReady?:boolean)
+	{
+		super.initialize(resGpName, isNeedReady);
+	}
+	protected onResourceLoadComplete()
+	{
+		super.onResourceLoadComplete();
+		UIManager.showPanel(UIModuleName.GameHallPanel);
+	}
+}

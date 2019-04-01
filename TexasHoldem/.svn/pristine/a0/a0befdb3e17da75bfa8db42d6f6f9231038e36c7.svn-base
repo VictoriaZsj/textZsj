@@ -1,0 +1,98 @@
+/**
+ * 编辑资料面板 
+ */
+class EditUserInfoPanel extends BasePanel
+{
+    public headImg:eui.Image;//头像
+    public userDesLabel:eui.EditableText;//个性签名
+    public sexMaleButton:eui.RadioButton;//男性选项
+    public sexFemaleButton:eui.RadioButton;//女性选项
+    public sexUnkonwnButton:eui.RadioButton;//保密选项
+    public sexButtonGroup:eui.RadioButtonGroup;//性别选项组
+    public sexGroup:eui.Group;//性别显示组
+    public sexLabel:eui.Label;//性别
+    public ageLabel:eui.EditableText;//年龄
+    
+    public constructor()
+	{
+		super();
+		this.skinName = UISkinName.EditUserInfoPanel;
+
+	}
+
+    public init(appendData: any)
+    {
+        this.sexButtonGroup = new eui.RadioButtonGroup();
+        this.sexMaleButton.group = this.sexButtonGroup;
+        this.sexMaleButton.value = Sex.Male;
+        this.sexFemaleButton.group = this.sexButtonGroup;
+        this.sexFemaleButton.value = Sex.Female;
+        this.sexUnkonwnButton.group = this.sexButtonGroup;
+        this.sexUnkonwnButton.value = Sex.Unknown;
+        this.sexUnkonwnButton.selected = true;
+        this.ageLabel.inputType = egret.TextFieldInputType.TEL;
+        this.ageLabel.restrict = "0-9";
+    }
+
+    protected onRender(event: egret.Event)
+	{
+		super.onRender(event);
+		this.refreshAddressInfo();
+	}
+
+	private refreshAddressInfo()
+	{
+		this.headImg.source = UserManager.userInfo.head;
+		this.userDesLabel.text = UserManager.userInfo.des;
+        this.ageLabel.text = UserManager.userInfo.age.toString();
+        this.sexLabel.text = this.sexButtonGroup.getRadioButtonAt(UserManager.userInfo.sex).label;
+	}
+
+    private saveEdit()
+    {
+        UserManager.userInfo.head = this.headImg.source.toString();
+        UserManager.userInfo.des = this.userDesLabel.text;
+        UserManager.userInfo.age = parseInt(this.ageLabel.text);
+        UserManager.userInfo.sex = this.sexButtonGroup.selectedValue;
+    }
+    protected onEnable(event: eui.UIEvent): void
+    {
+        this.addEventListener(egret.TouchEvent.TOUCH_TAP,this.clickHandler,this);
+        this.sexButtonGroup.addEventListener(egret.Event.CHANGE,this.changeActive,this);
+    }
+
+	protected onDisable(event: eui.UIEvent): void
+    {
+        this.removeEventListener(egret.TouchEvent.TOUCH_TAP,this.clickHandler,this);
+        this.sexButtonGroup.removeEventListener(egret.Event.CHANGE,this.changeActive,this);
+    }
+
+    /**
+	 * 点击面板按钮事件处理
+	*/
+	private clickHandler(event: egret.TouchEvent)
+    {
+        SoundManager.playButtonEffect(event.target);
+        if(this.sexGroup.visible)
+        {
+            this.sexGroup.visible = false;
+        }
+        switch(event.target)
+        {
+            case this.closeButton:
+                this.saveEdit();
+                break;
+            case this.sexLabel:
+                this.sexGroup.visible = true;
+                break;
+        }
+    }
+
+	/**
+	 * 改变选项卡按钮状态
+	*/
+	private changeActive(event: eui.UIEvent)
+    {	
+        this.sexLabel.text = this.sexButtonGroup.selection.label;
+    }
+}

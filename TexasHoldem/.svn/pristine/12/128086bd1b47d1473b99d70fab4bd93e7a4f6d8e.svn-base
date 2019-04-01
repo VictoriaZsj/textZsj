@@ -1,0 +1,101 @@
+/**
+ * 签到面板
+ */
+class SignInPanel extends BasePanel
+{
+    public signInList:eui.List;
+    public signIn_dp:eui.ArrayCollection;
+    public signIn_scroller:eui.Scroller;
+	public threeDay:eui.Label;
+	public fiveDay:eui.Label;
+	public sevenDay:eui.Label;
+	public signInBtn:eui.Button;
+	public today:Date;
+
+	public constructor()
+	{
+		super();
+		this.skinName = UISkinName.SignInPanel;
+	}
+	protected onAwake(event: eui.UIEvent)
+	{
+		super.onAwake(event);
+		this.today=new Date();
+		if(ActivityManager.signHandler.lastTime==this.today)
+		{
+			ActivityManager.signHandler.isTodaySignIn=true;
+		}
+        if(!this.signIn_dp)
+        {
+            this.signIn_dp=new eui.ArrayCollection();
+        }
+        UIUtil.listRenderer(this.signInList, this.signIn_scroller, SignInGoldItemRenderer, ScrollViewDirection.Vertical_T_D, eui.ScrollPolicy.ON, null, true);
+		this.refreshUI();
+	}
+
+	public init(appendData: any)
+	{
+		super.init(appendData);	
+		if(ActivityManager.signHandler.isTodaySignIn)
+		{
+			this.signInBtn.touchEnabled=false;
+			FilterUtil.setGray(this.signInBtn);
+		}
+	}
+	protected onRender(event: egret.Event)
+	{ 
+		super.onRender(event);
+	}
+	protected onEnable(event: eui.UIEvent): void
+	{
+		super.onEnable(event);
+		this.signInBtn.addEventListener(egret.TouchEvent.TOUCH_TAP, this.onClickHandler, this)
+        UIUtil.hideScrollerBar(this.signIn_scroller);
+	}
+	protected onDisable(event: eui.UIEvent): void
+	{
+		super.onDisable(event);
+		this.signInBtn.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.onClickHandler, this)
+	}	
+    protected refreshUI()
+    {
+        this.signIn_dp=new eui.ArrayCollection(ActivityManager.signHandler.signInList);
+		this.signInList.dataProvider=this.signIn_dp;
+		this.defLabel(SignInDay.signInThree);
+		this.defLabel(SignInDay.signInFive);
+        this.defLabel(SignInDay.signInSeven);	
+    }
+	public onClickHandler()
+	{
+		let callBack:Function=function()
+		{		
+			this.isTodaySignIn=true;
+			this.signInBtn.touchEnabled=false;
+			ActivityManager.signHandler.lastTime=TimeManager.GetServerLocalDateTime();
+			ActivityManager.signHandler.signInDayNum=ActivityManager.signHandler.signInDayNum+1;
+		}
+		SocketManager.AddCommandListener(Command.Activity_GetPrize_3202, callBack, this);
+		// SocketManager.Send(Command.Activity_GetPrize_3202, { "Id": Id,"subId":subId});
+	}
+	public defLabel(dayNum:SignInDay)
+	{
+		let awardDef=AwardDefined.GetInstance().getAwardDefinition(ActivityManager.signHandler.signInList[dayNum].definition.pilePrize);
+		for(let def of awardDef.rewardList)
+		{
+			if(dayNum==SignInDay.signInThree)
+			{
+				this.threeDay.text="金币x"+def.count.toString();
+			}
+			if(dayNum==SignInDay.signInFive)
+			{
+				this.fiveDay.text="金币x"+def.count.toString();
+			}
+			if(dayNum=SignInDay.signInSeven)
+			{
+				this.sevenDay.text="钻石x"+def.count.toString();
+
+			}
+		}	
+	}
+	public 
+}

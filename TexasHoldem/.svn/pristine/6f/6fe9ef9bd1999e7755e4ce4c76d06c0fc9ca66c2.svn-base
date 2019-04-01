@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="TingRendererSkin" width="160" height="110" xmlns:e="http://ns.egret.com/eui"
+        xmlns:w="http://ns.egret.com/wing">
+	<e:Image width="158.5" height="109.5"  horizontalCenter="0.5" verticalCenter="1" anchorOffsetX="0" anchorOffsetY="0" source="bg_page26_png" scale9Grid="9,11,43,37"/>
+	<e:Image width="149" height="188" x="6" y="9" scale9Grid="11,12,132,84" source="mj_bg_png" scaleX="0.5" scaleY="0.5" />
+	<e:Image id="face" width="48" height="64" x="15" y="16" scaleX="1.2" scaleY="1.2"  source=""/>
+	<e:Label id="countLabel" text="0张" x="78" y="19" textAlign="center" anchorOffsetX="0" width="77"  textColor="0x308a95" fontFamily="SimHei"/>
+	<e:Label id="allLabel" text="任意牌" x="77" y="22" textAlign="left" anchorOffsetX="0" width="83" size="24"  textColor="0x308a95" fontFamily="SimHei"/>
+</e:Skin>

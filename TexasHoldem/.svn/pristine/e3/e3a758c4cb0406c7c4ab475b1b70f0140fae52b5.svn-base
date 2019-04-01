@@ -1,0 +1,121 @@
+/**
+ * 碰杠牌控制器
+ */
+class GroupCardController
+{
+	private _benJiaGroupHandler: GroupCardHandler;
+	private _xiaJiaGroupHandler: GroupCardHandler;
+	private _duiJiaGroupHandler: GroupCardHandler;
+	private _shangJiaGroupHandler: GroupCardHandler;
+
+	private _handlerMap: Dictionary<PosType, GroupCardHandler>;
+
+	constructor(container: eui.Group, lc: LayerController)
+	{
+		this._benJiaGroupHandler = new GroupCardHandler(PosType.BenJia, lc.getContainer(GameSetting.BenJiaGroupLayer));
+		this._xiaJiaGroupHandler = new GroupCardHandler(PosType.XiaJia, lc.getContainer(GameSetting.XiaJiaGroupLayer));
+		this._duiJiaGroupHandler = new GroupCardHandler(PosType.DuiJia, lc.getContainer(GameSetting.DuiJiaGrouplayer));
+		this._shangJiaGroupHandler = new GroupCardHandler(PosType.ShangJia, lc.getContainer(GameSetting.ShangJiaGroupLayer));
+
+		this._handlerMap = new Dictionary<PosType, GroupCardHandler>();
+		this._handlerMap.add(PosType.BenJia, this._benJiaGroupHandler);
+		this._handlerMap.add(PosType.XiaJia, this._xiaJiaGroupHandler);
+		this._handlerMap.add(PosType.DuiJia, this._duiJiaGroupHandler);
+		this._handlerMap.add(PosType.ShangJia, this._shangJiaGroupHandler);
+	}
+	public addGroup(pos: number, groupType: GroupCardType, card: number)
+	{
+		if (RoomManager.mineInfo)
+		{
+			let posType: PosType = RoomManager.getPosTypeForMine(pos);
+			let handler: GroupCardHandler = this._handlerMap.getValue(posType);
+			handler.addGroup(groupType, card);
+		}
+	}
+	public addBuGangGroup(pos: number, groupType: GroupCardType, card: number)
+	{
+		if (RoomManager.mineInfo)
+		{
+			let posType: PosType = RoomManager.getPosTypeForMine(pos);
+			let handler: GroupCardHandler = this._handlerMap.getValue(posType);
+			if (handler)
+			{
+				handler.addBuGangGroup(groupType, card);
+			}
+		}
+	}
+	/**
+	 * 补杠失败 
+	 */
+	public revertBuGang(pos:number, groupType:GroupCardType, card:number)
+	{
+		if (RoomManager.mineInfo)
+		{
+			let posType: PosType = RoomManager.getPosTypeForMine(pos);
+			let handler: GroupCardHandler = this._handlerMap.getValue(posType);
+			if (handler)
+			{
+				handler.revertBuGang(groupType, card);
+			}
+		}
+	}
+	public showPai()
+	{
+		if (RoomManager.roomInfo && RoomManager.roomInfo.playerList)
+		{
+			let pInfo: PlayerInfo;
+			let cardInfo: GroupCardInfo;
+			let targetPosType: PosType;
+			let groupCardType: GroupCardType;
+			this.clear();
+			for (let i: number = 0; i < RoomManager.roomInfo.playerList.length; i++)
+			{
+				pInfo = RoomManager.roomInfo.playerList[i];
+				if (pInfo.groupList)
+				{
+					pInfo.groupList.sort(this.sortByIndex);
+					for (let j: number = 0; j < pInfo.groupList.length; j++)
+					{
+						cardInfo = pInfo.groupList[j];
+						switch (cardInfo.action)
+						{
+							case ActionType.Peng:
+								targetPosType = RoomManager.getPosType(pInfo.pos, cardInfo.pos);
+								groupCardType = targetPosType - 1;
+								break;
+							case ActionType.Gang:
+							case ActionType.BuGang:
+								targetPosType = RoomManager.getPosType(pInfo.pos, cardInfo.pos);
+								groupCardType = targetPosType + 2;
+								break;
+							case ActionType.AnGang:
+								groupCardType = GroupCardType.AnGang;
+								break;
+						}
+						this.addGroup(pInfo.pos, groupCardType, cardInfo.card);
+					}
+				}
+			}
+		}
+	}
+	public clear()
+	{
+		let list: Array<GroupCardHandler> = this._handlerMap.getValues();
+		for (let handler of list)
+		{
+			handler.clear();
+		}
+	}
+	private sortByIndex(a: GroupCardInfo, b: GroupCardInfo): number
+	{
+		if (a.index > b.index)
+		{
+			return 1;
+		}
+		if (a.index < b.index)
+		{
+			return -1;
+		}
+		return 0;
+	}
+}

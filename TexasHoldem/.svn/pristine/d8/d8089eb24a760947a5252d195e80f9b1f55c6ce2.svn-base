@@ -1,0 +1,91 @@
+[ {
+  "id" : 101,
+  "price" : 6,
+  "type" : 1,
+  "get" : 65000,
+  "img" : "bg_page4_png",
+  "name" : "6.5万金币",
+  "des" : "1元=1.08万"
+}, {
+  "id" : 102,
+  "price" : 18,
+  "type" : 1,
+  "get" : 200000,
+  "img" : "bg_page4_png",
+  "name" : "20万金币",
+  "des" : "1元=1.11万"
+}, {
+  "id" : 103,
+  "price" : 68,
+  "type" : 1,
+  "get" : 860000,
+  "img" : "bg_page4_png",
+  "name" : "86万金币",
+  "des" : "1元=1.26万"
+}, {
+  "id" : 104,
+  "price" : 128,
+  "type" : 1,
+  "get" : 1830000,
+  "img" : "bg_page4_png",
+  "name" : "183万金币",
+  "des" : "1元=1.42万"
+}, {
+  "id" : 105,
+  "price" : 328,
+  "type" : 1,
+  "get" : 5100000,
+  "img" : "bg_page4_png",
+  "name" : "510万金币",
+  "des" : "1元=1.55万"
+}, {
+  "id" : 106,
+  "price" : 648,
+  "type" : 1,
+  "get" : 12000000,
+  "img" : "bg_page4_png",
+  "name" : "1200万金币",
+  "des" : "1元=1.85万"
+}, {
+  "id" : 201,
+  "price" : 6,
+  "type" : 2,
+  "get" : 6,
+  "img" : "bg_page4_png",
+  "name" : "6钻石"
+}, {
+  "id" : 202,
+  "price" : 18,
+  "type" : 2,
+  "get" : 18,
+  "img" : "bg_page4_png",
+  "name" : "18钻石"
+}, {
+  "id" : 203,
+  "price" : 68,
+  "type" : 2,
+  "get" : 68,
+  "img" : "bg_page4_png",
+  "name" : "68钻石"
+}, {
+  "id" : 204,
+  "price" : 128,
+  "type" : 2,
+  "get" : 128,
+  "img" : "bg_page4_png",
+  "name" : "128钻石"
+}, {
+  "id" : 205,
+  "price" : 328,
+  "type" : 2,
+  "get" : 328,
+  "img" : "bg_page4_png",
+  "name" : "328钻石"
+}, {
+  "id" : 206,
+  "price" : 648,
+  "type" : 2,
+  "get" : 648,
+  "img" : "bg_page4_png",
+  "name" : "648钻石"
+} ]

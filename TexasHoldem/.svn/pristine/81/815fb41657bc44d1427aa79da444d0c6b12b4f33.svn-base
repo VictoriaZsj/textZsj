@@ -1,0 +1,243 @@
+/**
+ * 时基
+ */
+class Tick
+{
+	private static _tick: Tick;
+	private _frameUpdateMethodList: Array<TickInfo> = new Array<TickInfo>();//每帧更新
+	private _secondsUpdateMethodList: Array<TickInfo> = new Array<TickInfo>();//1秒更新
+	private _secondsTime: number;
+	private _timeoutList: Array<TickInfo> = new Array<TickInfo>();
+	private _hashCode: number = 0;
+	// private secondsId: number;
+
+	public stage: egret.Stage;
+
+	public static getInstance(): Tick
+	{
+		if (!Tick._tick)
+		{
+			Tick._tick = new Tick();
+		}
+		return Tick._tick;
+	}
+	public initialize(stage: egret.Stage)
+	{
+		this.stage = stage;
+		this._secondsTime = egret.getTimer();
+		this.stage.addEventListener(egret.Event.ENTER_FRAME, this.update, this);
+	}
+	private _deltaTime: number = 0;
+	public get deltaTime(): number
+	{
+		return this._deltaTime;
+	}
+	private _lastStamp: number = 0;
+
+	private SecondsUpdate()
+	{
+		this.runSecondsUpdate(1);
+	}
+	private update(event: egret.Event)
+	{
+		if (this._lastStamp == 0)
+		{
+			this._lastStamp = egret.getTimer();
+		}
+		else
+		{
+			this._deltaTime = egret.getTimer() - this._lastStamp;
+			this._lastStamp = egret.getTimer();
+		}
+		if (this._frameUpdateMethodList != null)
+		{
+			this.runFrameUpdate();
+		}
+
+		let delta: number = egret.getTimer() - this._secondsTime;
+		if (delta >= 1000)
+		{
+			this._secondsTime = egret.getTimer();
+			if (this._secondsUpdateMethodList != null)
+			{
+				this.runSecondsUpdate(delta);
+			}
+		}
+		if (this._timeoutList.length > 0)
+		{
+			let count = this._timeoutList.length;
+			for (let i: number = count - 1; i >= 0; i--)
+			{
+				let info: TickInfo = this._timeoutList[i];
+				if (egret.getTimer() >= info.time)
+				{
+					this._timeoutList.splice(i, 1);
+					info.method();
+					if (this._timeoutList.length < count)
+					{
+						i -= (count - this._timeoutList.length);
+					}
+				}
+			}
+		}
+	}
+	private runFrameUpdate()
+	{
+		for (let func of this._frameUpdateMethodList)
+		{
+			if (func.thisObj)
+			{
+				func.method.call(func.thisObj);
+			}
+			else
+			{
+				func.method();
+			}
+		}
+	}
+	private runSecondsUpdate(delta: number)
+	{
+		for (let func of this._secondsUpdateMethodList)
+		{
+			if (func.thisObj)
+			{
+				func.method.call(func.thisObj);
+			}
+			else
+			{
+				func.method();
+			}
+		}
+	}
+
+	/// <summary>
+	/// 添加帧调用
+	/// </summary>
+	/// <param name="method"></param>
+	public addFrameInvoke(method: Function, thisObject?: any)
+	{
+		if (this.isExist(method, thisObject, this._frameUpdateMethodList))
+		{
+			return;
+		}
+		let tickInfo: TickInfo = new TickInfo();
+		tickInfo.method = method;
+		tickInfo.thisObj = thisObject;
+		this._frameUpdateMethodList.push(tickInfo);
+	}
+
+	/// <summary>
+	/// 移除帧调用
+	/// </summary>
+	/// <param name="method"></param>
+	public removeFrameInvoke(method: Function)
+	{
+		for (let i: number = this._frameUpdateMethodList.length - 1; i >= 0; i--)
+		{
+			if (this._frameUpdateMethodList[i].method == method)
+			{
+				this._frameUpdateMethodList.splice(i, 1);
+			}
+		}
+	}
+	/// <summary>
+	/// 添加秒调用
+	/// </summary>
+	/// <param name="method"></param>
+	public AddSecondsInvoke(method: Function, thisObject?: any)
+	{
+		if (this.isExist(method, thisObject, this._secondsUpdateMethodList))
+		{
+			return;
+		}
+		let tickInfo: TickInfo = new TickInfo();
+		tickInfo.method = method;
+		tickInfo.thisObj = thisObject;
+		this._secondsUpdateMethodList.push(tickInfo);
+	}
+	/// <summary>
+	/// 移除秒调用
+	/// </summary>
+	/// <param name="method"></param>
+	public RemoveSecondsInvoke(method: Function)
+	{
+		for (let i: number = this._secondsUpdateMethodList.length - 1; i >= 0; i--)
+		{
+			if (this._secondsUpdateMethodList[i].method == method)
+			{
+				method['thisObject'] = undefined;
+				this._secondsUpdateMethodList.splice(i, 1);
+			}
+		}
+	}
+	/// <summary>
+	/// 添加超时触发 单位：秒
+	/// </summary>
+	/// <param name="method"></param>
+	/// <param name="delay"></param>
+	/// <returns></returns>
+	public AddTimeoutInvoke(method: Function, delay: number): number
+	{
+		if (delay > 0 && method != null)
+		{
+			let info: TickInfo = new TickInfo();
+			info.id = this._hashCode++;
+			info.method = method;
+			info.time = egret.getTimer() + delay;
+			this._timeoutList.push(info);
+			return info.id;
+		}
+		return 0;
+	}
+	/// <summary>
+	/// 移除超时触发，指定id的
+	/// </summary>
+	/// <param name="id"></param>
+	public RemoveTimeoutInvokeById(id: number)
+	{
+		for (let i: number = 0; i < this._timeoutList.length; i++)
+		{
+			if (this._timeoutList[i].id == id)
+			{
+				this._timeoutList.splice(i, 1);
+				break;
+			}
+		}
+	}
+	/// <summary>
+	/// 移除超时触发，所有method的
+	/// </summary>
+	/// <param name="method"></param>
+	public RemoveTimeoutInvoke(method: Function)
+	{
+		for (let i: number = this._timeoutList.length - 1; i >= 0; i--)
+		{
+			if (this._timeoutList[i].method == method)
+			{
+				method['thisObject'] = undefined;
+				this._timeoutList.splice(i, 1);
+			}
+		}
+	}
+	private isExist(method: Function, thisObject: any, list: Array<TickInfo>)
+	{
+		for (let func of list)
+		{
+			if (func.method == method && func.thisObj == thisObject)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+}
+/**
+ * 时间信息
+ */
+class TickInfo
+{
+	public id: number;
+	public method: Function;
+	public time: number;
+	public thisObj: any;
+}

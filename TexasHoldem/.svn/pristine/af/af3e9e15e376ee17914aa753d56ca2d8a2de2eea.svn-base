@@ -1,0 +1,68 @@
+//通用图标
+class CommonIcon extends BaseComponent<any>
+{
+    public icon : eui.Image;
+    public border: eui.Image;
+
+	public constructor()
+	{
+		super();
+		this.skinName = UIComponentSkinName.CommonIcon;
+	}
+    protected onEnable(event: eui.UIEvent)
+	{
+		super.onEnable(event);
+	}
+    
+    protected onDisable(event:eui.UIEvent)
+    {
+        super.onDisable(event);
+    }
+
+    public init(data:PlayerInfo)
+    {
+        super.init(data);
+    }
+
+    protected rendererStart(event: egret.Event)
+    {
+        UIUtil.ShowHead(this.icon,this.bindData.head);    
+    }
+    
+    public SetMove(x:number,y:number)
+    {
+        this.x = x;
+        this.y = y;
+    }
+
+    public GetIconWidth():number
+    {
+        if(this.icon!=null)
+        {
+            return this.icon.width;
+        }
+        return 0;
+    }
+
+    public GetIconHeight():number
+    {
+        if(this.icon.height!=null)
+        {
+            return this.icon.height;
+        }
+        return 0;
+    }
+
+    public SetGray(isGray)
+    {
+        if(isGray)
+        {
+            FilterUtil.setGray(this.icon);
+        }
+        else
+        {
+            FilterUtil.setEraseGray(this.icon);
+        }
+    }
+
+}

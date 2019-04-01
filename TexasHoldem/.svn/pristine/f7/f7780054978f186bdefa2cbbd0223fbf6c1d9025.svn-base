@@ -1,0 +1,182 @@
+/**
+ * 锦标赛赛事信息面板
+ */
+class ChampionshipInfoPanel extends BasePanel
+{
+    public matchInfoTab: TabComponent;
+    /**
+     * 选项卡内容group
+    */
+    public baseInfoGroup: eui.Group;
+    public outsGroup: eui.Group;
+    /**
+     * 赛事名字
+    */
+    public nameLabel: eui.Label;
+    /**
+     * 报名费
+    */
+    public applicationFeeLabel: eui.Label;
+    /**
+     * 比赛时间
+    */
+    public timeLabel: eui.Label;
+    /**
+     * 参赛人数
+    */
+    public joinNumLabel: eui.Label;
+    /**
+     * 初始筹码
+    */
+    public initChipLabel: eui.Label;
+    /**
+     * 重购group
+    */
+    public rebuyGroup: eui.Group;
+    /**
+     * 增购group
+    */
+    public addonGroup: eui.Group;
+    /**
+     * 重购描述
+    */
+    public rebuyDesLabel: eui.Label;
+    /**
+     * 增购描述
+    */
+    public addonDesLabel: eui.Label;
+    /**
+     * 报名按钮
+    */
+    public applicationBtn: eui.Button;
+    /**
+     * 退赛按钮
+    */
+    public withdrawBtn: eui.Button;
+
+
+    public nthRebuy: number;
+    public nthAddon: number;
+
+    public championshipInfo: MatchRoomInfo = new MatchRoomInfo();
+
+    public constructor()
+    {
+        super();
+        this.skinName = UISkinName.ChampionshipInfoPanel;
+    }
+    protected onAwake(event: eui.UIEvent)
+    {
+        super.onAwake(event);
+        let array: Array<eui.Group> = new Array<eui.Group>();
+        array.push(this.baseInfoGroup);
+        array.push(this.outsGroup);
+        this.matchInfoTab.init(array);
+    }
+    public init(appendData: any)
+    {
+        super.init(appendData);
+        this.championshipInfo = appendData.championshipInfo;
+    }
+    protected onRender(event: egret.Event)
+    {
+        super.onRender(event);
+        this.rebuyGroup.visible = this.addonGroup.visible = this.applicationBtn.visible = this.withdrawBtn.visible = false;
+        this.nameLabel.text = this.championshipInfo.definition.name;
+        this.applicationFeeLabel.text = this.championshipInfo.definition.signCost + "金币" + "+" + this.championshipInfo.definition.serveCost + "服务费 " + "或 " + this.championshipInfo.definition.name + "门票1张";
+        let date: Date = new Date(this.championshipInfo.startTime * 1000);
+        if (this.championshipInfo.definition.delaySign)
+        {
+            this.timeLabel.text = (date.getMonth() + 1) + "-" + date.getDate() + " " + DateTimeUtil.formatDate(date, DateTimeUtil.Format_Standard_NoSecond).split(" ")[1] + "（延迟报名" + Math.floor(this.championshipInfo.definition.delaySign / 60) + "分钟）";
+        } else
+        {
+            this.timeLabel.text = (date.getMonth() + 1) + "-" + date.getDate() + " " + DateTimeUtil.formatDate(date, DateTimeUtil.Format_Standard_NoSecond).split(" ")[1]
+        }
+        this.joinNumLabel.text = this.championshipInfo.definition.sNum + "-" + this.championshipInfo.definition.bNum + "人";
+        this.initChipLabel.text = this.championshipInfo.definition.initialChips.toString();
+        if (this.championshipInfo.definition.rebuy || this.championshipInfo.definition.addon)
+        {
+            this.getChampionshipBlindInfo(this.championshipInfo.definition.blindType);
+        }
+        if (this.championshipInfo.definition.rebuy)
+        {
+            this.rebuyGroup.visible = true;
+            this.rebuyDesLabel.textFlow = (new egret.HtmlTextParser).parser(
+                '可重构比赛，次数：' +
+                '<font color="#ff7f50" size="24">' + this.championshipInfo.definition.rebuy + '次' + '</font>' +
+                '，第' + '<font color="#ff7f50" size="24">' + this.nthRebuy + '</font>' +
+                '个盲注级别前可用' + '<font color="#ff7f50" size="24">' + this.championshipInfo.definition.signCost + '金币' + '</font>' +
+                '兑换' + '<font color="#ff7f50" size="24">' + this.championshipInfo.definition.initialChips + '比赛筹码' + '</font>'
+            );
+        }
+        if (this.championshipInfo.definition.addon)
+        {
+            this.addonGroup.visible = true;
+            this.addonDesLabel.textFlow = (new egret.HtmlTextParser).parser(
+                '可增构比赛，次数：' +
+                '<font color="#ff7f50" size="24">' + this.championshipInfo.definition.addon + '次' + '</font>' +
+                '，第' + '<font color="#ff7f50" size="24">' + this.nthAddon + '</font>' +
+                '个盲注级别前可用' + '<font color="#ff7f50" size="24">' + this.championshipInfo.definition.signCost + '金币' + '</font>' +
+                '兑换' + '<font color="#ff7f50" size="24">' + this.championshipInfo.definition.initialChips * 2 + '比赛筹码' + '</font>'
+            );
+        }
+        if (this.championshipInfo.isApply)
+        {
+            this.withdrawBtn.visible = true;
+        } else
+        {
+            this.applicationBtn.visible = true;
+        }
+    }
+    protected onEnable(event: eui.UIEvent): void
+    {
+        super.onEnable(event);
+        this.matchInfoTab.tabBar.addEventListener(eui.ItemTapEvent.ITEM_TAP, this.onTabClickHandler, this);
+        ChampionshipManager.OnOutsInfoEvent.addListener(this.setOutsInfo, this);
+    }
+    protected onDisable(event: eui.UIEvent): void
+    {
+        super.onDisable(event);
+        this.matchInfoTab.tabBar.removeEventListener(eui.ItemTapEvent.ITEM_TAP, this.onTabClickHandler, this);
+        ChampionshipManager.OnOutsInfoEvent.removeListener(this.setOutsInfo);
+    }
+
+    /**
+     * 设置赛况信息
+    */
+    private setOutsInfo()
+    {
+        
+    }
+    /**
+     * 选项卡点击事件
+    */
+    private onTabClickHandler(e: eui.ItemTapEvent): void
+    {
+        if (e.itemIndex == 1)
+        {
+            // ChampionshipManager.reqOutsInfo(this.championshipInfo.id);
+            UIManager.showFloatTips(this.championshipInfo.id + "");  //todo 测试代码
+        }
+    }
+    /**
+     * 获得盲注重购,增购的信息
+    */
+    private getChampionshipBlindInfo(type: number)
+    {
+        for (let def of ChampionshipBlindDefined.GetInstance().dataList)
+        {
+            if (def.type == type)
+            {
+                if (def.rebuy)
+                {
+                    this.nthRebuy = def.id;
+                }
+                if (def.addon)
+                {
+                    this.nthAddon = def.id;
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,277 @@
+/**
+ * 领取房卡面板
+ */
+class ActivityPanel extends BasePanel
+{
+	public shareID: eui.ToggleButton;
+	public getCard: eui.ToggleButton;
+	public bindToObtainBtn: eui.Button;
+	public friendBtn: eui.Button;
+	public friendCircleBtn: eui.Button;
+	public immediatelyToReceiveBtn: eui.Button;
+	public shareIDGroup: eui.Group;
+	public getCardGroup: eui.Group;
+	public bgImageGroup: eui.Group;
+	public bindGroup: eui.Group;
+	public bindedGroup: eui.Group;
+	public inviteFriendInfoGroup: eui.Group;
+	public anmGroup1: eui.Group;
+	public friendBindCardGetNum: eui.Label;
+	public yourBindCardGetNum: eui.Label;
+	public playFriendGetNum: eui.Label;
+	public playYourGetNum: eui.Label;
+	public getShareCardMaxNum: eui.Label;
+	public shareIdNum: eui.Label;
+	public hasBringCardNum: eui.Label;
+	public notBringCardNum: eui.Label;
+	public shareIdEditableText: eui.EditableText;
+	public scroller: eui.Scroller;
+	public list: eui.List;
+	public activeBtnFlage;
+	public _ly: eui.TileLayout;
+	public _dp: eui.ArrayCollection;
+	public hasbringcardnumber: number;
+	public notbringcardnumber: number;
+	public constructor()
+	{
+		super();
+		this._isMaskClickClose = true;
+		this.skinName = UISkinName.ActivityPanel;
+	}
+	protected onAwake(event: eui.UIEvent)
+	{
+		super.onAwake(event);
+		this.shareIDGroup.touchEnabled = this.bgImageGroup.touchEnabled = this.getCardGroup.touchEnabled = false;
+	}
+	public init(appendData: any)
+	{
+		super.init(appendData);
+	}
+	protected rendererStart(event: egret.Event)
+	{
+		super.rendererStart(event);
+		this.shareID.selected = true;
+		this.getCard.selected = false;
+		this.shareIDGroup.visible = true;
+		this.getCardGroup.visible = false;
+		this.bindedGroup.visible = false;
+		this.bindGroup.visible = false;
+		this.activeBtnFlage = this.shareID;
+		this.shareIdEditableText.text = "";
+		this.refreshUI();
+	}
+	protected onEnable(event: eui.UIEvent): void
+	{
+		super.onEnable(event);
+		this.addEventListener(egret.TouchEvent.TOUCH_TAP, this.clickHandler, this);
+		this.shareID.addEventListener(egret.Event.CHANGE, this.changeActive, this);
+		this.getCard.addEventListener(egret.Event.CHANGE, this.changeActive, this);
+		BringCardManager.onGetBringCardEa.addListener(this.setBindFriendListInfo, this);
+		BringCardManager.onRefreshGetCardUIEa.addListener(this.setGetCardUIInfo, this);
+		BringCardManager.onBindEa.addListener(this.setInfo, this);
+	}
+	protected onDisable(event: eui.UIEvent): void
+	{
+		super.onDisable(event);
+		this.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.clickHandler, this);
+		this.shareID.removeEventListener(egret.Event.CHANGE, this.changeActive, this);
+		this.getCard.removeEventListener(egret.Event.CHANGE, this.changeActive, this);
+		BringCardManager.onGetBringCardEa.removeListener(this.setBindFriendListInfo);
+		BringCardManager.onRefreshGetCardUIEa.removeListener(this.setGetCardUIInfo);
+		BringCardManager.onBindEa.removeListener(this.setInfo);
+	}
+	/**
+	 * 设置面板信息
+	*/
+	private setInfo()
+	{
+		if (BringCardManager.isGotShare)
+		{
+			this.bindGroup.visible = false;
+			this.bindedGroup.visible = true;
+		}
+		else
+		{
+			this.bindGroup.visible = true;
+			this.bindedGroup.visible = false;
+		}
+	}
+	/**
+	 * 改变选项卡按钮状态
+	*/
+	private changeActive(event: egret.TouchEvent)
+	{
+		event.target.selected = true;
+		if (event.target != this.activeBtnFlage)
+		{
+			this.activeBtnFlage.selected = false;
+			this.activeBtnFlage = event.target;
+		}
+	}
+	/**
+	 * 点击绑定按钮执行事件
+	*/
+	private sendBindReq()
+	{
+		let shareId: string = this.shareIdEditableText.text.trim();
+		if (!shareId)
+		{
+			UIManager.showFloatTips("请输入好友的邀请码");
+			return;
+		}
+		BringCardManager.reqBindId(shareId);
+	}
+	/**
+	 * 立即领取点击事件更新页面数据处理
+	*/
+	private setGetCardUIInfo()
+	{
+		this.notBringCardNum.text = "0";
+		this.hasBringCardNum.text = this.hasbringcardnumber + this.notbringcardnumber + "张";
+		for (let obj of BringCardManager.bindFriendList)
+		{
+			if (obj.isRound)
+			{
+				if (!obj.isGotRound)
+				{
+					obj.isGotShare = 1;
+				}
+			}
+			if (!obj.isGotShare)
+			{
+				obj.isGotShare = 1;
+			}
+		}
+	}
+	/**
+	 * 可领取按钮点击事件写入数据处理
+	*/
+	private setBindFriendListInfo()
+	{
+		this.hasbringcardnumber = 0;
+		this.notbringcardnumber = 0;
+		BringCardManager.index = 0;
+		this.scroller.viewport = this.inviteFriendInfoGroup;
+		this.scroller.viewport.scrollV = 0;
+		this.scroller.scrollPolicyH = eui.ScrollPolicy.OFF;
+		this.scroller.scrollPolicyV = eui.ScrollPolicy.AUTO;
+		let infoList = BringCardManager.bindFriendList;
+		if (infoList)
+		{
+			for (let obj of infoList)
+			{
+				if (obj.isRound)
+				{
+					if (obj.isGotRound)
+					{
+						this.hasbringcardnumber += 3;
+					} else
+					{
+						this.notbringcardnumber += 3;
+					}
+				}
+				if (obj.isGotShare)
+				{
+					this.hasbringcardnumber += 3;
+				} else
+				{
+					this.notbringcardnumber += 3;
+				}
+			}
+			if (this.hasbringcardnumber >= 50)
+			{
+				this.hasbringcardnumber = 50;
+				this.notbringcardnumber = 0;
+			}
+			if (this.hasbringcardnumber < 50)
+			{
+				if (this.hasbringcardnumber + this.notbringcardnumber > 50)
+				{
+					this.notbringcardnumber = 50 - this.hasbringcardnumber;
+				}
+			}
+			let len: number = infoList.length;
+			this._ly = UIUtil.getHTileLayout(0, len, egret.HorizontalAlign.CENTER);
+			this.list.layout = this._ly;
+			this.list.itemRenderer = BindFriendItemRenderer;
+			this._dp = new eui.ArrayCollection(infoList);
+			this.list.dataProvider = this._dp;
+			this.hasBringCardNum.text = StringUtil.format('{0}张', this.hasbringcardnumber);
+			this.notBringCardNum.text = this.notbringcardnumber.toString();
+			if (this.notbringcardnumber == 0)
+			{
+				FilterUtil.setGray(this.immediatelyToReceiveBtn);
+				this.immediatelyToReceiveBtn.enabled = false;
+			} else
+			{
+				FilterUtil.setEraseGray(this.immediatelyToReceiveBtn);
+				this.immediatelyToReceiveBtn.enabled = true;
+			}
+		} else
+		{
+			this.list.dataProvider = new eui.ArrayCollection();
+			this.hasBringCardNum.text = "0张";
+			this.notBringCardNum.text = "0";
+			FilterUtil.setGray(this.immediatelyToReceiveBtn);
+			this.immediatelyToReceiveBtn.enabled = false;
+			this.scroller.scrollPolicyV = eui.ScrollPolicy.OFF;
+		}
+	}
+	/**
+	 * 刷新UI界面
+	*/
+	private refreshUI()
+	{
+		let bindbringCardList = ProjectDefined.GetInstance().getValue("bringRoomCard");
+		if (bindbringCardList.length > 1)
+		{
+			this.friendBindCardGetNum.text = StringUtil.format('{0}张房卡', bindbringCardList[0].friend);
+			this.yourBindCardGetNum.text = StringUtil.format('{0}张房卡', bindbringCardList[0].your);
+			this.playFriendGetNum.text = StringUtil.format('{0}张房卡', bindbringCardList[1].friend);
+			this.playYourGetNum.text = StringUtil.format('{0}张房卡', bindbringCardList[1].your);
+		}
+		this.getShareCardMaxNum.text = StringUtil.format('提示：您最多可累计获得{0}张房卡奖励', ProjectDefined.GetInstance().getValue("getShareCardMaxNum"));
+		if (BringCardManager.shareId)
+		{
+			this.shareIdNum.text = BringCardManager.shareId;
+		}
+		this.setInfo();
+	}
+	/**
+	 * 点击面板按钮事件处理
+	*/
+	private clickHandler(event: egret.TouchEvent)
+	{
+		SoundManager.playButtonEffect(event.target);
+		switch (event.target)
+		{
+			case this.shareID:
+				SoundManager.playButtonEffect(event.target);
+				this.shareIDGroup.visible = true;
+				this.getCardGroup.visible = false;
+				break;
+			case this.getCard:
+				SoundManager.playButtonEffect(event.target);
+				this.shareIDGroup.visible = false;
+				this.getCardGroup.visible = true;
+				BringCardManager.reqGetBindFriendList();
+				break;
+			case this.bindToObtainBtn:
+				SoundManager.playButtonEffect(event.target);
+				this.sendBindReq();
+				break;
+			case this.friendBtn:
+				SoundManager.playButtonEffect(event.target);
+				UIManager.showFloatTips("好友/圈");
+				break;
+			case this.friendCircleBtn:
+				SoundManager.playButtonEffect(event.target);
+				UIManager.showFloatTips("朋友圈");
+				break;
+			case this.immediatelyToReceiveBtn:
+				SoundManager.playButtonEffect(event.target);
+				BringCardManager.reqBringCard(this.immediatelyToReceiveBtn);
+				break;
+		}
+	}
+}

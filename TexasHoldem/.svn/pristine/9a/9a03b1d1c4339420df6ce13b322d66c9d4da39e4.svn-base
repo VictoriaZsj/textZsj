@@ -1,0 +1,2802 @@
+{
+    "eui.ArrayCollection": {
+        "default": "source",
+        "source": "Array",
+        "super": "egret.EventDispatcher",
+        "length": "number"
+    },
+    "eui.DataGroup": {
+        "default": "dataProvider",
+        "itemRenderer": "Class",
+        "itemRendererSkinName": "Class",
+        "dataProvider": "eui.ICollection",
+        "super": "eui.Group",
+        "useVirtualLayout": "boolean",
+        "itemRendererFunction": "__type",
+        "numElements": "number"
+    },
+    "eui.Group": {
+        "default": "elementsContent",
+        "elementsContent": "Array",
+        "states": "State[]",
+        "left": "Percentage",
+        "right": "Percentage",
+        "top": "Percentage",
+        "bottom": "Percentage",
+        "horizontalCenter": "Percentage",
+        "verticalCenter": "Percentage",
+        "super": "egret.DisplayObjectContainer",
+        "layout": "eui.LayoutBase",
+        "contentWidth": "number",
+        "contentHeight": "number",
+        "scrollEnabled": "boolean",
+        "scrollH": "number",
+        "scrollV": "number",
+        "numElements": "number",
+        "touchThrough": "boolean",
+        "currentState": "string",
+        "hasState": "__type",
+        "initializeStates": "any",
+        "commitCurrentState": "any",
+        "initializeUIValues": "any",
+        "includeInLayout": "boolean",
+        "percentWidth": "number",
+        "percentHeight": "number",
+        "explicitWidth": "number",
+        "explicitHeight": "number",
+        "minWidth": "number",
+        "maxWidth": "number",
+        "minHeight": "number",
+        "maxHeight": "number"
+    },
+    "eui.Panel": {
+        "default": "elementsContent",
+        "elementsContent": "Array",
+        "super": "eui.Component",
+        "closeButton": "eui.Button",
+        "moveArea": "egret.DisplayObject",
+        "titleDisplay": "eui.IDisplayText",
+        "title": "string",
+        "offsetPointX": "any",
+        "offsetPointY": "any"
+    },
+    "eui.Scroller": {
+        "default": "viewport",
+        "viewport": "eui.IViewport",
+        "super": "eui.Component",
+        "bounces": "boolean",
+        "throwSpeed": "number",
+        "horizontalScrollBar": "eui.HScrollBar",
+        "verticalScrollBar": "eui.VScrollBar",
+        "scrollPolicyV": "string",
+        "scrollPolicyH": "string",
+        "downTarget": "any"
+    },
+    "eui.Skin": {
+        "default": "elementsContent",
+        "elementsContent": "Array",
+        "states": "State[]",
+        "super": "egret.EventDispatcher",
+        "skinParts": "Array",
+        "maxWidth": "number",
+        "minWidth": "number",
+        "maxHeight": "number",
+        "minHeight": "number",
+        "width": "number",
+        "height": "number",
+        "hostComponent": "eui.Component",
+        "currentState": "string",
+        "hasState": "__type",
+        "initializeStates": "any",
+        "commitCurrentState": "any"
+    },
+    "eui.State": {
+        "default": "overrides",
+        "super": "egret.HashObject",
+        "name": "string",
+        "overrides": "Array",
+        "stateGroups": "Array"
+    },
+    "egret.BitmapText": {
+        "font": "string",
+        "super": "egret.DisplayObject",
+        "smoothing": "boolean",
+        "text": "string",
+        "lineSpacing": "number",
+        "letterSpacing": "number",
+        "textAlign": "string",
+        "verticalAlign": "string",
+        "textWidth": "number",
+        "textHeight": "number",
+        "textLines": "any"
+    },
+    "eui.Component": {
+        "skinName": "Class",
+        "left": "Percentage",
+        "right": "Percentage",
+        "top": "Percentage",
+        "bottom": "Percentage",
+        "horizontalCenter": "Percentage",
+        "verticalCenter": "Percentage",
+        "super": "egret.DisplayObjectContainer",
+        "hostComponentKey": "string",
+        "skin": "eui.Skin",
+        "enabled": "boolean",
+        "currentState": "string",
+        "initializeUIValues": "any",
+        "includeInLayout": "boolean",
+        "percentWidth": "number",
+        "percentHeight": "number",
+        "explicitWidth": "number",
+        "explicitHeight": "number",
+        "minWidth": "number",
+        "maxWidth": "number",
+        "minHeight": "number",
+        "maxHeight": "number"
+    },
+    "eui.BitmapLabel": {
+        "left": "Percentage",
+        "right": "Percentage",
+        "top": "Percentage",
+        "bottom": "Percentage",
+        "horizontalCenter": "Percentage",
+        "verticalCenter": "Percentage",
+        "super": "egret.BitmapText",
+        "initializeUIValues": "any",
+        "includeInLayout": "boolean",
+        "percentWidth": "number",
+        "percentHeight": "number",
+        "explicitWidth": "number",
+        "explicitHeight": "number",
+        "minWidth": "number",
+        "maxWidth": "number",
+        "minHeight": "number",
+        "maxHeight": "number"
+    },
+    "eui.Image": {
+        "scale9Grid": "egret.Rectangle",
+        "left": "Percentage",
+        "right": "Percentage",
+        "top": "Percentage",
+        "bottom": "Percentage",
+        "horizontalCenter": "Percentage",
+        "verticalCenter": "Percentage",
+        "super": "egret.Bitmap",
+        "fillMode": "string",
+        "sourceChanged": "any",
+        "source": "string | Texture",
+        "initializeUIValues": "any",
+        "includeInLayout": "boolean",
+        "percentWidth": "number",
+        "percentHeight": "number",
+        "explicitWidth": "number",
+        "explicitHeight": "number",
+        "minWidth": "number",
+        "maxWidth": "number",
+        "minHeight": "number",
+        "maxHeight": "number"
+    },
+    "eui.sys.UIComponentImpl": {
+        "left": "Percentage",
+        "right": "Percentage",
+        "top": "Percentage",
+        "bottom": "Percentage",
+        "horizontalCenter": "Percentage",
+        "verticalCenter": "Percentage",
+        "super": "egret.DisplayObject",
+        "includeInLayout": "boolean",
+        "percentWidth": "number",
+        "percentHeight": "number",
+        "explicitWidth": "number",
+        "explicitHeight": "number",
+        "minWidth": "number",
+        "maxWidth": "number",
+        "minHeight": "number",
+        "maxHeight": "number"
+    },
+    "eui.Label": {
+        "left": "Percentage",
+        "right": "Percentage",
+        "top": "Percentage",
+        "bottom": "Percentage",
+        "horizontalCenter": "Percentage",
+        "verticalCenter": "Percentage",
+        "super": "egret.TextField",
+        "style": "string",
+        "initializeUIValues": "any",
+        "includeInLayout": "boolean",
+        "percentWidth": "number",
+        "percentHeight": "number",
+        "explicitWidth": "number",
+        "explicitHeight": "number",
+        "minWidth": "number",
+        "maxWidth": "number",
+        "minHeight": "number",
+        "maxHeight": "number"
+    },
+    "cardfaceSkin6": {
+        "super": "eui.Skin"
+    },
+    "cardfaceSkin4": {
+        "super": "eui.Skin"
+    },
+    "cardfaceSkin7": {
+        "super": "eui.Skin"
+    },
+    "cardfaceSkin3": {
+        "super": "eui.Skin"
+    },
+    "cardfaceSkin2": {
+        "super": "eui.Skin"
+    },
+    "cardfaceSkin24": {
+        "super": "eui.Skin"
+    },
+    "cardfaceSkin26": {
+        "super": "eui.Skin"
+    },
+    "cardfaceSkin27": {
+        "super": "eui.Skin"
+    },
+    "cardfaceSkin23": {
+        "super": "eui.Skin"
+    },
+    "cardfaceSkin22": {
+        "super": "eui.Skin"
+    },
+    "cardfaceSkin16": {
+        "super": "eui.Skin"
+    },
+    "cardfaceSkin14": {
+        "super": "eui.Skin"
+    },
+    "cardfaceSkin17": {
+        "super": "eui.Skin"
+    },
+    "cardfaceSkin12": {
+        "super": "eui.Skin"
+    },
+    "cardfaceSkin13": {
+        "super": "eui.Skin"
+    },
+    "cardfaceSkin1": {
+        "super": "eui.Skin"
+    },
+    "cardfaceSkin36": {
+        "super": "eui.Skin"
+    },
+    "cardfaceSkin34": {
+        "super": "eui.Skin"
+    },
+    "cardfaceSkin37": {
+        "super": "eui.Skin"
+    },
+    "cardfaceSkin32": {
+        "super": "eui.Skin"
+    },
+    "cardfaceSkin33": {
+        "super": "eui.Skin"
+    },
+    "caozuoSkin": {
+        "super": "eui.Skin"
+    },
+    "CheckBoxSkin1": {
+        "super": "eui.Skin"
+    },
+    "GangBtn": {
+        "super": "eui.Skin"
+    },
+    "guoBtn": {
+        "super": "eui.Skin"
+    },
+    "HSliderSkin1": {
+        "super": "eui.Skin"
+    },
+    "buttonSkin20": {
+        "super": "eui.Skin"
+    },
+    "NumRenderer": {
+        "super": "eui.Skin"
+    },
+    "PengBtn": {
+        "super": "eui.Skin"
+    },
+    "ProgressBarSkin1": {
+        "super": "eui.Skin"
+    },
+    "PromptComponent": {
+        "super": "eui.Skin"
+    },
+    "RadioButtonSkin1": {
+        "super": "eui.Skin"
+    },
+    "itemRenderer2": {
+        "super": "eui.Skin"
+    },
+    "RoundUserItemComponent": {
+        "super": "eui.Skin"
+    },
+    "jifenSkin": {
+        "super": "eui.Skin"
+    },
+    "TingBtn": {
+        "super": "eui.Skin"
+    },
+    "touziSkin": {
+        "super": "eui.Skin"
+    },
+    "UserHeadInfoSkin": {
+        "super": "eui.Skin"
+    },
+    "buttonSkin1": {
+        "super": "eui.Skin"
+    },
+    "buttonSkin10": {
+        "super": "eui.Skin"
+    },
+    "buttonSkin11": {
+        "super": "eui.Skin"
+    },
+    "buttonSkin12": {
+        "super": "eui.Skin"
+    },
+    "buttonSkin13": {
+        "super": "eui.Skin"
+    },
+    "buttonSkin14": {
+        "super": "eui.Skin"
+    },
+    "buttonSkin15": {
+        "super": "eui.Skin"
+    },
+    "buttonSkin16": {
+        "super": "eui.Skin"
+    },
+    "buttonSkin17": {
+        "super": "eui.Skin"
+    },
+    "buttonSkin18": {
+        "super": "eui.Skin"
+    },
+    "buttonSkin19": {
+        "super": "eui.Skin"
+    },
+    "buttonSkin2": {
+        "super": "eui.Skin"
+    },
+    "buttonSkin21": {
+        "super": "eui.Skin"
+    },
+    "buttonSkin22": {
+        "super": "eui.Skin"
+    },
+    "buttonSkin23": {
+        "super": "eui.Skin"
+    },
+    "buttonSkin39": {
+        "super": "eui.Skin"
+    },
+    "buttonSkin4": {
+        "super": "eui.Skin"
+    },
+    "buttonSkin40": {
+        "super": "eui.Skin"
+    },
+    "buttonSkin5": {
+        "super": "eui.Skin"
+    },
+    "buttonSkin8": {
+        "super": "eui.Skin"
+    },
+    "buttonSkin9": {
+        "super": "eui.Skin"
+    },
+    "buttonSkin7": {
+        "super": "eui.Skin"
+    },
+    "buttonSkin24": {
+        "super": "eui.Skin"
+    },
+    "buttonSkin25": {
+        "super": "eui.Skin"
+    },
+    "buttonSkin26": {
+        "super": "eui.Skin"
+    },
+    "buttonSkin27": {
+        "super": "eui.Skin"
+    },
+    "buttonSkin28": {
+        "super": "eui.Skin"
+    },
+    "buttonSkin29": {
+        "super": "eui.Skin"
+    },
+    "buttonSkin3": {
+        "super": "eui.Skin"
+    },
+    "buttonSkin30": {
+        "super": "eui.Skin"
+    },
+    "buttonSkin31": {
+        "super": "eui.Skin"
+    },
+    "buttonSkin32": {
+        "super": "eui.Skin"
+    },
+    "buttonSkin33": {
+        "super": "eui.Skin"
+    },
+    "buttonSkin34": {
+        "super": "eui.Skin"
+    },
+    "buttonSkin35": {
+        "super": "eui.Skin"
+    },
+    "buttonSkin36": {
+        "super": "eui.Skin"
+    },
+    "buttonSkin37": {
+        "super": "eui.Skin"
+    },
+    "buttonSkin38": {
+        "super": "eui.Skin"
+    },
+    "buttonSkin6": {
+        "super": "eui.Skin"
+    },
+    "toggleSwitchSkin1": {
+        "super": "eui.Skin"
+    },
+    "panelSkin4": {
+        "super": "eui.Skin"
+    },
+    "panelSkin13": {
+        "super": "eui.Skin"
+    },
+    "panelSkin1": {
+        "super": "eui.Skin"
+    },
+    "panelSkin5": {
+        "super": "eui.Skin"
+    },
+    "panelSkin18": {
+        "super": "eui.Skin"
+    },
+    "panelSkin19": {
+        "super": "eui.Skin"
+    },
+    "GangSelectPanelSkin": {
+        "super": "eui.Skin"
+    },
+    "panelSkin21": {
+        "super": "eui.Skin"
+    },
+    "LoadingPanel1": {
+        "super": "eui.Skin"
+    },
+    "LoginBarPanelSkin": {
+        "super": "eui.Skin"
+    },
+    "LoginSceneBgPanelSkin": {
+        "super": "eui.Skin"
+    },
+    "panelSkin6": {
+        "super": "eui.Skin"
+    },
+    "panelSkin17": {
+        "super": "eui.Skin"
+    },
+    "panelSkin12": {
+        "super": "eui.Skin"
+    },
+    "panelSkin22": {
+        "super": "eui.Skin"
+    },
+    "panelSkin7": {
+        "super": "eui.Skin"
+    },
+    "panelSkin11": {
+        "super": "eui.Skin"
+    },
+    "panelSkin9": {
+        "super": "eui.Skin"
+    },
+    "TextTipsSkin": {
+        "super": "eui.Skin"
+    },
+    "TingResultPanel": {
+        "super": "eui.Skin"
+    },
+    "panelSkin2": {
+        "super": "eui.Skin"
+    },
+    "panelSkin15": {
+        "super": "eui.Skin"
+    },
+    "CreateRoomPanelRenderer": {
+        "super": "eui.Skin"
+    },
+    "itemRenderer4": {
+        "super": "eui.Skin"
+    },
+    "gangpaiSkin": {
+        "super": "eui.Skin"
+    },
+    "itemRenderer3": {
+        "super": "eui.Skin"
+    },
+    "itemRenderer5": {
+        "super": "eui.Skin"
+    },
+    "PayItemRenderer": {
+        "super": "eui.Skin"
+    },
+    "itemRenderer1": {
+        "super": "eui.Skin"
+    },
+    "RoundUserListItemRendererSkin": {
+        "super": "eui.Skin"
+    },
+    "TextRendererSkin": {
+        "super": "eui.Skin"
+    },
+    "TingRendererSkin": {
+        "super": "eui.Skin"
+    },
+    "zhishiRenderer": {
+        "super": "eui.Skin"
+    },
+    "AssetAdapter": {},
+    "LoadingUI": {
+        "super": "egret.Sprite",
+        "textField": "egret.TextField"
+    },
+    "Main": {
+        "super": "eui.UILayer",
+        "loadingView": "LoadingUI",
+        "isThemeLoadEnd": "boolean",
+        "isResourceLoadEnd": "boolean"
+    },
+    "MonsterConfig": {
+        "shiLaiMu": "__object",
+        "diJing": "__object",
+        "monsterList": "Array"
+    },
+    "Monster": {
+        "name": "string",
+        "hp": "Number",
+        "attack": "Number"
+    },
+    "SkillConfig": {
+        "shunPiZhan": "__object",
+        "anYingJian": "__object"
+    },
+    "UIComponent": {
+        "super": "egret.Shape",
+        "sizeChanged": "boolean",
+        "width": "number",
+        "height": "number",
+        "invalidatePropertiesFlag": "boolean"
+    },
+    "Test02": {
+        "super": "eui.UILayer",
+        "loadingView": "LoadingUI",
+        "isThemeLoadEnd": "boolean",
+        "isResourceLoadEnd": "boolean",
+        "hpBar": "HpBar",
+        "huCard": "HuCard",
+        "panelWidth": "number",
+        "panelHeight": "number"
+    },
+    "ThemeAdapter": {},
+    "bigInt": {},
+    "aesjs.AES": {},
+    "aesjs.Counter": {},
+    "aesjs.ModeOfOperation.ecb": {},
+    "aesjs.ModeOfOperation.cbc": {},
+    "aesjs.ModeOfOperation.cfb": {},
+    "aesjs.ModeOfOperation.ofb": {
+        "decrypt": "any"
+    },
+    "aesjs.ModeOfOperation.ctr": {
+        "decrypt": "any"
+    },
+    "aesjs.Float32Array": {},
+    "egret.HashObject": {
+        "hashCode": "number"
+    },
+    "egret.Rectangle": {
+        "super": "egret.HashObject",
+        "x": "number",
+        "y": "number",
+        "width": "number",
+        "height": "number",
+        "right": "number",
+        "bottom": "number",
+        "left": "number",
+        "top": "number",
+        "topLeft": "egret.Point",
+        "bottomRight": "egret.Point"
+    },
+    "egret.EventDispatcher": {
+        "super": "egret.HashObject"
+    },
+    "egret.DisplayObject": {
+        "super": "egret.EventDispatcher",
+        "name": "string",
+        "parent": "egret.DisplayObjectContainer",
+        "stage": "egret.Stage",
+        "matrix": "egret.Matrix",
+        "x": "number",
+        "y": "number",
+        "scaleX": "number",
+        "scaleY": "number",
+        "rotation": "number",
+        "skewX": "number",
+        "skewY": "number",
+        "width": "number",
+        "height": "number",
+        "measuredWidth": "number",
+        "measuredHeight": "number",
+        "anchorOffsetX": "number",
+        "anchorOffsetY": "number",
+        "visible": "boolean",
+        "cacheAsBitmap": "boolean",
+        "alpha": "number",
+        "touchEnabled": "boolean",
+        "scrollRect": "egret.Rectangle",
+        "blendMode": "string",
+        "mask": "DisplayObject | Rectangle",
+        "filters": "Array"
+    },
+    "egret.DisplayObjectContainer": {
+        "super": "egret.DisplayObject",
+        "numChildren": "number",
+        "touchChildren": "boolean"
+    },
+    "egret.Filter": {
+        "super": "egret.HashObject",
+        "type": "string"
+    },
+    "egret.Bitmap": {
+        "super": "egret.DisplayObject",
+        "bitmapData": "egret.BitmapData",
+        "texture": "egret.Texture",
+        "scale9Grid": "egret.Rectangle",
+        "fillMode": "string",
+        "smoothing": "boolean",
+        "pixelHitTest": "boolean"
+    },
+    "egret.Sprite": {
+        "super": "egret.DisplayObjectContainer",
+        "graphics": "egret.Graphics"
+    },
+    "egret.Event": {
+        "super": "egret.HashObject",
+        "data": "any",
+        "type": "string",
+        "bubbles": "boolean",
+        "cancelable": "boolean",
+        "eventPhase": "number",
+        "currentTarget": "any",
+        "target": "any"
+    },
+    "egret.GlowFilter": {
+        "super": "egret.Filter",
+        "color": "number",
+        "alpha": "number",
+        "blurX": "number",
+        "blurY": "number",
+        "strength": "number",
+        "quality": "number",
+        "inner": "boolean",
+        "knockout": "boolean"
+    },
+    "egret.Texture": {
+        "super": "egret.HashObject",
+        "textureWidth": "number",
+        "textureHeight": "number",
+        "bitmapData": "egret.BitmapData"
+    },
+    "egret.Point": {
+        "super": "egret.HashObject",
+        "x": "number",
+        "y": "number",
+        "length": "number"
+    },
+    "egret.sys.RenderNode": {
+        "type": "number",
+        "needRedraw": "boolean",
+        "renderAlpha": "number",
+        "renderVisible": "boolean",
+        "renderMatrix": "egret.Matrix",
+        "renderRegion": "egret.sys.Region",
+        "moved": "boolean",
+        "drawData": "Array",
+        "renderCount": "number"
+    },
+    "egret.sys.Path2D": {
+        "type": "number",
+        "commandPosition": "any",
+        "dataPosition": "any"
+    },
+    "egret.SpriteSheet": {
+        "super": "egret.HashObject"
+    },
+    "egret.WebGLUtils": {},
+    "egret.FocusEvent": {
+        "super": "egret.Event"
+    },
+    "egret.GeolocationEvent": {
+        "super": "egret.Event",
+        "longitude": "number",
+        "latitude": "number",
+        "speed": "number",
+        "heading": "number",
+        "altitude": "number",
+        "accuracy": "number",
+        "altitudeAccuracy": "number",
+        "errorType": "string",
+        "errorMessage": "string"
+    },
+    "egret.HTTPStatusEvent": {
+        "super": "egret.Event",
+        "status": "number"
+    },
+    "egret.IOErrorEvent": {
+        "super": "egret.Event"
+    },
+    "egret.MotionEvent": {
+        "super": "egret.Event",
+        "acceleration": "egret.DeviceAcceleration",
+        "accelerationIncludingGravity": "egret.DeviceAcceleration",
+        "rotationRate": "egret.DeviceRotationRate"
+    },
+    "egret.OrientationEvent": {
+        "super": "egret.Event",
+        "alpha": "number",
+        "beta": "number",
+        "gamma": "number"
+    },
+    "egret.ProgressEvent": {
+        "super": "egret.Event",
+        "bytesLoaded": "number",
+        "bytesTotal": "number"
+    },
+    "egret.StageOrientationEvent": {
+        "super": "egret.Event"
+    },
+    "egret.TextEvent": {
+        "super": "egret.Event",
+        "text": "string"
+    },
+    "egret.TimerEvent": {
+        "super": "egret.Event"
+    },
+    "egret.BitmapData": {
+        "super": "egret.HashObject",
+        "width": "number",
+        "height": "number",
+        "source": "any",
+        "webGLTexture": "any",
+        "format": "string"
+    },
+    "egret.TouchEvent": {
+        "super": "egret.Event",
+        "stageX": "number",
+        "stageY": "number",
+        "localX": "number",
+        "localY": "number",
+        "targetChanged": "any",
+        "touchPointID": "number",
+        "touchDown": "boolean"
+    },
+    "egret.BlurFilter": {
+        "super": "egret.Filter",
+        "blurXFilter": "egret.IBlurXFilter",
+        "blurYFilter": "egret.IBlurYFilter",
+        "blurX": "number",
+        "blurY": "number"
+    },
+    "egret.ColorMatrixFilter": {
+        "super": "egret.Filter",
+        "matrix2": "any",
+        "matrix": "Array"
+    },
+    "egret.CustomFilter": {
+        "super": "egret.Filter",
+        "type": "string",
+        "padding": "number",
+        "uniforms": "any"
+    },
+    "egret.DropShadowFilter": {
+        "super": "egret.GlowFilter",
+        "distance": "number",
+        "angle": "number",
+        "hideObject": "boolean"
+    },
+    "egret.GradientType": {},
+    "egret.Graphics": {
+        "super": "egret.HashObject",
+        "targetDisplay": "any",
+        "lastX": "any",
+        "lastY": "any",
+        "fillPath": "any",
+        "strokePath": "any",
+        "topLeftStrokeWidth": "any",
+        "bottomRightStrokeWidth": "any",
+        "minX": "any",
+        "minY": "any",
+        "maxX": "any",
+        "maxY": "any",
+        "includeLastPosition": "any"
+    },
+    "egret.Matrix": {
+        "super": "egret.HashObject",
+        "a": "number",
+        "b": "number",
+        "c": "number",
+        "d": "number",
+        "tx": "number",
+        "ty": "number"
+    },
+    "egret.Mesh": {
+        "super": "egret.Bitmap"
+    },
+    "egret_native.RenderTexture": {},
+    "egret_native.RenderContext": {},
+    "egret_native.Canvas": {
+        "width": "number",
+        "height": "number"
+    },
+    "egret.PromiseObject": {
+        "onSuccessFunc": "Function",
+        "onSuccessThisObject": "any",
+        "onErrorFunc": "Function",
+        "onErrorThisObject": "any",
+        "downloadingSizeFunc": "Function",
+        "downloadingSizeThisObject": "any",
+        "onResponseHeaderFunc": "Function",
+        "onResponseHeaderThisObject": "any"
+    },
+    "egret.HttpMethod": {},
+    "egret.HttpResponseType": {},
+    "egret.sys.DirtyRegion": {
+        "root": "any",
+        "dirtyList": "any",
+        "hasClipRect": "any",
+        "clipWidth": "any",
+        "clipHeight": "any",
+        "clipArea": "any",
+        "clipRectChanged": "any"
+    },
+    "egret.sys.DisplayList": {
+        "super": "egret.HashObject",
+        "isStage": "any",
+        "renderBuffer": "egret.sys.RenderBuffer",
+        "offsetX": "number",
+        "offsetY": "number",
+        "offsetMatrix": "any",
+        "root": "egret.DisplayObject",
+        "isDirty": "boolean",
+        "needUpdateRegions": "boolean",
+        "dirtyNodes": "any",
+        "dirtyNodeList": "any",
+        "dirtyList": "any",
+        "dirtyRegion": "any",
+        "bitmapData": "any",
+        "sizeChanged": "any"
+    },
+    "egret.sys.Player": {
+        "super": "egret.HashObject",
+        "screenDisplayList": "any",
+        "entryClassName": "any",
+        "stage": "egret.Stage",
+        "root": "any",
+        "isPlaying": "any",
+        "displayFPS": "__type",
+        "showFPS": "any",
+        "showLog": "any",
+        "fps": "any",
+        "showPaintRect": "__type",
+        "drawDirtyRect": "any",
+        "stageDisplayList": "any",
+        "paintList": "any",
+        "drawPaintRect": "any"
+    },
+    "egret.sys.Region": {
+        "minX": "number",
+        "minY": "number",
+        "maxX": "number",
+        "maxY": "number",
+        "width": "number",
+        "height": "number",
+        "area": "number",
+        "moved": "boolean"
+    },
+    "egret.sys.DefaultScreenAdapter": {
+        "super": "egret.HashObject"
+    },
+    "egret.StageScaleMode": {},
+    "egret.sys.SystemTicker": {
+        "playerList": "any",
+        "callBackList": "any",
+        "thisObjectList": "any",
+        "frameInterval": "any",
+        "frameDeltaTime": "any",
+        "lastTimeStamp": "any",
+        "lastCount": "any",
+        "costEnterFrame": "any"
+    },
+    "egret.sys.TouchHandler": {
+        "super": "egret.HashObject",
+        "maxTouches": "any",
+        "useTouchesCount": "any",
+        "stage": "any",
+        "touchDownTarget": "any",
+        "lastTouchX": "any",
+        "lastTouchY": "any"
+    },
+    "egret.sys.BitmapNode": {
+        "super": "egret.sys.RenderNode",
+        "image": "egret.BitmapData",
+        "smoothing": "boolean",
+        "matrix": "egret.Matrix",
+        "imageWidth": "number",
+        "imageHeight": "number",
+        "blendMode": "number",
+        "alpha": "number",
+        "filter": "egret.ColorMatrixFilter"
+    },
+    "egret.sys.GraphicsNode": {
+        "super": "egret.sys.RenderNode",
+        "x": "number",
+        "y": "number",
+        "width": "number",
+        "height": "number",
+        "dirtyRender": "boolean"
+    },
+    "egret.sys.GroupNode": {
+        "super": "egret.sys.RenderNode",
+        "matrix": "egret.Matrix"
+    },
+    "egret.sys.MeshNode": {
+        "super": "egret.sys.RenderNode",
+        "image": "egret.BitmapData",
+        "smoothing": "boolean",
+        "imageWidth": "number",
+        "imageHeight": "number",
+        "matrix": "egret.Matrix",
+        "uvs": "Array",
+        "vertices": "Array",
+        "indices": "Array",
+        "bounds": "egret.Rectangle"
+    },
+    "egret.RenderTexture": {
+        "super": "egret.Texture"
+    },
+    "egret.sys.SetAlphaNode": {
+        "super": "egret.sys.RenderNode"
+    },
+    "egret.sys.TextNode": {
+        "super": "egret.sys.RenderNode",
+        "textColor": "number",
+        "strokeColor": "number",
+        "size": "number",
+        "stroke": "number",
+        "bold": "boolean",
+        "italic": "boolean",
+        "fontFamily": "string",
+        "x": "number",
+        "y": "number",
+        "width": "number",
+        "height": "number",
+        "dirtyRender": "boolean"
+    },
+    "egret.sys.FillPath": {
+        "super": "egret.sys.Path2D",
+        "fillColor": "number",
+        "fillAlpha": "number"
+    },
+    "egret.sys.GradientFillPath": {
+        "super": "egret.sys.Path2D",
+        "gradientType": "string",
+        "colors": "Array",
+        "alphas": "Array",
+        "ratios": "Array",
+        "matrix": "egret.Matrix"
+    },
+    "egret.Shape": {
+        "super": "egret.DisplayObject",
+        "graphics": "egret.Graphics"
+    },
+    "egret.sys.StrokePath": {
+        "super": "egret.sys.Path2D",
+        "lineWidth": "number",
+        "lineColor": "number",
+        "lineAlpha": "number",
+        "caps": "string",
+        "joints": "string",
+        "miterLimit": "number"
+    },
+    "egret.CanvasRenderer": {
+        "nestLevel": "any",
+        "renderingMask": "any"
+    },
+    "egret.RuntimeType": {},
+    "egret.Capabilities": {},
+    "egret.BitmapFont": {
+        "super": "egret.SpriteSheet",
+        "charList": "any",
+        "firstCharHeight": "any"
+    },
+    "egret.HorizontalAlign": {},
+    "egret.HtmlTextParser": {
+        "replaceArr": "any",
+        "resutlArr": "any",
+        "stackArray": "any"
+    },
+    "egret.InputController": {
+        "super": "egret.HashObject",
+        "stageText": "any",
+        "stageTextAdded": "any",
+        "tempStage": "any"
+    },
+    "egret.TextField": {
+        "super": "egret.DisplayObject",
+        "fontFamily": "string",
+        "size": "number",
+        "bold": "boolean",
+        "italic": "boolean",
+        "textAlign": "string",
+        "verticalAlign": "string",
+        "lineSpacing": "number",
+        "textColor": "number",
+        "wordWrap": "boolean",
+        "inputUtils": "any",
+        "type": "string",
+        "inputType": "string",
+        "text": "string",
+        "displayAsPassword": "boolean",
+        "strokeColor": "number",
+        "stroke": "number",
+        "maxChars": "number",
+        "scrollV": "number",
+        "maxScrollV": "number",
+        "selectionBeginIndex": "number",
+        "selectionEndIndex": "number",
+        "caretIndex": "number",
+        "numLines": "number",
+        "multiline": "boolean",
+        "restrict": "string",
+        "textNode": "any",
+        "graphicsNode": "any",
+        "border": "boolean",
+        "borderColor": "number",
+        "background": "boolean",
+        "backgroundColor": "number",
+        "isFlow": "any",
+        "textFlow": "Array",
+        "textArr": "any",
+        "textWidth": "number",
+        "textHeight": "number",
+        "linesArr": "any"
+    },
+    "egret.TextFieldInputType": {},
+    "egret.TextFieldType": {},
+    "egret.TextFieldUtils": {},
+    "egret.VerticalAlign": {},
+    "egret.Base64Util": {},
+    "egret.Endian": {},
+    "egret.ByteArray": {
+        "BUFFER_EXT_SIZE": "any",
+        "data": "any",
+        "write_position": "any",
+        "endian": "string",
+        "buffer": "ArrayBuffer",
+        "dataView": "DataView",
+        "bufferOffset": "number",
+        "position": "number",
+        "length": "number",
+        "bytesAvailable": "number",
+        "EOF_byte": "any",
+        "EOF_code_point": "any"
+    },
+    "egret.BlendMode": {},
+    "egret.Stage": {
+        "super": "egret.DisplayObjectContainer",
+        "frameRate": "number",
+        "stageWidth": "number",
+        "stageHeight": "number",
+        "scaleMode": "string",
+        "orientation": "string",
+        "textureScaleFactor": "number",
+        "maxTouches": "number",
+        "dirtyRegionPolicy": "string"
+    },
+    "egret.Logger": {},
+    "egret.NumberUtils": {},
+    "egret.Timer": {
+        "super": "egret.EventDispatcher",
+        "delay": "number",
+        "repeatCount": "number",
+        "currentCount": "number",
+        "running": "boolean",
+        "updateInterval": "any",
+        "lastCount": "any",
+        "lastTimeStamp": "any"
+    },
+    "eui.sys.Validator": {
+        "super": "egret.EventDispatcher",
+        "targetLevel": "any",
+        "invalidatePropertiesFlag": "any",
+        "invalidateClientPropertiesFlag": "any",
+        "invalidatePropertiesQueue": "any",
+        "invalidateSizeFlag": "any",
+        "invalidateClientSizeFlag": "any",
+        "invalidateSizeQueue": "any",
+        "invalidateDisplayListFlag": "any",
+        "invalidateDisplayListQueue": "any",
+        "eventDisplay": "any",
+        "listenersAttached": "any"
+    },
+    "eui.sys.StateClient": {
+        "states": "Array",
+        "currentState": "string"
+    },
+    "eui.sys.StateValues": {
+        "intialized": "boolean",
+        "statesMap": "any",
+        "states": "Array",
+        "oldState": "string",
+        "explicitState": "string",
+        "currentState": "string",
+        "parent": "egret.DisplayObjectContainer",
+        "stateIsDirty": "boolean"
+    },
+    "eui.Button": {
+        "super": "eui.Component",
+        "labelDisplay": "eui.IDisplayText",
+        "label": "string",
+        "iconDisplay": "eui.Image",
+        "icon": "string | Texture",
+        "touchCaptured": "any"
+    },
+    "eui.Range": {
+        "super": "eui.Component",
+        "maximum": "number",
+        "minimum": "number",
+        "value": "number",
+        "snapInterval": "number"
+    },
+    "eui.LayoutBase": {
+        "super": "egret.EventDispatcher",
+        "target": "eui.Group",
+        "useVirtualLayout": "boolean"
+    },
+    "eui.ListBase": {
+        "super": "eui.DataGroup",
+        "requireSelection": "boolean",
+        "selectedIndex": "number",
+        "selectedItem": "any"
+    },
+    "eui.sys.EXMLParser": {
+        "getRepeatedIds": "__type",
+        "getIds": "any",
+        "repeatedIdMap": "any",
+        "checkDeclarations": "any",
+        "currentClass": "any",
+        "isSkinClass": "any",
+        "currentClassName": "any",
+        "currentXML": "any",
+        "idDic": "any",
+        "stateCode": "any",
+        "stateNames": "any",
+        "stateIds": "any",
+        "skinParts": "any",
+        "bindings": "any",
+        "declarations": "any",
+        "delayAssignmentDic": "any"
+    },
+    "eui.ScrollBarBase": {
+        "super": "eui.Component",
+        "thumb": "eui.UIComponent",
+        "viewport": "eui.IViewport",
+        "autoVisibility": "boolean"
+    },
+    "eui.LinearLayoutBase": {
+        "super": "eui.LayoutBase",
+        "horizontalAlign": "string",
+        "verticalAlign": "string",
+        "gap": "number",
+        "paddingLeft": "number",
+        "paddingRight": "number",
+        "paddingTop": "number",
+        "paddingBottom": "number",
+        "elementSizeTable": "Array",
+        "startIndex": "number",
+        "endIndex": "number",
+        "indexInViewCalculated": "boolean",
+        "maxElementSize": "number"
+    },
+    "eui.sys.ChildInfo": {
+        "layoutElement": "eui.UIComponent",
+        "size": "number",
+        "percent": "number",
+        "min": "number",
+        "max": "number"
+    },
+    "eui.SliderBase": {
+        "super": "eui.Range",
+        "trackHighlight": "egret.DisplayObject",
+        "thumb": "eui.UIComponent",
+        "track": "eui.UIComponent",
+        "slideDuration": "number",
+        "liveDragging": "boolean",
+        "pendingValue": "number"
+    },
+    "eui.Binding": {},
+    "eui.ToggleButton": {
+        "super": "eui.Button",
+        "selected": "boolean"
+    },
+    "eui.DefaultAssetAdapter": {},
+    "eui.List": {
+        "super": "eui.ListBase",
+        "allowMultipleSelection": "boolean",
+        "selectedIndices": "Array",
+        "selectedIndex": "number",
+        "selectedItems": "Array",
+        "isValidIndex": "any"
+    },
+    "eui.ProgressBar": {
+        "super": "eui.Range",
+        "thumb": "eui.UIComponent",
+        "labelDisplay": "eui.Label",
+        "labelFunction": "__type",
+        "slideDuration": "number",
+        "direction": "string",
+        "animation": "any",
+        "slideToValue": "any",
+        "animationValue": "any",
+        "thumbInitX": "any",
+        "thumbInitY": "any"
+    },
+    "eui.RadioButton": {
+        "super": "eui.ToggleButton",
+        "enabled": "boolean",
+        "group": "eui.RadioButtonGroup",
+        "groupChanged": "any",
+        "groupName": "string",
+        "value": "any"
+    },
+    "eui.RadioButtonGroup": {
+        "super": "egret.EventDispatcher",
+        "radioButtons": "any",
+        "enabled": "boolean",
+        "numRadioButtons": "number",
+        "selectedValue": "any",
+        "selection": "eui.RadioButton"
+    },
+    "eui.Rect": {
+        "super": "eui.Component",
+        "graphics": "egret.Graphics",
+        "fillColor": "number",
+        "fillAlpha": "number",
+        "strokeColor": "number",
+        "strokeAlpha": "number",
+        "strokeWeight": "number",
+        "ellipseWidth": "number",
+        "ellipseHeight": "number"
+    },
+    "eui.TabBar": {
+        "super": "eui.ListBase",
+        "indexBeingUpdated": "any"
+    },
+    "eui.TextInput": {
+        "super": "eui.Component",
+        "textDisplay": "eui.EditableText",
+        "promptDisplay": "eui.Label",
+        "prompt": "string",
+        "displayAsPassword": "boolean",
+        "inputType": "string",
+        "textColor": "number",
+        "maxChars": "number",
+        "maxWidth": "number",
+        "maxHeight": "number",
+        "text": "string",
+        "restrict": "string",
+        "isFocus": "any"
+    },
+    "eui.HSlider": {
+        "super": "eui.SliderBase"
+    },
+    "eui.ToggleSwitch": {
+        "super": "eui.ToggleButton"
+    },
+    "eui.UILayer": {
+        "super": "eui.Group"
+    },
+    "eui.VScrollBar": {
+        "super": "eui.ScrollBarBase"
+    },
+    "eui.VSlider": {
+        "super": "eui.SliderBase"
+    },
+    "eui.ViewStack": {
+        "super": "eui.Group",
+        "layout": "eui.LayoutBase",
+        "selectedChild": "egret.DisplayObject",
+        "proposedSelectedIndex": "any",
+        "selectedIndex": "number",
+        "length": "number"
+    },
+    "eui.sys.Animation": {
+        "easerFunction": "__type",
+        "thisObject": "any",
+        "isPlaying": "boolean",
+        "duration": "number",
+        "currentValue": "number",
+        "from": "number",
+        "to": "number",
+        "startTime": "any",
+        "endFunction": "__type",
+        "updateFunction": "Function"
+    },
+    "eui.DefaultThemeAdapter": {},
+    "eui.Watcher": {
+        "host": "any",
+        "property": "any",
+        "handler": "any",
+        "thisObject": "any",
+        "next": "any",
+        "isExecuting": "any"
+    },
+    "eui.HScrollBar": {
+        "super": "eui.ScrollBarBase"
+    },
+    "eui.EditableText": {
+        "super": "egret.TextField",
+        "prompt": "string",
+        "promptColor": "number",
+        "initializeUIValues": "any",
+        "includeInLayout": "boolean",
+        "left": "any",
+        "right": "any",
+        "top": "any",
+        "bottom": "any",
+        "horizontalCenter": "any",
+        "verticalCenter": "any",
+        "percentWidth": "number",
+        "percentHeight": "number",
+        "explicitWidth": "number",
+        "explicitHeight": "number",
+        "minWidth": "number",
+        "maxWidth": "number",
+        "minHeight": "number",
+        "maxHeight": "number"
+    },
+    "eui.CheckBox": {
+        "super": "eui.ToggleButton"
+    },
+    "eui.sys.TouchScroll": {
+        "target": "any",
+        "updateFunction": "any",
+        "endFunction": "any",
+        "previousTime": "any",
+        "velocity": "any",
+        "previousVelocity": "any",
+        "currentPosition": "any",
+        "previousPosition": "any",
+        "currentScrollPos": "any",
+        "maxScrollPos": "any",
+        "offsetPoint": "any",
+        "animation": "any",
+        "started": "any"
+    },
+    "eui.Direction": {},
+    "eui.ItemRenderer": {
+        "super": "eui.Component",
+        "data": "any",
+        "selected": "boolean",
+        "itemIndex": "number",
+        "touchCaptured": "any"
+    },
+    "eui.ScrollPolicy": {},
+    "eui.Theme": {
+        "super": "egret.EventDispatcher",
+        "initialized": "any",
+        "delayList": "any",
+        "skinMap": "any"
+    },
+    "eui.CollectionEvent": {
+        "super": "egret.Event",
+        "kind": "string",
+        "items": "Array",
+        "oldItems": "Array",
+        "location": "number",
+        "oldLocation": "number"
+    },
+    "eui.CollectionEventKind": {},
+    "eui.ItemTapEvent": {
+        "super": "egret.Event",
+        "item": "any",
+        "itemIndex": "number"
+    },
+    "eui.PropertyEvent": {
+        "super": "egret.Event",
+        "property": "string"
+    },
+    "eui.ScrollerThrowEvent": {
+        "super": "egret.Event",
+        "currentPos": "number",
+        "toPos": "number"
+    },
+    "eui.UIEvent": {
+        "super": "egret.Event"
+    },
+    "eui.sys.CodeBase": {
+        "indent": "number"
+    },
+    "eui.sys.EXClass": {
+        "super": "eui.sys.CodeBase",
+        "constructCode": "eui.sys.EXCodeBlock",
+        "className": "string",
+        "superClass": "string",
+        "innerClassBlock": "any",
+        "variableBlock": "any",
+        "functionBlock": "any"
+    },
+    "eui.sys.EXCodeBlock": {
+        "super": "eui.sys.CodeBase",
+        "lines": "any"
+    },
+    "eui.sys.EXFunction": {
+        "super": "eui.sys.CodeBase",
+        "codeBlock": "eui.sys.EXCodeBlock",
+        "isGet": "boolean",
+        "name": "string"
+    },
+    "eui.sys.EXVariable": {
+        "super": "eui.sys.CodeBase",
+        "name": "string",
+        "defaultValue": "string"
+    },
+    "eui.sys.EXState": {
+        "super": "eui.sys.CodeBase",
+        "name": "string",
+        "stateGroups": "Array",
+        "addItems": "Array",
+        "setProperty": "Array"
+    },
+    "eui.sys.EXAddItems": {
+        "super": "eui.sys.CodeBase",
+        "target": "string",
+        "property": "string",
+        "position": "number",
+        "relativeTo": "string"
+    },
+    "eui.sys.EXSetProperty": {
+        "super": "eui.sys.CodeBase",
+        "name": "string",
+        "target": "string",
+        "value": "string"
+    },
+    "eui.sys.EXSetStateProperty": {
+        "super": "eui.sys.CodeBase",
+        "target": "string",
+        "property": "string",
+        "templates": "Array",
+        "chainIndex": "Array"
+    },
+    "eui.sys.EXBinding": {
+        "super": "eui.sys.CodeBase",
+        "target": "string",
+        "property": "string",
+        "templates": "Array",
+        "chainIndex": "Array"
+    },
+    "eui.sys.EXMLConfig": {},
+    "eui.BasicLayout": {
+        "super": "eui.LayoutBase",
+        "useVirtualLayout": "boolean"
+    },
+    "eui.ColumnAlign": {},
+    "eui.HorizontalLayout": {
+        "super": "eui.LinearLayoutBase"
+    },
+    "eui.JustifyAlign": {},
+    "eui.RowAlign": {},
+    "eui.TileLayout": {
+        "super": "eui.LayoutBase",
+        "explicitHorizontalGap": "any",
+        "horizontalGap": "number",
+        "explicitVerticalGap": "any",
+        "verticalGap": "number",
+        "columnCount": "number",
+        "requestedColumnCount": "number",
+        "rowCount": "number",
+        "requestedRowCount": "number",
+        "explicitColumnWidth": "any",
+        "columnWidth": "number",
+        "explicitRowHeight": "any",
+        "rowHeight": "number",
+        "paddingLeft": "number",
+        "paddingRight": "number",
+        "paddingTop": "number",
+        "paddingBottom": "number",
+        "horizontalAlign": "string",
+        "verticalAlign": "string",
+        "columnAlign": "string",
+        "rowAlign": "string",
+        "orientation": "string",
+        "maxElementWidth": "any",
+        "maxElementHeight": "any",
+        "startIndex": "any",
+        "endIndex": "any",
+        "indexInViewCalculated": "any"
+    },
+    "eui.TileOrientation": {},
+    "eui.VerticalLayout": {
+        "super": "eui.LinearLayoutBase"
+    },
+    "eui.AddItems": {
+        "propertyName": "string",
+        "position": "number",
+        "relativeTo": "string",
+        "target": "string"
+    },
+    "eui.SetProperty": {
+        "name": "string",
+        "target": "string",
+        "value": "any",
+        "oldValue": "any"
+    },
+    "eui.SetStateProperty": {
+        "host": "any",
+        "templates": "Array",
+        "chainIndex": "Array",
+        "target": "any",
+        "prop": "any",
+        "oldValue": "any"
+    },
+    "eui.sys.MatrixUtil": {},
+    "egret.URLLoaderDataFormat": {},
+    "egret.FrameLabel": {
+        "super": "egret.EventDispatcher",
+        "name": "string",
+        "frame": "number",
+        "end": "number"
+    },
+    "egret.MovieClipData": {
+        "super": "egret.HashObject",
+        "numFrames": "number",
+        "frames": "Array",
+        "labels": "Array",
+        "events": "Array",
+        "frameRate": "number",
+        "textureData": "any",
+        "spriteSheet": "egret.SpriteSheet",
+        "mcData": "egret.MovieClipData"
+    },
+    "egret.MovieClipDataFactory": {
+        "super": "egret.EventDispatcher",
+        "enableCache": "boolean",
+        "mcDataSet": "any",
+        "texture": "egret.Texture",
+        "spriteSheet": "egret.SpriteSheet"
+    },
+    "egret.MovieClipEvent": {
+        "super": "egret.Event",
+        "frameLabel": "string"
+    },
+    "egret.ScrollEase": {},
+    "egret.ScrollTween": {
+        "super": "egret.EventDispatcher",
+        "ignoreGlobalPause": "any",
+        "loop": "any",
+        "pluginData": "any",
+        "paused": "any",
+        "duration": "any",
+        "position": "any",
+        "passive": "any"
+    },
+    "egret.ScrollView": {
+        "super": "egret.DisplayObjectContainer",
+        "scrollBeginThreshold": "number",
+        "scrollSpeed": "number",
+        "bounces": "boolean",
+        "verticalScrollPolicy": "string",
+        "horizontalScrollPolicy": "string",
+        "scrollLeft": "number",
+        "scrollTop": "number",
+        "delayTouchBeginEvent": "any",
+        "touchBeginTimer": "any"
+    },
+    "egret.ScrollViewProperties": {},
+    "egret.URLLoader": {
+        "super": "egret.EventDispatcher",
+        "dataFormat": "string",
+        "data": "any"
+    },
+    "egret.MovieClip": {
+        "super": "egret.DisplayObject",
+        "offsetPoint": "any",
+        "frames": "any",
+        "frameLabels": "Array",
+        "frameEvents": "Array",
+        "frameIntervalTime": "any",
+        "isStopped": "any",
+        "playTimes": "any",
+        "displayedKeyFrameNum": "any",
+        "passedTime": "any",
+        "smoothing": "boolean",
+        "lastTime": "any",
+        "totalFrames": "number",
+        "currentFrame": "number",
+        "currentFrameLabel": "string",
+        "currentLabel": "string",
+        "frameRate": "number",
+        "isPlaying": "boolean",
+        "movieClipData": "egret.MovieClipData"
+    },
+    "egret.URLRequest": {
+        "super": "egret.HashObject",
+        "data": "any",
+        "method": "string",
+        "url": "string",
+        "requestHeaders": "Array"
+    },
+    "egret.URLRequestHeader": {
+        "name": "string",
+        "value": "string"
+    },
+    "egret.URLRequestMethod": {},
+    "egret.URLVariables": {
+        "super": "egret.HashObject",
+        "variables": "Object"
+    },
+    "egret.Ticker": {
+        "super": "egret.EventDispatcher",
+        "callBackList": "any"
+    },
+    "egret.MainContext": {
+        "super": "egret.EventDispatcher",
+        "stage": "egret.Stage"
+    },
+    "egret.Recycler": {
+        "super": "egret.HashObject",
+        "autoDisposeTime": "any",
+        "frameCount": "any",
+        "objectPool": "any",
+        "length": "number"
+    },
+    "PAKDHClient": {},
+    "RES.AnalyzerBase": {
+        "super": "egret.HashObject",
+        "resourceConfig": "any"
+    },
+    "RES.BinAnalyzer": {
+        "super": "RES.AnalyzerBase",
+        "fileDic": "any",
+        "resItemDic": "Array",
+        "recycler": "Array"
+    },
+    "RES.ResourceItem": {
+        "name": "string",
+        "url": "string",
+        "type": "string",
+        "groupName": "string",
+        "data": "any",
+        "loaded": "boolean"
+    },
+    "RES.SheetAnalyzer": {
+        "super": "RES.BinAnalyzer",
+        "sheetMap": "any",
+        "textureMap": "any",
+        "recyclerIamge": "any"
+    },
+    "RES.ImageAnalyzer": {
+        "super": "RES.AnalyzerBase",
+        "fileDic": "any",
+        "resItemDic": "Array",
+        "recycler": "Array"
+    },
+    "RES.TextAnalyzer": {
+        "super": "RES.BinAnalyzer"
+    },
+    "RES.JsonAnalyzer": {
+        "super": "RES.BinAnalyzer"
+    },
+    "RES.ResourceLoader": {
+        "super": "egret.EventDispatcher",
+        "thread": "number",
+        "loadingCount": "any",
+        "callBack": "Function",
+        "resInstance": "any",
+        "groupTotalDic": "any",
+        "numLoadedDic": "any",
+        "itemListDic": "any",
+        "groupErrorDic": "any",
+        "retryTimesDic": "any",
+        "maxRetryTimes": "number",
+        "failedList": "any",
+        "priorityQueue": "any",
+        "lazyLoadList": "any",
+        "analyzerDic": "any",
+        "queueIndex": "any"
+    },
+    "RES.FontAnalyzer": {
+        "super": "RES.SheetAnalyzer"
+    },
+    "RES.ResourceConfig": {
+        "keyMap": "any",
+        "groupDic": "any"
+    },
+    "RES.XMLAnalyzer": {
+        "super": "RES.BinAnalyzer"
+    },
+    "RES.ResourceEvent": {
+        "super": "egret.Event",
+        "itemsLoaded": "number",
+        "itemsTotal": "number",
+        "groupName": "string",
+        "resItem": "RES.ResourceItem"
+    },
+    "RES.web.Html5VersionController": {
+        "super": "egret.EventDispatcher"
+    },
+    "RES.native.NativeVersionController": {},
+    "RES.SoundAnalyzer": {
+        "super": "RES.AnalyzerBase",
+        "soundDic": "any",
+        "resItemDic": "Array"
+    },
+    "RES.AnimationAnalyzer": {
+        "super": "RES.BinAnalyzer",
+        "sheetMap": "any",
+        "recyclerIamge": "any"
+    },
+    "egret.WebSocket": {
+        "super": "egret.EventDispatcher",
+        "socket": "any",
+        "connected": "boolean",
+        "type": "string"
+    },
+    "egret.native.NativeSocket": {
+        "socket": "any",
+        "onConnect": "any",
+        "onClose": "any",
+        "onSocketData": "any",
+        "onError": "any",
+        "thisObject": "any",
+        "host": "any",
+        "port": "any"
+    },
+    "egret.web.HTML5WebSocket": {
+        "socket": "any",
+        "onConnect": "any",
+        "onClose": "any",
+        "onSocketData": "any",
+        "onError": "any",
+        "thisObject": "any",
+        "host": "any",
+        "port": "any"
+    },
+    "egret.Ease": {},
+    "egret.Tween": {
+        "super": "egret.EventDispatcher",
+        "ignoreGlobalPause": "any",
+        "loop": "any",
+        "pluginData": "any",
+        "paused": "any",
+        "duration": "any",
+        "position": "any",
+        "passive": "any"
+    },
+    "egret.tween.To": {
+        "super": "egret.tween.BasePath",
+        "props": "Object",
+        "duration": "number",
+        "ease": "\"quadIn\" | \"quadOut\" | \"quadInOut\" | \"cubicIn\" | \"cubicOut\" | \"cubicInOut\" | \"quartIn\" | \"quartOu..."
+    },
+    "egret.tween.Wait": {
+        "super": "egret.tween.BasePath",
+        "duration": "number",
+        "passive": "boolean"
+    },
+    "egret.tween.Set": {
+        "super": "egret.tween.BasePath",
+        "props": "Object"
+    },
+    "egret.tween.Tick": {
+        "super": "egret.tween.BasePath",
+        "delta": "number"
+    },
+    "egret.tween.TweenItem": {
+        "super": "egret.EventDispatcher",
+        "tween": "any",
+        "props": "any",
+        "target": "any",
+        "paths": "Array"
+    },
+    "egret.tween.TweenGroup": {
+        "super": "egret.EventDispatcher",
+        "completeCount": "any",
+        "items": "Array"
+    },
+    "ResourceManager": {},
+    "LoadQueueInfo": {
+        "resItem": "RES.ResourceItem",
+        "onCompleteEa": "EventAction"
+    },
+    "LoadGroupQueueInfo": {
+        "groupList": "Array",
+        "onComplete": "EventAction",
+        "onLoadError": "EventAction",
+        "onLoadProgress": "EventAction",
+        "onItemLoadError": "EventAction",
+        "isLoaded": "boolean",
+        "isNeedReLoad": "boolean"
+    },
+    "ChannelBase": {
+        "type": "string"
+    },
+    "BaseDefined": {},
+    "CardShowDefined": {
+        "super": "BaseDefined",
+        "cardWallList": "Array",
+        "shouPaiList": "Array",
+        "shouPaiMap": "Dictionary",
+        "groupCardList": "Array",
+        "groupCardMap": "Dictionary",
+        "outCardList": "Array",
+        "outCardMap": "Dictionary",
+        "liangPaiList": "Array",
+        "liangPaiMap": "Dictionary"
+    },
+    "CardWallDefinition": {
+        "id": "number",
+        "x": "number",
+        "y": "number",
+        "scale": "number",
+        "layer": "number",
+        "tiltH": "number",
+        "tiltV": "number"
+    },
+    "ShouPaiDefinition": {
+        "super": "CardWallDefinition",
+        "posType": "PosType"
+    },
+    "GroupCardDefinition": {
+        "super": "ShouPaiDefinition",
+        "groupType": "number",
+        "cardType": "number"
+    },
+    "OutCardDefinition": {
+        "super": "ShouPaiDefinition",
+        "pos": "number"
+    },
+    "LiangPaiDefinition": {
+        "super": "ShouPaiDefinition"
+    },
+    "DefinedManager": {},
+    "ErrorDefined": {
+        "super": "BaseDefined",
+        "errorList": "Array"
+    },
+    "ErrorDefinition": {
+        "id": "number",
+        "des": "string"
+    },
+    "FanCalcDefined": {
+        "super": "BaseDefined",
+        "fanCalcList": "Array"
+    },
+    "FanCalcDefinition": {
+        "id": "number",
+        "name": "string",
+        "funcName": "string",
+        "fan": "number",
+        "exclude": "Array"
+    },
+    "PaiDefined": {
+        "super": "BaseDefined",
+        "paiList": "Array"
+    },
+    "PaiDefinition": {
+        "id": "number",
+        "img": "string",
+        "name": "string"
+    },
+    "PayDefined": {
+        "super": "BaseDefined",
+        "payList": "Array"
+    },
+    "PayDefinition": {
+        "id": "number",
+        "price": "number",
+        "limit": "number",
+        "get": "number",
+        "img": "string"
+    },
+    "ProjectDefined": {
+        "super": "BaseDefined",
+        "projectObj": "any",
+        "round": "Array",
+        "playWay": "Array",
+        "antes": "Array",
+        "errorList": "Array"
+    },
+    "RoundDefinition": {
+        "cost": "number",
+        "num": "number",
+        "des": "any",
+        "groupName": "string"
+    },
+    "PlayWayDefinition": {
+        "type": "number",
+        "des": "string",
+        "groupName": "string"
+    },
+    "AntesDefinition": {
+        "score": "number",
+        "des": "string",
+        "groupName": "string"
+    },
+    "ShortNameDefined": {
+        "super": "BaseDefined",
+        "shortNameKv": "Object"
+    },
+    "TextDefined": {
+        "super": "BaseDefined",
+        "textList": "Array"
+    },
+    "TextDefinition": {
+        "id": "number",
+        "text": "string",
+        "title": "string"
+    },
+    "ChannelLoginType": {},
+    "UIModuleName": {},
+    "UISkinName": {},
+    "UIRendererSkinName": {},
+    "UIComponentSkinName": {},
+    "OutCardSkinName": {},
+    "LiangPaiSkiName": {},
+    "ImageSource": {},
+    "ResGroupName": {},
+    "ResPrefixName": {},
+    "ResSuffixName": {},
+    "PathName": {},
+    "StringConstant": {},
+    "CharConstants": {},
+    "OperatePlatform": {},
+    "ChannelType": {},
+    "GameProcesser": {
+        "gameScenePanel": "GameScenePanel",
+        "canGangList": "Array",
+        "isCanHu": "boolean",
+        "layerController": "LayerController",
+        "testIndex": "number"
+    },
+    "GameSceneWaitOper": {},
+    "GroupCardController": {},
+    "LayerContainer": {
+        "super": "eui.Component",
+        "layer": "number"
+    },
+    "LayerController": {},
+    "OutCardController": {},
+    "ShouCardController": {
+        "isInit": "boolean"
+    },
+    "GameSetting": {},
+    "LoginInfo": {
+        "super": "BaseServerValueInfo",
+        "isWhitelist": "boolean",
+        "userid": "number",
+        "secret": "string",
+        "session": "number",
+        "ServerList": "Array",
+        "LastSId": "number",
+        "RolesSId": "Array",
+        "channeldata": "Object",
+        "hasAlreadyCreateRole": "boolean",
+        "ip": "string",
+        "port": "number",
+        "domain": "string"
+    },
+    "RoleInfo": {
+        "roleid": "number",
+        "serverid": "number"
+    },
+    "LoginSocket": {
+        "super": "BaseSocket"
+    },
+    "ServerInfo": {
+        "super": "BaseServerValueInfo",
+        "id": "number",
+        "isCrowded": "boolean",
+        "count": "number",
+        "isMaintain": "boolean",
+        "roleId": "number"
+    },
+    "ChatManager": {},
+    "ChatInfo": {
+        "roleId": "number",
+        "message": "string",
+        "type": "number"
+    },
+    "GameManager": {},
+    "GoCardProcessManager": {},
+    "HuResultInfo": {
+        "super": "BaseServerValueInfo",
+        "roleId": "number",
+        "card": "number"
+    },
+    "BuyHorseinfo": {
+        "super": "BaseServerValueInfo",
+        "roleId": "number",
+        "card1": "number",
+        "card2": "number"
+    },
+    "OnceResultInfo": {
+        "super": "BaseServerValueInfo",
+        "roleId": "number",
+        "huType": "number",
+        "buyHorse": "number",
+        "groupList": "Array",
+        "currScore": "number",
+        "isMaster": "boolean",
+        "isLiuJu": "boolean",
+        "shouPai": "Array"
+    },
+    "GameOverInfo": {
+        "super": "BaseServerValueInfo",
+        "playerInfo": "PlayerInfo",
+        "roleId": "number",
+        "score": "Array",
+        "scoreInfoList": "Array",
+        "totalScore": "number",
+        "isMaxWin": "boolean"
+    },
+    "OneRoundScoreInfo": {
+        "round": "number",
+        "score": "number"
+    },
+    "ScoreChangeInfo": {
+        "super": "BaseServerValueInfo",
+        "roleId": "number",
+        "score": "number",
+        "offsetScore": "number"
+    },
+    "ListenerManager": {},
+    "EventAction": {
+        "thisobj": "any",
+        "func": "Function",
+        "args": "any"
+    },
+    "SystemManager": {},
+    "TimeManager": {},
+    "VersionManager": {},
+    "Command": {},
+    "NetUtil": {},
+    "SocketManager": {},
+    "SpRpcResult": {
+        "op": "SpRpcOp",
+        "cmdId": "string",
+        "session": "number",
+        "data": "any",
+        "error": "number"
+    },
+    "GameScene": {
+        "super": "BaseScene",
+        "gameProcesser": "GameProcesser"
+    },
+    "HallScene": {
+        "super": "BaseScene"
+    },
+    "LoginScene": {
+        "super": "BaseScene"
+    },
+    "HpBar": {
+        "super": "egret.DisplayObjectContainer"
+    },
+    "UnitBase": {
+        "super": "egret.DisplayObjectContainer",
+        "modelFramerate": "number",
+        "unitId": "number",
+        "uintId": "number",
+        "modelData": "Object",
+        "modelTexture": "egret.Texture",
+        "model": "egret.MovieClip",
+        "movieClipFactory": "egret.MovieClipDataFactory",
+        "modelIsLoadComplete": "boolean"
+    },
+    "ArrayUtil": {},
+    "ColorUtil": {},
+    "FilterUtil": {},
+    "MathUtil": {},
+    "PoolUtil": {},
+    "SortUtil": {},
+    "StringUtil": {},
+    "TimeUtil": {},
+    "UIUtil": {},
+    "CardShowUtil": {},
+    "CalculateFan": {},
+    "HuCard": {
+        "shouPaiList": "Array",
+        "tmpPaiList": "Array",
+        "tingList": "Array"
+    },
+    "HuPaiInfo": {
+        "isZiMo": "boolean",
+        "winCard": "number",
+        "isTianHu": "boolean",
+        "isDiHu": "boolean",
+        "isGangShangKaiHua": "boolean",
+        "isHaiDiLaoYue": "boolean",
+        "isHeJueZhang": "boolean",
+        "huaList": "Array",
+        "maxHuWayInfo": "HuWayInfo",
+        "huWayList": "Array",
+        "pengList": "Array",
+        "mingGanList": "Array",
+        "anGangList": "Array",
+        "canSeeList": "Array",
+        "remainList": "Array",
+        "tingList": "Array",
+        "baidaList": "Array"
+    },
+    "HuWayInfo": {
+        "pairList": "Array",
+        "sequenceList": "Array",
+        "fanList": "Array",
+        "fan": "number"
+    },
+    "ListenInfo": {
+        "pai": "number",
+        "name": "string",
+        "fan": "number",
+        "remainNum": "number"
+    },
+    "ListenResultInfo": {
+        "outCard": "number",
+        "listenerList": "Array"
+    },
+    "CardWallHandler": {
+        "isFaMoRunOver": "boolean"
+    },
+    "CardWallImg": {
+        "img": "eui.Image",
+        "definition": "CardWallDefinition",
+        "posType": "PosType"
+    },
+    "GroupCardHandler": {
+        "initX": "number",
+        "initY": "number",
+        "offsetX": "number",
+        "offsetY": "number"
+    },
+    "OutCardHandler": {
+        "offsetX": "number",
+        "offsetY": "number"
+    },
+    "CallDispatcher": {
+        "count": "number"
+    },
+    "BaseSocket": {
+        "enabledSend": "boolean",
+        "requestSessionMax": "number",
+        "address": "string",
+        "port": "number",
+        "hasDiscRetry": "boolean"
+    },
+    "GameSocket": {
+        "super": "BaseSocket",
+        "userId": "number",
+        "roleId": "number"
+    },
+    "SocketMessage": {
+        "oper": "SocketOper",
+        "type": "SocketMessageType",
+        "errorCode": "string",
+        "message": "string"
+    },
+    "SocketSendInfo": {
+        "obj": "any",
+        "session": "number"
+    },
+    "Crypt": {},
+    "Tick": {
+        "stage": "egret.Stage",
+        "deltaTime": "number"
+    },
+    "TickInfo": {
+        "id": "number",
+        "method": "Function",
+        "time": "number"
+    },
+    "ChannelManager": {},
+    "Channel_windows": {
+        "super": "ChannelBase",
+        "type": "string"
+    },
+    "InitServerHandler": {
+        "isComplete": "boolean"
+    },
+    "PrefsManager": {},
+    "LoginManager": {},
+    "PayManager": {},
+    "PayInfo": {
+        "id": "number",
+        "definition": "PayDefinition",
+        "dayCount": "number"
+    },
+    "RoomManager": {},
+    "RoomInfo": {
+        "super": "BaseServerValueInfo",
+        "roomId": "number",
+        "round": "number",
+        "type": "number",
+        "ante": "number",
+        "playerList": "Array",
+        "roundNum": "number",
+        "head": "number",
+        "tail": "number",
+        "shouPai": "Array",
+        "pos": "number",
+        "play": "RoomState",
+        "num1": "number",
+        "num2": "number",
+        "myLastCard": "number",
+        "hostRoleId": "number",
+        "touziTotalNum": "number",
+        "minTouziNum": "number"
+    },
+    "PlayerInfo": {
+        "super": "BaseServerValueInfo",
+        "roleId": "number",
+        "name": "string",
+        "head": "string",
+        "sex": "number",
+        "ip": "string",
+        "isMaster": "boolean",
+        "pos": "number",
+        "groupList": "Array",
+        "outCard": "Array",
+        "isTing": "boolean",
+        "isReady": "boolean",
+        "isOutOfCard": "boolean",
+        "score": "number",
+        "isLastMoPai": "boolean",
+        "shouPaiNum": "number",
+        "currScore": "number",
+        "hosted": "boolean",
+        "isHost": "boolean"
+    },
+    "GroupCardInfo": {
+        "card": "number",
+        "index": "number",
+        "action": "number",
+        "pos": "number"
+    },
+    "SceneManager": {},
+    "AlertManager": {},
+    "UIManager": {},
+    "RoundSplitInfo": {
+        "super": "BaseServerValueInfo",
+        "id": "number",
+        "round": "number",
+        "time": "number",
+        "roleId": "number",
+        "head": "string",
+        "name": "string",
+        "sex": "number",
+        "isHost": "boolean",
+        "name2": "string",
+        "name3": "string",
+        "name4": "string",
+        "score": "number",
+        "score2": "number",
+        "score3": "number",
+        "score4": "number"
+    },
+    "RoundInfo": {
+        "super": "BaseServerValueInfo",
+        "id": "number",
+        "round": "number",
+        "time": "number",
+        "roleId1": "number",
+        "head1": "string",
+        "head2": "string",
+        "head3": "string",
+        "head4": "string",
+        "name1": "string",
+        "name2": "string",
+        "name3": "string",
+        "name4": "string",
+        "sex1": "number",
+        "sex2": "number",
+        "sex3": "number",
+        "sex4": "number",
+        "hostRoleId": "number",
+        "score1": "number",
+        "score2": "number",
+        "score3": "number",
+        "score4": "number"
+    },
+    "UserInfo": {
+        "super": "BaseServerValueInfo",
+        "weiXinInfo": "WeiXinInfo",
+        "card": "number",
+        "cardLogList": "Array",
+        "timestamp": "number",
+        "timezone": "number",
+        "roleId": "number"
+    },
+    "WeiXinInfo": {
+        "headImg": "string",
+        "name": "string",
+        "id": "number",
+        "ipAdress": "string",
+        "sex": "number"
+    },
+    "CardLogInfo": {
+        "price": "number",
+        "count": "number"
+    },
+    "UserManager": {},
+    "OtherUserInfo": {
+        "super": "BaseServerValueInfo",
+        "roleId": "number",
+        "name": "string",
+        "sex": "number",
+        "head": "string",
+        "ip": "string"
+    },
+    "ActionEffectComponent": {
+        "super": "BaseComponent",
+        "effectTweenGroup": "egret.tween.TweenGroup",
+        "imgAction": "eui.Image"
+    },
+    "NumComponent": {
+        "super": "BaseComponent",
+        "label1": "eui.Label"
+    },
+    "OnceResultCardComponet": {
+        "super": "BaseComponent",
+        "face": "eui.Image"
+    },
+    "RoomUserHeadInfoComponent": {
+        "super": "BaseComponent",
+        "headImg": "eui.Image",
+        "sexImg": "eui.Image",
+        "nameLabel": "eui.Label",
+        "scoreLabel": "eui.Group",
+        "zhuangImg": "eui.Image",
+        "tingpaiImg": "eui.Image",
+        "fangZhu": "eui.Image",
+        "grayBg": "eui.Image"
+    },
+    "ScoreEffectComponent": {
+        "super": "BaseComponent",
+        "group": "eui.Group",
+        "effectGroup": "egret.tween.TweenGroup"
+    },
+    "TouZiComponent": {
+        "super": "BaseComponent",
+        "touziAnimate": "egret.tween.TweenGroup",
+        "touziImg1": "eui.Image"
+    },
+    "UserHeadInfoComponent": {
+        "super": "BaseComponent",
+        "borderImg": "eui.Image",
+        "userNameLabel": "eui.Label",
+        "idLabel": "eui.Label",
+        "sexImg": "eui.Image",
+        "hostLabel": "eui.Label"
+    },
+    "UIModuleEvent": {
+        "super": "egret.Event",
+        "panelName": "string"
+    },
+    "ModelPanel": {
+        "super": "BasePanel"
+    },
+    "AlertInfoPanel": {
+        "super": "BasePanel",
+        "titleTxt": "eui.Label",
+        "subTxt": "eui.Label",
+        "infoTxt": "eui.Label",
+        "confirmBtn": "eui.Button",
+        "cancelBtn": "eui.Button",
+        "group": "eui.Group"
+    },
+    "AlertInfo": {
+        "title": "string",
+        "subTitle": "string",
+        "message": "string",
+        "confirmLabel": "string",
+        "cancelLabel": "string",
+        "OnConfirm": "Function",
+        "OnCancel": "Function",
+        "confirmParam": "any",
+        "cancleParam": "any",
+        "extraData": "any",
+        "alignment": "string",
+        "isSingle": "boolean"
+    },
+    "CreateRoomPanel": {
+        "super": "BasePanel",
+        "createRoomBtn": "eui.Button",
+        "roundScroller": "eui.Scroller",
+        "playWayScroller": "eui.Scroller",
+        "antesScroller": "eui.Scroller",
+        "roundList": "eui.List",
+        "playWayList": "eui.List",
+        "antesList": "eui.List"
+    },
+    "EnterLoginPanel": {
+        "super": "BasePanel",
+        "weixinLoginBtn": "eui.Button",
+        "guestBtn": "eui.Button",
+        "intranetAccountBtn": "eui.Button"
+    },
+    "GameHallPanel": {
+        "super": "BasePanel",
+        "borderImg": "eui.Image",
+        "userNameLabel": "eui.Label",
+        "idLabel": "eui.Label",
+        "addRoomCardBtn": "eui.Button",
+        "girlImg": "eui.Image",
+        "boyImg": "eui.Image",
+        "roomCardNumLabel": "eui.Label",
+        "payBtn": "eui.Button",
+        "logoImg": "eui.Image",
+        "createRoomBtn": "eui.Button",
+        "addInRoomBtn": "eui.Button",
+        "recordBtn": "eui.Button",
+        "playBtn": "eui.Button",
+        "infoBtn": "eui.Button",
+        "settingBtn": "eui.Button",
+        "piaohua": "egret.tween.TweenGroup",
+        "group": "eui.Group",
+        "enter": "egret.tween.TweenGroup",
+        "playing": "egret.tween.TweenGroup"
+    },
+    "GameOverPanel": {
+        "super": "BasePanel",
+        "shareBtn": "eui.Button",
+        "exitBtn": "eui.Button",
+        "infoGroup": "eui.DataGroup"
+    },
+    "GameScenePanel": {
+        "super": "BasePanel",
+        "pubGroup": "eui.Group",
+        "timeLabel": "eui.Label",
+        "roomIdLabel": "eui.Label",
+        "voiceBtn": "eui.Button",
+        "benJiaWind": "eui.Image",
+        "xiaJiaWind": "eui.Image",
+        "duiJiaWind": "eui.Image",
+        "shangJiaWind": "eui.Image",
+        "waitGroup": "eui.Group",
+        "invitBtn": "eui.Button",
+        "exitBtn": "eui.Button",
+        "disbandedBtn": "eui.Button",
+        "cancelHostedBtn": "eui.Button",
+        "gameGroup": "eui.Group",
+        "roundTypeLabel": "eui.Label",
+        "roundNumLabel": "eui.Label",
+        "remainLabel": "eui.Label",
+        "paiPosGroup": "eui.Group",
+        "promptComponet": "eui.Component",
+        "btnGroup": "eui.DataGroup",
+        "shouPaiGroup": "eui.DataGroup",
+        "moPaiBtn": "eui.Button",
+        "daPaiBtn": "eui.Button",
+        "benJiaSortBtn": "eui.Button",
+        "insertPaiBtn": "eui.Button",
+        "pengBtn": "eui.Button",
+        "gangBtn": "eui.Button",
+        "tingBtn": "eui.Button",
+        "huBtn": "eui.Button",
+        "tingOutCardTime": "number",
+        "tingGap": "number",
+        "cancelBtn": "eui.Button",
+        "guoBtn": "eui.Button",
+        "testPengBtn": "eui.Button",
+        "testGangBtn": "eui.Button",
+        "tingHelpBtn": "eui.Image",
+        "actionTimeLabel": "eui.Label",
+        "timeLogic": "TimeShowLogic",
+        "gameEffectLogic": "GameEffectLogic",
+        "cardGroup": "eui.Group",
+        "benjiaAnimate": "egret.tween.TweenGroup",
+        "xiajiaAnimate": "egret.tween.TweenGroup",
+        "duijiaAnimate": "egret.tween.TweenGroup",
+        "shangjiaAnimate": "egret.tween.TweenGroup",
+        "benJiaReadyImg": "eui.Image",
+        "xiaJiaReadyImg": "eui.Image",
+        "duiJiaReadyImg": "eui.Image",
+        "shangJiaReadyImg": "eui.Image",
+        "hostGroup": "eui.Group",
+        "xiaJiaHostedImg": "eui.Button",
+        "duiJiaHostedImg": "eui.Button",
+        "shangJiaHostedImg": "eui.Button",
+        "actionWidth": "number",
+        "mopai": "number"
+    },
+    "GangSelectPanel": {
+        "super": "BasePanel",
+        "contentGroup": "eui.DataGroup"
+    },
+    "JoinInRoomPanel": {
+        "super": "BasePanel",
+        "btnGroup": "eui.Group",
+        "numBtn0": "eui.Button",
+        "numBtn1": "eui.Button",
+        "numBtn2": "eui.Button",
+        "numBtn3": "eui.Button",
+        "numBtn4": "eui.Button",
+        "numBtn5": "eui.Button",
+        "numBtn6": "eui.Button",
+        "numBtn7": "eui.Button",
+        "numBtn8": "eui.Button",
+        "numBtn9": "eui.Button",
+        "reLoseBtn": "eui.Button",
+        "delBtn": "eui.Button",
+        "joinInBtn": "eui.Button",
+        "labelGroup": "eui.Group",
+        "label1": "NumComponent",
+        "label2": "NumComponent",
+        "label3": "NumComponent",
+        "label4": "NumComponent",
+        "label5": "NumComponent",
+        "label6": "NumComponent"
+    },
+    "LoadingPanel": {
+        "super": "BasePanel",
+        "image": "eui.Image",
+        "loading": "egret.tween.TweenGroup"
+    },
+    "LoadingSwitchPanel": {
+        "super": "BasePanel",
+        "progressImg": "eui.Image",
+        "infoTxt": "eui.Label"
+    },
+    "LoginBar": {
+        "super": "BasePanel",
+        "switchAccountLabel": "eui.Label",
+        "accountLabel": "eui.Label",
+        "enterBtn": "eui.Button"
+    },
+    "LoginLocalPanel": {
+        "super": "BasePanel",
+        "loginBtn": "eui.Button",
+        "registerBtn": "eui.Button",
+        "accountLabel": "eui.Label",
+        "pwdLabel": "eui.Label"
+    },
+    "LoginPanel": {
+        "super": "BasePanel",
+        "weixinLoginBtn": "eui.Button",
+        "userBtn": "eui.Button",
+        "agreeCheckBox": "eui.CheckBox"
+    },
+    "LoginSceneBgPanel": {
+        "super": "BasePanel"
+    },
+    "MarqueePanel": {
+        "super": "BasePanel",
+        "bgImg": "eui.Image",
+        "textLabel": "eui.Label",
+        "scroller": "eui.Scroller",
+        "textGroup": "eui.Group",
+        "move": "egret.Tween"
+    },
+    "OnceResultPanel": {
+        "super": "BasePanel",
+        "nameLabel": "eui.Label",
+        "roundNumLabel": "eui.Label",
+        "anteLabel": "eui.Label",
+        "exitBtn": "eui.Button",
+        "goOnBtn": "eui.Button",
+        "gameOverBtn": "eui.Button",
+        "resultGroup": "eui.DataGroup",
+        "winImg": "eui.Image",
+        "loseImg": "eui.Image",
+        "liuJuImg": "eui.Image"
+    },
+    "PayPanel": {
+        "super": "BasePanel",
+        "scroller": "eui.Scroller",
+        "list": "eui.List"
+    },
+    "RegisterPanel": {
+        "super": "BasePanel",
+        "registerBtn": "eui.Button",
+        "backBtn": "eui.Button",
+        "accountLabel": "eui.Label",
+        "pwdLabel": "eui.Label"
+    },
+    "RoundInfoPanel": {
+        "super": "BasePanel",
+        "noneLabel": "eui.Label",
+        "listGroup": "eui.List",
+        "listScroller": "eui.Scroller"
+    },
+    "SettingPanel": {
+        "super": "BasePanel",
+        "bgSoundHs": "eui.HSlider",
+        "soundEffectHs": "eui.HSlider",
+        "bgSoundTog": "eui.ToggleButton",
+        "soundEffectTog": "eui.ToggleButton"
+    },
+    "TextInfoPanel": {
+        "super": "BasePanel",
+        "txtGroupScroller": "eui.Scroller",
+        "txtList": "eui.List",
+        "titleLabel": "eui.Label"
+    },
+    "TextTipsPanel": {
+        "super": "BasePanel",
+        "label": "eui.Label"
+    },
+    "TingInfoPanel": {
+        "super": "BasePanel",
+        "resultGroup": "eui.DataGroup",
+        "bgImg": "eui.Image"
+    },
+    "UserAngreementPanel": {
+        "super": "BasePanel",
+        "agreeBtn": "eui.Button",
+        "infoTxt": "eui.Label",
+        "txtGroup": "eui.Group",
+        "callBack": "Function",
+        "textInput": "eui.TextInput"
+    },
+    "UserInfoPanel": {
+        "super": "BasePanel",
+        "headImg": "eui.Image",
+        "nameLabel": "eui.Label",
+        "ipLabel": "eui.Label",
+        "sexImg": "eui.Image",
+        "idLabel": "eui.Label"
+    },
+    "CreateRoomPanelItemRenderer": {
+        "super": "BaseItemRenderer",
+        "radioBtn1": "eui.RadioButton"
+    },
+    "GameOverItemRenderer": {
+        "super": "BaseItemRenderer",
+        "headImg": "eui.Image",
+        "hostImg": "eui.Image",
+        "idLabel": "eui.Label",
+        "scoreLabel1": "eui.Group",
+        "scoreLabel2": "eui.Group",
+        "scoreLabel3": "eui.Group",
+        "scoreLabel4": "eui.Group",
+        "scroller": "eui.Scroller",
+        "infoGroup2": "eui.Group",
+        "infoGroup3": "eui.Group",
+        "infoGroup4": "eui.Group",
+        "maxWinerFlag": "eui.Image",
+        "scoreGroup": "eui.DataGroup"
+    },
+    "GangPaiSelectItemRenderer": {
+        "super": "BaseItemRenderer",
+        "face1": "eui.Image",
+        "face2": "eui.Image",
+        "face3": "eui.Image",
+        "face4": "eui.Image"
+    },
+    "OnceResultItemRenderer": {
+        "super": "BaseItemRenderer",
+        "playerNameLabel": "eui.Label",
+        "actionLabel": "eui.Group",
+        "scoreLabel": "eui.Group",
+        "huImg": "eui.Image",
+        "paiGroup": "eui.DataGroup"
+    },
+    "OneRoundScoreItemRenderer": {
+        "super": "BaseItemRenderer",
+        "roundLabel": "eui.Label",
+        "scoreLabel": "eui.Group"
+    },
+    "PayPanelItemRenderer": {
+        "super": "BaseItemRenderer",
+        "cardImg": "eui.Image",
+        "remainLabel": "eui.Label"
+    },
+    "RoundUserListItemRenderer": {
+        "super": "BaseItemRenderer",
+        "idLabel": "eui.Label",
+        "roundLabel": "eui.Label",
+        "timeLabel": "eui.Label",
+        "user1": "eui.Component",
+        "user2": "eui.Component",
+        "user3": "eui.Component",
+        "user4": "eui.Component"
+    },
+    "ShouPaiItemRenderer": {
+        "super": "BaseItemRenderer",
+        "contentImg": "eui.Image"
+    },
+    "TextRenderer": {
+        "super": "BaseItemRenderer",
+        "txtLabel": "eui.Label"
+    },
+    "TingRenderer": {
+        "super": "BaseItemRenderer",
+        "face": "eui.Image",
+        "countLabel": "eui.Label",
+        "allLabel": "eui.Label"
+    },
+    "Dictionary": {
+        "keys": "Array",
+        "values": "Array",
+        "isCache": "boolean",
+        "count": "number"
+    },
+    "OutCard": {
+        "super": "BaseComponent",
+        "maskImg": "eui.Image",
+        "face": "eui.Image",
+        "card": "number",
+        "posIndex": "number"
+    },
+    "LiangCard": {
+        "super": "BaseComponent",
+        "face": "eui.Image",
+        "card": "number"
+    },
+    "GroupCard": {
+        "super": "BaseComponent",
+        "face": "eui.Image",
+        "card": "number",
+        "cardDef": "GroupCardDefinition"
+    },
+    "BenJiaShouCard": {
+        "super": "OtherShouCard",
+        "isTingCard": "boolean"
+    },
+    "OtherShouCard": {
+        "super": "egret.DisplayObjectContainer",
+        "isLastCard": "boolean",
+        "cardNum": "number"
+    },
+    "MoveCardPit": {
+        "def": "ShouPaiDefinition",
+        "card": "OtherShouCard",
+        "targetPit": "MoveCardPit"
+    },
+    "ShouPaiBenJiaHandler": {
+        "super": "BaseShouPaiHandler"
+    },
+    "ShouPaiDuiJiaHandler": {
+        "super": "BaseShouPaiHandler"
+    },
+    "ShouPaiShangJiaHandler": {
+        "super": "BaseShouPaiHandler"
+    },
+    "ShouPaiXiaJiaHandler": {
+        "super": "BaseShouPaiHandler"
+    },
+    "GameEffectLogic": {
+        "tweenGroup": "eui.Group",
+        "index": "number"
+    },
+    "ActionInfo": {
+        "actionType": "ActionType",
+        "posType": "PosType"
+    },
+    "TimeShowLogic": {
+        "timeLabel": "eui.Label",
+        "nowTotal": "number"
+    },
+    "lasttime": "2017-05-22 16:22:13"
+}

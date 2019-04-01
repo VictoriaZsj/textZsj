@@ -1,0 +1,66 @@
+class AssignmentItemRenderer extends BaseItemRenderer<AchievementInfo>
+{
+    public achieveImg: eui.Image;
+    public desLabel: eui.Label;
+    public rewardLabel: eui.Label;
+    public rewardImg: eui.Image;
+    public takePrizeBtn: eui.Button;
+    public gotoBtn: eui.Button;
+    public processImg: eui.Image;
+    public progressLabel: eui.Label;
+
+    public constructor()
+    {
+        super();
+        this.skinName = UIRendererSkinName.AssignmentItemRenderer;
+    }
+
+    protected createChildren()
+    {
+        this.dataChanged();
+    }
+    protected dataChanged()
+    {
+        super.dataChanged();
+        if (this.bindData)
+        {
+            //this.achieveImg.source = this.bindData.definition.icon;
+            this.desLabel.text = this.bindData.definition.description;
+            this.rewardLabel.text = this.bindData.definition.rewardNum.toString();
+            //this.rewardImg.source = this.bindData.definition.rewardId;
+            this.refreshiUI();
+            this.addEventListener(egret.Event.REMOVED_FROM_STAGE, this.onDisable, this);
+            this.addEventListener(egret.TouchEvent.TOUCH_TAP, this.onClick, this);
+        }
+    }
+
+    private refreshiUI()
+    {
+        let groupInfo: BaseAchieveProcessInfo = AchieveProcessManager.getAchieveProcessInfoByGroup(this.bindData.definition.group);
+        this.processImg.width = 300;
+        if (groupInfo.process < this.bindData.definition.para1)
+        {
+            // this.processImg.width *= groupInfo.process / groupInfo.
+        }
+
+    }
+
+    private onClick(event: egret.TouchEvent)
+    {
+        switch (event.target)
+        {
+            case this.takePrizeBtn:
+                break;
+            case this.gotoBtn:
+                break;
+        }
+    }
+
+    public onDisable(event: egret.Event)
+    {
+        this.removeEventListener(egret.Event.REMOVED_FROM_STAGE, this.onDisable, this);
+        this.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.onClick, this);
+    }
+
+
+}

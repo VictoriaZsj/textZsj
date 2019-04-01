@@ -1,0 +1,88 @@
+/**
+ * 牌局面板设置
+ */
+class GamblingPanelSetting
+{
+	/**
+	 * 最小坑位索引
+	 */
+	public static readonly MinPitIndex: number = 1;
+	/**
+	 * 最大坑位索引
+	 */
+	public static readonly MaxPitIndex: number = 9;
+
+	/**
+ 	* 按钮位置列表 位置从0-9
+ 	*/
+	public static buttonPosList: Array<egret.Point> = [
+		new egret.Point(0, 0),
+		new egret.Point(258, 964),
+		new egret.Point(110, 832),
+		new egret.Point(110, 476),
+		new egret.Point(110, 274),
+		new egret.Point(325, 252),
+		new egret.Point(402, 250),
+		new egret.Point(575, 274),
+		new egret.Point(575, 476),
+		new egret.Point(575, 832)];
+	/**
+	 * 头像位置列表 hcenter vcenter
+	 */
+	public static headPosList: Array<egret.Point> = [
+		new egret.Point(0, 0),
+		new egret.Point(-7, 413),
+		new egret.Point(-311, 184),
+		new egret.Point(-311, -164),
+		new egret.Point(-311, -366),
+		new egret.Point(-90, -478),
+		new egret.Point(133, -478),
+		new egret.Point(308, -366),
+		new egret.Point(308, -164),
+		new egret.Point(308, 184)];
+	/**
+	 * 向后获取指定差值个目标索引
+	 */
+	public static getNextIndex(sourceIndex: number, offset: number = 1): number
+	{
+		sourceIndex += offset;
+		if (sourceIndex > GamblingPanelSetting.MaxPitIndex)
+		{
+			sourceIndex -= GamblingPanelSetting.MaxPitIndex;
+		}
+		if (sourceIndex > GamblingPanelSetting.MaxPitIndex)
+		{
+			sourceIndex = GamblingPanelSetting.MaxPitIndex;
+		}
+		return sourceIndex;
+	}
+	/**
+	 * 向前获取指定差值个目标索引
+	 */
+	public static getPreIndex(sourceIndex: number, offset: number = 1): number
+	{
+		sourceIndex -= offset;
+		if (sourceIndex <= 0)
+		{
+			sourceIndex += GamblingPanelSetting.MaxPitIndex;
+		}
+		if (sourceIndex < GamblingPanelSetting.MinPitIndex)
+		{
+			sourceIndex = GamblingPanelSetting.MinPitIndex;
+		}
+		return sourceIndex;
+	}
+
+	/**
+	 * 获取两个索引的差值
+	 */
+	public static getOffset(sourceIndex: number, targetIndex: number): number
+	{
+		let offset: number = targetIndex - sourceIndex;
+		if (offset < 0)
+		{
+			return offset + GamblingPanelSetting.MaxPitIndex;
+		}
+		return offset;
+	}
+}

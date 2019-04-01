@@ -1,0 +1,76 @@
+/**
+ * 坐下位置转动
+ */
+class GamblingPanelPitTurnSupport extends BaseGamblingPanelSupport
+{
+	private readonly _center: number = 5;
+	private _nowRunIndex: number;
+	/**
+	 * 是否是顺时针
+	 */
+	private _isClockwise: boolean;
+
+	private _offset: number;
+
+	public initialize()
+	{
+		super.initialize();
+	}
+	public onEnable()
+	{
+		super.onEnable();
+		GamblingManager.BuyInGameEvent.addListener(this.onBuyInGame);
+	}
+	public onDisable()
+	{
+		super.onDisable();
+		GamblingManager.BuyInGameEvent.removeListener(this.onBuyInGame);
+	}
+	public onBuyInGame(pos: number)
+	{
+		let pitInfo: GamblingPitInfo = this.target.getPitInfo(pos);
+		this._offset = GamblingPanelSetting.MaxPitIndex + (GamblingPanelSetting.MinPitIndex - pitInfo.index);
+		this._isClockwise = pitInfo.index > this._center;
+		this._nowRunIndex = 0;
+		this.runNext();
+	}
+	public runNext()
+	{
+		let point: egret.Point;
+		let virtualPitIndex: number;
+		let pitInfo: GamblingPitInfo;
+		for (let i: number = GamblingPanelSetting.MinPitIndex; i <= GamblingPanelSetting.MaxPitIndex; i++)
+		{
+			pitInfo = this.target.pitList[i];
+			if (this._isClockwise) //顺时针
+			{
+				virtualPitIndex = GamblingPanelSetting.getNextIndex(pitInfo.index, this._nowRunIndex);
+			}
+			else
+			{
+				virtualPitIndex = GamblingPanelSetting.getPreIndex(pitInfo.index, this._nowRunIndex);
+			}
+			point = GamblingPanelSetting.headPosList[virtualPitIndex];
+			pitInfo.headComponent.turnAnim.run(point.x, point.y);
+		}
+		pitInfo.headComponent.turnAnim.RunOverEvent.addListener(this.tryRunNext, this);
+		this._nowRunIndex++;
+	}
+	private tryRunNext()
+	{
+		if (this._nowRunIndex >= this._offset) //旋转完毕
+		{
+			this.target.pitList[GamblingPanelSetting.MaxPitIndex].headComponent.turnAnim.RunOverEvent.removeListener(this.tryRunNext);
+			let pitInfo: GamblingPitInfo;
+			for (let i: number = GamblingPanelSetting.MinPitIndex; i <= GamblingPanelSetting.MaxPitIndex; i++)
+			{
+				pitInfo = this.target.pitList[i];
+				pitInfo.index = GamblingPanelSetting.getNextIndex(pitInfo.index, this._offset);
+			} //移动完毕改变坑位的索引 位置变了，最下面的坑位始终要在1号位
+		}
+		else
+		{
+			this.runNext();
+		}
+	}
+}

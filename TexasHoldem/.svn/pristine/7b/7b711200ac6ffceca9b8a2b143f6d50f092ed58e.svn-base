@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="panelSkin4" width="1280" height="720" xmlns:e="http://ns.egret.com/eui" xmlns:ns1="*" xmlns:w="http://ns.egret.com/wing">
+	<e:Group id="tweenGroup" width="700" height="350" verticalCenter="0" horizontalCenter="0">
+		<e:Image width="831" height="451" source="bg_page2_png" horizontalCenter="0" verticalCenter="10" scale9Grid="23,24,99,99"/>
+		<e:Image  source="bg_page5_png" anchorOffsetX="200" verticalCenter="-205.5" horizontalCenter="0" scale9Grid="73,0,143,73"/>
+		<e:Image scaleX="1" scaleY="1" anchorOffsetX="0" source="h_tishi_png" horizontalCenter="0.5" verticalCenter="-205.5"/>
+		<e:Image width="786.62" height="279.45" anchorOffsetX="0" anchorOffsetY="0" y="13.61" scaleX="1" scaleY="1" scale9Grid="19,18,23,23" horizontalCenter="0" source="bg_page19_2_png"/>
+		<e:Group id="group" y="311.1700000000001" horizontalCenter="0">
+			<ns1:GameButton id="confirmBtn" label="Button" anchorOffsetX="0" skinName="buttonSkin24" x="313.33" y="0" scaleX="1" scaleY="1"/>
+			<ns1:GameButton id="cancelBtn" label="Button" anchorOffsetX="0" skinName="buttonSkin3" x="0" y="0" scaleX="1" scaleY="1"/>
+		</e:Group>
+		<e:Label id="subTxt" text="大法师地方" anchorOffsetX="0" width="506" anchorOffsetY="0" height="34.15"
+		         verticalAlign="middle" textAlign="center" size="26"  horizontalCenter="0" verticalCenter="-111" fontFamily="SimHei" textColor="0xa0522b"/>
+		<e:Label id="infoTxt" text="大法师地方" anchorOffsetX="0" width="677" anchorOffsetY="0" height="154"
+		         verticalAlign="middle" textAlign="center" size="30"  horizontalCenter="0.5" verticalCenter="-20" fontFamily="SimHei" textColor="0xa0522b"/>
+	</e:Group>
+</e:Skin>

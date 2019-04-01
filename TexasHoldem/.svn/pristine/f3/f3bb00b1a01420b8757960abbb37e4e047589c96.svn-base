@@ -1,0 +1,555 @@
+/**
+ * 牌型匹配
+ */
+class GamblingCardTypeMatch
+{
+	/**
+	 * 匹配结果
+	 */
+	public static resultList: Array<CardInfo>;
+	public static cardType: CardType;
+	private static _matchList: Array<Function>;
+	private static initialize(): void
+	{
+		GamblingCardTypeMatch.resultList = new Array<CardInfo>();
+
+		GamblingCardTypeMatch._matchList = new Array<Function>();
+		GamblingCardTypeMatch._matchList.push(GamblingCardTypeMatch.matchRoyalFlush);
+		GamblingCardTypeMatch._matchList.push(GamblingCardTypeMatch.matchStraightFlush);
+		GamblingCardTypeMatch._matchList.push(GamblingCardTypeMatch.matchFourOfAKind);
+		GamblingCardTypeMatch._matchList.push(GamblingCardTypeMatch.matchFullhouse);
+		GamblingCardTypeMatch._matchList.push(GamblingCardTypeMatch.matchFlush);
+		GamblingCardTypeMatch._matchList.push(GamblingCardTypeMatch.matchStraight);
+		GamblingCardTypeMatch._matchList.push(GamblingCardTypeMatch.matchThreeOfAKind);
+		GamblingCardTypeMatch._matchList.push(GamblingCardTypeMatch.matchTwoPairs);
+		GamblingCardTypeMatch._matchList.push(GamblingCardTypeMatch.matchOnePair);
+		GamblingCardTypeMatch._matchList.push(GamblingCardTypeMatch.matchHighCard);
+	}
+	public static clear()
+	{
+		GamblingCardTypeMatch.cardType = CardType.None;
+	}
+	/**
+	 * 匹配牌型
+	 */
+	public static matchCardType(): boolean
+	{
+		if (!GamblingCardTypeMatch._matchList)
+		{
+			GamblingCardTypeMatch.initialize();
+		}
+		GamblingCardTypeMatch.clear();
+		if (GamblingManager.roundCardInfo)
+		{
+			let allList: Array<CardInfo> = GamblingManager.roundCardInfo.allList;
+			if (allList)
+			{
+				allList.sort(GamblingCardTypeMatch.sortByIndex);
+				let func: Function;
+				for (let i: number = 0; i < GamblingCardTypeMatch._matchList.length; i++)
+				{
+					func = GamblingCardTypeMatch._matchList[i];
+					if (func == GamblingCardTypeMatch.matchStraight || func == GamblingCardTypeMatch.matchStraightFlush)
+					{
+						return GamblingCardTypeMatch.containAOper(func, allList);
+					}
+					else if (func(allList))
+					{
+						return true;
+					}
+
+				}
+			}
+		}
+		return false;
+	}
+	/**
+	 * 包含A，算顺子，同花顺
+	 */
+	private static containAOper(func: Function, allList: Array<CardInfo>): boolean
+	{
+		if (func(allList))
+		{
+			return true;
+		}
+		else
+		{
+			let isContainA: boolean = false;
+			for (let j: number = 0; j < allList.length; j++)
+			{
+				if (allList[j].index == CardDefined.GetInstance().maxCardIndex)
+				{
+					isContainA = true;
+					break;
+				}
+			}
+			if (isContainA)
+			{
+				for (let j: number = 0; j < allList.length; j++)
+				{
+					if (allList[j].index == CardDefined.GetInstance().maxCardIndex) //把A从最大索引，换成最小索引
+					{
+						allList[j].index = CardDefined.GetInstance().minCardIndex;
+					}
+				}
+				allList.sort(GamblingCardTypeMatch.sortByIndex);
+				let result: boolean = func(allList);
+				for (let j: number = 0; j < allList.length; j++) //在把A换回来
+				{
+					if (allList[j].index == CardDefined.GetInstance().minCardIndex)
+					{
+						allList[j].index = CardDefined.GetInstance().maxCardIndex;
+					}
+				}
+				return result;
+			}
+		}
+		return false;
+	}
+	/**
+	 * 匹配皇家同花顺
+	 */
+	private static matchRoyalFlush(list: Array<CardInfo>): boolean
+	{
+		let result: boolean = GamblingCardTypeMatch.matchStraightFlush(list);
+		if (result && GamblingCardTypeMatch.resultList[0].index == CardDefined.GetInstance().maxCardIndex)
+		{
+			GamblingCardTypeMatch.cardType = CardType.RoyalFlush;
+			return true;
+		}
+		return false;
+	}
+	/**
+	 * 匹配同花顺
+	 */
+	private static matchStraightFlush(list: Array<CardInfo>): boolean
+	{
+		let len: number = list.length;
+		if (len >= GamblingManager.MaxBoardNum)
+		{
+			let round: number = GamblingManager.MaxCardNum - len;
+			let startInfo: CardInfo;
+			let nextInfo: CardInfo;
+			let count: number = 0;
+			let fitNum: number = 0;
+			let tmpList: Array<CardInfo> = new Array<CardInfo>();
+			for (let i: number = 0; i <= round; i++)
+			{
+				startInfo = list[i];
+				count = 0;
+				fitNum = 0;
+				tmpList.length = 0;
+				tmpList.push(startInfo);
+				for (let j: number = i + 1; j < len; j++)
+				{
+					nextInfo = list[j];
+					count++;
+					if (startInfo.flush == nextInfo.flush && startInfo.index - nextInfo.index == count)
+					{
+						fitNum++;
+						tmpList.push(nextInfo);
+					}
+					if (fitNum == 4)
+					{
+						GamblingCardTypeMatch.resultList = tmpList;
+						GamblingCardTypeMatch.cardType = CardType.StraightFlush;
+						return true;
+					}
+				}
+			}
+			tmpList = null;
+		}
+		return false;
+	}
+	/**
+	 * 匹配4条
+	 */
+	private static matchFourOfAKind(list: Array<CardInfo>): boolean
+	{
+		let len: number = list.length;
+		if (len >= GamblingManager.MaxBoardNum)
+		{
+			let round: number = len - 4 + 1;
+			let startInfo: CardInfo;
+			let nextInfo: CardInfo;
+			let fitNum: number = 0;
+			let tmpList: Array<CardInfo> = new Array<CardInfo>();
+			for (let i: number = 0; i <= round; i++)
+			{
+				startInfo = list[i];
+				fitNum = 0;
+				tmpList.length = 0;
+				tmpList.push(startInfo);
+				for (let j: number = i + 1; j < len; j++)
+				{
+					nextInfo = list[j];
+					if (startInfo.index == nextInfo.index)
+					{
+						fitNum++;
+						tmpList.push(nextInfo);
+					}
+					if (fitNum == 3)
+					{
+						GamblingCardTypeMatch.resultList = tmpList;
+						GamblingCardTypeMatch.toFillHighCard(list, tmpList[0].index, len);
+						GamblingCardTypeMatch.cardType = CardType.FourOfAKind;
+						return true;
+					}
+				}
+			}
+			tmpList = null;
+		}
+		return false;
+	}
+	/**
+	 * 匹配葫芦
+	 */
+	private static matchFullhouse(list: Array<CardInfo>): boolean
+	{
+		let len: number = list.length;
+		if (len >= GamblingManager.MaxBoardNum)
+		{
+			let round: number = len - 3 + 1;
+			let startInfo: CardInfo;
+			let nextInfo: CardInfo;
+			let fitNum: number = 0;
+			let tmpList: Array<CardInfo> = new Array<CardInfo>();
+			for (let i: number = 0; i <= round; i++)
+			{
+				startInfo = list[i];
+				fitNum = 0;
+				tmpList.length = 0;
+				tmpList.push(startInfo);
+				for (let j: number = i + 1; j < len; j++)
+				{
+					nextInfo = list[j];
+					if (startInfo.index == nextInfo.index)
+					{
+						fitNum++;
+						tmpList.push(nextInfo);
+					}
+					if (fitNum == 2)
+					{
+						let result: boolean = GamblingCardTypeMatch.toFillPair(list, tmpList, len);
+						if (result)
+						{
+							GamblingCardTypeMatch.resultList = tmpList;
+							GamblingCardTypeMatch.cardType = CardType.Fullhouse;
+							return true;
+						}
+
+					}
+				}
+			}
+			tmpList = null;
+		}
+		return false;
+	}
+	/**
+	 * 匹配同花
+	 */
+	private static matchFlush(list: Array<CardInfo>): boolean
+	{
+		let len: number = list.length;
+		if (len >= GamblingManager.MaxBoardNum)
+		{
+			let round: number = GamblingManager.MaxCardNum - len;
+			let startInfo: CardInfo;
+			let nextInfo: CardInfo;
+			let fitNum: number = 0;
+			let tmpList: Array<CardInfo> = new Array<CardInfo>();
+			for (let i: number = 0; i <= round; i++)
+			{
+				startInfo = list[i];
+				fitNum = 0;
+				tmpList.length = 0;
+				tmpList.push(startInfo);
+				for (let j: number = i + 1; j < len; j++)
+				{
+					nextInfo = list[j];
+					if (startInfo.flush == nextInfo.flush)
+					{
+						fitNum++;
+						tmpList.push(nextInfo);
+					}
+					if (fitNum == 4)
+					{
+						GamblingCardTypeMatch.resultList = tmpList;
+						GamblingCardTypeMatch.cardType = CardType.Flush;
+						return true;
+					}
+				}
+			}
+			tmpList = null;
+		}
+		return false;
+	}
+	/**
+	 * 匹配顺子
+	 */
+	private static matchStraight(list: Array<CardInfo>): boolean
+	{
+		let len: number = list.length;
+		if (len >= GamblingManager.MaxBoardNum)
+		{
+			let round: number = GamblingManager.MaxCardNum - len;
+			let startInfo: CardInfo;
+			let nextInfo: CardInfo;
+			let count: number = 0;
+			let fitNum: number = 0;
+			let tmpList: Array<CardInfo> = new Array<CardInfo>();
+			for (let i: number = 0; i <= round; i++)
+			{
+				startInfo = list[i];
+				count = 0;
+				fitNum = 0;
+				tmpList.length = 0;
+				tmpList.push(startInfo);
+				for (let j: number = i + 1; j < len; j++)
+				{
+					nextInfo = list[j];
+					count++;
+					if (startInfo.index - nextInfo.index == count)
+					{
+						fitNum++;
+						tmpList.push(nextInfo);
+					}
+					if (fitNum == 4)
+					{
+						GamblingCardTypeMatch.resultList = tmpList;
+						GamblingCardTypeMatch.cardType = CardType.Straight;
+						return true;
+					}
+				}
+			}
+			tmpList = null;
+		}
+		return false;
+	}
+	/**
+	 * 匹配3条
+	 */
+	private static matchThreeOfAKind(list: Array<CardInfo>): boolean
+	{
+		let len: number = list.length;
+		if (len >= GamblingManager.MaxBoardNum)
+		{
+			let round: number = len - 3 + 1;
+			let startInfo: CardInfo;
+			let nextInfo: CardInfo;
+			let fitNum: number = 0;
+			let tmpList: Array<CardInfo> = new Array<CardInfo>();
+			for (let i: number = 0; i <= round; i++)
+			{
+				startInfo = list[i];
+				fitNum = 0;
+				tmpList.length = 0;
+				tmpList.push(startInfo);
+				for (let j: number = i + 1; j < len; j++)
+				{
+					nextInfo = list[j];
+					if (startInfo.index == nextInfo.index)
+					{
+						fitNum++;
+						tmpList.push(nextInfo);
+					}
+					if (fitNum == 2)
+					{
+						GamblingCardTypeMatch.resultList = tmpList;
+						GamblingCardTypeMatch.toFillHighCard(list, tmpList[0].index, len);
+						GamblingCardTypeMatch.cardType = CardType.ThreeOfAKind;
+						return true;
+					}
+				}
+			}
+			tmpList = null;
+		}
+		return false;
+	}
+	/**
+	 * 匹配两队
+	 */
+	private static matchTwoPairs(list: Array<CardInfo>): boolean
+	{
+		let len: number = list.length;
+		if (len >= GamblingManager.MaxBoardNum)
+		{
+			let tmpList: Array<CardInfo> = new Array<CardInfo>();
+			let fitNum: number = 0;
+			let numList: Array<number> = new Array<number>();
+			let cardInfo: CardInfo;
+			for (let i: number = 0; i < len; i++)
+			{
+				cardInfo = list[i];
+				GamblingCardTypeMatch.sameCardOper(list, cardInfo.index);
+				if (GamblingCardTypeMatch._sameCardList.length == 2)
+				{
+					tmpList = tmpList.concat(GamblingCardTypeMatch._sameCardList);
+					fitNum++;
+					numList.push(cardInfo.index);
+					if (fitNum == 2)
+					{
+						GamblingCardTypeMatch.resultList = tmpList;
+						GamblingCardTypeMatch.toFillHighCard(list, numList, len);
+						GamblingCardTypeMatch.cardType = CardType.TwoPairs;
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+	/**
+	 * 匹配一对
+	 */
+	private static matchOnePair(list: Array<CardInfo>): boolean
+	{
+		let len: number = list.length;
+		let tmpList: Array<CardInfo> = new Array<CardInfo>();
+		let fitNum: number = 0;
+		let cardInfo: CardInfo;
+		for (let i: number = 0; i < len; i++)
+		{
+			cardInfo = list[i];
+			GamblingCardTypeMatch.sameCardOper(list, cardInfo.index);
+			if (GamblingCardTypeMatch._sameCardList.length == 2)
+			{
+				tmpList = tmpList.concat(GamblingCardTypeMatch._sameCardList);
+				fitNum++;
+				if (fitNum == 1)
+				{
+					GamblingCardTypeMatch.resultList = tmpList;
+					GamblingCardTypeMatch.toFillHighCard(list, cardInfo.index, len);
+					GamblingCardTypeMatch.cardType = CardType.OnePair;
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	/**
+	 * 匹配高牌
+	 */
+	private static matchHighCard(list: Array<CardInfo>): boolean
+	{
+		GamblingCardTypeMatch.toFillHighCard(list, -1, list.length);
+		GamblingCardTypeMatch.cardType = CardType.HighCard;
+		return true;
+	}
+	/**
+	 * 填充对子
+	 */
+	private static toFillPair(list: Array<CardInfo>, tmpList: Array<CardInfo>, len: number): boolean
+	{
+		let info: CardInfo;
+		let count: number;
+		let tmpInfo: CardInfo = tmpList[0];
+		for (let i: number = 0; i < len; i++)
+		{
+			info = list[i];
+			if (info.index != tmpInfo.index)
+			{
+				GamblingCardTypeMatch.sameCardOper(list, info.index);
+				if (GamblingCardTypeMatch._sameCardList.length == 2)
+				{
+					tmpList = tmpList.concat(GamblingCardTypeMatch._sameCardList);
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	/**
+	 * 填充高牌
+	 */
+	private static toFillHighCard(list: Array<CardInfo>, excludeIndex: number | Array<number>, len: number)
+	{
+		let info: CardInfo;
+		for (let i: number = 0; i < len; i++)
+		{
+			info = list[i];
+			if (GamblingCardTypeMatch.resultList.length < GamblingManager.MaxBoardNum)
+			{
+				if (typeof excludeIndex == "number" && info.index != excludeIndex)
+				{
+					GamblingCardTypeMatch.resultList.push(info);
+				}
+				else if (excludeIndex instanceof Array && excludeIndex.indexOf(info.index) == -1)
+				{
+					GamblingCardTypeMatch.resultList.push(info);
+				}
+				if (GamblingCardTypeMatch.resultList.length == GamblingManager.MaxBoardNum)
+				{
+					break;
+				}
+			}
+		}
+	}
+	private static _sameCardList: Array<CardInfo>;
+	/**
+	 * 获取卡牌的数量
+	 */
+	private static sameCardOper(list: Array<CardInfo>, index: number): void
+	{
+		if (!GamblingCardTypeMatch._sameCardList)
+		{
+			GamblingCardTypeMatch._sameCardList = new Array<CardInfo>();
+		}
+		GamblingCardTypeMatch._sameCardList.length = 0;
+		let len: number = list.length;
+		let count: number = 0;
+		for (let i: number = 0; i < len; i++)
+		{
+			if (list[i].index == index)
+			{
+				GamblingCardTypeMatch._sameCardList.push(list[i]);
+			}
+		}
+	}
+	/**
+	 * 降序排列牌列表
+	 */
+	private static sortByIndex(a: CardInfo, b: CardInfo)
+	{
+		if (a.index > b.index)
+		{
+			return -1;
+		}
+		if (a.index < b.index)
+		{
+			return 1;
+		}
+		return 0;
+	}
+	/**
+ 	* 获取卡牌描述
+ 	*/
+	public static getCardDes(type: CardType): string
+	{
+		switch (type)
+		{
+			case CardType.RoyalFlush:
+				return "皇家同花顺";
+			case CardType.StraightFlush:
+				return "同花顺";
+			case CardType.FourOfAKind:
+				return "四条";
+			case CardType.Fullhouse:
+				return "葫芦";
+			case CardType.Flush:
+				return "同花";
+			case CardType.Straight:
+				return "顺子";
+			case CardType.ThreeOfAKind:
+				return "三条";
+			case CardType.TwoPairs:
+				return "两对";
+			case CardType.OnePair:
+				return "一对";
+			case CardType.HighCard:
+				return "高牌";
+			default:
+				return StringConstant.empty;
+		}
+	}
+}

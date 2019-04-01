@@ -1,0 +1,10 @@
+class ActionFunction
+{
+	public thisObject: any;
+	public func: Function;
+
+	public invoke(params?: any)
+	{
+		FuncUtil.invoke(this.func, this.thisObject, params);
+	}
+}

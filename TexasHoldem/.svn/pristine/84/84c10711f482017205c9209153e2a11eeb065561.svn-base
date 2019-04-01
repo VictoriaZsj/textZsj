@@ -1,0 +1,42 @@
+/**
+ * 加注面板
+ */
+class AddChipsPanel extends BasePanel
+{
+    public addChipsHs:eui.HSlider;
+    public constructor()
+	{
+		super();
+		this.skinName =UISkinName.AddChipsPanel;
+	}
+	protected onAwake(event: eui.UIEvent)
+	{
+		super.onAwake(event);
+        this.isMaskClickClose=true;
+
+	}
+	public init(appendData: any)
+	{
+		super.init(appendData);
+		//设置存入滑动条进度
+		this.addChipsHs.value = 0;
+		this.addChipsHs.maximum = 100;
+	}
+	protected onRender(event: egret.Event)
+	{
+		super.onRender(event);
+	}
+	protected onEnable(event: eui.UIEvent): void
+	{
+		super.onEnable(event);
+		this.addChipsHs.addEventListener(egret.Event.CHANGE, this.addChipsHandle, this);
+	}
+	protected onDisable(event: eui.UIEvent): void
+	{
+		super.onDisable(event);
+	}
+	private addChipsHandle()
+	{ 
+        console.log(111)
+	}
+}

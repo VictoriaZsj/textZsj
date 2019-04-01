@@ -1,0 +1,50 @@
+/**
+ * 杠牌选择面板
+ */
+class GangSelectPanel extends BasePanel
+{
+	/**
+	 * 内容
+	 */
+	public contentGroup: eui.DataGroup;
+	public constructor()
+	{
+		super();
+		this.setGrayMask(false);
+		this.offsetV = 20;
+		this.skinName = UISkinName.GangSelectPanel;
+	}
+	protected onAwake(event: eui.UIEvent)
+	{
+		this.contentGroup.layout = UIUtil.getHTileLayout(10, 1, egret.HorizontalAlign.CENTER);
+		super.onAwake(event);
+	}
+	public init(appendData: any)
+	{
+		super.init(appendData);
+	}
+	protected onRender(event: egret.Event)
+	{
+		super.onRender(event);
+		UIUtil.bindRender(this.contentGroup, GangPaiSelectItemRenderer, this.panelData);
+	}
+	protected onEnable(event: eui.UIEvent): void
+	{
+		this.addEventListener(egret.TouchEvent.TOUCH_TAP, this.onPanelClick, this);
+		super.onEnable(event);
+	}
+	protected onDisable(event: eui.UIEvent): void
+	{
+		this.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.onPanelClick, this);
+		super.onDisable(event);
+	}
+	private onPanelClick(event: egret.TouchEvent)
+	{
+		SoundManager.playEffect(Sex.Male, MusicAction.buttonClick);
+		if (event.target instanceof GangPaiSelectItemRenderer)
+		{
+			let render: GangPaiSelectItemRenderer = event.target as GangPaiSelectItemRenderer;
+			GoCardProcessManager.reqGangCard(render.bindData);
+		}
+	}
+}

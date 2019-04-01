@@ -1,0 +1,812 @@
+/*1-9(万)*/
+const wanList: Array<number> = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+/*1-9(饼)*/
+const bingList: Array<number> = [10, 11, 12, 13, 14, 15, 16, 17, 18];
+/*1-9(条)*/
+const tiaoList: Array<number> = [19, 20, 21, 22, 23, 24, 25, 26, 27];
+/*百搭*/
+const baiDaList: Array<number> = [28];
+/*牌的最大数量*/
+const sequenceNumEnd: number = 8;
+/**
+ * 箭牌
+ */
+const jianList: Array<number> = [28];
+class HuCard
+{
+	/**
+	 * 手牌列表
+	 */
+	public shouPaiList: Array<number> = new Array<number>();
+	/**
+	 * 预处理之后的手牌
+	 */
+	private _operdShouPaiList: Array<number> = new Array<number>();
+	private _mybaiDaList: Array<number> = new Array<number>();
+	private tmpPaiList: Array<number>;
+	private _baidaUseNum: number;
+	private _tmpLen: number = 0;
+	private _hasBaidaNum: number;
+	private _ting: Array<number> = [];
+	/**
+	 * 胡8字检测各字牌的 已成牌的数量
+	 */
+	private _wanGroupNum: number = 0;
+	private _binGroupNum: number = 0;
+	private _tiaoGroupNum: number = 0;
+
+
+	/*听牌的列表*/
+	public tingList: Array<ListenInfo> = new Array<ListenInfo>();
+
+	public clear()
+	{
+		ArrayUtil.Clear(this.shouPaiList);
+	}
+	public startListen(list: Array<number>, outcard: number): ListenResultInfo
+	{
+		this.shouPaiList = list;
+		let listenResultInfo: ListenResultInfo = new ListenResultInfo();
+		listenResultInfo.outCard = outcard;
+		if (this.shouPaiList.length >= GameSetting.ZhuangJiaShouPaiNum)
+		{
+			console.log("成牌数量不对，数量：" + this.shouPaiList.length);
+			return listenResultInfo;
+		}
+		this.reset();
+		if (this.checkFour())
+		{
+			for (let i = 1; i < baiDaList[0]; i++)
+			{
+				let info: ListenInfo = new ListenInfo();
+				info.pai = i;
+				info.fan = 1;
+				let def: PaiDefinition = PaiDefined.GetInstance().getDefinition(i, PaiDefined.GetInstance().paiList);
+				info.name = def.name;
+				info.remainNum = GoCardProcessManager.getListenerCardNum(i);
+				this.tingList.push(info);
+			}
+			listenResultInfo.listenerList = this.tingList;
+		}
+		else
+		{
+			this.setGroupNum();
+			this.checkTingAll();
+			listenResultInfo.listenerList = this.tingList;
+		}
+		return listenResultInfo;
+	}
+	private checkTingAll()
+	{
+		for (let i = 1; i <= baiDaList[0]; i++)
+		{
+			if (i > 1)
+			{
+				this._operdShouPaiList.pop();
+			}
+			this._operdShouPaiList.push(i);
+			this.tmpPaiList = this._operdShouPaiList.concat();
+			this.checkTingPai(i);
+		}
+		this._operdShouPaiList.pop();
+	}
+	private setGroupNum()
+	{
+		this._wanGroupNum = 0;
+		this._binGroupNum = 0;
+		this._tiaoGroupNum = 0;
+		if (this.isCheck8())
+		{
+			this._wanGroupNum = this.getGroupCardNum(MahJongType.Wan);
+			this._binGroupNum = this.getGroupCardNum(MahJongType.Bin);
+			this._tiaoGroupNum = this.getGroupCardNum(MahJongType.Tiao);
+		}
+	}
+	public tryHu(list: Array<number>): boolean
+	{
+		// RoomManager.roomInfo.myLastCard = 24;
+		// list = [16,16,24,24,24];
+		this.shouPaiList = list;
+		if (list)
+		{
+			if (list.length % 3 != 2)
+			{
+				console.log("成牌数量不对，数量：" + list.length);
+				return false;
+			}
+			this.reset();
+			if (this.checkFour())
+			{
+				return true;
+			}
+			else
+			{
+				this.setGroupNum();
+				if (RoomManager.roomInfo.myLastCard)
+				{
+					this.tmpPaiList = this._operdShouPaiList.concat();
+					this.checkTingPai(RoomManager.roomInfo.myLastCard);
+					this._operdShouPaiList.pop();
+					return this.tingList.length > 0;
+				}
+				return false;
+			}
+		}
+	}
+	private checkFour(): boolean
+	{
+		this.tmpPaiList = this.shouPaiList.concat();
+		let paiNum: number = this.getTmpPaiList(baiDaList[0]);
+		if (paiNum == 4)
+		{
+			return true;
+		}
+		return false;
+	}
+	private reset()
+	{
+		this.tingList = new Array<ListenInfo>();
+		this._tmpLen = 0;
+		this._ting = [];
+		this._operdShouPaiList = this.shouPaiList.concat();
+	}
+	private checkTingPai(tingIndex: number)
+	{
+		if (this.tmpPaiList.length == 2)
+		{ //刚好剩一个对子 或者这个对子里面有一个百搭
+			if (this.tmpPaiList.indexOf(baiDaList[0]) != -1 || this.tmpPaiList[0] == this.tmpPaiList[1])
+			{
+				this.addTingInfo(tingIndex);
+			}
+		}
+		else
+		{
+			for (let j: number = this.tmpPaiList.length - 1; j >= 0; j--)
+			{
+				let pai = this.tmpPaiList[j];
+				let paiNum: number = this.getTmpPaiList(pai);
+				this._hasBaidaNum = this.getTmpPaiList(baiDaList[0]);
+				let totalNum = this._hasBaidaNum + paiNum;
+				if (totalNum >= 2)
+				{
+					//用一张百搭
+					if (this._hasBaidaNum >= 1)
+					{
+						this.startCheck(pai, tingIndex, 1);
+					}
+					//用两张百搭
+					if (this._hasBaidaNum >= 2)
+					{
+						this.tmpPaiList = this._operdShouPaiList.concat();
+						this.startCheck(pai, tingIndex, 2);
+					}
+					//不用百搭
+					if (paiNum >= 2)
+					{
+						this.tmpPaiList = this._operdShouPaiList.concat();
+						this.startCheck(pai, tingIndex, 0);
+					}
+				}
+				this.tmpPaiList = this._operdShouPaiList.concat();
+			}
+		}
+	}
+	private startCheck(pai: number, tingIndex: number, useBdNum: number)
+	{
+		for (let i: number = 0; i < 2 - useBdNum; i++)
+		{
+			ArrayUtil.RemoveItem(pai, this.tmpPaiList);
+		}
+		this.useUpBaiDa(useBdNum);
+		let jiangWanNum: number = 0;
+		let jiangBinNum: number = 0;
+		let jiangTiaonNum: number = 0;
+
+		switch (HuCard.getCardType(pai))
+		{
+			case MahJongType.Wan:
+				jiangWanNum = 2;
+				break;
+			case MahJongType.Bin:
+				jiangBinNum = 2;
+				break;
+			case MahJongType.Tiao:
+				jiangTiaonNum = 2;
+				break;
+			case MahJongType.Baida:
+				jiangWanNum = 2;
+				jiangBinNum = 2;
+				jiangTiaonNum = 2;
+				break;
+		}
+		this._hasBaidaNum = this.getTmpPaiList(baiDaList[0]);
+		this.tmpPaiList.sort(this.sort);
+		let typeList: Array<number> = this.getPaiNumByType(MahJongType.Wan);
+		let len: number = typeList.length;
+		this._baidaUseNum = useBdNum;
+		let wanCheck8: boolean;
+		let binCheck8: boolean;
+		let tiaoCheck8: boolean;
+
+		let tmpUserBaiDaNum: number = this._baidaUseNum; //检测第一种类型 2中检测
+
+		let check1: boolean = this.check_3n(typeList, false);
+		check1 = check1 && this._baidaUseNum <= this._hasBaidaNum;
+		let check2: boolean = false;
+
+
+		if (!check1)
+		{
+			this._baidaUseNum = tmpUserBaiDaNum;
+			typeList = this.getPaiNumByType(MahJongType.Wan);
+			check2 = this.check_3n(typeList, true);
+			check2 = check2 && this._baidaUseNum <= this._hasBaidaNum;
+			if (!check2)
+			{
+				this._baidaUseNum = tmpUserBaiDaNum; //检测万失败
+				return;
+			}
+		}
+
+		wanCheck8 = this._wanGroupNum + jiangWanNum + len + this._baidaUseNum - tmpUserBaiDaNum >= 8;
+		len = 0;
+
+		if (check1 || check2)
+		{
+			typeList = this.getPaiNumByType(MahJongType.Bin);
+			len = typeList.length;
+			tmpUserBaiDaNum = this._baidaUseNum;
+			check1 = this.check_3n(typeList, false);
+			check1 = check1 && this._baidaUseNum <= this._hasBaidaNum;
+			if (!check1)
+			{
+				this._baidaUseNum = tmpUserBaiDaNum;
+				typeList = this.getPaiNumByType(MahJongType.Bin);
+				check2 = this.check_3n(typeList, true);
+				check2 = check2 && this._baidaUseNum <= this._hasBaidaNum;
+				if (!check2)
+				{
+					this._baidaUseNum = tmpUserBaiDaNum; //检测筒失败
+					return;
+				}
+			}
+
+			binCheck8 = this._binGroupNum + jiangBinNum + len + this._baidaUseNum - tmpUserBaiDaNum >= 8;
+			len = 0;
+
+			if (check1 || check2)
+			{
+				typeList = this.getPaiNumByType(MahJongType.Tiao);
+				len = typeList.length;
+				tmpUserBaiDaNum = this._baidaUseNum;
+				check1 = this.check_3n(typeList, false);
+				check1 = check1 && this._baidaUseNum <= this._hasBaidaNum;
+				if (!check1)
+				{
+					this._baidaUseNum = tmpUserBaiDaNum;
+					typeList = this.getPaiNumByType(MahJongType.Tiao);
+					check2 = this.check_3n(typeList, true);
+					check2 = check2 && this._baidaUseNum <= this._hasBaidaNum;
+					if (!check2)
+					{
+						this._baidaUseNum = tmpUserBaiDaNum; //检测条失败
+						return;
+					}
+				}
+				tiaoCheck8 = this._tiaoGroupNum + jiangTiaonNum + len + this._baidaUseNum - tmpUserBaiDaNum >= 8;
+				len = 0;
+				if (this.isCheck8()) //胡8字
+				{
+					if (wanCheck8 || binCheck8 || tiaoCheck8)
+					{
+						if (check1 || check2)
+						{
+							this.addTingInfo(tingIndex); //成功可以胡牌
+						}
+					}
+				}
+				else
+				{
+					if (check1 || check2)
+					{
+						this.addTingInfo(tingIndex); //成功可以胡牌
+					}
+				}
+			}
+		}
+		if (this.tingList.length > this._tmpLen)
+		{
+			this._tmpLen = this.tingList.length;
+			// console.log(this._tmpLen);
+		}
+	}
+	private addTingInfo(tingIndex: number)
+	{
+		if (this._ting.indexOf(tingIndex) == -1)
+		{
+			this.pushToTingList(tingIndex);
+		}
+	}
+	private isCheck8(): boolean
+	{
+		if (RoomManager.roomInfo.type == PlayModeType.Hu8)
+		{
+			return true;
+		}
+		return false;
+	}
+	private pushToTingList(tingIndex: number)
+	{
+		this._ting.push(tingIndex);
+		let def: PaiDefinition = PaiDefined.GetInstance().getDefinition(tingIndex, PaiDefined.GetInstance().paiList);
+		let listenInfo: ListenInfo = new ListenInfo();
+		listenInfo.name = def.name;
+		listenInfo.pai = tingIndex;
+		listenInfo.fan = 1;
+		listenInfo.remainNum = GoCardProcessManager.getListenerCardNum(tingIndex);
+		this.tingList.push(listenInfo);
+	}
+	private getGroupCardNum(cardType: MahJongType): number
+	{
+		let groupNumber: number = 0;
+		if (RoomManager.mineInfo && RoomManager.mineInfo.groupList) //算碰杠牌
+		{
+			let paiType: MahJongType;
+			for (let cardInfo of RoomManager.mineInfo.groupList)
+			{
+				paiType = HuCard.getCardType(cardInfo.card);
+				switch (cardInfo.action)
+				{
+					case ActionType.AnGang:
+					case ActionType.BuGang:
+					case ActionType.Gang:
+						if (paiType == cardType)
+						{
+							groupNumber += 4;
+						}
+						break;
+					case ActionType.Peng:
+						if (paiType == cardType)
+						{
+							groupNumber += 3;
+						}
+						break;
+				}
+			}
+		}
+		return groupNumber;
+	}
+	private sort(a: number, b: number)
+	{
+		if (a == b)
+		{
+			return 0;
+		}
+		if (a > b)
+		{
+			return 1;
+		}
+		return -1;
+	}
+	private check_3n(list: Array<number>, iskezi: boolean)
+	{
+		if (list.length == 0)
+		{
+			return true;
+		}
+		if (iskezi)
+		{
+			if (this.tryRemoveKeziBaiDa(list))
+			{
+				this.check_3n(list, iskezi);
+			}
+			if (this.tryRemoveShunziBaiDa(list))
+			{
+				this.check_3n(list, iskezi);
+			}
+		}
+		else
+		{
+			if (this.tryRemoveShunziBaiDa(list))
+			{
+				this.check_3n(list, iskezi);
+			}
+			if (this.tryRemoveKeziBaiDa(list))
+			{
+				this.check_3n(list, iskezi);
+			}
+		}
+		return list.length == 0;
+	}
+	//移除顺子
+	private tryRemoveShunziBaiDa(list: Array<number>)
+	{
+		let len: number = list.length;
+		if (len == 0)
+		{
+			return true;
+		}
+		if (len == 2 && list[0] == list[1]) //最后剩两张一样的不需要 检测百搭成顺 因为检测成顺需要4张百搭
+		{
+			return this.tryRemoveKeziBaiDa(list);
+		}
+		if (len == 3 && this.isKeZi(list)) //最后剩3张是个刻字则直接移除
+		{ 
+			list.length = 0;
+			return true;
+		}
+		let isSuc: boolean = false;
+		let tmpNum: number = 0;
+		let isRemovePai1: boolean = false;
+		let isRemovePai2: boolean = false;
+		for (let i = 0; i < len; i++)
+		{
+			let pai: number = list[i];
+			let index: number = HuCard.getIndex(pai);
+			if (index == 8)
+			{ //末尾两位直接看数量够不够2有没有
+				let result: boolean = this.useUpBaiDa(2);
+				if (result)
+				{
+					ArrayUtil.RemoveItem(pai, list);
+				}
+				return result;
+			}
+			else if (index == 7)
+			{
+				let num1: number = this.getRemainPaiNum(list, pai + 1);
+				if (num1 <= 0)
+				{
+					tmpNum++;
+				}
+				else
+				{
+					isRemovePai1 = true;
+				}
+				let result: boolean = this.useUpBaiDa(tmpNum + 1);
+				if (result)
+				{
+					if (isRemovePai1)
+					{
+						ArrayUtil.RemoveItem(pai + 1, list);
+					}
+					ArrayUtil.RemoveItem(pai, list);
+				}
+				return result;
+			}
+			else
+			{
+				let num1: number = this.getRemainPaiNum(list, pai + 1);
+				if (num1 <= 0)
+				{
+					tmpNum++;
+				}
+				else
+				{
+					isRemovePai1 = true;
+				}
+				let num2: number = this.getRemainPaiNum(list, pai + 2);
+				if (num2 <= 0)
+				{
+					tmpNum++;
+				}
+				else
+				{
+					isRemovePai2 = true;
+				}
+				let result: boolean = this.useUpBaiDa(tmpNum);
+				if (result)
+				{
+					if (isRemovePai1)
+					{
+						ArrayUtil.RemoveItem(pai + 1, list);
+					}
+					if (isRemovePai2)
+					{
+						ArrayUtil.RemoveItem(pai + 2, list);
+					}
+					ArrayUtil.RemoveItem(pai, list);
+				}
+				return result;
+			}
+		}
+		return false;
+	}
+	//移除刻子
+	private tryRemoveKeziBaiDa(list: Array<number>)
+	{
+		let len: number = list.length;
+		if (len == 0)
+		{
+			return true;
+		}
+		if (len == 2 && list[0] != list[1])  //最后剩两张不一样的不需要 成刻字检测  因为检测成刻需要4张百搭
+		{
+			return this.tryRemoveShunziBaiDa(list);
+		}
+		if (len == 3 && this.isShunzi(list)) //最后剩3张是个顺子，则直接移除
+		{
+			list.length = 0;
+			return true;
+		}
+		for (let i = 0; i < len; i++)
+		{
+			let pai: number = list[i];
+			let num1: number = this.getRemainPaiNum(list, pai);
+			if (num1 > 3)
+			{
+				num1 = 3;
+			}
+			let willUseNum: number = 3 - num1;
+			let result: boolean = this.useUpBaiDa(willUseNum);
+			if (result)
+			{
+				for (let j: number = 0; j < num1; j++)
+				{
+					ArrayUtil.RemoveItem(pai, list);
+				}
+			}
+			return result;
+		}
+		return false;
+	}
+	private isKeZi(list: Array<number>): boolean
+	{
+		if (list[0] == list[1] && list[0] == list[2])
+		{
+			return true;
+		}
+		return false;
+	}
+	private isShunzi(list: Array<number>): boolean
+	{
+		if (list[2] - list[1] == 1 && list[1] - list[0] == 1)
+		{
+			return true;
+		}
+		return false;
+	}
+	private useUpBaiDa(count: number)
+	{
+		this._baidaUseNum += count;
+		if (this._baidaUseNum > this._hasBaidaNum)
+		{
+			this._baidaUseNum -= count;
+			return false;
+		}
+		return true;
+	}
+	/*获取牌的数量*/
+	private getRemainPaiNum(list: Array<number>, pai: number): number
+	{
+		let count: number = 0;
+		let len: number = list.length;
+		for (let i = 0; i < len; i++)
+		{
+			if (list[i] == pai)
+			{
+				count++;
+			}
+		}
+		return count;
+	}
+	private getTmpPaiList(pai: number)
+	{
+		let count: number = 0;
+		if (this.tmpPaiList)
+		{
+			let len: number = this.tmpPaiList.length;
+			for (let i = 0; i < len; i++)
+			{
+				if (this.tmpPaiList[i] == pai)
+				{
+					count++;
+				}
+			}
+		}
+		return count;
+	}
+	private isExistInGroup(card: number): boolean
+	{
+		if (RoomManager.mineInfo && RoomManager.mineInfo.groupList)
+		{
+			for (let groupInfo of RoomManager.mineInfo.groupList)
+			{
+				if (groupInfo.card == card)
+				{
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	/**
+ 	* 获取某一类牌的数组
+ 	*/
+	private getPaiNumByType(type: MahJongType): Array<number>
+	{
+		let len: number = this.tmpPaiList.length;
+		let typeList: Array<number> = new Array<number>();
+		let card: number;
+		for (let i: number = 0; i < len; i++)
+		{
+			card = this.tmpPaiList[i];
+			switch (type)
+			{
+				case MahJongType.Wan:
+					if (HuCard.isWan(card))
+					{
+						typeList.push(card);
+					}
+					break;
+				case MahJongType.Bin:
+					if (HuCard.isTong(card))
+					{
+						typeList.push(card);
+					}
+					break;
+				case MahJongType.Tiao:
+					if (HuCard.isTiao(card))
+					{
+						typeList.push(card);
+					}
+					break;
+				case MahJongType.Baida:
+					if (HuCard.isBaida(card))
+					{
+						typeList.push(card);
+					}
+					break;
+			}
+		}
+		return typeList;
+	}
+	public static getIndex(pai: number)
+	{
+		let index: number = wanList.indexOf(pai);
+		if (index != -1)
+		{
+			return index;
+		}
+		index = bingList.indexOf(pai);
+		if (index != -1)
+		{
+			return index;
+		}
+		index = tiaoList.indexOf(pai);
+		if (index != -1)
+		{
+			return index;
+		}
+		index = baiDaList.indexOf(pai);
+		if (index != -1)
+		{
+			return index;
+		}
+		return -1;
+	}
+	/*获取牌的类型*/
+	public static getCardType(num: number)
+	{
+		if (HuCard.isTiao(num))
+		{
+			return MahJongType.Tiao;
+		}
+		else if (HuCard.isWan(num))
+		{
+			return MahJongType.Wan;
+		}
+		else if (HuCard.isTong(num))
+		{
+			return MahJongType.Bin;
+		}
+		else if (HuCard.isBaida(num))
+		{
+			return MahJongType.Baida;
+		}
+		else
+		{
+			return MahJongType.None;
+		}
+	}
+	/*是否是条*/
+	private static isTiao(num: number): boolean
+	{
+		return tiaoList.indexOf(num) != -1;
+	}
+	/*是否是万*/
+	private static isWan(num: number): boolean
+	{
+		return wanList.indexOf(num) != -1;
+	}
+	/*是否是饼*/
+	private static isTong(num: number): boolean
+	{
+		return bingList.indexOf(num) != -1;
+	}
+	/*是否是箭牌*/
+	private static isBaida(num: number): boolean
+	{
+		return baiDaList.indexOf(num) != -1;
+	}
+}
+/*牌的信息*/
+class HuPaiInfo
+{
+	/*是否是自摸*/
+	public isZiMo: boolean = false;
+	/*胡的牌*/
+	public winCard: number = -1;
+	/*是否是天胡*/
+	public isTianHu: boolean = false;
+	/*是否是地胡*/
+	public isDiHu: boolean = false;
+	/*是否是杠上开花*/
+	public isGangShangKaiHua: boolean = false;
+	/*是否是海底捞月*/
+	public isHaiDiLaoYue: boolean = false;
+	/*是否是和绝张*/
+	public isHeJueZhang: boolean = false;
+	/*该副牌花的列表*/
+	public huaList: Array<number> = new Array<number>();
+	/*最大番数的胡法*/
+	public maxHuWayInfo: HuWayInfo;
+	/*胡法的列表*/
+	public huWayList: Array<HuWayInfo> = new Array<HuWayInfo>();
+	/*该副牌碰别人牌的序数列表*/
+	public pengList: Array<number> = new Array<number>();
+	/*该副牌的明杠列表  如明杠1条 则该数组里面有0*/
+	public mingGanList: Array<number> = new Array<number>();
+	/*该副牌的暗杠列表 如暗杠1条 则该数组里面有0*/
+	public anGangList: Array<number> = new Array<number>();
+	/*亮出来的牌列表*/
+	public canSeeList: Array<Array<number>> = new Array<Array<number>>();
+	/*未启的牌*/
+	public remainList: Array<Array<number>> = new Array<Array<number>>();
+	/*听牌的列表*/
+	public tingList: Array<ListenInfo> = new Array<ListenInfo>();
+	/**
+	 * 百塔牌的数量
+	 */
+	public baidaList: Array<number> = new Array<number>();
+}
+/*胡牌的方法信息*/
+class HuWayInfo
+{
+	/*将*/
+	public pairList: Array<number> = new Array<number>();
+	/*手牌*/
+	public sequenceList: Array<Array<number>> = new Array<Array<number>>();
+	/*可以胡的番数列表*/
+	public fanList: Array<FanCalcDefinition> = new Array<FanCalcDefinition>();
+	/*最大番数*/
+	public fan: number;
+}
+/*听信息*/
+class ListenInfo
+{
+	/*听哪一张*/
+	public pai: number = -1;
+	/*名称*/
+	public name: string = StringConstant.empty;
+	/*番数*/
+	public fan: number = 0;
+	/**
+	 * 剩余张数
+	 */
+	public remainNum: number;
+}
+/**
+ * 听的结果信息
+ */
+class ListenResultInfo
+{
+	/**
+	 * 打出去的牌
+	 */
+	public outCard: number;
+	/**
+	 * 听的牌的结果列表
+	 */
+	public listenerList: Array<ListenInfo>;
+}

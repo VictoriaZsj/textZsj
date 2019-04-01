@@ -1,0 +1,66 @@
+/**
+ * 牌的排序
+ */
+class SortUtil
+{
+	public static sortCardByLayer(card1: ShouPaiDefinition, card2: ShouPaiDefinition): number
+	{
+		if (card1.layer > card2.layer)
+		{
+			return 1;
+		}
+		if (card1.layer < card2.layer)
+		{
+			return -1;
+		}
+		return 0;
+	}
+	public static sortCardById(card1: IBaseDefintion, card2: IBaseDefintion): number
+	{
+		if (card1.id > card2.id)
+		{
+			return 1;
+		}
+		if (card1.id < card2.id)
+		{
+			return -1;
+		}
+		return 0;
+	}
+	public static sortY(a: egret.DisplayObjectContainer, b: egret.DisplayObjectContainer): number
+	{
+		if (a.y > b.y)
+		{
+			return 1;
+		}
+		if (a.y < b.y)
+		{
+			return -1;
+		}
+		return 0;
+	}
+	public static downSort(a: number, b: number)
+	{
+		if (a > b)
+		{
+			return -1;
+		}
+		if (a < b)
+		{
+			return 1;
+		}
+		return 0;
+	}
+	public static sortGroupCard(a: GroupCardInfo, b: GroupCardInfo): number
+	{
+		if (a.index > b.index)
+		{
+			return 1;
+		}
+		if (a.index < b.index)
+		{
+			return -1;
+		}
+		return 0;
+	}
+}

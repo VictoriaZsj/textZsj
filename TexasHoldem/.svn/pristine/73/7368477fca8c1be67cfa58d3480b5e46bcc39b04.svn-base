@@ -1,0 +1,67 @@
+/**
+ * 战绩详情面板
+ */
+class RoundDetialsPanel extends BasePanel
+{
+	private nameLabel1: eui.Label;
+	private nameLabel2: eui.Label;
+	private nameLabel3: eui.Label;
+	private nameLabel4: eui.Label;
+
+	private infoScroller: eui.Scroller;
+	private infoList: eui.List;
+
+	public constructor()
+	{
+		super();
+		this.skinName = UISkinName.RoundDetialsPanel;
+	}
+	protected onAwake(event: eui.UIEvent)
+	{
+		super.onAwake(event);
+		this.infoList.itemRenderer = RoundDetialsItemRenderer;
+
+		this.infoScroller.scrollPolicyH = eui.ScrollPolicy.OFF;
+	}
+	public init(appendData: any)
+	{
+		super.init(appendData);
+	}
+	protected rendererStart(event: egret.Event)
+	{
+		super.rendererStart(event);
+		this.infoList.visible = false;
+		this.infoList.dataProvider = new eui.ArrayCollection(UserManager.roundDetialsInfoList);
+		this.refreshUI();
+	}
+	private refreshUI()
+	{
+		if (UserManager.roundDetialsInfoList.length > 0)
+		{
+			let roundDetialsInfo: RoundDetialsInfo = UserManager.roundDetialsInfoList[0];
+			let si: number = UserManager.getSelfIndex(roundDetialsInfo);
+			if (si >= 0)
+			{
+				let index: number = 2;
+				for (let i: number = 1; i <= 4; i++) //将自己的名字放在第一位显示
+				{
+					if (i != si)
+					{
+						this["nameLabel" + index.toString()].text = roundDetialsInfo["name" + i.toString()];
+						index++;
+					}
+				}
+				this.nameLabel1.text = roundDetialsInfo["name" + si.toString()];
+			}
+		}
+		this.infoList.visible = true;
+	}
+	protected onEnable(event: eui.UIEvent): void
+	{
+		super.onEnable(event);
+	}
+	protected onDisable(event: eui.UIEvent): void
+	{
+		super.onDisable(event);
+	}
+}

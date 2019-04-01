@@ -1,0 +1,100 @@
+/**
+ * 事件派发器
+ */
+class ActionDispatcher
+{
+    private _list: Array<Function> = new Array<Function>();
+	/**
+	 * 销毁
+	 */
+	public destroy()
+	{
+		this._list = null;
+	}
+    /**
+     * 清空
+     */
+	public clear()
+	{
+		this._list.length = 0;
+	}
+	/**
+	 * 已添加回调侦听的数量
+	 */
+	public get count(): number
+	{
+		return this._list.length;
+	}
+	/**
+	 * 添加呼叫回调侦听(自动过滤重复的方法)
+	 */
+	public addListener(listener: Function, thisObject?: any)
+	{
+		if(thisObject)
+		{
+			listener['thisObject'] = thisObject;
+		}
+		for (let func of this._list)
+        {
+            if (func == listener)
+            {
+                return;
+            }
+        }
+        this._list.push(listener);
+	}
+	/**
+	 * 移除呼叫回调
+	 */
+	public removeListener(listener: Function)
+	{
+		let func: Function;
+        for (let i: number = 0; i < this._list.length; i++)
+        {
+            func = this._list[i];
+            if (func == listener)
+            {
+                this._list.splice(i, 1);
+                break;
+            }
+        }
+	}
+	/**
+	 * 广播呼叫回调
+	 */
+	public dispatch(data?:any)
+	{
+		let count = this._list.length;
+        let func: Function;
+        for (let i: number = 0; i < this._list.length; i++)
+        {
+            func = this._list[i];
+            if (func['thisObject'])
+            {
+				if(data == undefined)
+				{
+					func.call(func['thisObject']);
+				}
+				else
+				{
+					func.call(func['thisObject'], data);
+				}
+            }
+            else
+            {
+				if(data == undefined)
+				{
+					func();
+				}
+				else
+				{
+					func(data);
+				}
+            }
+            if (this._list.length < count)
+            {
+                i -= (count - this._list.length);
+            }
+        }
+	}
+}

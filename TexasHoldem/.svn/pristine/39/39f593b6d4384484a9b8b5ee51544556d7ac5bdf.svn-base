@@ -1,0 +1,36 @@
+/**
+ * 杠牌选择
+ */
+class GangPaiSelectItemRenderer extends BaseItemRenderer<number>
+{
+	public face1: eui.Image;
+	public face2: eui.Image;
+	public face3: eui.Image;
+	public face4: eui.Image;
+
+	public constructor()
+	{
+		super();
+		this.skinName = UIRendererSkinName.GangPaiSelectItemRenderer;
+	}
+	protected createChildren()
+	{
+		this.touchChildren = false;
+		this.dataChanged();
+	}
+	protected dataChanged()
+	{
+		super.dataChanged();
+		if (this.bindData && this.face1)
+		{
+			let def: PaiDefinition = PaiDefined.GetInstance().getDefinition(this.bindData, PaiDefined.GetInstance().paiList);
+			if (def)
+			{
+				for (let i: number = 1; i <= 4; i++)
+				{
+					(this["face" + i.toString()] as eui.Image).source = def.img + ResSuffixName.PNGSuffix;
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,1280 @@
+/**
+ * Created by d8q8 on 2015/5/25.
+ * @class JSZip
+ * @constructor
+ **/
+interface JSZip {
+    file(path:string): JSZipObject;
+    file(path:RegExp): JSZipObject[];
+    file(path:string, data:any, options?:JSZipFileOptions): JSZip;
+    folder(name:string): JSZip;
+    folder(name:RegExp): JSZipObject[];
+    filter(predicate:(relativePath:string, file:JSZipObject) => boolean): JSZipObject[];
+    remove(path:string): JSZip;
+    generate(options?:JSZipGeneratorOptions): any;
+    load(data:any, options:JSZipLoadOptions): JSZip;
+}
+
+interface JSZipObject {
+    name: string;
+    dir: boolean;
+    date: Date;
+    comment: string;
+    options: JSZipObjectOptions;
+
+    asText(): string;
+    asBinary(): string;
+    asArrayBuffer(): ArrayBuffer;
+    asUint8Array(): Uint8Array;
+    asNodeBuffer(): Buffer;
+}
+
+interface JSZipFileOptions extends JSZipObjectOptions {
+    compressionOptions?:Object;
+    comment?: string;
+    optimizedBinaryString?: boolean;
+    createFolders?: boolean;
+    unixPermissions?:number;
+    dosPermissions?:number;
+}
+
+interface JSZipObjectOptions {
+    base64?: boolean;
+    binary?: boolean;
+    dir?: boolean;
+    date?: Date;
+    compression?: string;
+}
+
+interface JSZipGeneratorOptions {
+    base64?: boolean;
+    compression?: string;
+    compressionOptions?:Object;
+    type?: string;
+    comment?: string;
+    mimeType?:string;
+    platform?:string;
+}
+
+interface JSZipLoadOptions {
+    base64?: boolean;
+    checkCRC32?: boolean;
+    optimizedBinaryString?: boolean;
+    createFolders?: boolean;
+}
+
+interface JSZipSupport {
+    arraybuffer: boolean;
+    uint8array: boolean;
+    blob: boolean;
+    nodebuffer: boolean;
+}
+
+interface Buffer {
+    data?:any;
+    encoding?:string;
+}
+
+interface DEFLATE {
+    compress(input:string, compressionOptions:{level:number}): Uint8Array;
+    compress(input:number[], compressionOptions:{level:number}): Uint8Array;
+    compress(input:Uint8Array, compressionOptions:{level:number}): Uint8Array;
+
+    uncompress(input:string): Uint8Array;
+    uncompress(input:number[]): Uint8Array;
+    uncompress(input:Uint8Array): Uint8Array;
+}
+
+declare var JSZip:{
+    (): JSZip;
+    (data:any, options?:JSZipLoadOptions): JSZip;
+    new (): JSZip;
+    new (data:any, options?:JSZipLoadOptions): JSZip;
+
+    prototype: JSZip;
+    support: JSZipSupport;
+    compressions: {
+        DEFLATE: DEFLATE;
+    }
+}
+
+declare module "jszip" {
+    export = JSZip;
+}
+
+interface FileSaver {
+    (data:Blob, filename:string): void
+}
+
+declare var saveAs:FileSaver;
+// Type definitions for D:/egret/network/sproto/trunk/sproto.js
+// Project: [LIBRARY_URL_HERE] 
+// Definitions by: [YOUR_NAME_HERE] <[YOUR_URL_HERE]> 
+// Definitions: https://github.com/borisyankov/DefinitelyTyped
+declare namespace Sproto {
+	// Sproto.createNew.!0
+
+	/**
+	 * 
+	 */
+	interface CreateNew {
+
+		/**
+		 * 
+		 */
+		buf: Array<number>;
+
+		/**
+		 * 
+		 */
+		sz: number;
+	}
+}
+declare namespace Sproto {
+	// Sproto.createNew.!ret
+
+	/**
+	 * 
+	 */
+	interface CreateNewRet {
+
+		/**
+		 * 
+		 */
+		type_n: number;
+
+		/**
+		 *  Sproto.createNew.!ret.type.<i> 
+		 */
+		type: Array<any>;
+
+		/**
+		 * 
+		 */
+		protocol_n: number;
+		/**
+		 * 推送协议的数量
+		 */
+		s2cProtocol_n:number;
+		/**
+		 *  Sproto.createNew.!ret.type.<i> 
+		 */
+		proto: Array<any>;
+		/**
+		 * 推送协议结合
+		 */
+		s2cProto:Array<any>;
+		/**
+		 *  Sproto.createNew.!ret.type.<i> 
+		 *  header_tmp 
+		 * @param type 
+		 * @param indata 
+		 * @return  
+		 */
+		encode(type: string | any, indata: any): Sproto.CreateNewRet.EncodeRet;
+
+		/**
+		 * Sproto.createNew.!ret.type.<i> 
+		 * Sproto.createNew.!ret.unpack.!ret 
+		 * Sproto.createNew.!ret.type.<i> 
+		 * @param type 
+		 * @param inbuf 
+		 * @return  
+		 */
+		decode(type: any | string, inbuf: any): any;
+
+		/**
+		 * 
+		 * @param inbuf 
+		 * @return  
+		 */
+		pack(inbuf: any): Sproto.CreateNewRet.PackRet;
+
+		/**
+		 * 
+		 * @param inbuf 
+		 * @return  
+		 */
+		unpack(inbuf: any): Sproto.CreateNewRet.UnpackRet;
+
+		/**
+		 * Sproto.createNew.!ret.type.<i> 
+		 * Sproto.createNew.!ret.type.<i>
+		 * @param proto 
+		 * @param what 
+		 * @return  
+		 */
+		protocol(proto: number | any, what: number): any;
+
+		/**
+		 * Sproto.createNew.!ret.pack.!ret
+		 * @param type 
+		 * @param buf 
+		 * @return  
+		 */
+		pencode(type: any, buf: any): any;
+
+		/**
+		 * Sproto.createNew.!ret.type.<i> 
+		 * @param type 
+		 * @param buf 
+		 * @return  
+		 */
+		pdecode(type: any, buf: any): any;
+
+		/**
+		 *  [Sproto.createNew.!ret.type.<i> 
+		 *  bool]
+		 */
+		__session: any | any;
+
+		/**
+		 * 
+		 * @param packagename 
+		 */
+		host(packagename: any): void;
+
+		/**
+		 * 
+		 * @return  
+		 */
+		attach(): Sproto.CreateNewRet.AttachRet;
+
+		/**
+		 * 
+		 * @param buf 
+		 * @param req_cb 
+		 * @param rsp_cb 
+		 */
+		dispatch(buf: any, req_cb: any, rsp_cb: any): void;
+	}
+}
+declare namespace Sproto.CreateNewRet {
+	// Sproto.createNew.!ret.encode.!ret
+
+	/**
+	 * 
+	 */
+	interface EncodeRet {
+
+		/**
+		 * 
+		 */
+		buf: Array<number>;
+
+		/**
+		 * 
+		 */
+		sz: number;
+	}
+}
+declare namespace Sproto.CreateNewRet {
+	// Sproto.createNew.!ret.pack.!ret
+
+	/**
+	 * 
+	 */
+	interface PackRet {
+
+		/**
+		 * 
+		 */
+		buf: Array<number>;
+
+		/**
+		 * 
+		 */
+		sz: number;
+	}
+}
+declare namespace Sproto.CreateNewRet {
+	// Sproto.createNew.!ret.unpack.!ret
+
+	/**
+	 * 
+	 */
+	interface UnpackRet {
+
+		/**
+		 * 
+		 */
+		sz: number;
+
+		/**
+		 *  Sproto.createNew.!0.buf 
+		 */
+		buf: any;
+	}
+}
+declare namespace Sproto.CreateNewRet {
+	// Sproto.createNew.!ret.attach.!ret  Sproto.createNew.!ret.pack.!ret 
+	type AttachRet = ((name: any, args: any, session: any) => any);
+}
+// arraybuffer2array.!ret
+type Ret = Array<number>;
+
+/**
+ * 
+ */
+declare namespace Sproto {
+
+	/**
+	 * 
+	 * @param binsch 
+	 * @return  
+	 */
+	function createNew(binsch: Sproto.CreateNew): Sproto.CreateNewRet;
+}
+
+/**
+ * 
+ * @param array 
+ * @return  
+ */
+declare function array2arraybuffer(array: any): ArrayBuffer;
+
+/**
+ * 
+ * @param buffer 
+ * @return  
+ */
+declare function arraybuffer2array(buffer: any): Ret;
+
+// Type definitions for D:/egret/crypt/base64/trunk/base64.js
+// Project: [LIBRARY_URL_HERE] 
+// Definitions by: [YOUR_NAME_HERE] <[YOUR_URL_HERE]> 
+// Definitions: https://github.com/borisyankov/DefinitelyTyped
+
+/**
+ * export Base64
+ */
+declare namespace Base64 {
+
+	/**
+	 * 
+	 */
+	export var VERSION: string;
+
+	/**
+	 * 
+	 * @param a 
+	 * @return  
+	 */
+	function atob(a: string): string;
+
+	/**
+	 * 
+	 * @param b 
+	 * @return  
+	 */
+	function btoa(b: string): string;
+
+	/**
+	 * 
+	 * @param a 
+	 * @return  
+	 */
+	function fromBase64(a: string): string;
+
+	/**
+	 * 
+	 * @param u 
+	 * @param urisafe 
+	 * @return  
+	 */
+	function toBase64(u: string, urisafe?: boolean): string;
+
+	/**
+	 * 
+	 * @param u 
+	 * @return  
+	 */
+	function utob(u: string): string;
+
+	/**
+	 * 
+	 * @param u 
+	 * @return  
+	 */
+	function encodeURI(u: any): string;
+
+	/**
+	 * 
+	 * @param b 
+	 * @return  
+	 */
+	function btou(b: string): string;
+
+	/**
+	 *  Base64 
+	 * @return  
+	 */
+	function noConflict():  any;
+
+	/**
+	 * 
+	 */
+	function extendString(): void;
+
+	/**
+	 *  Base64.toBase64
+	 */
+	function encode(u: string, urisafe?: boolean): string;
+
+	/**
+	 * Base64.fromBase64 
+	 */
+	function decode(a: string): string;
+}
+
+/**
+ * 
+ */
+declare namespace Base64 {
+
+	/**
+	 * 
+	 */
+	interface String {
+
+		/**
+		 * 
+		 */
+		prototype: {
+
+			/**
+			 * 
+			 * @return  
+			 */
+			fromBase64(): string;
+
+			/**
+			 *  String.prototype.fromBase64
+			 */
+			toBase64(urisafe?:boolean): string;
+
+			/**
+			 *  String.prototype.fromBase64 
+			 */
+			toBase64URI(): string;
+		}
+	}
+}
+
+// Type definitions for D:/egret/crypt/base64/trunk/aes.js
+// Project: [LIBRARY_URL_HERE] 
+// Definitions by: [YOUR_NAME_HERE] <[YOUR_URL_HERE]> 
+// Definitions: https://github.com/borisyankov/DefinitelyTyped
+declare namespace aesjs.ModeOfOperation.cfb {
+	// aesjs.ModeOfOperation.cfb.prototype.encrypt.!0
+
+	/**
+	 * 
+	 */
+	interface Encrypt {
+	}
+}
+declare namespace aesjs.ModeOfOperation.cfb {
+	// aesjs.ModeOfOperation.cfb.prototype.decrypt.!ret
+
+	/**
+	 * 
+	 */
+	interface DecryptRet {
+	}
+}
+declare namespace aesjs.ModeOfOperation.ofb {
+	// aesjs.ModeOfOperation.ofb.prototype.encrypt.!0
+
+	/**
+	 * 
+	 */
+	interface Encrypt {
+	}
+}
+declare namespace aesjs.ModeOfOperation.ctr {
+	// aesjs.ModeOfOperation.ctr.prototype.encrypt.!0
+
+	/**
+	 * 
+	 */
+	interface Encrypt {
+	}
+}
+declare namespace aesjs.utils.hex {
+	// aesjs.utils.hex.toBytes.!ret
+	type ToBytesRet = Array<number>;
+}
+declare namespace aesjs.utils.utf8 {
+	// aesjs.utils.utf8.toBytes.!ret
+	type ToBytesRet = Array<number>;
+}
+
+/**
+ * The block cipher
+ */
+declare namespace aesjs {
+
+	/**
+	 * 
+	 */
+	class AES {
+
+		/**
+		 * 
+		 * @param key 
+		 */
+		constructor(key: any);
+
+		/**
+		 * 
+		 */
+		_prepare(): void;
+
+		/**
+		 * 
+		 * @param plaintext 
+		 * @return  
+		 */
+		encrypt(plaintext: aesjs.Counter | number): Float32Array;
+
+		/**
+		 * 
+		 * @param ciphertext 
+		 * @return  
+		 */
+		decrypt(ciphertext: Float32Array): Float32Array;
+	}
+
+	/**
+	 * Counter object for CTR common mode of operation
+	 */
+	class Counter {
+
+		/**
+		 * 
+		 * @param initialValue 
+		 */
+		constructor(initialValue: number | aesjs.Counter);
+
+		/**
+		 * 
+		 * @param value 
+		 */
+		setValue(value: number): void;
+
+		/**
+		 * 
+		 * @param bytes 
+		 */
+		setBytes(bytes: number | aesjs.Counter): void;
+
+		/**
+		 * 
+		 */
+		increment(): void;
+	}
+
+	/**
+	 * 
+	 */
+	namespace ModeOfOperation {
+
+		/**
+		 * Mode Of Operation - Electonic Codebook (ECB)
+		 */
+		class ecb {
+
+			/**
+			 * 
+			 * @param key 
+			 */
+			constructor(key: any);
+			/**
+			 * 
+			 * @param plaintext 
+			 * @return  
+			 */
+			encrypt(plaintext: any): Float32Array;
+
+			/**
+			 * 
+			 * @param ciphertext 
+			 * @return  
+			 */
+			decrypt(ciphertext: any): Float32Array;
+		}
+
+		/**
+		 * Mode Of Operation - Cipher Block Chaining (CBC)
+		 */
+		class cbc {
+
+			/**
+			 * 
+			 * @param key 
+			 * @param iv 
+			 */
+			constructor(key: any, iv: Float32Array);
+
+			/**
+			 * 
+			 * @param plaintext 
+			 * @return  
+			 */
+			encrypt(plaintext: any): Float32Array;
+
+			/**
+			 * 
+			 * @param ciphertext 
+			 * @return  
+			 */
+			decrypt(ciphertext: any): Float32Array;
+		}
+
+		/**
+		 * Mode Of Operation - Cipher Feedback (CFB)
+		 */
+		class cfb {
+
+			/**
+			 * 
+			 * @param key 
+			 * @param iv 
+			 * @param segmentSize 
+			 */
+			constructor(key: any, iv: Float32Array, segmentSize: number);
+
+			/**
+			 * 
+			 * @param plaintext 
+			 * @return  
+			 */
+			encrypt(plaintext: any): any;
+
+			/**
+			 * 
+			 * @param ciphertext 
+			 * @return  
+			 */
+			decrypt(ciphertext: any): any;
+		}
+
+		/**
+		 * Mode Of Operation - Output Feedback (OFB)
+		 */
+		class ofb {
+
+			/**
+			 * 
+			 * @param key 
+			 * @param iv 
+			 */
+			constructor(key: any, iv: Float32Array);
+
+			/**
+			 * Decryption is symetric
+			 * @param plaintext 
+			 * @return  
+			 */
+			encrypt(plaintext: any): any;
+
+			/**
+			 * aesjs.ModeOfOperation.ofb.prototype.encrypt 
+			 */
+			decrypt: any;
+		}
+
+		/**
+		 * Mode Of Operation - Counter (CTR)
+		 */
+		class ctr {
+
+			/**
+			 * 
+			 * @param key 
+			 * @param counter 
+			 */
+			constructor(key: any, counter: aesjs.Counter);
+
+			/**
+			 * Decryption is symetric
+			 * @param plaintext 
+			 * @return  
+			 */
+			encrypt(plaintext: any): any;
+
+			/**
+			 * aesjs.ModeOfOperation.ctr.prototype.encrypt 
+			 */
+			decrypt: any;
+		}
+	}
+
+	/**
+	 * 
+	 */
+	namespace utils {
+
+		/**
+		 * 
+		 */
+		namespace hex {
+
+			/**
+			 * 
+			 * @param text 
+			 * @return  
+			 */
+			function toBytes(text: any): aesjs.utils.hex.ToBytesRet;
+
+			/**
+			 * 
+			 * @param bytes 
+			 * @return  
+			 */
+			function fromBytes(bytes: any): string;
+		}
+
+		/**
+		 * 
+		 */
+		namespace utf8 {
+
+			/**
+			 * 
+			 * @param text 
+			 * @return  
+			 */
+			function toBytes(text: string): aesjs.utils.utf8.ToBytesRet;
+
+			/**
+			 * 
+			 * @param bytes 
+			 * @return  
+			 */
+			function fromBytes(bytes: any): string;
+		}
+	}
+
+	/**
+	 * 
+	 */
+	namespace padding {
+
+		/**
+		 * 
+		 */
+		namespace pkcs7 {
+
+			/**
+			 * 
+			 * @param data 
+			 * @return  
+			 */
+			function pad(data: any): Float32Array;
+
+			/**
+			 * 
+			 * @param data 
+			 * @return  
+			 */
+			function strip(data: any): Float32Array;
+		}
+	}
+
+	/**
+	 * 
+	 */
+	namespace _arrayTest {
+
+		/**
+		 * 
+		 * @param arg 
+		 * @param copy 
+		 * @return  
+		 */
+		function coerceArray(arg: Array<number> | Float32Array, copy: boolean): Array<number> | Float32Array;
+
+		/**
+		 * 
+		 * @param length 
+		 * @return  
+		 */
+		function createArray(length: number): Float32Array;
+
+		/**
+		 * 
+		 * @param sourceArray 
+		 * @param targetArray 
+		 * @param targetStart 
+		 * @param sourceStart 
+		 * @param sourceEnd 
+		 */
+		function copyArray(sourceArray: Float32Array, targetArray: Float32Array, targetStart: number, sourceStart: number, sourceEnd: number): void;
+	}
+
+	/**
+	 * aesjs 
+	 */
+	export var _aesjs: any;
+}
+
+/**
+ * 
+ */
+declare namespace aesjs {
+
+	/**
+	 * 
+	 */
+	class Float32Array {
+	}
+}
+
+// Type definitions for D:/egret/worckspace/trunk/libsrc/hmacsha1/src/hmacsha1.js
+// Project: [LIBRARY_URL_HERE] 
+// Definitions by: [YOUR_NAME_HERE] <[YOUR_URL_HERE]> 
+// Definitions: https://github.com/borisyankov/DefinitelyTyped
+
+/**
+ * Computes a HMAC-SHA1 code.
+ * 
+ * @param {string} k Secret key.
+ * @param {string} d Data to be hashed.
+ * @return {string} The hashed string.
+ * @param k 
+ * @param d 
+ * @param _p 
+ * @param _z 
+ * @return  
+ */
+declare function b64_hmac_sha1(k: string, d: string, _p?: string, _z?: number): string;
+
+// Type definitions for D:/egret/worckspace/trunk/libsrc/BigInteger/src/BigInteger.js
+// Project: [LIBRARY_URL_HERE] 
+// Definitions by: [YOUR_NAME_HERE] <[YOUR_URL_HERE]> 
+// Definitions: https://github.com/borisyankov/DefinitelyTyped
+/**
+ * 
+ */
+declare class bigInt {
+
+	constructor(v: number | any, radix?: any);
+	/**
+	 * 
+	 * @param a 
+	 * @param b 
+	 * @return  
+	 */
+	max(a: number, b: any): number;
+
+	/**
+	 * 
+	 * @param a 
+	 * @param b 
+	 * @return  
+	 */
+	min(a: number, b: any): number;
+
+	/**
+	 * 
+	 * @param a 
+	 * @param b 
+	 * @return  
+	 */
+	gcd(a: any, b: any): any;
+
+	/**
+	 * 
+	 * @param a 
+	 * @param b 
+	 */
+	lcm(a: any, b: any): void;
+
+	/**
+	 * 
+	 * @param x 
+	 * @return  
+	 */
+	isInstance(x: any): boolean;
+
+	/**
+	 * 
+	 * @param a 
+	 * @param b 
+	 */
+	randBetween(a: number, b: any): void;
+
+	/**
+	 * 
+	 * @param v 
+	 * @return  
+	 */
+	add(v: any): any;
+
+	/**
+	 * 
+	 * @param v 
+	 * @return  
+	 */
+	subtract(v: any): any;
+
+	/**
+	 * 
+	 * @return  
+	 */
+	negate(): any;
+
+	/**
+	 * 
+	 * @return  
+	 */
+	abs(): any;
+
+	/**
+	 * 
+	 * @param a 
+	 * @return  
+	 */
+	_multiplyBySmall(a: any): any;
+
+	/**
+	 * 
+	 * @param v 
+	 * @return  
+	 */
+	multiply(v: number): any;
+
+	/**
+	 * 
+	 * @return  
+	 */
+	square(): any;
+
+	/**
+	 * 
+	 * @param v 
+	 * @return  
+	 */
+	divmod(v: number | any):any;
+
+	/**
+	 * 
+	 * @param v 
+	 * @return  
+	 */
+	divide(v: number): any;
+
+	/**
+	 * 
+	 * @param v 
+	 * @return  
+	 */
+	mod(v: any): any;
+
+	/**
+	 * 
+	 * @param v 
+	 * @return  
+	 */
+	pow(v: any): any;
+
+	/**
+	 * 
+	 * @param exp 
+	 * @param mod 
+	 * @return  
+	 */
+	modPow(exp: any, mod: any): any;
+
+	/**
+	 * 
+	 * @param v 
+	 * @return  
+	 */
+	compareAbs(v: number | any): number;
+
+	/**
+	 * 
+	 * @param v 
+	 * @return  
+	 */
+	compare(v: any): number;
+
+	/**
+	 * 
+	 * @param v 
+	 * @return  
+	 */
+	equals(v: any): boolean;
+
+	/**
+	 * 
+	 * @param v 
+	 * @return  
+	 */
+	notEquals(v: any): boolean;
+
+	/**
+	 * 
+	 * @param v 
+	 * @return  
+	 */
+	greater(v: any): boolean;
+
+	/**
+	 * 
+	 * @param v 
+	 * @return  
+	 */
+	lesser(v: any): boolean;
+
+	/**
+	 * 
+	 * @param v 
+	 * @return  
+	 */
+	greaterOrEquals(v: any): boolean;
+
+	/**
+	 * 
+	 * @param v 
+	 * @return  
+	 */
+	lesserOrEquals(v: any): boolean;
+
+	/**
+	 * 
+	 * @return  
+	 */
+	isEven(): boolean;
+
+	/**
+	 * 
+	 * @return  
+	 */
+	isOdd(): boolean;
+
+	/**
+	 * 
+	 * @return  
+	 */
+	isPositive(): boolean;
+
+	/**
+	 * 
+	 * @return  
+	 */
+	isNegative(): any;
+
+	/**
+	 * 
+	 * @return  
+	 */
+	isUnit(): boolean;
+
+	/**
+	 * 
+	 * @return  
+	 */
+	isZero(): boolean;
+
+	/**
+	 * 
+	 * @param v 
+	 * @return  
+	 */
+	isDivisibleBy(v: any): boolean;
+
+	/**
+	 * 
+	 * @return  
+	 */
+	isPrime(): boolean;
+
+	/**
+	 * 
+	 * @param iterations 
+	 * @return  
+	 */
+	isProbablePrime(iterations: any): boolean;
+
+	/**
+	 * 
+	 * @param n 
+	 * @return  
+	 */
+	modInv(n: any): any;
+
+	/**
+	 * 
+	 * @return  
+	 */
+	next(): any;
+
+	/**
+	 * 
+	 * @return  
+	 */
+	prev(): any;
+
+	/**
+	 * 
+	 * @param n 
+	 * @return  
+	 */
+	shiftLeft(n: number): any;
+
+	/**
+	 * 
+	 * @param n 
+	 * @return  
+	 */
+	shiftRight(n: number): any;
+
+	/**
+	 * 
+	 */
+	not(): any;
+
+	/**
+	 * 
+	 * @param n 
+	 */
+	and(n: any): any;
+
+	/**
+	 * 
+	 * @param n 
+	 */
+	or(n: any): any;
+
+	/**
+	 * 
+	 * @param n 
+	 */
+	xor(n: any): any;
+
+	/**
+	 * 
+	 * @param radix 
+	 * @return  
+	 */
+	toString(radix: number): string;
+
+	/**
+	 * 
+	 * @return  
+	 */
+	valueOf(): number;
+}
+
+// Type definitions for D:/egret/crypt/pak-dh-client.git/trunk/src/pakdh-client.js
+// Project: [LIBRARY_URL_HERE] 
+// Definitions by: [YOUR_NAME_HERE] <[YOUR_URL_HERE]> 
+// Definitions: https://github.com/borisyankov/DefinitelyTyped
+
+/**
+ * PAK allows two parties to authenticate themselves
+ * while performing the Diffie-Hellman exchange.
+ * 
+ * See http://tools.ietf.org/html/rfc5683
+ */
+declare class PAKDHClient {
+
+	/**
+	 * 
+	 * @param password 
+	 * @param group 
+	 */
+	constructor(password: any, group?: number);
+
+	/**
+	 * Generates Ra, A's random secret exponent.
+	 */
+	generategRa(): any;
+
+	/**
+	 * Generates Rb, B's random secret exponent.
+	 */
+	generategRb(): any;
+
+	/**
+	 * Calculates g ^ x mod N
+	 * @param x 
+	 */
+	modPow(x: any): any;
+
+	/**
+	 * X = H1(A|B|PW)*(g^Ra)
+	 * @param A 
+	 * @param B 
+	 * @param gRa 
+	 */
+	calculateX(A: any, B: any, gRa: any): any;
+
+	/**
+	 * Xab = Q / H1(A|B|PW)
+	 * @param A 
+	 * @param B 
+	 * @param Q 
+	 */
+	calculateXab(A: any, B: any, Q: any): any;
+
+	/**
+	 * Y = H2(A|B|PW)*(g^Rb)
+	 * @param A 
+	 * @param B 
+	 * @param gRb 
+	 */
+	calculateY(A: any, B: any, gRb: any): any;
+
+	/**
+	 * Yba = Y / H2(A|B|PW)
+	 * @param A 
+	 * @param B 
+	 * @param Y 
+	 */
+	calculateYba(A: any, B: any, Y: any): any;
+
+	/**
+	 * S1 = H3(A|B|PW|Xab|g^Rb|(Xab)^Rb)
+	 * @param A 
+	 * @param B 
+	 * @param gRa 
+	 * @param gRb 
+	 */
+	calculateS1(A: any, B: any, gRa: any, gRb: any): any;
+
+	/**
+	 * S2 = H4(A|B|PW|g^Ra|Yba|(Yba)^Ra)
+	 * @param A 
+	 * @param B 
+	 * @param gRa 
+	 * @param gRb 
+	 */
+	calculateS2(A: any, B: any, gRa: any, gRb: any): any;
+
+	/**
+	 * K = H5(A|B|PW|g^Ra|Yba|(Yba)^Ra)
+	 * @param A 
+	 * @param B 
+	 * @param gRa 
+	 * @param gRb 
+	 */
+	calculateK(A: any, B: any, gRa: any, gRb: any): any;
+
+	/**
+	 * Generate a 384-bit random exponent.
+	 */
+	random(): any;
+	lsb128(tmp: any): any;
+	H1(string: any): any;
+	H2(string: any): any;
+	H3(string: any): any;
+	H4(string: any): any;
+	H5(string: any): any;
+	HA(string: any, type: any): any;
+	HB(string: any, type: any): any;
+}

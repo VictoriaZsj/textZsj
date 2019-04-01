@@ -1,0 +1,41 @@
+/**
+ * 签到管理
+ */
+class SignInManager
+{
+    public static signInList:Array<signInInfo> = new Array<signInInfo>();
+	public static initialize()
+	{
+		ArrayUtil.Clear(SignInManager.signInList);
+		let def: signInInfo;
+		for (let i: number = 0; i < SignInDefined.GetInstance().dataList.length; i++)
+		{		
+			def=new signInInfo();	 
+			def.id = SignInDefined.GetInstance().dataList[i].id;
+			SignInManager.signInList.push(def); 
+		};
+	}
+}
+
+class signInInfo 
+{
+	private _id: number = 0;
+	public get id(): number
+	{
+		return this._id;
+	}
+	public set id(value: number)
+	{
+		this._id = value;
+		this._definition = SignInDefined.GetInstance().getDefinition(value);
+	}		
+	private _definition: SignInDefinition
+	public get definition(): SignInDefinition
+	{
+		return this._definition;
+	}
+	public set definition(value: SignInDefinition)
+	{
+		this._definition = value;
+	}
+}

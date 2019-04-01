@@ -1,0 +1,31 @@
+class RankInfo extends BaseServerValueInfo
+{
+    public reset()
+    {
+
+    }
+    /**
+     * id
+     */
+    public roleId: number;
+    /**
+     * 昵称
+     */
+    public name: string;
+    /**
+    * 排行榜数值
+    */
+    public score: number;
+    /**
+     * 排行
+     */
+    public rank: number;
+    /**
+     * 上次排行
+     */
+    public lastRank: number;
+    /**
+    * 头像地址
+    */
+    public head: string;
+}

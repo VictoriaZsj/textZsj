@@ -1,0 +1,91 @@
+/**
+ * 好友列表项面板
+*/
+class FriendItemRenderer extends BaseItemRenderer<FriendInfo>
+{
+    /**
+     * 头像
+    */
+    private headImg: eui.Image;
+    /**
+     * 昵称
+    */
+    private nameLabel: eui.Label;
+    /**
+     * 金币数量
+    */
+    private goldNumLabel: eui.Label;
+    /**
+     * 是否在线
+    */
+    private isOnlinetoggleBtn: eui.ToggleButton;
+    /**
+     * 赠送按钮
+    */
+    private giveBtn: eui.Image;
+
+    public constructor()
+    {
+        super();
+        this.skinName = UIRendererSkinName.FriendItemRenderer;
+    }
+    protected createChildren()
+    {
+        this.dataChanged();
+    }
+    protected dataChanged()
+    {
+        super.dataChanged();
+        if (this.bindData)
+        {
+            this.isOnlinetoggleBtn.touchEnabled = false;
+            this.headImg.source = ImageSource.TestImg;
+            this.nameLabel.text = this.bindData.name;
+            this.goldNumLabel.text = MathUtil.formatNum(this.bindData.gold);
+            if (this.bindData.offlineTime)
+            {
+                this.isOnlinetoggleBtn.selected = false;
+            } else
+            {
+                this.isOnlinetoggleBtn.selected = true;
+            }
+            if (this.bindData.giveGold == 1)
+            {
+                FilterUtil.setGray(this.giveBtn);
+                this.giveBtn.touchEnabled = false;
+            }
+            this.addEventListener(egret.Event.REMOVED_FROM_STAGE, this.onDisable, this);
+            this.giveBtn.addEventListener(egret.TouchEvent.TOUCH_TAP, this.ongiveBtnClick, this);
+            this.giveBtn.addEventListener(egret.TouchEvent.TOUCH_END, this.cancelBubble, this);
+            FriendManager.onGiveFriendGoldEvent.addListener(this.changeGiveButtonState, this);
+        }
+    }
+    private onDisable(event: egret.Event)
+    {
+        this.removeEventListener(egret.Event.REMOVED_FROM_STAGE, this.onDisable, this);
+        this.giveBtn.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.ongiveBtnClick, this);
+        this.giveBtn.removeEventListener(egret.TouchEvent.TOUCH_END, this.cancelBubble, this);
+        FriendManager.onGiveFriendGoldEvent.removeListener(this.changeGiveButtonState);
+    }
+    /**
+     *赠送按钮点击事件
+    */
+    private ongiveBtnClick(event: egret.TouchEvent)
+    {
+        SoundManager.playButtonEffect(event.target);
+        FriendManager.reqGiveFriendGold(this.bindData.roleId);
+    }
+    /**
+     * 赠送好友金币成功后续执行事件
+    */
+    private changeGiveButtonState()
+    {
+        this.giveBtn.touchEnabled = false;
+        FilterUtil.setGray(this.giveBtn);
+        AlertManager.showSingleAlert("您已成功赠送给此好友" + ProjectDefined.giveOnceGoldNum + "金币！");
+    }
+    private cancelBubble(event: TouchEvent)
+    {
+        event.stopImmediatePropagation();
+    }
+}

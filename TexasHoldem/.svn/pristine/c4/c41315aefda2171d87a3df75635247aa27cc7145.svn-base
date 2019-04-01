@@ -1,0 +1,371 @@
+/**
+ * 用户信息管理
+ */
+class UserManager
+{
+	public static userInfo: UserInfo;
+	/**
+	 * 战绩信息列表
+	 */
+	public static roundInfoList: Array<RoundSplitInfo>;
+	/**
+	 * 战绩详细信息列表
+	 */
+	public static roundDetialsInfoList: Array<RoundDetialsInfo>;
+	/**
+	 * 其他用户信息缓存
+	 */
+	public static otherUserInfo: OtherUserInfo;
+	/**
+	 * 服务器信息
+	 */
+	public static serverInfo: ServerInfo;
+	/**
+     * 等级升级事件
+     */
+    public static levelUpgrade: ActionDispatcher = new ActionDispatcher();
+
+	/**
+	 * 重新登录
+	 */
+	public static reLogin()
+	{
+		UserManager.userInfo = null;
+		ArrayUtil.Clear(UserManager.roundInfoList);
+		ArrayUtil.Clear(UserManager.roundDetialsInfoList);
+		UserManager.otherUserInfoClear();
+	}
+	private static otherUserInfoClear()
+	{
+		if (UserManager.otherUserInfo)
+		{
+			UserManager.otherUserInfo.reset();
+		}
+	}
+	public static initialize(roleId: number, data: any)
+	{
+		UserManager.otherUserInfoClear();
+		UserManager.roundInfoList = new Array<RoundSplitInfo>();
+		UserManager.userInfo = new UserInfo(data);
+		if (ChannelManager.loginType == ChannelLoginType.Weixin)
+		{
+			let name: string = undefined;
+			if (LoginManager.loginInfo.channeldata.hasOwnProperty("name"))
+			{
+				name = LoginManager.loginInfo.channeldata["name"];
+			}
+			let head: string = undefined;
+			if (LoginManager.loginInfo.channeldata.hasOwnProperty("head"))
+			{
+				head = LoginManager.loginInfo.channeldata["head"];
+			}
+			let sex: number = Sex.Male;
+			if (LoginManager.loginInfo.channeldata.hasOwnProperty("sex"))
+			{
+				sex = parseInt(LoginManager.loginInfo.channeldata["sex"]);
+			}
+			if ((name !== null && name !== undefined && UserManager.userInfo.name != name) ||
+				(head !== null && head !== undefined && UserManager.userInfo.head != head) || (UserManager.userInfo.sex != sex))
+			{
+				UserManager.reqSetUserInfo(name, head, sex);
+			}
+		}
+		UserManager.userInfo.roleId = roleId;
+		RoomManager.playerNameOper(UserManager.userInfo);
+
+		if (!UserManager.roundDetialsInfoList)
+		{
+			UserManager.roundDetialsInfoList = new Array<RoundDetialsInfo>();
+		}
+		ArrayUtil.Clear(UserManager.roundDetialsInfoList);
+		SocketManager.AddCommandListener(Command.Rec_ExpChange_2028, UserManager.onExpChangeResult, this);
+	}
+	/**
+	 * 用户经验更改
+	 */
+	public static onExpChangeResult(result: SpRpcResult)
+    {
+        if (result.data)
+        {
+            if (UserManager.userInfo.level < ExpDefined.GetInstance().expList[ExpDefined.GetInstance().expList.length-1].level && UserManager.userInfo.level != result.data["level"])
+            {
+                UserManager.userInfo.level = result.data["level"];
+                UserManager.levelUpgrade.dispatch();
+            }
+            UserManager.userInfo.exp = result.data["exp"];
+        }
+    }
+	/**
+	 * 拉取战绩信息
+	 */
+	public static reqGetRoundInfo()
+	{
+		SocketManager.AddCommandListener(Command.Req_GetRoundInfo_3002, UserManager.getRoundResult);
+		SocketManager.Send(Command.Req_GetRoundInfo_3002);
+	}
+	public static getRoundResult(result: SpRpcResult)
+	{
+		SocketManager.RemoveCommandListener(Command.Req_GetRoundInfo_3002, UserManager.getRoundResult);
+		let list: Array<RoundInfo> = result.data["roundInfoList"];
+		if (list)
+		{
+			ArrayUtil.Clear(UserManager.roundInfoList);
+			let rsInfo: RoundSplitInfo;
+			let index: number;
+			let tmpRoleId: number;
+			let tmpName: string;
+			let info: RoundInfo;
+			let len: number = list.length;
+			for (let j: number = 0; j < len; j++)
+			{
+				info = list[j];
+				let n: number = 1;
+				for (; n <= 4; n++)
+				{
+					if (info["roleId" + n.toString()] == UserManager.userInfo.roleId)
+					{
+						break;
+					}
+				}
+				RoomManager.playerNameOper(info, "name" + n.toString(), "roleId" + n.toString())
+				info.index = len - j;
+				rsInfo = new RoundSplitInfo();
+				rsInfo.id = info.id;
+				rsInfo.time = info.time;
+				rsInfo.round = info.roundNum;
+
+				rsInfo.roleId = info["roleId" + n.toString()];
+				rsInfo.head = info["head" + n.toString()];
+				rsInfo.isHost = info.hostRoleId == rsInfo.roleId;
+				rsInfo.name = info["name" + n.toString()];
+				rsInfo.roundIndex = len - j;
+
+				rsInfo.sex = info["sex" + n.toString()];
+				rsInfo.score = info["score" + n.toString()];
+				index = 2;
+
+				for (let m: number = 1; m <= 4; m++)
+				{
+					if (m != n)
+					{
+						rsInfo["name" + index.toString()] = info["name" + m.toString()];
+						tmpName = rsInfo["name" + index.toString()];
+						tmpRoleId = info["roleId" + m.toString()];
+						rsInfo["sex" + index.toString()] = info["sex" + m.toString()];
+						rsInfo["head" + index.toString()] = info["head" + m.toString()];
+						rsInfo["score" + index.toString()] = info["score" + m.toString()];
+						rsInfo["roleId" + index.toString()] = info["roleId" + m.toString()];
+						RoomManager.playerNameOper(rsInfo, "name" + index.toString(), "roleId" + index.toString())
+						index++;
+					}
+				}
+				UserManager.roundInfoList.push(rsInfo);
+			}
+		}
+		UserManager.dispatchGetRoundList();
+	}
+	/**
+	 * 请求获取战绩详情
+	 */
+	public static reqGetRoundDetials(id: number)
+	{
+		SocketManager.AddCommandListener(Command.Req_GetRoundDetials_3024, UserManager.getRoundDetialsResult);
+		SocketManager.Send(Command.Req_GetRoundDetials_3024, { "id": id });
+	}
+	private static getRoundDetialsResult(result: SpRpcResult)
+	{
+		SocketManager.RemoveCommandListener(Command.Req_GetRoundDetials_3024, UserManager.getRoundDetialsResult);
+		if (result.data)
+		{
+			UserManager.roundDetialsInfoList = result.data["roundInfoList"];
+			if (!UserManager.roundDetialsInfoList)
+			{
+				return;
+			}
+			let len: number = UserManager.roundDetialsInfoList.length;
+			let index: number;
+			let detialsInfo: RoundDetialsInfo;
+			let name: string;
+			let roleId: string;
+			for (let i: number = 0; i < len; i++)
+			{
+				detialsInfo = UserManager.roundDetialsInfoList[i];
+				index = 1;
+				for (let j: number = 0; j < 4; j++)
+				{
+					name = detialsInfo["name" + index.toString()];
+					roleId = detialsInfo["roleId" + index.toString()];
+					RoomManager.playerNameOper(detialsInfo, "name" + index.toString(), "roleId" + index.toString())
+					index++;
+				}
+			}
+			UserManager.dispatchGetRoundDetialsEvent();
+		}
+	}
+	public static reqGetOtherUserInfo(roleId: number)
+	{
+		SocketManager.AddCommandListener(Command.Req_GetUserInfo_3023, UserManager.onGetOtherUserInfoResult);
+		SocketManager.Send(Command.Req_GetUserInfo_3023, { "roleId": roleId });
+	}
+	private static onGetOtherUserInfoResult(result: SpRpcResult)
+	{
+		SocketManager.RemoveCommandListener(Command.Req_GetUserInfo_3023, UserManager.onGetOtherUserInfoResult);
+		if (!UserManager.otherUserInfo)
+		{
+			UserManager.otherUserInfo = new OtherUserInfo();
+		}
+		if (result.data)
+		{
+			RoomManager.playerNameOper(result.data);
+			UserManager.otherUserInfo.copyValueFrom(result.data);
+			UIManager.showPanel(UIModuleName.UserInfoPanel);
+		}
+		UserManager.dispatchGetOtherInfoEvent();
+	}
+	/**
+	 * 设置用户基础信息
+	 */
+	public static reqSetUserInfo(name: string, head: string, sex: number)
+	{
+		let callBack: Function = function (result: SpRpcResult)
+		{
+			SocketManager.RemoveCommandListener(Command.Req_SetUserInfo_3017, callBack);
+			UserManager.userInfo.name = name;
+			UserManager.userInfo.head = head;
+			UserManager.userInfo.sex = sex;
+			RoomManager.playerNameOper(UserManager.userInfo);
+			UserManager.onSetUserInfoComplete.dispatch();
+		};
+		SocketManager.AddCommandListener(Command.Req_SetUserInfo_3017, callBack);
+		let obj: Object = {};
+		if (name !== null && name !== undefined)
+		{
+			obj["name"] = name;
+		}
+		if (head !== null && head !== undefined)
+		{
+			obj["head"] = head;
+		}
+		obj["sex"] = sex;
+		SocketManager.Send(Command.Req_SetUserInfo_3017, obj);
+	}
+	/**
+	 * 获取当日购买房卡信息
+	 */
+	public static getBuyCount(price: number): CardLogInfo
+	{
+		if (UserManager.userInfo && UserManager.userInfo.cardLogList)
+		{
+			for (let info of UserManager.userInfo.cardLogList)
+			{
+				if (info.price == price)
+				{
+					return info;
+				}
+			}
+		}
+		return null;
+	}
+	/**
+	 * 获取自己所在的索引
+	 */
+	public static getSelfIndex(roundDetialsInfo: RoundDetialsInfo): number
+	{
+		if (UserManager.userInfo)
+		{
+			for (let i: number = 1; i <= 4; i++)
+			{
+				if (roundDetialsInfo["roleId" + i.toString()] == UserManager.userInfo.roleId)
+				{
+					return i;
+				}
+			}
+		}
+		return -1;
+	}
+	//---------------------------------------------
+	// event
+	//---------------------------------------------
+	/**
+	 * 拉取战绩信息列表事件
+	 */
+	public static GetRoundListEA: ActionDispatcher = new ActionDispatcher();
+	private static dispatchGetRoundList()
+	{
+		UserManager.GetRoundListEA.dispatch();
+	}
+	/**
+	 * 拉取用户信息
+	 */
+	public static getOtherUserInfoEa: ActionDispatcher = new ActionDispatcher();
+	private static dispatchGetOtherInfoEvent()
+	{
+		UserManager.getOtherUserInfoEa.dispatch();
+	}
+	/**
+	 * 拉取战绩详情事件
+	 */
+	public static onGetRoundDetialsEa: ActionDispatcher = new ActionDispatcher();
+	private static dispatchGetRoundDetialsEvent()
+	{
+		UserManager.onGetRoundDetialsEa.dispatch();
+	}
+	/**
+	 * 设置用户头像信息完毕
+	 */
+	public static onSetUserInfoComplete: ActionDispatcher = new ActionDispatcher();
+}
+/**
+ * 其他玩家信息
+ */
+class OtherUserInfo extends BaseServerValueInfo
+{
+	/**
+	 * 角色ID
+	 */
+	public roleId: number;
+	/**
+	 * 名称
+	 */
+	public name: string;
+	/**
+	 * 性别
+	 */
+	public sex: number;
+	/**
+	 * 头像
+	 */
+	public head: string;
+	/**
+	 * 	最后一次登陆IP
+	 */
+	public ip: string;
+	/**
+	 * 等级
+	 */
+	public level: number;
+	/**
+	 * 总经验
+	 */
+	public exp: number;
+	/**
+	 * 周会员时间戳
+	 */
+	public weekTime: number;
+	/**
+	 * 月会员时间戳
+	 */
+	public monthTime: number;
+	public reset()
+	{
+		this.roleId = undefined;
+		this.name = undefined;
+		this.sex = undefined;
+		this.head = undefined;
+		this.ip = undefined;
+		this.level = undefined;
+		this.exp = undefined;
+		this.weekTime = undefined;
+		this.monthTime = undefined;
+	}
+}

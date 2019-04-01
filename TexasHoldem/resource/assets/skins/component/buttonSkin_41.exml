@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="buttonSkin41" width="175" height="80" xmlns:e="http://ns.egret.com/eui">
+	<e:Image  id="btnImg" width="175" horizontalCenter="0" verticalCenter="0" scale9Grid="47,0,6,71" source="button_7_2_png"/>
+	<e:Label id="labelDisplay" size="45" verticalAlign="middle" textAlign="center" text="￥11"
+	         fontFamily="SimHei" anchorOffsetX="0" anchorOffsetY="0"  horizontalCenter="0" verticalCenter="-6.5" textColor="0x984d14" bold="true"/>
+</e:Skin>

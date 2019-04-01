@@ -1,0 +1,188 @@
+/**
+ * 牌的显示定义
+ * */
+class CardShowDefined extends BaseDefined
+{
+	/**
+	 * 牌墙
+	 */
+	private static readonly cardWallConfig: string = "cardWall";
+	/**
+	 * 手牌
+	 */
+	private static readonly shouPaiConfig: string = "shouPai";
+	/**
+	 * 杠牌碰牌
+	 */
+	private static readonly cardGroupConfig: string = "cardGroup";
+	/**
+	 * 打出去的牌
+	 */
+	private static readonly outCardConfig: string = "outCard";
+	/**
+	 * 亮牌
+	 */
+	private static readonly liangPaiConfig: string = "liangPai";
+
+	private static _instance: CardShowDefined;
+	public static GetInstance(): CardShowDefined
+	{
+		if (CardShowDefined._instance == null)
+		{
+			CardShowDefined._instance = new CardShowDefined();
+		}
+		if (DefinedManager.IsParsed(CardShowDefined.cardWallConfig) == false)
+		{
+			CardShowDefined._instance.initialize();
+		}
+		return CardShowDefined._instance;
+	}
+
+	public cardWallList: Array<CardWallDefinition>;
+
+	public shouPaiList: Array<ShouPaiDefinition>;
+	public shouPaiMap: Dictionary<PosType, Array<ShouPaiDefinition>>;
+
+	public groupCardList: Array<GroupCardDefinition>;
+	public groupCardMap: Dictionary<PosType, Array<GroupCardDefinition>>;
+
+	public outCardList: Array<OutCardDefinition>;
+	public outCardMap: Dictionary<PosType, Array<OutCardDefinition>>;
+
+	public liangPaiList: Array<LiangPaiDefinition>;
+	public liangPaiMap: Dictionary<PosType, Array<LiangPaiDefinition>>;
+
+	public initialize()
+	{
+		let obj: Object = DefinedManager.GetData(CardShowDefined.cardWallConfig);
+		CardShowDefined.GetInstance().cardWallList = ShortNameDefined.GetInstance().convertEnter(obj) as Array<CardWallDefinition>;
+
+		obj = DefinedManager.GetData(CardShowDefined.shouPaiConfig);
+		CardShowDefined.GetInstance().shouPaiList = ShortNameDefined.GetInstance().convertEnter(obj) as Array<ShouPaiDefinition>;
+
+		if (CardShowDefined.GetInstance().shouPaiList)
+		{
+			CardShowDefined.GetInstance().shouPaiMap = this.createPaiMap<Array<ShouPaiDefinition>, Dictionary<PosType, Array<ShouPaiDefinition>>>(Array, Dictionary, CardShowDefined.GetInstance().shouPaiList, CardShowDefined.GetInstance().shouPaiMap);
+		}
+
+		obj = DefinedManager.GetData(CardShowDefined.cardGroupConfig);
+		CardShowDefined.GetInstance().groupCardList = ShortNameDefined.GetInstance().convertEnter(obj) as Array<GroupCardDefinition>;
+		if (CardShowDefined.GetInstance().groupCardList)
+		{
+			CardShowDefined.GetInstance().groupCardMap = this.createPaiMap<Array<GroupCardDefinition>, Dictionary<PosType, Array<GroupCardDefinition>>>(Array, Dictionary, CardShowDefined.GetInstance().groupCardList, CardShowDefined.GetInstance().groupCardMap);
+		}
+
+		obj = DefinedManager.GetData(CardShowDefined.outCardConfig);
+		CardShowDefined.GetInstance().outCardList = ShortNameDefined.GetInstance().convertEnter(obj) as Array<OutCardDefinition>;
+		if (CardShowDefined.GetInstance().outCardList)
+		{
+			CardShowDefined.GetInstance().outCardMap = this.createPaiMap<Array<OutCardDefinition>, Dictionary<PosType, Array<OutCardDefinition>>>(Array, Dictionary, CardShowDefined.GetInstance().outCardList, CardShowDefined.GetInstance().outCardMap);
+		}
+
+		obj = DefinedManager.GetData(CardShowDefined.liangPaiConfig);
+		CardShowDefined.GetInstance().liangPaiList = ShortNameDefined.GetInstance().convertEnter(obj) as Array<LiangPaiDefinition>;
+		if (CardShowDefined.GetInstance().liangPaiList)
+		{
+			CardShowDefined.GetInstance().liangPaiMap = this.createPaiMap<Array<LiangPaiDefinition>, Dictionary<PosType, Array<LiangPaiDefinition>>>(Array, Dictionary, CardShowDefined.GetInstance().liangPaiList, CardShowDefined.GetInstance().liangPaiMap);
+		}
+	}
+	private createPaiMap<T extends Array<any>, U extends Dictionary<any, any>>(listNew: { new (): T; }, mapNew: { new (): U; }, sourceList: T, sourceMap: U): U
+	{
+		let spList: T;
+		if (!sourceMap)
+		{
+			sourceMap = new mapNew();
+		}
+		else
+		{
+			sourceMap.clear();
+		}
+		for (let def of sourceList)
+		{
+			spList = sourceMap.getValue(def.posType);
+			if (!spList)
+			{
+				spList = new listNew();
+				sourceMap.add(def.posType, spList);
+			}
+			spList.push(def);
+		}
+		return sourceMap;
+	}
+}
+/**
+ * 牌墙定义
+ */
+class CardWallDefinition implements IBaseDefintion
+{
+	/*id*/
+	public id: number;
+	/**
+	 * x坐标
+	 */
+	public x: number;
+	/**
+	 * y坐标
+	 */
+	public y: number;
+	/**
+	 * 缩放系数
+	 */
+	public scale: number;
+	/**
+	 * 层级
+	 */
+	public layer: number;
+	/**
+	 * 皮肤名
+	 */
+	public skinName: string;
+	/**
+	 * 水平倾斜
+	 */
+	public tiltH: number;
+	/**
+	 * 垂直倾斜
+	 */
+	public tiltV: number;
+}
+/**
+ * 手牌位置定义
+ */
+class ShouPaiDefinition extends CardWallDefinition
+{
+	/**
+	 * 位置
+	 */
+	public posType: PosType;
+}
+/**
+ * 碰牌杠牌位置定义
+ */
+class GroupCardDefinition extends ShouPaiDefinition
+{
+	/**
+	 * 组类型 1-7 碰3家|明杠3家|暗杠
+	 */
+	public groupType: number;
+	/**
+	 * 第几张牌 1-4
+	 */
+	public cardType: number;
+}
+/**
+ * 打出去的牌
+ */
+class OutCardDefinition extends ShouPaiDefinition
+{
+	/**
+	 * 位置
+	 */
+	public pos: number;
+}
+/**
+ * 亮牌
+ */
+class LiangPaiDefinition extends ShouPaiDefinition
+{
+}

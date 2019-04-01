@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="itemRenderer2" width="107" height="175" xmlns:e="http://ns.egret.com/eui"
+        xmlns:w="http://ns.egret.com/wing" xmlns:tween="egret.tween.*">
+	<w:Declarations>
+		<tween:TweenGroup id="play">
+			<tween:TweenItem target="{playRecordImage0}">
+				<tween:Set>
+					<tween:props>
+						<e:Object alpha="{1}"/>
+					</tween:props>
+				</tween:Set>
+				<tween:Wait duration="200"/>
+				<tween:Set>
+					<tween:props>
+						<e:Object alpha="{1}"/>
+					</tween:props>
+				</tween:Set>
+				<tween:Wait duration="50"/>
+				<tween:Set>
+					<tween:props>
+						<e:Object alpha="{0}"/>
+					</tween:props>
+				</tween:Set>
+				<tween:Wait duration="500"/>
+				<tween:Set>
+					<tween:props>
+						<e:Object alpha="{1}"/>
+					</tween:props>
+				</tween:Set>
+				<tween:props>
+					<e:Object loop="{true}" />
+				</tween:props>
+			</tween:TweenItem>
+			<tween:TweenItem target="{playRecordImage1}">
+				<tween:Set>
+					<tween:props>
+						<e:Object alpha="{0}"/>
+					</tween:props>
+				</tween:Set>
+				<tween:Wait duration="250"/>
+				<tween:Set>
+					<tween:props>
+						<e:Object alpha="{1}"/>
+					</tween:props>
+				</tween:Set>
+				<tween:Wait duration="150"/>
+				<tween:Set/>
+				<tween:Wait duration="50"/>
+				<tween:Set>
+					<tween:props>
+						<e:Object alpha="{0}"/>
+					</tween:props>
+				</tween:Set>
+				<tween:Wait duration="300"/>
+				<tween:Set>
+					<tween:props>
+						<e:Object alpha="{0}"/>
+					</tween:props>
+				</tween:Set>
+				<tween:props>
+					<e:Object loop="{true}" />
+				</tween:props>
+			</tween:TweenItem>
+			<tween:TweenItem target="{playRecordImage2}">
+				<tween:Set>
+					<tween:props>
+						<e:Object alpha="{0}"/>
+					</tween:props>
+				</tween:Set>
+				<tween:Wait duration="450"/>
+				<tween:Set>
+					<tween:props>
+						<e:Object alpha="{1}"/>
+					</tween:props>
+				</tween:Set>
+				<tween:Wait duration="250"/>
+				<tween:Set>
+					<tween:props>
+						<e:Object alpha="{1}"/>
+					</tween:props>
+				</tween:Set>
+				<tween:Wait duration="50"/>
+				<tween:Set>
+					<tween:props>
+						<e:Object alpha="{0}"/>
+					</tween:props>
+				</tween:Set>
+				<tween:props>
+					<e:Object loop="{true}" />
+				</tween:props>
+			</tween:TweenItem>
+		</tween:TweenGroup>
+	</w:Declarations>
+	<e:Image id="grayBg" width="88" height="90" anchorOffsetY="0" x="9" y="80" source="bg_page4_png" scale9Grid="10,10,126,126"/>
+	<e:Image id="headBorder" width="85" height="85" source="bg_head_png" anchorOffsetX="50" anchorOffsetY="50" horizontalCenter="0" verticalCenter="-41.5" scale9Grid="8,8,53,53"/>
+	<e:Image id="headImg" width="70" height="70" anchorOffsetX="50" anchorOffsetY="50" source=""  horizontalCenter="0" verticalCenter="-42.5"/>
+	<e:Image id="sexImg" width="30" height="30" x="66" y="57.5" source="girl_png" />
+	<e:Label id="nameLabel" text="微信昵称" size="20" textAlign="center"  textColor="0xffffff" fontFamily="SimHei" horizontalCenter="0.5" verticalCenter="11.5"/>
+	<!--<e:Label id="scoreLabel" text="-9000积分" size="20" width="140" anchorOffsetX="70" textAlign="center"  horizontalCenter="0.5" verticalCenter="36.5" fontFamily="SimHei"/>-->
+	<e:Group id="scoreLabel" width="107" height="21" y="115">
+		<e:layout>
+			<e:HorizontalLayout gap="1" horizontalAlign="center"/>
+		</e:layout>
+	</e:Group>
+	<e:Image id="zhuangImg" width="35" height="35" x="76.5" y="2" source="zhuang_png" scaleX="0.8" scaleY="0.8" />
+	<e:Image id="fangZhu" x="2" y="0" scaleX="0.6" scaleY="0.6" source="fangzhu_png" anchorOffsetX="0" anchorOffsetY="0"/>
+	<e:Image id="tingpaiImg" source="tingpai_png" scaleX="0.6" scaleY="0.6"  horizontalCenter="0.5" verticalCenter="67"/>
+	<e:Image id="offlineImg" scaleX="0.5" scaleY="0.5" anchorOffsetX="0" anchorOffsetY="0" rotation="360" horizontalCenter="-21" verticalCenter="-12.5" source="lixian_png"/>
+	<e:Image id="playRecordImage0" x="10.25" y="6" source="Voice_1_png"/>
+	<e:Image id="playRecordImage1" x="10.25" y="6" source="Voice_2_png"/>
+	<e:Image id="playRecordImage2" x="10.25" y="6" source="Voice_3_png"/>
+</e:Skin>

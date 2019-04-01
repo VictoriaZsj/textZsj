@@ -1,0 +1,40 @@
+/**
+ * 锦标赛赛事信息排名项
+ */
+class ChampionshipRankItemRenderer extends BaseItemRenderer<ChampionshipRankInfo>
+{
+    /**
+     * 头像
+    */
+    public headImg: eui.Image;
+    /**
+     * 排名
+    */
+    public rankLabel: eui.Label;
+    /**
+     * 昵称
+    */
+    public nameLabel: eui.Label;
+    /**
+     * 筹码
+    */
+    public numLabel: eui.Label;
+
+    public constructor()
+    {
+        super();
+        this.skinName = UIRendererSkinName.RankItemRenderer;
+    }
+    protected createChildren()
+    {
+        this.dataChanged();
+    }
+    protected dataChanged(): void
+    {
+        super.dataChanged();
+        this.rankLabel.text = RankManager.getRankDes(this.bindData.rank, true);
+        this.headImg.source = this.bindData.head;
+        this.nameLabel.text = this.bindData.name;
+        this.numLabel.text = this.bindData.num.toString();
+    }
+}

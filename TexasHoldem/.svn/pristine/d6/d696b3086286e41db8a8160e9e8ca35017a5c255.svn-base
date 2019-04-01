@@ -1,0 +1,261 @@
+/**
+ * 成就/任务管理
+ */
+class AchievementManager
+{
+    /**
+    * 成就解锁事件
+    */
+    public static achieveChangeEvent: DelegateDispatcher = new DelegateDispatcher();
+    /**
+     * 领取成就奖励事件
+     */
+    public static getAchievementPrizeEvent: DelegateDispatcher = new DelegateDispatcher();
+    /**
+     * 总成就和任务列表
+     */
+    public static allList: Array<AchievementInfo>;
+    public static initialize(result: SpRpcResult)
+    {
+        TimeManager.resetTime0Event.addListener(this.onResetTime, this);
+        if (!AchievementManager.allList)
+        {
+            AchievementManager.allList = new Array<AchievementInfo>();
+            for (let def of AchieveDefined.GetInstance().dataList)
+            {
+                let info: AchievementInfo = new AchievementInfo();
+                info.id = def.id;
+                info.isComplete = false;
+                info.isTake = false;
+                AchievementManager.allList.push(info);
+            }
+        }
+        AchievementManager.setAllAchieveList(UserManager.userInfo, result);
+    }
+    /**
+     * 设置某用户的成就信息
+     */
+    public static setAllAchieveList(info: UserInfo, result: SpRpcResult)
+    {
+        let list: Array<AchievementInfo> = new Array<AchievementInfo>();
+        if (result.data["achieveList"])
+        {
+            for (let info of result.data["achieveList"])
+            {
+                let achieveInfo: AchievementInfo = new AchievementInfo();
+                achieveInfo.id = info["id"];
+                achieveInfo.isTake = info["isTake"];
+                achieveInfo.isComplete = true;
+                list.push(achieveInfo);
+            }
+        }
+        info.allAchieveList = AchievementManager.getCompleteAchieveInfoDic(list);
+    }
+    /**
+     * 生成包括所有成就信息的列表
+     */
+    public static getCompleteAchieveInfoDic(list: Array<AchievementInfo>): Array<AchievementInfo>
+    {
+        if (list == null || list.length == 0)
+        {
+            return AchievementManager.allList;
+        }
+        let result: Array<AchievementInfo> = new Array<AchievementInfo>();
+        for (let i: number = 0; i < AchievementManager.allList.length; i++)
+        {
+            let info: AchievementInfo = AchievementManager.allList[i];
+            for (let j: number = 0; j < AchievementManager.allList.length; j++)
+            {
+                if (AchievementManager.allList[j].id == info.id)
+                {
+                    info = AchievementManager.allList[j];
+                }
+            }
+            result.push(info);
+        }
+        return result;
+    }
+    /**
+     * 根据tag获取成就/任务列表(UserManager里的列表)
+     */
+    public static getAchieveListByTag(tag: number): Array<AchievementInfo>
+    {
+        let result: Array<AchievementInfo> = new Array<AchievementInfo>();
+        for (let info of UserManager.userInfo.allAchieveList)
+        {
+            if (info.definition.tag == tag)
+            {
+                result.push(info);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 接收到推送的回调
+     */
+    private static onGetAchieveInfo(result: SpRpcResult)
+    {
+        if (result.data)
+        {
+            let info: AchievementInfo = AchievementManager.getAchieveInfoById(UserManager.userInfo.allAchieveList, result.data["id"]);
+            info.isComplete = true;
+            AchievementManager.achieveChangeEvent.dispatch(info);
+        }
+    }
+
+    /**
+     * 通过成就id获取成就信息
+     */
+    public static getAchieveInfoById(list: Array<AchievementInfo>, id: number): AchievementInfo
+    {
+        for (let info of list)
+        {
+            if (info.id == id)
+            {
+                return info;
+            }
+        }
+        return null;
+    }
+
+    /**
+    * 获取显示的任务列表
+    */
+    public static getShowAchieveList(): Array<AchievementInfo> 
+    {
+        let list: Array<BaseAchieveProcessInfo> = AchieveProcessManager.getAchieveProcessListByTag(AchieveTag.Quest);
+        let result: Array<AchievementInfo> = new Array<AchievementInfo>();
+        for (let info of list)
+        {
+            result.push(AchievementManager.getAchieveInfoById(UserManager.userInfo.allAchieveList, info.step));
+        }
+        return result;
+    }
+    /**
+     * 根据类型查找显示的列表
+     */
+    public static getShowAchieveListByType(dailyType: AchieveDailyType): Array<AchievementInfo> 
+    {
+        let list: Array<AchievementInfo> = AchievementManager.getShowAchieveList();
+        let result: Array<AchievementInfo> = new Array<AchievementInfo>();
+        for (let info of list)
+        {
+            if (info.definition.dailyQuest == dailyType)
+            {
+                result.push(info);
+            }
+        }
+        return result;
+    }
+    /**
+     * 发送领取成就奖励的请求
+     */
+    public static reqTakeAchievePrize(id: number)
+    {
+        SocketManager.Send(Command.Achievement_GetPrize_3088, { "Id": id }, AchievementManager.onTakeAchievePrize, null, null);
+    }
+
+    private static onTakeAchievePrize(result: SpRpcResult)
+    {
+        if (result.data)
+        {
+            let info: AchievementInfo = AchievementManager.getAchieveInfoById(UserManager.userInfo.allAchieveList, result.data["Id"]);
+            if (!info.isTake)
+            {
+                info.isTake = true;
+            }
+            else
+            {
+                UIManager.showFloatTips("已领取过奖励");
+            }
+            AchievementManager.getAchievementPrizeEvent.dispatch();
+        }
+    }
+    /**
+     * 重置任务
+     */
+    private static onResetTime(result: SpRpcResult)
+    {
+        AchievementManager.resetAchievement(AchieveDailyType.Daily);
+        if (TimeManager.GetServerLocalDateTime().getDay() == WeekDay.Monday)
+        {
+            AchievementManager.resetAchievement(AchieveDailyType.Weekly);
+        }
+    }
+    /**
+     * 重置任务
+     */
+    private static resetAchievement(dailyType: AchieveDailyType)
+    {
+        for (let info of AchieveProcessManager.getAchieveProcessListByTag(AchieveTag.Quest))
+        {
+            if (info.dailyQuest == dailyType)
+            {
+                info.resetProcess();
+            }
+        }
+    }
+}
+
+/**
+ * 成就信息
+ */
+class AchievementInfo
+{
+    private _id: number;
+    public get id(): number
+    {
+        return this._id;
+    }
+    public set id(value: number)
+    {
+        this._id = value;
+        this._definition = AchieveDefined.GetInstance().getAchieveDefintion(value);
+    }
+    private _definition: AchieveDefintion
+    public get definition(): AchieveDefintion
+    {
+        return this._definition;
+    }
+    public set definition(value: AchieveDefintion)
+    {
+        this._definition = value;
+    }
+    /**
+     * 是否完成
+     */
+    public isComplete: boolean;
+    /**
+     * 是否领取奖励
+     */
+    public isTake: boolean;
+
+}
+
+enum AchieveTag
+{
+    /**
+     * 成就
+     */
+    Achievement = 0,
+    /**
+     * 任务
+     */
+    Quest = 1
+}
+enum AchieveDailyType
+{
+    /**
+     * 每日任务
+     */
+    Daily = 1,
+    /**
+     * 每周任务
+     */
+    Weekly = 2,
+    /**
+     * 成长任务
+     */
+    GrowUp = 3,
+}

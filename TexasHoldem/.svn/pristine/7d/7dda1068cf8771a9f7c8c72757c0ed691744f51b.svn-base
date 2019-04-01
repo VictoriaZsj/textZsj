@@ -1,0 +1,68 @@
+/**
+ * 添加好友项面板
+*/
+class PersonalRoomItemRenderer extends BaseItemRenderer<RoomDefinition>
+{
+    /**
+     * 最大买入
+    */
+    public bBuyLabel: eui.Label;
+    /**
+     * 盲注
+    */
+    public blindLabel: eui.Label;
+    /**
+     * 最小买入
+    */
+    public sBuyLabel: eui.Label;
+    /**
+     * 选中标记
+    */
+    public flagImg: eui.Image;
+
+    public constructor()
+    {
+        super();
+        this.skinName = UIRendererSkinName.PersonalRoomItemRenderer;
+    }
+    protected createChildren()
+    {
+        this.dataChanged();
+    }
+    protected dataChanged()
+    {
+        super.dataChanged();
+        if (this.bindData)
+        {
+            this.flagImg.visible = false;
+            this.bBuyLabel.text = MathUtil.formatNum(this.bindData.bBuyin);
+            this.sBuyLabel.text = MathUtil.formatNum(this.bindData.sBuyin);
+            this.blindLabel.text = MathUtil.formatNum(this.bindData.sBlind) + "/" + MathUtil.formatNum(this.bindData.bBlind);
+            this.addEventListener(egret.Event.REMOVED_FROM_STAGE, this.onDisable, this);
+            this.addEventListener(egret.TouchEvent.TOUCH_TAP, this.setSelectedId, this);
+        }
+    }
+    private onDisable(event: egret.Event)
+    {
+        this.removeEventListener(egret.Event.REMOVED_FROM_STAGE, this.onDisable, this);
+        this.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.setSelectedId, this);
+    }
+    /**
+     * 选中设置
+    */
+    private setSelectedId()
+    {
+        PlayingFieldManager.selectedId = this.bindData.id;
+        if (PlayingFieldManager.selectedCarrayItem)
+        {
+            PlayingFieldManager.selectedCarrayItem.visible = false;
+            this.flagImg.visible = true;
+            PlayingFieldManager.selectedCarrayItem = this.flagImg;
+        }
+        else
+        {
+            this.flagImg.visible = true;
+            PlayingFieldManager.selectedCarrayItem = this.flagImg;
+        }
+    }
+}

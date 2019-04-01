@@ -1,0 +1,39 @@
+<e:Skin class="panelSkin13" width="720" height="1280" xmlns:e="http://ns.egret.com/eui"
+        xmlns:w="http://ns.egret.com/wing" xmlns:ns1="*">
+	<e:Group id="tweenGroup" horizontalCenter="0" verticalCenter="0" width="720" height="1280">
+		<e:Image width="720" height="1280" source="bg_page2_png" scale9Grid="24,21,101,105" anchorOffsetY="0" x="0" y="0" />
+		<e:Label text="游戏场" y="48" size="50" textColor="0x09f2c0" textAlign="center" verticalAlign="middle"
+		         horizontalCenter="0" />
+		<e:Group id="tabGroup" x="1" y="256">
+			<e:Label id="searchLable" text="" y="46" anchorOffsetX="0" width="382" anchorOffsetY="0" height="60.67"
+			         verticalAlign="middle" border="true" borderColor="0xEA1717" x="168" />
+			<e:Label id="roomIdLable" text="房间ID" x="49" y="0" />
+			<e:Label id="playerNumLable" text="在玩人数" x="191" y="0" />
+			<e:Label id="blindLable" text="小/大盲" x="356" y="0" />
+			<e:Label id="buyLable" text="最小/最大买入" x="515" y="0" />
+			<e:Scroller id="scroller" width="720" height="752.24" x="0.9700000000000273" y="129" anchorOffsetX="0"
+			            anchorOffsetY="0" />
+			<e:List id="list" width="720" height="747.33" x="0" y="129" anchorOffsetX="0" anchorOffsetY="0" />
+		</e:Group>
+		<e:Group id="privateRoomGroup" width="616" height="282" x="66" y="436" anchorOffsetX="0" anchorOffsetY="0">
+			<e:Image width="593" height="262" source="bg_page17_png" scale9Grid="22,16,140,46" x="11.5" y="9" anchorOffsetY="0" />
+			<e:Label text="私人房密码" x="24" y="26" />
+			<ns1:GameButton id="closePrivateRoomGroupBtn" label="Button" skinName="buttonSkin4" x="533.5" y="10" />
+			<e:Label text="请输入私人房密码" x="138" y="68" anchorOffsetX="0" width="364" anchorOffsetY="0" height="52"
+			         verticalAlign="middle" textAlign="center" />
+			<e:Group id="labelGroup" anchorOffsetX="0" width="531" anchorOffsetY="0" height="67" horizontalCenter="0.5"
+			         verticalCenter="51.5">
+
+
+
+
+
+
+				<e:layout>
+					<e:HorizontalLayout gap="22"/>
+				</e:layout>
+					 </e:Group>
+		</e:Group>
+		<ns1:GameButton id="closeButton" label="Button" skinName="buttonSkin4" x="-3" y="-2" />
+	</e:Group>
+</e:Skin>

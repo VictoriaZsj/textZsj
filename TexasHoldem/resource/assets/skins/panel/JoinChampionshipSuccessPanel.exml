@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="panelSkin4" width="720" height="1280" xmlns:e="http://ns.egret.com/eui" xmlns:ns1="*"
+        xmlns:w="http://ns.egret.com/wing">
+    <e:Group id="tweenGroup" width="720" height="1280" anchorOffsetX="0" anchorOffsetY="0" x="0" y="0">
+        <e:Image width="600" height="400" source="bg_page2_png" horizontalCenter="0" verticalCenter="10"
+                 scale9Grid="23,24,99,99" />
+        <e:Label text="报名成功" anchorOffsetX="0" width="168.67" anchorOffsetY="0" height="44.82" verticalAlign="middle"
+                 textAlign="left" size="26" horizontalCenter="-194.5" verticalCenter="-148.5" fontFamily="SimHei"
+                 textColor="0xa0522b" />
+        <ns1:GameButton id="closeBtn" label="Button" anchorOffsetX="0" skinName="buttonSkin24" y="750.93" scaleX="1"
+                        scaleY="1" horizontalCenter="0" />
+        <e:Label text="赛事名称：" x="123" y="540" size="24" />
+        <e:Label id="nameLabel" text="免费-10元话费赛" x="250" y="540" size="24" />
+        <e:Label id="timeLabel" text="今日20:00" x="250" y="586" size="24" />
+        <e:Label id="numLabel" text="200/600" x="250" y="632" size="24" />
+        <e:Label id="chipLabel" text="3000" x="250" y="678" size="24" />
+        <e:Label text="比赛时间：" x="123" y="586" size="24" />
+        <e:Label text="参赛人数：" x="123" y="632" size="24" />
+        <e:Label text="初始筹码：" x="123" y="678" size="24" />
+    </e:Group>
+</e:Skin>

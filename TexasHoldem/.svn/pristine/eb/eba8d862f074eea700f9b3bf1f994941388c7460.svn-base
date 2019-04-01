@@ -1,0 +1,138 @@
+/**
+ * 场景管理
+ */
+class SceneManager
+{
+	/**
+	 * 登录场景逻辑控制
+	 */
+	private static _loginScene: LoginScene;
+	/**
+	 * 大厅场景
+	 */
+	private static _hallScene: HallScene;
+	/**
+	 * 游戏场景
+	 */
+	private static _gameScene: GameScene;
+
+	public static switchPanel: LoadingSwitchPanel;
+
+	private static _currentScene: BaseScene;
+	public static get gameScene(): GameScene
+	{
+		return SceneManager._gameScene;
+	}
+	/**
+	 * 重新登录
+	 */
+	public static reLogin()
+	{
+		if (SceneManager._gameScene)
+		{
+			SceneManager._gameScene.gameProcesser.clear();
+		}
+	}
+	/**
+	 * 当前场景类型
+	 */
+	public static _currentSceneType: SceneType;
+	public static goToLogin()
+	{
+		SceneManager._currentSceneType = SceneType.Login;
+		SceneManager.switcScene();
+	}
+	public static goToHall()
+	{
+		SceneManager._currentSceneType = SceneType.Hall;
+		SceneManager.switcScene();
+	}
+	public static goToGame(isNeedReady?: boolean)
+	{
+		SceneManager._currentSceneType = SceneType.Game;
+		SceneManager.switcScene(isNeedReady);
+	}
+	public static onEnable()
+	{
+		RoomManager.otherPlayerJoinEA.addListener(SceneManager.onPlayerJoin);
+	}
+	public static onDisable()
+	{
+		RoomManager.otherPlayerJoinEA.removeListener(SceneManager.onPlayerJoin);
+	}
+	private static onPlayerJoin()
+	{
+		if (SceneManager._currentSceneType == SceneType.Hall)
+		{
+			AlertManager.showDoubleAlert("你的小伙伴已进入房间，是否立即返回房间？", SceneManager.goBackRoom);
+		}
+	}
+	private static goBackRoom()
+	{
+		SceneManager.goToGame(false);
+	}
+	/**
+	 * 切换场景
+	 */
+	public static switcScene(isNeedReady?: boolean)
+	{
+		if (SceneManager._currentScene)
+		{
+			SceneManager._currentScene.clear();
+		}
+		switch (SceneManager._currentSceneType)
+		{
+			case SceneType.Login:
+				if (!SceneManager._loginScene)
+				{
+					SceneManager._loginScene = new LoginScene();
+				}
+				UIManager.showPanel(UIModuleName.LoginSceneBgPanel);
+				SceneManager._loginScene.initialize();
+				SceneManager._currentScene = SceneManager._loginScene;
+				break;
+			case SceneType.Hall:
+				if (!SceneManager._hallScene)
+				{
+					SceneManager._hallScene = new HallScene();
+				}
+				SceneManager._hallScene.initialize(ResGroupName.Hall);
+				SceneManager._currentScene = SceneManager._hallScene;
+				UIManager.closePanel(UIModuleName.LoginSceneBgPanel);
+				break;
+			case SceneType.Game:
+				if (!SceneManager._gameScene)
+				{
+					SceneManager._gameScene = new GameScene();
+				}
+				SceneManager._gameScene.initialize(ResGroupName.Carddesk, isNeedReady);
+				SceneManager._currentScene = SceneManager._gameScene;
+				UIManager.closePanel(UIModuleName.LoginSceneBgPanel);
+				break;
+			default:
+				break;
+		}
+		SoundManager.playBgMusic(SceneManager._currentSceneType);
+	}
+	public static updateProgress(event: RES.ResourceEvent, des: string)
+	{
+		if (!UIManager.isShowPanelObj(SceneManager.switchPanel))
+		{
+			UIManager.showPanel(UIModuleName.LoadingSwitchPanel);
+		}
+		if (!SceneManager.switchPanel)
+		{
+			SceneManager.switchPanel = UIManager.getPanel(UIModuleName.LoadingSwitchPanel) as LoadingSwitchPanel;
+		}
+		if (SceneManager.switchPanel)
+		{
+			let value: number = event.itemsLoaded / event.itemsTotal;
+			SceneManager.switchPanel.updateProgress(value, des);
+			if (value >= 1)
+			{
+				UIManager.closePanel(UIModuleName.LoadingSwitchPanel);
+			}
+		}
+	}
+}
+

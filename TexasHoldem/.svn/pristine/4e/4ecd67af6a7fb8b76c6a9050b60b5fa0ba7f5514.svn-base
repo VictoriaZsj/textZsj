@@ -1,0 +1,48 @@
+/**
+ * 充值面板项渲染
+ */
+class PayPanelItemRenderer extends BaseItemRenderer<PayInfo>
+{
+	public remainLabel: eui.Label;//限购
+	public paytBtn: eui.Button;//购买
+	public countLabel: eui.Label;//数量
+	public titleImg:eui.Image;//标题图片
+	public itemImg:eui.Image;//物品图片
+	public desLabel:eui.Label;//物品说明
+	public countGroup:eui.Group;//数量组
+
+	public constructor()
+	{
+		super();
+		this.skinName = UIRendererSkinName.PayPanelItemRenderer;
+	}
+	protected createChildren()
+	{
+		this.dataChanged();
+	}
+	protected dataChanged(): void
+	{
+		super.dataChanged();
+		if (this.remainLabel && this.bindData)
+		{
+			if(this.bindData.definition.get!=null)
+			{
+				this.countLabel.text = this.bindData.definition.get.toString() + "张";
+				this.paytBtn.label = this.bindData.definition.price + "元";
+				this.remainLabel.text = StringUtil.format("今日限购{0}次", (this.bindData.definition.limit - this.bindData.dayCount) + "/" + this.bindData.definition.limit);
+				this.itemImg.scaleX = 1;
+				this.itemImg.scaleY = 1;
+				this.desLabel.visible = false;
+			}
+			else
+			{
+				this.remainLabel.visible = false;
+				this.paytBtn.label = this.bindData.definition.price + "元";
+				this.countGroup.visible = false;
+				this.titleImg.source = this.bindData.definition.title;
+				this.itemImg.source = this.bindData.definition.img;
+				this.desLabel.text = this.bindData.definition.des;
+			}
+		}
+	}
+}

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="panelSkin17" width="1280" height="720" xmlns:ns1="*" xmlns:e="http://ns.egret.com/eui"
+        xmlns:w="http://ns.egret.com/wing">
+	<e:Group id="tweenGroup" width="1280" height="720" horizontalCenter="0" verticalCenter="0">
+		<e:Image width="1212" height="662" source="bg_page2_png" scale9Grid="44,45,89,88" anchorOffsetX="0" anchorOffsetY="0" y="37" scaleX="1" scaleY="1" x="34"/>
+		<e:Image source="bg_page5_png" scale9Grid="73,0,143,73" anchorOffsetX="0" width="408.18" y="10" horizontalCenter="0"/>
+		<e:Image width="1162.7" height="495.5" anchorOffsetX="0" anchorOffsetY="0" y="109.7" scaleX="1" scaleY="1" scale9Grid="19,18,23,23" source="bg_page19_png" horizontalCenter="0.5"/>
+		<e:Image id="winImg" anchorOffsetY="0" anchorOffsetX="0" source="jiesuan_shengli_png" horizontalCenter="0.5" verticalCenter="-310"  scaleX="0.8" scaleY="0.8"/>
+		<e:Image id="loseImg" anchorOffsetY="0" anchorOffsetX="0" horizontalCenter="1" verticalCenter="-308.5" source="jiesuan_shibai_png" scaleX="0.8" scaleY="0.8"/>
+		<e:Image id="liuJuImg" anchorOffsetY="0" anchorOffsetX="0" horizontalCenter="1" verticalCenter="-312.5" source="effect_liuju_png" scaleX="0.8" scaleY="0.8"/>
+		<ns1:GameButton id="goOnBtn" label="继续" y="611" skinName="buttonSkin30" x="361"/>
+		<ns1:GameButton id="exitBtn" label="继续" y="611" skinName="buttonSkin34" x="723.4"/>
+		<ns1:GameButton id="gameOverBtn" label="继续" y="611"  skinName="buttonSkin33" horizontalCenter="0"/>
+		<e:Label id="nameLabel" text="盱眙晃晃" x="942.47" size="30" textAlign="left" verticalAlign="middle"
+		         anchorOffsetX="0" width="146.05" fontFamily="SimHei"  textColor="0xea9f48" verticalCenter="-280"/>
+		<e:Label id="anteLabel" text="底分:10 胡八字" x="62.21" size="30" textAlign="left"
+		         verticalAlign="middle" anchorOffsetX="0" width="358.63"  fontFamily="SimHei" verticalCenter="-280" textColor="0xea9f48"/>
+		<e:Label id="roundNumLabel" text="第15/16局" x="1071.34" size="30" textAlign="right" verticalAlign="middle"
+		         anchorOffsetX="0" width="148.72" fontFamily="SimHei"  verticalCenter="-280" textColor="0xea9f48"/>
+		<e:DataGroup id="resultGroup" anchorOffsetX="0" width="1148.03" anchorOffsetY="0" height="479.03"
+		             verticalCenter="-5.5" x="67.04"></e:DataGroup>
+	</e:Group>
+</e:Skin>

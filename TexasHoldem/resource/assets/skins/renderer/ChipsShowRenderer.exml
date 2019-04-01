@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="ChipsShowRendererSkin" xmlns:e="http://ns.egret.com/eui" xmlns:ns1="*">
+    <ns1:ChipsShowComponent id="chips" skinName="ChipsShowComponentSkin" verticalCenter="0" horizontalCenter="0" />
+</e:Skin>

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="cardfaceSkin34" width="164" height="109" xmlns:e="http://ns.egret.com/eui">
+	<e:Image width="187" height="118" x="177" y="1" source="L_gang1_png" scaleX="-1" anchorOffsetX="0"/>
+</e:Skin>

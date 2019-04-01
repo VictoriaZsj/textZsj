@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="addChipsPanelSkin" width="87" height="542.99" xmlns:e="http://ns.egret.com/eui"
+        xmlns:w="http://ns.egret.com/wing" xmlns:ns1="*" xmlns:tween="egret.tween.*">
+        <e:Group id="tweenGroup" width="87" height="542.33" anchorOffsetY="0" x="0" y="0.68" touchEnabled="true" touchThrough="true">
+					<e:HSlider id="addChipsHs" width="507" height="62.68" x="12.29" y="534.18" skinName="HSliderSkin1" rotation="269.97"/>
+					<e:Image width="52.67" height="51.66" x="17.17" y="1.24" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" anchorOffsetY="0"/>
+					<e:Label text="All In" x="24.84" y="14.15" textColor="0xfc0707" size="19" anchorOffsetY="0" height="26" anchorOffsetX="0" width="45" verticalAlign="middle"/>
+        </e:Group>
+</e:Skin>

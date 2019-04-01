@@ -1,0 +1,144 @@
+/**
+ * 录音按钮
+ */
+class AudioRecordButton
+{
+	/**
+	 * 记录按钮
+	 */
+	private _recordButton: eui.Button;
+
+	/**
+	 * 是否正在录音
+	 */
+	private _isRecording: boolean = false;
+
+	private _isOnRecord: boolean = false;
+	private _isPress: boolean = false;
+	private _recordTimer: number;
+
+	public initialize(btn: eui.Button)
+	{
+		this._recordButton = btn;
+	}
+	public OnEnable()
+	{
+		this._recordButton.addEventListener(egret.TouchEvent.TOUCH_RELEASE_OUTSIDE, this.onOutSide, this);
+		this._recordButton.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.onRecordBtnBegin, this);
+		this._recordButton.addEventListener(egret.TouchEvent.TOUCH_END, this.onRecordBtnEnd, this);
+		this._recordButton.addEventListener(egret.TouchEvent.LEAVE_STAGE, this.onLevelStage, this);
+
+		GameManager.stage.addEventListener(egret.Event.DEACTIVATE, this.SystemManager_OnGamePause, this);
+
+		ChannelManager.OnApplicationFocus.addListener(this.OnApplicationFocus, this);
+	}
+	public OnDisable()
+	{
+		this._recordButton.removeEventListener(egret.TouchEvent.TOUCH_RELEASE_OUTSIDE, this.onOutSide, this);
+		this._recordButton.removeEventListener(egret.TouchEvent.TOUCH_BEGIN, this.onRecordBtnBegin, this);
+		this._recordButton.removeEventListener(egret.TouchEvent.TOUCH_END, this.onRecordBtnEnd, this);
+		this._recordButton.removeEventListener(egret.TouchEvent.LEAVE_STAGE, this.onLevelStage, this);
+		GameManager.stage.removeEventListener(egret.Event.DEACTIVATE, this.SystemManager_OnGamePause, this);
+
+		ChannelManager.OnApplicationFocus.removeListener(this.OnApplicationFocus, this);
+		RecordAudioManager.RestoreMusicSetting();
+	}
+	private SystemManager_OnGamePause(event: egret.Event)
+	{
+		if (this._isRecording == true)
+		{
+			this.StopRecording(true); //取消录音
+		}
+	}
+	private OnApplicationFocus(focusStatus: boolean)
+	{
+		if (focusStatus == false)//失去焦点比如授权界面弹出需要停止录音
+		{
+			if (this._isRecording == true)
+			{
+				this.StopRecording(true); //取消录音
+			}
+		}
+	}
+	private onRecordBtnBegin(event: egret.TouchEvent)
+	{
+		let go: eui.Button = event.currentTarget;
+		if (!RecordAudioManager.CheckMicrophone(true))
+		{
+			return;
+		}
+		if (RecordAudioManager.IsStillHandling())
+		{
+			UIManager.showFloatTips("上一条音频数据上传中");
+			return;
+		}
+		if (this._isRecording == false)
+		{
+			this._isRecording = true;
+			ChannelManager.recordAudio(AudioRecordActions.StartRecord);
+			this.StopRecordLater();
+			UIManager.showPanel(UIModuleName.AudioRecordingPanel, true);
+		}
+	}
+	/**
+	 * 记录完毕
+	 */
+	private onRecordBtnEnd(event: egret.TouchEvent)
+	{
+		this.StopRecording(false);
+	}
+	/**
+	 * 滑出
+	 */
+	private onOutSide(event: egret.TouchEvent)
+	{
+		this.StopRecording(true);
+	}
+	/**
+	 * 离开舞台
+	 */
+	private onLevelStage(event: egret.TouchEvent)
+	{
+		this.StopRecording(true);
+	}
+	private StopRecordLater()
+	{
+		egret.clearTimeout(this._recordTimer);
+		this._recordTimer = egret.setTimeout(this.StopRecording, this, ProjectDefined.GetInstance().getValue(ProjectDefined.chatMaxRecordTime), false);
+	}
+
+	private StopRecording(isCancel: boolean)
+	{
+		egret.clearTimeout(this._recordTimer);
+		if (this._isRecording)
+		{
+			this._isRecording = false;
+			UIManager.closePanel(UIModuleName.AudioRecordingPanel);
+			if (!isCancel)
+			{
+				ChannelManager.recordAudio(AudioRecordActions.StopRecord);
+				RecordAudioManager.RecordVoice(AudioRecordActions.StopRecord);
+				console.log("停止录音");
+			}
+			else
+			{
+				ChannelManager.recordAudio(AudioRecordActions.CancelRecord);
+				RecordAudioManager.RecordVoice(AudioRecordActions.CancelRecord);
+				console.log("取消录音")
+			}
+
+		}
+	}
+	public SetGray(value: boolean)
+	{
+		if (value)
+		{
+			FilterUtil.setGray(this._recordButton);
+		}
+		else
+		{
+			FilterUtil.setDefault(this._recordButton);
+		}
+		this._recordButton.touchEnabled = !value;
+	}
+}

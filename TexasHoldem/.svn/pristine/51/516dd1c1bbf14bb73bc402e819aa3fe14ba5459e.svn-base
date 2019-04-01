@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="PlayingFieldItemRenderere" width="224" height="400" xmlns:e="http://ns.egret.com/eui" xmlns:ns1="*"
+        xmlns:w="http://ns.egret.com/wing">
+	<ns1:GameButtonGroup>
+		
+	</ns1:GameButtonGroup>
+</e:Skin>

@@ -1,0 +1,135 @@
+/**
+ * 成就管理
+ */
+class AchievementManager
+{
+    /**
+    * 成就解锁事件
+    */
+    public static achieveChangeEvent: ActionDispatcher = new ActionDispatcher();
+    /**
+     * 所有成就的列表（不包括个人成就信息）
+     */
+    public static allAchieveInfoList;
+
+    public static initialize(result: SpRpcResult)
+    {
+        SocketManager.RemoveCommandListener(Command.Rec_AchievementChange_2023, this.onGetAchieveInfo);
+        SocketManager.AddCommandListener(Command.Rec_AchievementChange_2023, this.onGetAchieveInfo);
+        if (!AchievementManager.allAchieveInfoList)
+        {
+            AchievementManager.allAchieveInfoList = new Array<AchievementInfo>();
+            for (let def of AchieveDefined.GetInstance().AchieveDefintionList)
+            {
+                let info: AchievementInfo = new AchievementInfo();
+                info.id = def.id;
+                info.isComplete = false;
+                info.isTake = false;
+                AchievementManager.allAchieveInfoList.push(info);
+            }
+        }
+
+        /**
+         * 已解锁的成就图表
+         */
+        let list: Array<AchievementInfo> = new Array<AchievementInfo>();
+        if (result.data["achieveList"])
+        {
+            for (let info of result.data["achieveList"])
+            {
+                let achieveInfo: AchievementInfo = new AchievementInfo();
+                achieveInfo.id = info["id"];
+                achieveInfo.isTake = info["isTake"];
+                achieveInfo.isComplete = true;
+                list.push(achieveInfo);
+            }
+        }
+        UserManager.userInfo.achieveList = AchievementManager.getCompleteAchieveInfoDic(list);
+    }
+    /**
+     * 生成包括所有成就信息的图表
+     */
+    public static getCompleteAchieveInfoDic(dic: Array<AchievementInfo>): Array<AchievementInfo>
+    {
+        if (dic == null || dic.length == 0)
+        {
+            return AchievementManager.allAchieveInfoList;
+        }
+        let result: Array<AchievementInfo> = new Array<AchievementInfo>();
+        for (let i: number = 0; i < AchievementManager.allAchieveInfoList.length; i++)
+        {
+            let info: AchievementInfo = AchievementManager.allAchieveInfoList[i];
+            for (let j: number = 0; j < AchievementManager.allAchieveInfoList.length; j++)
+            {
+                if (AchievementManager.allAchieveInfoList[j].id == info.id)
+                {
+                    info = AchievementManager.allAchieveInfoList[j];
+                }
+            }
+            result.push(info);
+        }
+        return result;
+    }
+
+    /**
+     * 接收到推送的回调
+     */
+    private static onGetAchieveInfo(result: SpRpcResult)
+    {
+        if (result.data)
+        {
+            let info: AchievementInfo = AchievementManager.getAchieveInfoById(UserManager.userInfo.achieveList, result.data["id"]);
+            info.isComplete = true;
+            AchievementManager.achieveChangeEvent.dispatch();
+        }
+    }
+
+    /**
+     * 通过成就id获取成就信息
+     */
+    public static getAchieveInfoById(list: Array<AchievementInfo>, id: number): AchievementInfo
+    {
+        for (let info of list)
+        {
+            if (info.id == id)
+            {
+                return info;
+            }
+        }
+    }
+}
+
+/**
+ * 成就信息
+ */
+class AchievementInfo
+{
+    private _id: number;
+    public get id(): number
+    {
+        return this._id;
+    }
+    public set id(value: number)
+    {
+        this._id = value;
+        this._definition = AchieveDefined.GetInstance().getAchieveDefintion(value);
+    }
+    private _definition: AchieveDefintion
+    public get definition(): AchieveDefintion
+    {
+        return this._definition;
+    }
+    public set definition(value: AchieveDefintion)
+    {
+        this._definition = value;
+    }
+    /**
+     * 是否完成
+     */
+    public isComplete: boolean;
+    /**
+     * 是否领取奖励
+     */
+    public isTake: boolean;
+
+}

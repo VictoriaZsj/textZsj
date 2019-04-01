@@ -1,0 +1,76 @@
+/**
+ * 碰杠牌
+ */
+class GroupCard extends BaseComponent<number>
+{
+	protected _cardDef: GroupCardDefinition;
+	public face: eui.Image;
+
+	public get card(): number
+	{
+		return this.bindData;
+	}
+	public get cardDef(): GroupCardDefinition
+	{
+		return this._cardDef;
+	}
+	private _offsetX: number;
+	private _offsetY: number;
+
+	private _groupCount:number;
+	public get groupCount():number
+	{
+		return this._groupCount;
+	}
+
+	/**
+	 * 明杠
+	 */
+	// private static _head: Array<string> = ["", "BenJia_", "XiaJia_", "DuiJia_", "ShangJia_"];
+
+	public constructor(data: GroupCardDefinition, card: number, offsetX: number, offsetY: number, groupCount:number)
+	{
+		super();
+
+		if (data)
+		{
+			this._cardDef = data;
+			this._offsetX = offsetX;
+			this._offsetY = offsetY;
+			this._groupCount = groupCount;
+			this.x = this._cardDef.x + this._offsetX;
+			this.y = this._cardDef.y + this._offsetY;
+			if (this._cardDef.scale)
+			{
+				this.scaleX = this.scaleY = this._cardDef.scale;
+			}
+			this.init(card);
+			this.skinName = ResPrefixName.CardGroup + data.skinName + ".exml";
+		}
+	}
+	protected rendererStart(event: egret.Event)
+	{
+		super.rendererStart(event);
+		if (this.bindData && this.face)
+		{
+			let paiDef: PaiDefinition = PaiDefined.GetInstance().getDefinition(this.bindData, PaiDefined.GetInstance().paiList);
+			this.face.source = paiDef.img + ResSuffixName.PNGSuffix;
+			CardShowUtil.setTilt(this._cardDef.tiltH, this._cardDef.tiltV, this.face);
+		}
+	}
+	public init(card: number)
+	{
+		this.bindData = card;
+		if (this.face)
+		{
+			this.rendererStart(null);
+		}
+	}
+	private setScale(scale: number)
+	{
+		if (scale)
+		{
+			this.scaleX = this.scaleY = scale;
+		}
+	}
+}

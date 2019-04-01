@@ -1,0 +1,87 @@
+/**
+ * 好友面板
+*/
+class FriendPanel extends BaseAnmiatePanel
+{
+    /**
+     * 邀请按钮
+    */
+    private inviteLabel: eui.Label;
+    /**
+     * 选项卡内容group
+    */
+    private tabGroup: eui.Group;
+    /**
+     * 有好友显示的group
+    */
+    private hasFriendGroup: eui.Group;
+    /**
+     * 无好友显示的group
+    */
+    private noFriendGroup: eui.Group;
+
+    private friendTabCompontent: TabComponent;
+    private scroller: eui.Scroller;
+    private list: eui.List;
+    private _dp: eui.ArrayCollection;
+    private _ly: eui.TileLayout;
+
+    public constructor()
+    {
+        super();
+        this.skinName = UISkinName.FriendPanel;
+    }
+    protected onAwake(event: eui.UIEvent)
+    {
+        super.onAwake(event);
+        this._ly = UIUtil.getVTileLayout(1, 1, egret.VerticalAlign.TOP);
+        this.list.layout = this._ly;
+        UIUtil.listRenderer(this.list, this.scroller, FriendItemRenderer, ScrollViewDirection.Vertical_T_D);
+        this.scroller.scrollPolicyH = eui.ScrollPolicy.OFF;
+        let array: Array<eui.Group> = new Array<eui.Group>();
+        array.push(this.tabGroup);
+        this.friendTabCompontent.init(array);
+    }
+    protected onRender(event: egret.Event)
+    {
+        super.onRender(event);
+        this.hasFriendGroup.visible = false;
+        this.noFriendGroup.visible = false;
+        //发送请求获得好友信息列表
+        // FriendManager.reqFriendListInfo();
+        this.setFriendListInfo();  //todo 测试代码
+    }
+    protected onEnable(event: eui.UIEvent): void
+    {
+        super.onEnable(event);
+        FriendManager.onGetFriendListEa.addListener(this.setFriendListInfo, this);
+    }
+    protected onDisable(event: eui.UIEvent): void
+    {
+        super.onDisable(event);
+        FriendManager.onGetFriendListEa.removeListener(this.setFriendListInfo);
+    }
+    private setFriendListInfo()
+    {
+        //测试代码
+        let list0:FriendInfo = new FriendInfo();
+        list0.headImg = "";
+        list0.glodNum = 1000;
+        list0.isCanGet = 0;
+        list0.isHadGiven = 0;
+        list0.isOnline = 0;
+        list0.name = "seven";
+        FriendManager.friendList = new Array<FriendInfo>();
+        FriendManager.friendList.push(list0);
+        //
+        if (FriendManager.friendList.length > 0)
+        {
+            this._dp = new eui.ArrayCollection(FriendManager.friendList);
+            this.list.dataProvider = this._dp;
+            this.hasFriendGroup.visible = true;
+        } else
+        {
+            this.noFriendGroup.visible = true;
+        }
+    }
+}

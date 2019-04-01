@@ -1,0 +1,510 @@
+/**
+ * 牌墙
+ */
+class CardWallHandler
+{
+	/**
+	 * 本家上家对家下家 发牌顺时针
+	 */
+	private _wallIndex: Array<any> = [0, 28, 56, 84];
+
+	private _benJiaWallList: Array<CardWallImg>;
+	private _xiaJiaWallList: Array<CardWallImg>;
+	private _duiJiaWallList: Array<CardWallImg>;
+	private _shangJiaWallList: Array<CardWallImg>;
+	private _totalJiaWallList: Array<CardWallImg>;
+	private _allWallList: Array<Array<CardWallImg>>;
+
+	//---------------------------------------------
+	// 牌墙动画
+	//---------------------------------------------
+	/**
+	 * 时间间隔 200毫秒
+	 */
+	private _timeSpeed: number = 30;
+	/**
+	 * 牌墙开始时间
+	 */
+	private _startTime: number = 0;
+	/**
+	 * 跑火车的索引
+	 */
+	private _runIndex: number = 0;
+	/**
+	 * 跑火车结束
+	 */
+	private _isRunOver: boolean;
+	/**
+	 * 跑牌墙结束
+	 */
+	public static runAd:ActionDispatcher = new ActionDispatcher();
+	//---------------------------------------------
+	// 发牌动画
+	//---------------------------------------------
+	private _faIndex;
+	private _faStartTime: number;
+	private _isFaRunOver: boolean;
+	private _faTimeSpeed: number = 150;
+	private _faTotal: number = 12;
+	private _faEvent: UIModuleEvent;
+	/**
+	 * 发牌结束
+	 */
+	public static faAd:ActionDispatcher = new ActionDispatcher();
+
+	//---------------------------------------------
+	// 发牌之后的摸牌动画
+	//---------------------------------------------
+	private _faMoIndex;
+	private _faMoStartTime: number;
+	private _isFaMoRunOver: boolean;
+	public get isFaMoRunOver()
+	{
+		return this._isFaMoRunOver;
+	}
+	private _faMoTimeSpeed: number = 150;
+	private _faMoTotal: number = 4;
+	public static faMoAd:ActionDispatcher = new ActionDispatcher();
+	/**
+	 * 筛子点数%4 对应的本家，上家，对家，下家
+	 */
+	private _touziNumList: Array<number> = [1, 2, 3, 0];
+	/**
+	 * 是否已经创建好牌墙
+	 */
+	private _isCreate: boolean = false;
+
+	private _start_startCardImg: CardWallImg;
+	private _tail_startCardImg: CardWallImg;
+
+	private _showShouPaiCallBack: Function;
+	private _showShoupaiThisObj: any;
+
+	private _benJiaContainer: LayerContainer;
+	private _otherContainer: LayerContainer;
+
+	public constructor(benjiaContainer: LayerContainer, otherContainer: LayerContainer)
+	{
+		this._benJiaContainer = benjiaContainer;
+		this._otherContainer = otherContainer;
+
+		this._benJiaWallList = new Array<CardWallImg>();
+		this._xiaJiaWallList = new Array<CardWallImg>();
+		this._duiJiaWallList = new Array<CardWallImg>();
+		this._shangJiaWallList = new Array<CardWallImg>();
+		this._allWallList = new Array<Array<CardWallImg>>();
+		this._totalJiaWallList = new Array<CardWallImg>();
+
+		this._allWallList.push(this._benJiaWallList);
+		this._allWallList.push(this._xiaJiaWallList);
+		this._allWallList.push(this._duiJiaWallList);
+		this._allWallList.push(this._shangJiaWallList);
+	}
+	private initialize(isShow: boolean)
+	{
+		if (!this._isCreate)
+		{
+			this.initCreate();
+		}
+		else
+		{
+			for (let cdi of this._totalJiaWallList)
+			{
+				cdi.img.visible = isShow;
+			}
+		}
+	}
+	private onEnable()
+	{
+		GameManager.stage.addEventListener(egret.Event.ENTER_FRAME, this.update, this);
+	}
+	private onDisable()
+	{
+		GameManager.stage.removeEventListener(egret.Event.ENTER_FRAME, this.update, this);
+	}
+	/**
+	 * 显示牌墙 断线重连用
+	 */
+	public showCardWall(masterPos?: number)
+	{
+		if (!RoomManager.roomInfo)
+		{
+			return;
+		}
+		this.initialize(true);
+		for (let cdi of this._totalJiaWallList)
+		{
+			cdi.img.visible = true;
+		}
+		this.initStartTail(masterPos);
+		this.refreshCardShow(RoomManager.roomInfo.head, RoomManager.roomInfo.tail);
+	}
+	private initStartTail(masterPos?: number)
+	{
+		let mineInfo: PlayerInfo = RoomManager.mineInfo;
+		if (!mineInfo)
+		{
+			return;
+		}
+		let mPos: number;
+		if (masterPos != undefined)
+		{
+			mPos = masterPos;
+		}
+		else
+		{
+			let masterInfo: PlayerInfo = RoomManager.masterInfo;
+			if (!masterInfo)
+			{
+				return;
+			}
+			mPos = masterInfo.pos;
+		}
+
+		let touziIndex: number = (RoomManager.roomInfo.num1 + RoomManager.roomInfo.num2) % 4;
+		let startWallPos: number = mPos - 1 + touziIndex;
+		if (startWallPos > RoomManager.mod)
+		{
+			startWallPos -= RoomManager.mod;
+		}
+		let startWallTypeOfMine: PosType = RoomManager.getPosType(mineInfo.pos, startWallPos);
+
+		let wallList: Array<CardWallImg> = this._allWallList[startWallTypeOfMine - 1];
+		let minNum: number = RoomManager.roomInfo.minTouziNum * 2;
+		/**
+		 * 算起手牌
+		 */
+		this._start_startCardImg = wallList[minNum];
+		if (!this._start_startCardImg)
+		{
+			throw new Error("起手牌为空！")
+		}
+		/**
+		 * 算尾牌
+		 */
+		this._tail_startCardImg = wallList[minNum - 1];
+	}
+	public updateCardWall(head: number, tail: number)
+	{
+		this.refreshCardShow(head, tail);
+	}
+	private refreshCardShow(head: number, tail: number)
+	{
+		// let now_startPos: number = this._start_startCardImg.definition.id + 25;
+		// let now_tailPos: number = this._tail_startCardImg.definition.id - 5;
+		if (!this._start_startCardImg)
+		{
+			this.initStartTail();
+		}
+		let now_startPos: number = this._start_startCardImg.definition.id + head;
+		let isToStart: boolean = false;
+		if (now_startPos > GameSetting.CardTotalNum)
+		{
+			isToStart = true;
+			now_startPos -= GameSetting.CardTotalNum;
+		}
+		let now_tailPos: number = this._tail_startCardImg.definition.id - tail;
+		let isToEnd: boolean = false;
+		if (now_tailPos < 0)
+		{
+			now_tailPos = GameSetting.CardTotalNum - Math.abs(now_tailPos);
+			isToEnd = true;
+		}
+		let now_startCardImg: CardWallImg = this.getCardWllImg(now_startPos);
+
+		if (isToStart)
+		{
+			/**
+			 * 隐藏摸掉的起手牌
+			 */
+			for (let i: number = this._start_startCardImg.definition.id; i <= GameSetting.CardTotalNum; i++)
+			{
+				this.hideCard(i);
+			}
+			for (let i: number = 1; i < now_startCardImg.definition.id; i++)
+			{
+				this.hideCard(i);
+			}
+		}
+		else
+		{
+			/**
+			 * 隐藏摸掉的起手牌
+			 */
+			for (let i: number = this._start_startCardImg.definition.id; i < now_startCardImg.definition.id; i++)
+			{
+				this.hideCard(i);
+			}
+		}
+
+		/**
+		 * 隐藏摸掉的尾牌
+		 */
+		let now_tailCardImg: CardWallImg = this.getCardWllImg(now_startPos);
+		if (isToEnd)
+		{
+			for (let i: number = this._tail_startCardImg.definition.id; i > 0; i--)
+			{
+				this.hideTailCard(i);
+			}
+			for (let i: number = GameSetting.CardTotalNum; i > now_tailPos; i--) //
+			{
+				this.hideTailCard(i);
+			}
+		}
+		else
+		{
+			for (let i: number = this._tail_startCardImg.definition.id; i > now_tailPos; i--)
+			{
+				this.hideTailCard(i);
+			}
+		}
+	}
+	private hideTailCard(i: number)
+	{
+		if (i % 2 == 1)
+		{
+			this.hideCard(i + 1);
+		}
+		else
+		{
+			this.hideCard(i - 1);
+		}
+	}
+	private hideCard(id: number)
+	{
+		let cdi: CardWallImg = this.getCardWllImg(id);
+		if (cdi)
+		{
+			cdi.img.visible = false;
+		}
+	}
+	private getCardWllImg(id: number): CardWallImg
+	{
+		for (let cdi of this._totalJiaWallList)
+		{
+			if (cdi.definition.id == id)
+			{
+				return cdi;
+			}
+		}
+		return null;
+	}
+	private initCreate()
+	{
+		//创建牌墙
+		this.createJiaWall(PosType.BenJia, PosType.XiaJia, this._benJiaWallList, ImageSource.Card_Wall_BenJia);
+		this.createJiaWall(PosType.XiaJia, PosType.DuiJia, this._shangJiaWallList, ImageSource.Card_Wall_ShangJia);
+		this.createJiaWall(PosType.DuiJia, PosType.ShangJia, this._duiJiaWallList, ImageSource.Card_Wall_DuiJia);
+		this.createJiaWall(PosType.ShangJia, PosType.BenJia, this._xiaJiaWallList, ImageSource.Card_Wall_XiaJia, GameSetting.CardTotalNum);
+
+		this._totalJiaWallList.sort(this.sortCard);
+		let cardImg: CardWallImg;
+		for (let i: number = 0; i < this._totalJiaWallList.length; i++)
+		{
+			cardImg = this._totalJiaWallList[i];
+			if (cardImg.posType == PosType.BenJia)
+			{
+				this._benJiaContainer.addChild(cardImg.img);
+			}
+			else
+			{
+				this._otherContainer.addChild(cardImg.img);
+			}
+		}
+		this._isCreate = true;
+	}
+	/**
+	 * 跑牌墙
+	 */
+	public runCardWall()
+	{
+		this.initialize(false);
+		this._runIndex = 0;
+		this._startTime = egret.getTimer();
+		this._isRunOver = false;
+		this.onEnable();
+	}
+	/**
+	 * 发牌动画
+	 */
+	public runFaPai(callBack: Function, thisObj: any)
+	{
+		this._faIndex = 1;
+		if (RoomManager.roomInfo && RoomManager.roomInfo.playerList)
+		{
+			this._faTotal = RoomManager.roomInfo.playerList.length * 3;
+		}
+		this._faStartTime = egret.getTimer();
+		this._isFaRunOver = false;
+
+		this._showShouPaiCallBack = callBack;
+		this._showShoupaiThisObj = thisObj;
+		this.onEnable();
+	}
+	/**
+	 * 发牌之后的摸牌
+	 */
+	public runMoPai()
+	{
+		this._faMoIndex = 1;
+		if (RoomManager.roomInfo && RoomManager.roomInfo.playerList)
+		{
+			this._faMoTotal = RoomManager.roomInfo.playerList.length;
+		}
+		this._faMoStartTime = egret.getTimer();
+		this._isFaMoRunOver = false;
+	}
+	private createJiaWall(startPos: PosType, endPos: PosType, wallList: Array<CardWallImg>, source: string, lastEnd?: number)
+	{
+		let start: number = this._wallIndex[startPos - 1];
+		let end: number = this._wallIndex[endPos - 1];
+		if (lastEnd != undefined)
+		{
+			end = lastEnd;
+		}
+		let cdWallDef: CardWallDefinition;
+		let cdi: CardWallImg;
+		for (let i: number = start + 1; i <= end; i++) //end
+		{
+			cdWallDef = CardShowDefined.GetInstance().getDefinition(i, CardShowDefined.GetInstance().cardWallList);
+			if (cdWallDef)
+			{
+				cdi = this.createCard(startPos, cdWallDef, source);
+				wallList.push(cdi);
+				this._totalJiaWallList.push(cdi);
+			}
+		}
+	}
+	private createCard(posType: PosType, cdWallDef: CardWallDefinition, source: string): CardWallImg
+	{
+		let img: eui.Image = new eui.Image(source);
+		img.x = cdWallDef.x;
+		img.y = cdWallDef.y;
+		img.scaleX = img.scaleY = cdWallDef.scale;
+		let cdi: CardWallImg = new CardWallImg();
+		cdi.img = img;
+		cdi.definition = cdWallDef;
+		cdi.img.visible = false;
+		cdi.posType = posType;
+		return cdi;
+	}
+	private update(event: egret.Event)
+	{
+		if (!this._isRunOver)
+		{
+			if (egret.getTimer() - this._startTime >= this._timeSpeed)
+			{
+				this._startTime = egret.getTimer();
+				if (this._runIndex >= this._benJiaWallList.length)
+				{
+					this._isRunOver = true;
+					this._isFaRunOver = false;
+					CardWallHandler.runAd.dispatch();
+					this.onDisable();
+					return;
+				}
+				let cdi: CardWallImg;
+				for (let imgList of this._allWallList)
+				{
+					if (imgList.length > 0)
+					{
+						cdi = imgList[this._runIndex]; //一次性出现两张
+						cdi.img.visible = true;
+						cdi = imgList[this._runIndex + 1];
+						cdi.img.visible = true;
+					}
+				}
+				this._runIndex += 2;
+			}
+		}
+		if (!this._isFaRunOver)
+		{
+			if (egret.getTimer() - this._faStartTime >= this._faTimeSpeed)
+			{
+				this._faStartTime = egret.getTimer();
+				if (this._faIndex > this._faTotal)
+				{
+					this._isFaRunOver = true;
+					this._isFaMoRunOver = false;
+					CardWallHandler.faAd.dispatch();
+					this.runMoPai();
+					return;
+				}
+				SoundManager.playEffect(Sex.Male, MusicAction.fapai);
+				this.refreshCardShow(this._faIndex * 4, 0);
+				this._faIndex++;
+				this._showShouPaiCallBack.bind(this._showShoupaiThisObj)();
+			}
+		}
+		if (!this._isFaMoRunOver)
+		{
+			if (egret.getTimer() - this._faMoStartTime >= this._faMoTimeSpeed)
+			{
+				this._faMoStartTime = egret.getTimer();
+				if (this._faMoIndex > this._faMoTotal)
+				{
+					this._isFaMoRunOver = true;
+					CardWallHandler.faMoAd.dispatch();
+					this.onDisable();
+					return;
+				}
+				SoundManager.playEffect(Sex.Male, MusicAction.fapai);
+				this.refreshCardShow(RoomManager.mod * GameSetting.FaFourCardModel + this._faMoIndex, 0); //48 是已经发了4家12张牌
+				this._faMoIndex++;
+				this._showShouPaiCallBack.bind(this._showShoupaiThisObj)();
+			}
+		}
+	}
+	public clear()
+	{
+		this._runIndex = 0;
+		this._startTime = 0;
+		this._isRunOver = true;
+
+		this._isFaRunOver = true;
+		this._faIndex = 0;
+		this._faStartTime = 0;
+
+		this._isFaMoRunOver = true;
+		this._faMoIndex = 0;
+		this._faMoStartTime = 0;
+
+		this.onDisable();
+
+
+		for (let cdi of this._totalJiaWallList)
+		{
+			cdi.img.visible = false;
+		}
+		// for (let list of this._allWallList)
+		// {
+		// 	ArrayUtil.Clear(list);
+		// }
+		// ArrayUtil.Clear(this._totalJiaWallList);
+		this._start_startCardImg = null;
+		this._tail_startCardImg = null;
+		// this.removeChildren();
+	}
+	private sortCard(card1: CardWallImg, card2: CardWallImg): number
+	{
+		if (card1.definition.layer > card2.definition.layer)
+		{
+			return -1;
+		}
+		if (card1.definition.layer < card2.definition.layer)
+		{
+			return 1;
+		}
+		return 0;
+	}
+}
+/**
+ * 牌墙img
+ */
+class CardWallImg
+{
+	public img: eui.Image;
+	public definition: CardWallDefinition;
+	public posType: PosType;
+}

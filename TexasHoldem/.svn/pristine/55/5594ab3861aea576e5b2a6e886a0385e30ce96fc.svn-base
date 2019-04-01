@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="ChipsShowComponentSkin" width="300" height="200" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing">
+	<e:Group id="chipBar" x="0" y="159" width="100%">
+		<e:Image width="100%" height="40" source="bg_page4_png" scale9Grid="10,10,126,126" anchorOffsetY="0" y="0" scaleX="3" x="0"/>
+		<e:Label id="numLabel" text="999999" textAlign="left" anchorOffsetX="0" size="24" anchorOffsetY="0" fontFamily="Microsoft YaHei" height="-7.67" textColor="0xFFC672" x="108" y="8"/>
+	</e:Group>
+	<e:Image y="171" source="chips_03_png" x="250" scaleX="0.5" scaleY="0.5" visible="false"/>
+	<e:Image y="164" source="chips_04_png" scaleX="0.5" scaleY="0.5" x="250" visible="false"/>
+	<e:Image x="250" y="157" source="chips_02_png" scaleX="0.5" scaleY="0.5" visible="false"/>
+	<e:Image x="250" y="131" source="chips_01_png" scaleX="0.5" scaleY="0.5" visible="false"/>
+
+</e:Skin>

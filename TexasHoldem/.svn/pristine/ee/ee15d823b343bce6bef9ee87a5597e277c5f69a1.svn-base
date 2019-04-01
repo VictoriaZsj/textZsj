@@ -1,0 +1,73 @@
+/**
+ * 签到面板
+ */
+class SignInPanel extends BasePanel
+{
+    public signInList:eui.List;
+    public signIn_dp:eui.ArrayCollection;
+    public signIn_scroller:eui.Scroller;
+	public threeDay:eui.Label;
+	public fiveDay:eui.Label;
+	public sevenDay:eui.Label;
+	
+	public constructor()
+	{
+		super();
+		this.skinName = UISkinName.SignInPanel;
+	}
+	protected onAwake(event: eui.UIEvent)
+	{
+		super.onAwake(event);
+        if(!this.signIn_dp)
+        {
+            this.signIn_dp=new eui.ArrayCollection();
+        }
+        UIUtil.listRenderer(this.signInList, this.signIn_scroller, SignInGoldItemRenderer, ScrollViewDirection.Vertical_T_D, eui.ScrollPolicy.ON, null, true);
+		this.refreshUI();
+	}
+
+	public init(appendData: any)
+	{
+		super.init(appendData);
+	}
+	protected onRender(event: egret.Event)
+	{
+		super.onRender(event);
+	}
+	protected onEnable(event: eui.UIEvent): void
+	{
+
+		super.onEnable(event);
+        UIUtil.hideScrollerBar(this.signIn_scroller);
+	}
+	protected onDisable(event: eui.UIEvent): void
+	{
+		super.onDisable(event);
+	}
+    protected refreshUI()
+    {
+        this.signIn_dp=new eui.ArrayCollection(SignInManager.signInList);
+		this.signInList.dataProvider=this.signIn_dp;
+		this.defLabel(Day.Three);
+		this.defLabel(Day.Five);
+        this.defLabel(Day.Seven);
+    }
+	public defLabel(dayNum:Day)
+	{
+		let awardDef=AwardDefined.GetInstance().getAwardDefinition(SignInManager.signInList[dayNum].definition.pilePrize);
+		for(let def of awardDef.rewardList){
+			if(dayNum==Day.Three)
+			{
+				this.threeDay.text="金币x"+def.count.toString();
+			}
+			if(dayNum==Day.Five)
+			{
+				this.fiveDay.text="金币x"+def.count.toString();
+			}
+			if(dayNum=Day.Seven)
+			{
+				this.sevenDay.text="钻石x"+def.count.toString();
+			}
+		}	
+	}
+}

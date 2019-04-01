@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="panelSkin7" width="1280" height="720" xmlns:e="http://ns.egret.com/eui"
+        xmlns:w="http://ns.egret.com/wing" xmlns:ns1="*" xmlns:tween="egret.tween.*">
+	<e:Group id="tweenGroup" horizontalCenter="0" verticalCenter="0" height="720" width="1280">
+		<e:Group id="anmGroup" width="1280" height="90" x="0" y="0">
+			<e:Image width="1280" height="90" horizontalCenter="0" source="bg_page8_png" anchorOffsetX="0" anchorOffsetY="0" scale9Grid="228,0,12,80" x="0" y="-7" scaleX="1" scaleY="1"/>
+			<e:Image width="419" scaleX="1" scaleY="1" source="bg_page14_png" scale9Grid="169,0,7,69" y="0" horizontalCenter="0"/>
+			<e:Image horizontalCenter="0" source="h_zhanji_png" x="582" y="12" scaleX="1" scaleY="1"/>
+			<ns1:GameButton id="closeButton" label="Button" skinName="buttonSkin42" x="16" y="10" scaleX="1.1" scaleY="1.1"/>
+		</e:Group>
+		<e:Group id="anmGroup1" width="1280" height="630" x="0" y="90">
+			<e:Image width="1170" height="670" source="bg_page2_png" scale9Grid="46,41,87,91" y="8" scaleX="1" scaleY="1" x="55"/>
+			<e:List id="listGroup" height="560" width="1116" x="82" y="36"/>
+			<e:Scroller id="listScroller" height="560" width="1116" y="36" x="82"/>
+			<e:Group id="noneGroup" touchEnabled="false" touchChildren="false" width="1280" height="720" x="0" y="-90" scaleX="1" scaleY="1">
+				<e:Image horizontalCenter="0" scaleX="1" scaleY="1" x="113" verticalCenter="75" source="bg_page13_png" width="1055" y="447"/>
+				<e:Image horizontalCenter="-323" x="308" verticalCenter="72" source="bg_page23_png" y="470" scaleX="1" scaleY="1"/>
+				<e:Image horizontalCenter="323" source="bg_page23_png" x="972" verticalCenter="72" scaleX="-1" y="470" scaleY="1"/>
+				<e:Label id="noneLabel" text="当前并无战绩，快和你的小伙伴一起游戏吧！" scaleX="1" scaleY="1" horizontalCenter="0" verticalCenter="71" fontFamily="SimHei" textColor="0x3f3f3f" x="340" y="461"/>
+				<e:Image id="noneImg" horizontalCenter="0" scaleX="1" scaleY="1" source="kong_png" x="572" verticalCenter="-46" y="290"/>
+			</e:Group>
+		</e:Group>
+	</e:Group>
+</e:Skin>

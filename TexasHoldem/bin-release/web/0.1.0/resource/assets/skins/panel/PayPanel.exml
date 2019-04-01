@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="panelSkin12" width="1280" height="720" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing" xmlns:ns1="*" xmlns:tween="egret.tween.*">
+	<e:Group id="tweenGroup" horizontalCenter="0" verticalCenter="0" width="1280" height="720">
+		<e:Image width="1212" height="662" source="bg_page2_png" scale9Grid="44,45,89,88" anchorOffsetX="0" anchorOffsetY="0" y="37" scaleX="1" scaleY="1" horizontalCenter="0"/>
+		<e:Image width="1162.7" height="469.8" anchorOffsetX="0" anchorOffsetY="0" y="115.7" scaleX="1" scaleY="1" scale9Grid="19,18,23,23" source="bg_page19_png" horizontalCenter="0.5"/>
+		<e:Image horizontalCenter="0" verticalCenter="-313.5" source="bg_page5_png"/>
+		<e:Image source="h_chongzhi_png" horizontalCenter="0" y="24.16" x="606" scaleX="1" scaleY="1"/>
+		<e:Label id="roomCardInfoLabel" text="推广招募微信:weixinzhanghu1、weixinzhanghu2" horizontalCenter="0" verticalCenter="255" fontFamily="SimHei" size="24" x="382" y="167" scaleX="1" scaleY="1" textColor="0xea9f48"/>
+		<e:Label id="serverLabel" text="客服QQ:9999999" horizontalCenter="0" verticalCenter="301" fontFamily="SimHei" size="26" x="549" y="219.99999999999997" scaleX="1" scaleY="1" textColor="0xea9f48"/>
+		<ns1:GameButton id="closeButton" label="Button" skinName="buttonSkin4" y="11" x="1206"/>
+		<e:Scroller id="scroller" width="980" height="390" horizontalCenter="0" y="158.58"/>
+		<e:List id="list" width="980" height="390" anchorOffsetX="0" anchorOffsetY="0" horizontalCenter="0" y="158.58"/>
+	</e:Group>
+</e:Skin>

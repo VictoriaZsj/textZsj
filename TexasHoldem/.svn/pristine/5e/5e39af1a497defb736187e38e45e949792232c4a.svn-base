@@ -1,0 +1,41 @@
+[ {
+  "id" : 101,
+  "price" : 45,
+  "limit" : 0,
+  "img" : "zhouhuiyuan_png",
+  "title" : "zhouhuiyuan_1_png",
+  "name" : "周会员",
+  "des" : "周会员用户创建房间免房卡，期限7天！"
+}, {
+  "id" : 102,
+  "price" : 168,
+  "limit" : 0,
+  "img" : "yuehuiyuan_png",
+  "title" : "yuehuiyuan_2_png",
+  "name" : "月会员",
+  "des" : "月会员用户创建房间免房卡，期限30天！"
+}, {
+  "id" : 1,
+  "price" : 6,
+  "limit" : 0,
+  "get" : 1,
+  "img" : "pay_01"
+}, {
+  "id" : 2,
+  "price" : 58,
+  "limit" : 1,
+  "get" : 10,
+  "img" : "pay_02"
+}, {
+  "id" : 3,
+  "price" : 98,
+  "limit" : 1,
+  "get" : 20,
+  "img" : "pay_03"
+}, {
+  "id" : 4,
+  "price" : 198,
+  "limit" : 1,
+  "get" : 40,
+  "img" : "pay_03"
+} ]

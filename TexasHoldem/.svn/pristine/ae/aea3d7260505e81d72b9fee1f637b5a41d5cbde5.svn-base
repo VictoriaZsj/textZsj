@@ -1,0 +1,74 @@
+/**
+ * 游戏管理
+ */
+class GameManager
+{
+    private static _stage: egret.Stage;
+    public static get stage(): egret.Stage
+    {
+        return GameManager._stage;
+    }
+    /**
+	 * 重进类型
+	 */
+    public static reenterType: SystemReenterType = SystemReenterType.Normal;
+    /**
+     * 初始化服务器数据
+     */
+    public static initServerHandler: InitServerHandler = new InitServerHandler();
+    /**
+     * 初始化app
+     */
+    public static initAppHandler: InitAppHandler = new InitAppHandler();
+
+    private static _isInitComplete: boolean = false;
+    /**
+     * 
+     */
+    public static initialize(stage: egret.Stage)
+    {
+        GameManager._stage = stage;
+    }
+    /**
+     * 所有数据管理静态类初始化前都要清空
+     */
+    public static InitServer(loginInfo: LoginInfo, serverInfo: ServerInfo)
+    {
+        GameManager._isInitComplete = false;
+        GameManager.initServerHandler.Invoke(loginInfo, serverInfo, GameManager.ParseInitComplete, GameManager.DispatchInitError);
+    }
+    private static ParseInitComplete()
+    {
+        if (GameManager._isInitComplete == false && GameManager.initServerHandler.isComplete)
+        {
+            GameManager._isInitComplete = true;
+            GameManager.initAppHandler.Invoke();
+            GameManager.DispatchInitComplete();
+        }
+    }
+    /**
+     * 初始化完成
+     */
+    public static OnInitComplete: ActionDispatcher = new ActionDispatcher();
+    private static DispatchInitComplete()
+    {
+        GameManager.OnInitComplete.dispatch();
+    }
+    /**
+     * 初始化错误
+     */
+    public static OnInitError: ActionDispatcher = new ActionDispatcher();
+    private static DispatchInitError()
+    {
+        GameManager.OnInitError.dispatch();
+    }
+    public static reLogin(type: SystemReenterType = SystemReenterType.Normal)
+    {
+        GameManager.reenterType = type;
+        SocketManager.Dispose();
+        UserManager.reLogin();
+        ShoppingManager.clearList();
+        
+        SceneManager.switcScene(SceneType.Login);
+    }
+}

@@ -1,0 +1,60 @@
+<e:Skin class="panelSkin13" width="720" height="1280" xmlns:e="http://ns.egret.com/eui"
+        xmlns:w="http://ns.egret.com/wing" xmlns:ns1="*">
+	<e:Group id="anmGroup" height="1080" width="680" horizontalCenter="-4" verticalCenter="0">
+		<e:Image width="680" height="1080" source="bg_page2_png" scale9Grid="24,21,101,105" anchorOffsetY="0" x="0" />
+		<e:Label text="我的奖品" x="24" y="18" anchorOffsetX="0" width="176" anchorOffsetY="0" height="56" textAlign="left"
+		         verticalAlign="middle" />
+
+		<ns1:TabComponent id="tabComponent" width="680" height="1000" x="0" y="80" />
+		<e:Group id="notReceiveGroup" x="1" y="200" anchorOffsetY="0" height="880" width="680" visible="false">
+			<e:Group id="enAwardGroup" x="0" y="0" anchorOffsetY="0" height="880" width="680">
+				<e:Scroller id="notReceiveScroller" width="680" height="880" anchorOffsetX="0" anchorOffsetY="0" y="0" />
+				<e:List id="notReceiveList" width="680" height="880" x="0" anchorOffsetX="0" anchorOffsetY="0" y="0">
+					<e:layout>
+						<e:VerticalLayout gap="5" horizontalAlign="center" />
+					</e:layout>
+				</e:List>
+			</e:Group>
+			<e:Group id="disAwardGroup" width="680" height="880" x="0" y="0" scaleX="1" scaleY="1" anchorOffsetY="0">
+				<e:Label text="暂无未领取奖品，请参见锦标赛赢取奖品。" anchorOffsetY="0" height="122" anchorOffsetX="0" width="501" textAlign="center"
+				         horizontalCenter="-15.5" verticalCenter="0" verticalAlign="middle" lineSpacing="5" />
+				<e:Button id="joinChampionshipsBtn" label="Button" y="629" horizontalCenter="0" />
+			</e:Group>
+		</e:Group>
+		<e:Group id="hasReceiveGroup" x="1" y="200" anchorOffsetY="0" height="880" width="680" visible="false">
+			<e:Group id="enHasReceiveGroup" x="0" y="0" anchorOffsetY="0" height="821">
+				<e:Scroller id="hasReceiveScroller" width="680" height="880" x="0" anchorOffsetX="0" anchorOffsetY="0" y="0" />
+				<e:List id="hasReceiveList" width="680" height="880" x="0" anchorOffsetX="0" anchorOffsetY="0" y="0">
+					<e:layout>
+						<e:VerticalLayout gap="5" horizontalAlign="center" />
+					</e:layout>
+				</e:List>
+			</e:Group>
+			<e:Group id="disHasReceiveGroup" width="680" height="880" x="0" y="0" scaleX="1" scaleY="1" anchorOffsetY="0">
+				<e:Label text="暂无已领取奖品" anchorOffsetY="0" height="122" anchorOffsetX="0" width="296" textAlign="center"
+				         verticalCenter="0.5" verticalAlign="middle" lineSpacing="5" horizontalCenter="0" />
+			</e:Group>
+		</e:Group>
+		<e:Group id="receiveAwardInfoGroup" x="0" y="200" anchorOffsetY="0" height="880" width="680">
+			<e:Label text="收件人" x="0" y="15" height="50" verticalAlign="middle" width="150" textAlign="right" />
+			<e:Label id="nameLabel" text="" x="160" y="15" anchorOffsetX="0" width="450" anchorOffsetY="0" height="50"
+			         verticalAlign="middle" border="true" borderColor="0x827f7f" />
+			<e:Label text="手机号码" x="0" y="80" height="50" verticalAlign="middle" width="150" textAlign="right" />
+			<e:Label id="telLabel" text="" x="160" y="80" anchorOffsetX="0" width="450" anchorOffsetY="0" height="50"
+			         verticalAlign="middle" border="true" borderColor="0x827F7F" />
+			<e:Label text="QQ号码" x="0" y="145" height="50" verticalAlign="middle" width="150" textAlign="right" />
+			<e:Label id="qqLabel" text="" x="160" y="145" anchorOffsetX="0" width="450" anchorOffsetY="0" height="50"
+			         verticalAlign="middle" border="true" borderColor="0x827F7F" />
+			<e:Label text="邮箱地址" x="0" y="210" height="50" verticalAlign="middle" width="150" textAlign="right" />
+			<e:Label id="emailLabel" text="" x="160" y="210" anchorOffsetX="0" width="450" anchorOffsetY="0" height="50"
+			         verticalAlign="middle" border="true" borderColor="0x827F7F" />
+			<e:Label text="详细地址" x="0" y="275" height="50" verticalAlign="middle" width="150" textAlign="right" />
+			<e:Label text="请务必认真填写所有领奖信息，以便成功领取锦标赛奖品。" y="652.68" anchorOffsetX="0" width="553.33" textAlign="center"
+			         horizontalCenter="-0.5" />
+			<e:Button id="saveBtn" label="Button" y="754" horizontalCenter="0" />
+			<e:Label id="addressLabel" text="" x="160" y="275" anchorOffsetX="0" width="450" verticalAlign="top"
+			         border="true" lineSpacing="10" multiline="true" scaleX="1" scaleY="1" height="200" borderColor="0xf7efef" />
+		</e:Group>
+		<ns1:GameButton id="closeButton" label="Button" skinName="buttonSkin4" x="599" y="12"/>
+	</e:Group>
+</e:Skin>

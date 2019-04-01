@@ -1,0 +1,65 @@
+/**
+ * 动画
+ */
+class AnimationFactory
+{
+	/**
+	 * 获取卡牌动画
+	 */
+	public static getCardFaceAnimation(type: AnimationType): IAnimationHandler<CardFaceComponent>
+	{
+		let animationHandler: IAnimationHandler<CardFaceComponent>;
+		switch (type)
+		{
+			case AnimationType.CardFaceBoardAppear:
+				animationHandler = new CardFaceBoardAppear();
+				break;
+			case AnimationType.CardFaceBright:
+				animationHandler = new CardFaceBright();
+				break;
+			case AnimationType.CardFaceMoveToPoint:
+				animationHandler = new CardFaceMoveToPoint();
+				break;
+			case AnimationType.CardFaceTurnToFace:
+				animationHandler = new CardFaceTurnToFace();
+				break;
+			case AnimationType.SelfCard1Appear:
+				animationHandler = new SelfCard1Appear();
+				break;
+			case AnimationType.SelfCard2Appear:
+				animationHandler = new SelfCard2Appear();
+				break;
+			default:
+				break;
+		}
+		return animationHandler;
+	}
+	/**
+	 * 获取显示对象动画
+	 */
+	public static getDisplayObjectContainerAnimation(type: AnimationType): IAnimationHandler<egret.DisplayObject>
+	{
+		let animationHandler: IAnimationHandler<egret.DisplayObject>;
+		switch (type)
+		{
+			case AnimationType.FlopCard:
+				animationHandler = new FlopCardAnimation();
+				break;
+			case AnimationType.GamblingGameGroupMove:
+				animationHandler = new GamblingGameGroupMove();
+				break;
+			case AnimationType.CommonMoveToPointByNowPos:
+				animationHandler = new CommonMoveToPointByNowPos();
+				break;
+			case AnimationType.CommonMoveToRelativelyPos:
+				animationHandler = new CommonMoveToRelativelyPos();
+				break;
+			case AnimationType.WinChips:
+				animationHandler = new WinChipsAnim();
+				break;
+			default:
+				break;
+		}
+		return animationHandler;
+	}
+}

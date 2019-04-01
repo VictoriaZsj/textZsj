@@ -1,0 +1,47 @@
+/**
+ * 游戏场景
+ */
+class GameScene extends BaseScene
+{
+	// public gameProcesser: GameProcesser;
+
+	public constructor()
+	{
+		super();
+	}
+	public clear()
+	{
+		this.onDisable();
+		// GoCardProcessManager.clear();
+	}
+	private onEnable()
+	{
+		// UIManager.addEventListener(UIModuleName.GameScenePanel, UIModuleEvent.COMPLETE, GoCardProcessManager.ready, this);
+	}
+	private onDisable()
+	{
+		// if (this.gameProcesser)
+		// {
+		// 	this.gameProcesser.onDisable();
+		// }
+		// UIManager.removeEventListener(UIModuleName.GameScenePanel, UIModuleEvent.COMPLETE, GoCardProcessManager.ready);
+	}
+	public initialize(resGpName?: string, isNeedReady?: boolean)
+	{
+		super.initialize(resGpName, isNeedReady);
+	}
+	protected onResourceLoadComplete()
+	{
+		super.onResourceLoadComplete();
+		
+		this.onEnable();
+		UIManager.showPanel(UIModuleName.GameScenePanel);
+		
+		// if (!this.gameProcesser)
+		// {
+		// 	let panel: GameScenePanel = UIManager.getPanel(UIModuleName.GameScenePanel) as GameScenePanel;
+		// 	this.gameProcesser = new GameProcesser(panel)
+		// }
+		// this.gameProcesser.onEnable();
+	}
+}

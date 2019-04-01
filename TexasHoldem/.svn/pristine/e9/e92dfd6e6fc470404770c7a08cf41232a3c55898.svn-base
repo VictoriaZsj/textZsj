@@ -1,0 +1,68 @@
+/**
+ * 添加好友项面板
+*/
+class OutsItemRenderer extends BaseItemRenderer<Outs>
+{
+    /**
+     * 头像
+    */
+    private headImg: eui.Image;
+    /**
+     * 昵称
+    */
+    private nameLabel: eui.Label;
+    /**
+     * 日期
+    */
+    private dateLabel: eui.Label;
+    /**
+     * 时间
+    */
+    private timeLabel: eui.Label;
+    /**
+     * 名次
+    */
+    private rankLabel: eui.Label;
+    /**
+     * 用户昵称
+    */
+    private userNameLabel: eui.Label;
+    /**
+     * 获得的奖励
+    */
+    private awardLabel: eui.Label;
+    /**
+     * 添加按钮
+    */
+    private disBtn: eui.ToggleSwitch;
+
+    public constructor()
+    {
+        super();
+        this.skinName = UIRendererSkinName.OutsItemRenderer;
+    }
+    protected createChildren()
+    {
+        this.dataChanged();
+    }
+    protected dataChanged()
+    {
+        super.dataChanged();
+        if (this.bindData)
+        {
+            this.headImg.source = this.bindData.rankList[0].head;
+            let date: Date = new Date(this.bindData.time * 1000);
+            if (this.bindData.time - TimeManager.GetServerUtcTimestamp() > 3600 * 24)  //大于一天
+            {
+                this.dateLabel.text = (date.getMonth() + 1) + "-" + date.getDate();
+            } else  // 少于一天
+            {
+                this.dateLabel.text = "今天";
+            }
+            this.nameLabel.text = this.bindData.name;
+            this.rankLabel.text = "冠军";
+            this.userNameLabel.text = this.bindData.rankList[0].name;
+            // this.awardLabel.text = this.bindData.rankList[0].awardId;   //todo 读表获得奖励名称
+        }
+    }
+}

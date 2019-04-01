@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="ChampionshipPanelSkin" width="720" height="1280" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing"
+        xmlns:ns1="*" xmlns:tween="egret.tween.*">
+	<w:Config id="15c813d330f" />
+	<e:Group id="anmGroup1" width="720" height="1180" x="0" y="100" anchorOffsetY="0">
+		<e:Image width="720" height="1180" x="1" y="4.03" source="bg_page2_png" scale9Grid="21,20,106,107" anchorOffsetY="0"/>
+		<ns1:TabComponent id="matchTab" width="700" height="1140" y="20" anchorOffsetX="0" anchorOffsetY="0" x="10"/>
+		<e:Group id="matchGroup" width="700" height="960" y="200" anchorOffsetX="0" anchorOffsetY="0" name="赛事列表" x="10">
+
+
+
+
+			<e:Group id="hasMatchGroup" x="0" y="5" height="960">
+				<e:List id="matchList" width="700" height="895" y="65" anchorOffsetY="0" x="0">
+					<e:layout>
+					<e:VerticalLayout gap="1" horizontalAlign="left"/>
+					</e:layout>
+				</e:List>
+				<e:Scroller id="matchScroller" width="700" height="895" y="65" anchorOffsetY="0" x="0">
+					<e:Group/>
+				</e:Scroller>
+				<e:Label text="赛事" x="6" y="0" anchorOffsetX="0" width="112" anchorOffsetY="0" height="58" verticalAlign="middle" textAlign="center"/>
+				<e:Label text="赛事信息" x="162" y="2" anchorOffsetX="0" width="130" anchorOffsetY="0" height="58" textAlign="center" verticalAlign="middle"/>
+				<e:Label text="开始时间" x="424" y="2" anchorOffsetX="0" width="138" anchorOffsetY="0" height="56" textAlign="center" verticalAlign="middle"/>
+			</e:Group>
+			<e:Group id="noMatchGroup" x="0" y="5" width="700" height="960">
+				<e:Label text="暂无赛事" anchorOffsetX="0" anchorOffsetY="0" height="56" textAlign="center" verticalAlign="middle" horizontalCenter="0" verticalCenter="0"/>
+			</e:Group>
+		</e:Group>
+		<e:Group id="signedUpGroup" width="700" height="960" y="200" anchorOffsetX="0" anchorOffsetY="0" name="已报名" x="10">
+			<e:Group id="hasSignedUpGroup" x="0" y="5" anchorOffsetY="0" height="960">
+				<e:List id="signedUpList" width="700" height="895" y="65" anchorOffsetY="0" x="0" scaleX="1" scaleY="1">
+					<e:layout>
+					<e:VerticalLayout gap="1" horizontalAlign="left"/>
+					</e:layout>
+				</e:List>
+				<e:Scroller id="signedUpScroller" width="700" height="895" y="65" anchorOffsetY="0" x="0" scaleX="1" scaleY="1">
+					<e:Group/>
+				</e:Scroller>
+				<e:Label text="赛事" x="6" y="0" anchorOffsetX="0" width="112" anchorOffsetY="0" height="58" verticalAlign="middle" textAlign="center" scaleX="1" scaleY="1"/>
+				<e:Label text="赛事信息" x="162" y="2" anchorOffsetX="0" width="130" anchorOffsetY="0" height="58" textAlign="center" verticalAlign="middle" scaleX="1" scaleY="1"/>
+				<e:Label text="开始时间" x="424" y="2" anchorOffsetX="0" width="138" anchorOffsetY="0" height="56" textAlign="center" verticalAlign="middle" scaleX="1" scaleY="1"/>
+			</e:Group>
+			<e:Group id="noSignedUpGroup" x="0" y="5" width="700" height="960" scaleX="1" scaleY="1">
+				<e:Label text="您还未参加任何赛事" anchorOffsetX="0" anchorOffsetY="0" height="56" textAlign="center" verticalAlign="middle" horizontalCenter="0" verticalCenter="0"/>
+			</e:Group>
+		</e:Group>
+		<e:Group id="ticketsGroup" width="700" height="960" y="200" anchorOffsetX="0" anchorOffsetY="0" name="我的门票" x="10">
+			<e:Group id="hasTicketGroup" x="0" y="5" scaleX="1" scaleY="1" height="960">
+				<e:List id="ticketList" width="700" height="960" y="7" anchorOffsetY="0" x="0" scaleX="1" scaleY="1">
+				<e:layout>
+					<e:VerticalLayout gap="1" horizontalAlign="left"/>
+				</e:layout>
+				</e:List>
+				<e:Scroller id="ticketScroller" width="700" height="960" y="5" anchorOffsetY="0" x="0" scaleX="1" scaleY="1">
+				<e:Group anchorOffsetY="0" height="955"/>
+				</e:Scroller>
+			</e:Group>
+			<e:Group id="noTicketGroup" x="0" y="5" width="700" height="960" scaleX="1" scaleY="1" anchorOffsetY="0">
+				<e:Label text="您暂无任何门票" anchorOffsetX="0" anchorOffsetY="0" height="56" textAlign="center" verticalAlign="middle" horizontalCenter="0" verticalCenter="0"/>
+			</e:Group>
+		</e:Group>
+		<e:Group id="resultsGroup" width="700" height="960" y="200" anchorOffsetX="0" anchorOffsetY="0" name="最近赛况" x="10">
+			<e:Group id="hasResultGroup" x="0" y="5" scaleX="1" scaleY="1" height="960">
+				<e:List id="resultList" width="700" height="950" y="7" anchorOffsetY="0" x="0" scaleX="1" scaleY="1">
+				<e:layout>
+					<e:VerticalLayout gap="1" horizontalAlign="left" verticalAlign="contentJustify"/>
+				</e:layout>
+				</e:List>
+				<e:Scroller id="resultScroller" width="700" height="950" y="5" anchorOffsetY="0" x="0" scaleX="1" scaleY="1">
+				<e:Group anchorOffsetY="0" height="955"/>
+				</e:Scroller>
+			</e:Group>
+			<e:Group id="noResultGroup" x="0" y="5" width="700" height="960" scaleX="1" scaleY="1" anchorOffsetY="0">
+				<e:Label text="暂无任何最近赛况" anchorOffsetX="0" anchorOffsetY="0" height="56" textAlign="center" verticalAlign="middle" horizontalCenter="0" verticalCenter="0"/>
+			</e:Group>
+			<e:Label text="赛事时间" x="30" y="-16" size="24" scaleX="1" scaleY="1"/>
+			<e:Label text="赛事信息" x="260" y="-16" size="24" scaleX="1" scaleY="1"/>
+		</e:Group>
+	</e:Group>
+	<e:Group id="anmGroup" width="720" height="100" x="0" y="0">
+		<e:Image id="bg" width="720" height="100" x="0" y="0" source="bg_page4_png"/>
+		<e:Image id="titleImg" width="300" height="80" y="10" source="bg_page3_2_png" x="210" scaleX="1" scaleY="1"/>
+		<e:Label text="锦标赛" x="281" y="24" size="50" bold="true" textColor="0xfcd232"/>
+		<e:Button id="helpBtn" label="Button" x="648.8" y="24" scaleX="0.2" scaleY="0.5"/>
+		<e:Button id="closeButton" label="返回" x="50" y="50" skinName="buttonSkin2" width="150" scaleX="0.5" height="80" scaleY="0.9" anchorOffsetX="75" anchorOffsetY="40"/>
+	</e:Group>
+
+
+
+</e:Skin>

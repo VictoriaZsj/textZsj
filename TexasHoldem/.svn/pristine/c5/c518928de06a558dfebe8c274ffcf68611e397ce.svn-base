@@ -1,0 +1,61 @@
+/**
+ * 听牌信息面板
+ */
+class TingInfoPanel extends BasePanel
+{
+	public resultGroup: eui.DataGroup;
+	public bgImg: eui.Image;
+	private static _all: Array<any> = [null];
+	public constructor()
+	{
+		super();
+		this.isTween = false;
+		this.setGrayMask(false);
+		this.panelAlignType = PanelAlignType.Center_Bottom
+		this.offsetV = 150;
+		this.skinName = UISkinName.TingInfoPanel;
+	}
+	protected onAwake(event: eui.UIEvent)
+	{
+		this.resultGroup.layout = UIUtil.getTileLayout(5, 5, undefined, 6, egret.HorizontalAlign.CENTER, egret.VerticalAlign.TOP);
+		this.tweenGroup.touchEnabled = this.tweenGroup.touchChildren = false;
+		super.onAwake(event);
+	}
+	public init(appendData: any)
+	{
+		super.init(appendData);
+		if (this.panelData)
+		{
+			let info: ListenResultInfo = this.panelData;
+			if (info.listenerList.length >= GameSetting.MaxCardIndex - 1)
+			{
+				this.resultGroup.width = this.bgImg.width = 165;
+				this.resultGroup.height = this.bgImg.height = 115 + 15;
+				UIUtil.bindRender(this.resultGroup, TingRenderer, TingInfoPanel._all);
+			}
+			else
+			{
+				let wCnt: number = info.listenerList.length;
+				if (wCnt > 6)
+				{
+					wCnt = 6;
+				}
+				this.resultGroup.width = this.bgImg.width = wCnt * 170;
+				this.resultGroup.height = this.bgImg.height = Math.ceil(info.listenerList.length / 6) * 115 + 15;
+				UIUtil.bindRender(this.resultGroup, TingRenderer, info.listenerList);
+			}
+		}
+	}
+	protected onRender(event: egret.Event)
+	{
+		super.onRender(event);
+	}
+	protected onEnable(event: eui.UIEvent): void
+	{
+		super.onEnable(event);
+	}
+	protected onDisable(event: eui.UIEvent): void
+	{
+		super.onDisable(event);
+	}
+}

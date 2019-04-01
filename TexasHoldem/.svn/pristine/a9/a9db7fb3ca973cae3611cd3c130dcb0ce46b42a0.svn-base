@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="CustomVSliderSkin" minWidth="25" minHeight="30" xmlns:e="http://ns.egret.com/eui" height="489" width="47">
+    <e:Image id="track" source="bg_page4_png" scale9Grid="1,1,4,4" width="7" height="90%" horizontalCenter="-2" y="31"/>
+	<e:Image width="38" height="38" x="14" y="29" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" anchorOffsetY="0"/>
+	<e:Label text="All In" x="18" y="38.5" textColor="0xFC0707" size="13" anchorOffsetY="0" height="21" anchorOffsetX="0" width="30" verticalAlign="middle"/>
+    <e:Image id="thumb" source="radiobutton_select_disabled_png" horizontalCenter="-2.5"  y="453"/>
+</e:Skin>

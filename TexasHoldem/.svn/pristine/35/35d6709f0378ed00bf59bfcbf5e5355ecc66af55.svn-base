@@ -1,0 +1,519 @@
+/**
+ * 手牌逻辑控制
+ */
+class ShouCardController
+{
+    private _benJiaHandler: ShouPaiBenJiaHandler;
+    private _xiaJiaHandler: ShouPaiXiaJiaHandler;
+    private _duiJiaHandler: ShouPaiDuiJiaHandler;
+    private _shangJiaHandler: ShouPaiShangJiaHandler;
+
+    private _jiaList: Array<BaseShouPaiHandler<OtherShouCard>>;
+
+    private _shouCardContainer: eui.Group;
+    private _lastShouCardHandler: BenJiaShouCard;
+    private _initY: number;
+    public isInit: boolean = false;
+    private _faCount: number;
+    private _masterPosType: PosType;
+    private _listenerResultInfoList: Array<ListenResultInfo>;
+
+    constructor(container: eui.Group)
+    {
+        this._shouCardContainer = container;
+    }
+    private create(isDefaultShow: boolean)
+    {
+        this._faCount = 0;
+        this._masterPosType = PosType.BenJia;
+        if (RoomManager.masterInfo)
+        {
+            this._masterPosType = RoomManager.masterInfo.pos;
+        }
+        let lc: LayerController = SceneManager.gameScene.gameProcesser.layerController;
+
+        this._benJiaHandler = new ShouPaiBenJiaHandler(lc.getContainer(GameSetting.BenJiaShouPaiLayer));
+        this._benJiaHandler.init(BenJiaShouCard, isDefaultShow);
+        // this._shouCardContainer.addChild(this._benJiaHandler);
+
+        this._xiaJiaHandler = new ShouPaiXiaJiaHandler(lc.getContainer(GameSetting.XiaJiaShouPaiLayer));
+        // this._xiaJiaHandler.touchEnabled = this._xiaJiaHandler.touchChildren = false;
+        this._xiaJiaHandler.init(OtherShouCard, isDefaultShow);
+
+        this._duiJiaHandler = new ShouPaiDuiJiaHandler(lc.getContainer(GameSetting.DuiJiaShouPaiLayer));
+        // this._duiJiaHandler.touchEnabled = this._duiJiaHandler.touchChildren = false;
+        this._duiJiaHandler.init(OtherShouCard, isDefaultShow);
+
+        this._shangJiaHandler = new ShouPaiShangJiaHandler(lc.getContainer(GameSetting.ShangJiaShouPaiLayer));
+        // this._shangJiaHandler.touchEnabled = this._shangJiaHandler.touchChildren = false;
+        this._shangJiaHandler.init(OtherShouCard, isDefaultShow);
+
+        this._jiaList = new Array<BaseShouPaiHandler<OtherShouCard>>();
+        /**
+         * 索引从1开始所以，头部补值        
+         */
+        this._jiaList.push(undefined, this._benJiaHandler, this._xiaJiaHandler, this._duiJiaHandler, this._shangJiaHandler);
+    }
+    public init(isDefaultShow: boolean)
+    {
+        if (!this._benJiaHandler)
+        {
+            this.create(isDefaultShow);
+            this.isInit = true;
+        }
+        else
+        {
+            if (this._jiaList)
+            {
+                for (let handler of this._jiaList)
+                {
+                    if (handler)
+                    {
+                        handler.setPit(isDefaultShow);
+                    }
+                }
+            }
+        }
+        if (!RoomManager.roomInfo.shouPai)
+        {
+            return;
+        }
+        this.onEnable();
+    }
+    public onEnable()
+    {
+        DragUtil.dragEndEa.addListener(this.onDragCardEnd, this);
+        this._shouCardContainer.addEventListener(egret.TouchEvent.TOUCH_TAP, this.clikShouCardHandler, this);
+        this._shouCardContainer.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.touchBeginShouCardhandler, this);
+        GroupCardHandler.moveAd.addListener(this.onMove, this);
+
+    }
+    public onDisable()
+    {
+        DragUtil.dragEndEa.removeListener(this.onDragCardEnd);
+        this._shouCardContainer.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.clikShouCardHandler, this);
+        this._shouCardContainer.removeEventListener(egret.TouchEvent.TOUCH_BEGIN, this.touchBeginShouCardhandler, this);
+        GroupCardHandler.moveAd.removeListener(this.onMove);
+    }
+    /**
+     * 初始化理牌 
+     */
+    public initExactlyCard(isExcludeSelf: boolean = false)
+    {
+        if (this._jiaList)
+        {
+            let handler: BaseShouPaiHandler<OtherShouCard>;
+            let pInfo: PlayerInfo;
+            for (let i: number = 1; i < this._jiaList.length; i++)
+            {
+                if (isExcludeSelf)
+                {
+                    if (i != PosType.BenJia)
+                    {
+                        handler = this._jiaList[i];
+                    }
+                }
+                else
+                {
+                    handler = this._jiaList[i];
+                }
+                if (handler)
+                {
+                    handler.exactlyCard(true);
+                }
+            }
+        }
+    }
+    /**
+     * 碰牌理牌
+     */
+    public pengExactlyCard(posType: PosType)
+    {
+        if (this._jiaList && posType >= PosType.BenJia && posType <= PosType.ShangJia)
+        {
+            let handler: BaseShouPaiHandler<OtherShouCard> = this._jiaList[posType];
+            if (handler)
+            {
+                handler.exactlyCard(true);
+            }
+        }
+    }
+    /**
+    * 立即理牌 杠牌用
+    */
+    public immediatelyInsert(posType: PosType)
+    {
+        if (this._jiaList && posType >= PosType.BenJia && posType <= PosType.ShangJia)
+        {
+            let handler: BaseShouPaiHandler<OtherShouCard> = this._jiaList[posType];
+            if (handler)
+            {
+                handler.exactlyCard(true, true);
+            }
+        }
+    }
+    public showLastCard()
+    {
+        if (RoomManager.masterInfo && RoomManager.mineInfo && RoomManager.roomInfo) // && RoomManager.isSelfAction
+        {
+            let posType: PosType = RoomManager.getPosTypeForMine(RoomManager.masterInfo.pos);
+            let handler: BaseShouPaiHandler<OtherShouCard> = this._jiaList[posType];
+            if (handler)
+            {
+                if (posType == PosType.BenJia)
+                {
+                    if (RoomManager.roomInfo.myLastCard)
+                    {
+                        handler.setNewCard(RoomManager.roomInfo.myLastCard);
+                    }
+                }
+                else
+                {
+                    handler.setNewCard(undefined);
+                }
+            }
+        }
+    }
+    public hideLastCard()
+    {
+        if (RoomManager.masterInfo && RoomManager.mineInfo)
+        {
+            let posType: PosType = RoomManager.getPosTypeForMine(RoomManager.masterInfo.pos);
+            let handler: BaseShouPaiHandler<OtherShouCard> = this._jiaList[posType];
+            if (handler)
+            {
+                handler.hideLastCard();
+            }
+        }
+    }
+    public runGetCard()
+    {
+        if (RoomManager.roomInfo && RoomManager.roomInfo.playerList)
+        {
+            this._faCount++;
+            this._faCount %= RoomManager.mod;
+            let nowPos: PosType = RoomManager.getPosType(this._masterPosType, this._faCount);
+            let handler: BaseShouPaiHandler<OtherShouCard> = this._jiaList[nowPos];
+            if (handler)
+            {
+                handler.get4Card();
+                // handler.setNewCard(card);
+            }
+        }
+    }
+    /**
+     * 设置新牌
+     */
+    public setNewCard(posType: PosType, card?: number)
+    {
+        if (this._jiaList)
+        {
+            let handler: BaseShouPaiHandler<OtherShouCard> = this._jiaList[posType];
+            if (handler)
+            {
+                handler.setNewCard(card);
+            }
+        }
+    }
+    /**
+     * 打出一张牌
+     */
+    public outCard(posType: PosType, card?: OtherShouCard, isLast?: boolean)
+    {
+        if (this._jiaList)
+        {
+            let handler: BaseShouPaiHandler<OtherShouCard> = this._jiaList[posType];
+            if (handler)
+            {
+                handler.outCard(card, isLast);
+            }
+            if (this._benJiaHandler) //打出去牌需要将箭头隐藏
+            {
+                this._benJiaHandler.hideArrow();
+            }
+        }
+    }
+
+    // public startInsert()
+    // {
+    //     this._benJiaHandler.outCard(clickCard.posIndex);
+    //                     if (RoomManager.mineInfo)
+    //                     {
+    //                         this._benJiaHandler.startInsertCard(RoomManager.mineInfo.lastCard);
+    //                     }
+    // }
+    /**
+     * 开始插入
+     */
+    public startInsert(posType: PosType, cardNum?: number)
+    {
+        let handler: BaseShouPaiHandler<OtherShouCard> = this._jiaList[posType];
+        if (handler)
+        {
+            handler.startInsertCard(cardNum);
+        }
+    }
+
+    public test()
+    {
+        this._benJiaHandler.test();
+    }
+    // public static testClickCard: BenJiaShouCard;
+    private _dragProxyCard: BenJiaShouCard;
+    private _dragCard: BenJiaShouCard;
+    private touchBeginShouCardhandler(event: egret.TouchEvent)
+    {
+        if (event.target instanceof eui.Image)
+        {
+            if (event.target.parent instanceof BenJiaShouCard)
+            {
+                SoundManager.playEffect(Sex.Male, MusicAction.cardClick);
+                let clickCard: BenJiaShouCard = event.target.parent as BenJiaShouCard;
+                if (!this._dragProxyCard)
+                {
+                    this._dragProxyCard = new BenJiaShouCard(clickCard.shouPaiDef, 0);
+                }
+                this._dragProxyCard.refreshFace(clickCard.cardNum);
+                this._dragCard = clickCard;
+                DragUtil.startDrag(this._dragProxyCard);
+            }
+        }
+    }
+    private onDragCardEnd(target: BenJiaShouCard)
+    {
+        if (target instanceof BenJiaShouCard && DragUtil.dragTarget && DragUtil.dragTarget.y < 450)
+        {
+            if (RoomManager.isSelfAction && GoCardProcessManager.isReady) //尝试出牌
+            { //!GoCardProcessManager.isInActionSelect &&
+                if (GoCardProcessManager.isClickTingBtn) //如果点击了听按钮，打出去的牌要求是能听才可以打出去
+                {
+                    if (this._dragCard.isTingCard)
+                    {
+                        console.log("听牌拖拽出牌出牌了：");
+                        GoCardProcessManager.reqPutOutCard(this._dragCard, this._dragCard.cardNum);
+                    }
+                }
+                else
+                {
+                    console.log("拖拽出牌出牌了：");
+                    GoCardProcessManager.reqPutOutCard(this._dragCard, this._dragCard.cardNum);
+                }
+            }
+        }
+    }
+    private clikShouCardHandler(event: egret.TouchEvent)
+    {
+        if (event.target instanceof eui.Image)
+        {
+            //ShouCardController.testClickCard = clickCard;
+            if (event.target.parent instanceof BenJiaShouCard)
+            {
+                let clickCard: BenJiaShouCard = event.target.parent as BenJiaShouCard;
+                if (!this._initY)
+                {
+                    this._initY = clickCard.y;
+                }
+                SoundManager.playEffect(Sex.Male, MusicAction.cardClick);
+                if (RoomManager.isSelfAction && this._lastShouCardHandler == clickCard && clickCard.y < this._initY && GoCardProcessManager.isReady) //尝试出牌
+                { //!GoCardProcessManager.isInActionSelect &&
+                    if (clickCard)
+                    {
+                        if (GoCardProcessManager.isClickTingBtn) //如果点击了听按钮，打出去的牌要求是能听才可以打出去
+                        {
+                            if (clickCard.isTingCard)
+                            {
+                                console.log("听牌点击出牌出牌了：");
+                                GoCardProcessManager.reqPutOutCard(clickCard, clickCard.cardNum);
+                                this._lastShouCardHandler = null;
+                            }
+                        }
+                        else
+                        {
+                            console.log("点击出牌出牌了：");
+                            GoCardProcessManager.reqPutOutCard(clickCard, clickCard.cardNum);
+                            this._lastShouCardHandler = null;
+                        }
+                    }
+                }
+                else if (this._lastShouCardHandler)
+                {
+                    this.backUpCard();
+                }
+                clickCard.y = this._initY - 30;
+
+                if (clickCard.isTingCard)
+                {
+                    this.showTingInfo(clickCard.cardNum);
+                }
+                this._lastShouCardHandler = clickCard;
+            }
+            else
+            {
+                this.backUpCard();
+            }
+        }
+        else
+        {
+            if (this._lastShouCardHandler)
+            {
+                this.backUpCard();
+            }
+        }
+    }
+    /**
+     * 显示听的信息
+     */
+    public showTingInfo(card?: number)
+    {
+        if (card == undefined && GoCardProcessManager.curOutCard)
+        {
+            card = GoCardProcessManager.curOutCard.cardNum;
+        }
+        if (card)
+        {
+            let tingInfo: ListenResultInfo = this.getListenerResultInfo(card);
+            if (tingInfo)
+            {
+                UIManager.showPanel(UIModuleName.TingInfoPanel, tingInfo);
+            }
+        }
+    }
+    public showLiangPai(roleId: number, list: Array<number>)
+    {
+        let pInfo: PlayerInfo = RoomManager.getPlayerInfoByRoleId(roleId);
+        let posType: PosType = RoomManager.getPosTypeForMine(pInfo.pos);
+        let handler: BaseShouPaiHandler<OtherShouCard> = this._jiaList[posType];
+        if (handler && pInfo)
+        {
+            if (GoCardProcessManager.huCardInfo)
+            {
+                if (roleId == GoCardProcessManager.huCardInfo.roleId)
+                {
+
+                    handler.showLiangPai(list, GoCardProcessManager.huCardInfo.card, GoCardProcessManager.huCardInfo.huType);
+                }
+                else
+                {
+                    handler.showLiangPai(list);
+                }
+            }
+        }
+    }
+    private backUpCard()
+    {
+        UIManager.closePanel(UIModuleName.TingInfoPanel);
+        if (this._lastShouCardHandler)
+        {
+            this._lastShouCardHandler.y = this._initY;
+            this._lastShouCardHandler = null;
+        }
+    }
+    private onMove(data:any)
+    {
+        this.refreshShouPai(data.pos, data.offsetX, data.offsetY, data.num);
+    }
+    // private testIndex: number = 0;
+    /**
+	 * 移动手牌
+	 */
+    private refreshShouPai(posType: PosType, offsetX: number, offsetY: number, num: number)
+    {
+        let handler: BaseShouPaiHandler<OtherShouCard> = this._jiaList[posType];
+        let pInfo: PlayerInfo = RoomManager.getPlayerInfoByPosType(posType);
+        if (handler && pInfo)
+        {
+            let index: number = 0;
+            if (pInfo.groupList)
+            {
+                index = pInfo.groupList.length;
+            }
+            if (posType == PosType.ShangJia)
+            {
+                // this.testIndex++;
+                handler.layerContainer.x = 18 * index;
+                handler.layerContainer.y = -45 * index;
+            }
+            else if (posType == PosType.XiaJia)
+            {
+                // this.testIndex++;
+                handler.layerContainer.x = 18 * index;
+                handler.layerContainer.y = 45 * index;
+            }
+            else
+            {
+                handler.layerContainer.x = offsetX;
+                handler.layerContainer.y = offsetY;
+            }
+        }
+    }
+    /**
+     * 处理本家听牌状态的显示
+     */
+    public refreshTingState(list: Array<ListenResultInfo>)
+    {
+        if (!this._benJiaHandler)
+        {
+            this.create(false);
+            this.isInit = true;
+        }
+        if (list)
+        {
+            this._listenerResultInfoList = list;
+            let len: number = list.length;
+            if (this._benJiaHandler)
+            {
+                this._benJiaHandler.hideArrow();
+            }
+            if (len > 0)
+            {
+                let info: ListenResultInfo;
+                for (let i: number = 0; i < len; i++)
+                {
+                    info = list[i];
+                    this._benJiaHandler.showArrow(info.outCard);
+                }
+            }
+        }
+        else
+        {
+            if (this._benJiaHandler)
+            {
+                this._benJiaHandler.hideArrow();
+            }
+        }
+    }
+    /**
+     * 获取打出那一张的听牌信息
+     */
+    private getListenerResultInfo(card: number)
+    {
+        if (this._listenerResultInfoList)
+        {
+            let len: number = this._listenerResultInfoList.length;
+            let info: ListenResultInfo;
+            for (let i: number = 0; i < len; i++)
+            {
+                info = this._listenerResultInfoList[i];
+                if (info.outCard == card)
+                {
+                    return info;
+                }
+            }
+        }
+        return null;
+    }
+    public clear()
+    {
+        if (this._jiaList)
+        {
+            for (let obj of this._jiaList)
+            {
+                if (obj)
+                {
+                    obj.layerContainer.x = obj.layerContainer.y = 0;
+                    obj.clear();
+                }
+            }
+        }
+    }
+}

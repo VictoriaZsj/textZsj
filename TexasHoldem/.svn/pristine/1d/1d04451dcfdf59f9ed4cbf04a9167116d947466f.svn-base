@@ -1,0 +1,32 @@
+/**
+ * 会员福利面板
+ */
+class VipWealthPanel extends BasePanel
+{
+	public constructor()
+	{
+		super();
+		this.isMaskClickClose=true;
+		this.skinName = UISkinName.VipWealthPanel;
+	}
+	protected onAwake(event: eui.UIEvent)
+	{
+		super.onAwake(event);
+	}
+	public init(appendData: any)
+	{
+		super.init(appendData);
+	}
+	protected rendererStart(event: egret.Event)
+	{
+		super.rendererStart(event);
+	}
+	protected onEnable(event: eui.UIEvent): void
+	{
+		super.onEnable(event);
+	}
+	protected onDisable(event: eui.UIEvent): void
+	{
+		super.onDisable(event);
+	}
+}

@@ -1,0 +1,186 @@
+/**
+ * 行为操作支持 仅自己
+ */
+class GamblingPanelActionSupport extends BaseGamblingPanelSupport
+{
+	/**
+ 	* 快捷加注比例
+	*/
+	private static _quicklyPhase1: number = 1 / 3;
+	private static _quicklyPhase2: number = 1 / 2;
+	private static _quicklyPhase3: number = 2 / 3;
+	private static _quicklyPhase4: number = 1;
+	private static _quicklyPhase5: number = 2;
+
+	public initialize()
+	{
+		super.initialize();
+	}
+	public onEnable()
+	{
+		super.onEnable();
+		GamblingManager.PlayerStateChangeEvent.addListener(this.playerStateChangeHandler, this);
+	}
+	public onDisable()
+	{
+		super.onDisable();
+		GamblingManager.PlayerStateChangeEvent.removeListener(this.playerStateChangeHandler);
+	}
+	private playerStateChangeHandler(obj: any)
+	{
+		if (obj.roleId == UserManager.userInfo.roleId)
+		{
+			this.changeState(GamblingManager.getPlayerState(obj.roleId));
+		}
+	}
+	/**
+	 * 状态变更
+	 */
+	private changeState(state: PlayerState)
+	{
+		switch (state)
+		{
+			case PlayerState.Empty:
+			case PlayerState.WaitNext:
+				this.target.actionGroup.visible = false;
+				break;
+			case PlayerState.WaitAction:
+				this.target.actionGroup.visible = true;
+				this.target.actionGroup.hideAll();
+				this.target.actionGroup.preActionGroup.visible = true;
+				break;
+			case PlayerState.Check:
+			case PlayerState.Raise:
+			case PlayerState.AllIn:
+			case PlayerState.Call:
+			case PlayerState.Blind:
+				this.target.actionGroup.visible = false;
+				break;
+			case PlayerState.Fold: //弃牌
+				this.target.actionGroup.visible = true;
+				this.target.actionGroup.hideAll();
+				this.target.actionGroup.brightCardBtn.visible = true;
+				break;
+			case PlayerState.Action: //说话
+				if (GamblingManager.isPassOrFold) //过或弃
+				{
+					if (GamblingManager.isCanCheck) 
+					{
+						GamblingManager.reqAction(PlayerState.Check);
+					}
+					else
+					{
+						GamblingManager.reqAction(PlayerState.Fold);
+					}
+				}
+				else if (GamblingManager.isCallAny) //跟任何
+				{
+					this.doDefaultAction();
+				}
+				else
+				{
+					this.target.actionGroup.visible = true;
+					this.target.actionGroup.hideAll();
+					this.target.actionGroup.raiseGroup.visible = true;
+					this.target.actionGroup.actionGroup.visible = true;
+					this.target.actionGroup.raiseBtn.visible = true;
+
+					if (GamblingManager.isCanCheck) //是否过牌
+					{
+						this.target.actionGroup.callBtn.label = "过牌";
+					}
+					else if (GamblingManager.isNeedAllIn) //是否需要allin
+					{
+						this.target.actionGroup.raiseGroup.visible = false;
+						this.target.actionGroup.raiseBtn.visible = false;
+						this.target.actionGroup.callBtn.label = "全下";
+					}
+					else if (GamblingManager.callNum > 0) //需要跟注
+					{
+						this.target.actionGroup.callBtn.label = GamblingManager.callNum + "\n跟注";
+					}
+				}
+				break;
+		}
+	}
+	public onClick(target: any)
+	{
+		switch (target)
+		{
+			case this.target.actionGroup.brightCardBtn: //结束时亮牌
+				GamblingManager.reqBrightCard();
+				break;
+			case this.target.actionGroup.passOrDropBtn: //过或弃
+				GamblingManager.isPassOrFold = !GamblingManager.isPassOrFold;
+				break;
+			case this.target.actionGroup.callAnyBtn: //一律跟
+				GamblingManager.isCallAny = !GamblingManager.isCallAny;
+				break;
+			case this.target.actionGroup.oneOfThreeBtn: //加注1/3底池
+				this.oneKeyRaise(GamblingPanelActionSupport._quicklyPhase1);
+				break;
+			case this.target.actionGroup.oneOfTwoBtn: //加注1/2底池
+				this.oneKeyRaise(GamblingPanelActionSupport._quicklyPhase2);
+				break;
+			case this.target.actionGroup.twoOfThreeBtn: //加注2/3底池
+				this.oneKeyRaise(GamblingPanelActionSupport._quicklyPhase3);
+				break;
+			case this.target.actionGroup.oneBtn: //加注 底池*1
+				this.oneKeyRaise(GamblingPanelActionSupport._quicklyPhase4);
+				break;
+			case this.target.actionGroup.raiseBtn: //加注
+				if (GamblingManager.roomInfo && GamblingManager.self)
+				{
+					let obj: Object = { minChips: GamblingManager.roomInfo.minRaiseNum, maxChips: GamblingManager.maxRaiseChips, bBlind: GamblingManager.roomInfo.bBlind };
+					UIManager.showPanel(UIModuleName.AddChipsPanel, obj);
+				}
+				break;
+			case this.target.actionGroup.foldBtn: //弃牌
+				GamblingManager.reqAction(PlayerState.Fold);
+				break;
+			case this.target.actionGroup.callBtn: //跟注
+				this.doDefaultAction();
+				break;
+		}
+	}
+	/**
+	 * 执行默认的行为
+	 */
+	private doDefaultAction()
+	{
+		if (GamblingManager.isCanCheck) //是否过牌
+		{
+			GamblingManager.reqAction(PlayerState.Check);
+		}
+		else if (GamblingManager.isNeedAllIn) //是否需要allin
+		{
+			if (GamblingManager.self)
+			{
+				GamblingManager.reqAction(PlayerState.AllIn, GamblingManager.self.bankRoll);
+			}
+		}
+		else if (GamblingManager.callNum > 0) //需要跟注
+		{
+			GamblingManager.reqAction(PlayerState.Call, GamblingManager.callNum);
+		}
+	}
+	/**
+	 * 一键加注
+	 */
+	private oneKeyRaise(proportion: number)
+	{
+		if (GamblingManager.roomInfo && GamblingManager.self)
+		{
+			let raiseNum: number = Math.floor(GamblingManager.totalPotChips * proportion / GamblingManager.roomInfo.bBlind);
+			raiseNum *= GamblingManager.roomInfo.bBlind;
+			if (raiseNum >= GamblingManager.self.bankRoll) //all in
+			{
+				GamblingManager.reqAction(PlayerState.AllIn, GamblingManager.self.bankRoll);
+			}
+			else
+			{
+				GamblingManager.reqAction(PlayerState.Raise, raiseNum); //加注
+			}
+		}
+	}
+}

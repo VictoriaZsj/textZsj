@@ -1,0 +1,63 @@
+class DefinedManager
+{
+	private static textMap: Dictionary<string, string> = new Dictionary<string, string>();
+	private static parseSet: Array<string> = new Array<string>();
+	/**
+	 * 重置
+	 */
+	public static Reset()
+	{
+		DefinedManager.parseSet = new Array<string>();
+	}
+	/**
+	 * 设置配置表数据
+	 */
+	public static SetConfigData(data: any)
+	{
+		DefinedManager.parseSet = new Array<string>();
+		DefinedManager.textMap.clear();
+		if (data)
+		{
+			for (let key in data)
+			{
+				if (DefinedManager.textMap.containsKey(key) == false)
+				{
+					DefinedManager.textMap.add(key, data[key]);
+				}
+				else
+				{
+					console.log("Config有重复的:", key);
+				}
+			}
+		}
+	}
+	/**
+	 * 设置配置数据仅在开发模式使用
+	 */
+	public static setData(key: string, data: any)
+	{
+		if (DefinedManager.textMap.containsKey(key) == false)
+		{
+			DefinedManager.textMap.add(key, data);
+		}
+		else
+		{
+			console.log("Config有重复的:", key);
+		}
+	}
+	/**
+	 * 配置表是否已经解析过
+	 */
+	public static IsParsed(name: string): boolean
+	{
+		return DefinedManager.parseSet[name] == true;
+	}
+	/**
+	 * 获取配置表文本数据
+	 */
+	public static GetText(name: string, suffix: string = ResSuffixName.JSONSuffix): string
+	{
+		DefinedManager.parseSet[name] = true;
+		return DefinedManager.textMap.getValue(name);
+	}
+}

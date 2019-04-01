@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="panelSkin13" width="1280" height="720" xmlns:e="http://ns.egret.com/eui"
+        xmlns:w="http://ns.egret.com/wing" xmlns:ns1="*">
+	<e:Group id="tweenGroup" horizontalCenter="0" verticalCenter="0" width="1280" height="720">
+		<e:Image width="1212" height="662" y="37" scaleX="1" scaleY="1"
+				          source="bg_page2_png" scale9Grid="21,20,106,107" anchorOffsetX="0" anchorOffsetY="0" horizontalCenter="0"/>
+		<e:ToggleSwitch id="shareID" label="分享ID" x="62.25" y="146.26" skinName="buttonSkin_62"/>
+		<e:Image width="936" height="441" anchorOffsetX="0" anchorOffsetY="0" y="146.01" scaleX="1" scaleY="1" scale9Grid="19,18,23,23" source="bg_page19_png" horizontalCenter="105"/>
+		<e:Image width="918.67" height="93.11" anchorOffsetX="0" anchorOffsetY="0" y="156.01" scaleX="1" scaleY="1" horizontalCenter="105.5" source="bg_page19_2_png" scale9Grid="16,18,122,122"/>
+		<e:Image width="918.67" height="93.11" anchorOffsetX="0" anchorOffsetY="0" y="261.32" scaleX="1" scaleY="1" horizontalCenter="105.5" source="bg_page19_2_png" scale9Grid="16,18,122,122"/>
+		<e:Image width="918.67" height="202.45" anchorOffsetX="0" anchorOffsetY="0" y="367.99" scaleX="1" scaleY="1" horizontalCenter="105.5" source="bg_page19_2_png" scale9Grid="16,18,122,122"/>
+		<e:Image source="bg_page5_png" horizontalCenter="0" verticalCenter="-311.5"
+		         />
+		<e:Image horizontalCenter="377.5" verticalCenter="309.5" source="bg_page22_png" scale9Grid="57,0,24,41" anchorOffsetX="0" width="375" scaleY="-1"/>
+		<ns1:GameButton id="closeButton" label="Button" skinName="buttonSkin4"  y="11" x="1206"/>
+		<e:Label text="局数:" fontFamily="SimHei" bold="true" horizontalCenter="-290.5"
+		         verticalCenter="-159" size="35"  textColor="0xa0522b"/>
+		<e:Label text="底分:" fontFamily="SimHei" bold="true" horizontalCenter="-290" verticalCenter="54.5"
+		         size="35"  textColor="0xa0522b"/>
+		<e:Label text="玩法:" fontFamily="SimHei" bold="true" horizontalCenter="-290.5"
+		         verticalCenter="-53" size="35"  textColor="0xa0522b"/>
+		<e:Scroller id="roundScroller" height="91.48" width="925.52" anchorOffsetY="0" anchorOffsetX="0" horizontalCenter="107"
+		            y="154.04">
+			<e:List id="roundList" x="202.67" y="0" width="722.85" height="0" anchorOffsetY="0" anchorOffsetX="0">
+				<e:layout>
+					<e:HorizontalLayout horizontalAlign="left"  gap="-30" paddingLeft="10"/>
+				</e:layout>
+			</e:List>
+		</e:Scroller>
+		<e:Scroller id="playWayScroller" height="88.7" y="263.26" anchorOffsetX="0" width="922.73" anchorOffsetY="0" horizontalCenter="107.5">
+			<e:List id="playWayList" x="268" y="0" width="922.73" height="91.54" anchorOffsetY="0" anchorOffsetX="0">
+				<e:layout>
+					<e:HorizontalLayout horizontalAlign="left"  gap="-30" paddingLeft="10"/>
+				</e:layout>
+			</e:List>
+		</e:Scroller>
+		<e:Scroller id="antesScroller" anchorOffsetX="0" width="921.03" y="373.23" anchorOffsetY="0" height="197.39" horizontalCenter="106.5">
+			<e:List id="antesList" x="268" width="918.36" height="154" y="1.52" anchorOffsetY="0" anchorOffsetX="0">
+				<e:layout>
+					<e:TileLayout orientation="columns" horizontalAlign="left" columnAlign="left" rowAlign="top" columnWidth="302"
+					              requestedColumnCount="3" horizontalGap="20" verticalGap="0" verticalAlign="top"  paddingLeft="10"/>
+				</e:layout>
+			</e:List>
+		</e:Scroller>
+		<ns1:GameButton id="createRoomBtn" label="创建房间" skinName="buttonSkin19"
+		           y="600.52" horizontalCenter="0"/>
+		<e:Label text="注：房卡在第一局结算后扣除" size="25" horizontalCenter="379.5" verticalCenter="312.5" fontFamily="SimHei"
+		          textColor="0xea9f48"/>
+		<e:Image anchorOffsetX="0" horizontalCenter="0.5" verticalCenter="-314" source="h_cjfj_png" />
+		
+		
+	</e:Group>
+	<e:Image x="30.66" y="31.87" source="bg_page24_3_png"/>
+	<e:Image x="1227.58" y="658" source="bg_page24_2_png"/>
+</e:Skin>

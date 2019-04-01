@@ -1,0 +1,215 @@
+/**
+ * 创建房间面板 
+ */
+class CreateRoomPanel extends BasePanel
+{
+	public createRoomBtn: eui.Button;
+	public roundScroller: eui.Scroller;
+	public playWayScroller: eui.Scroller;
+	public antesScroller: eui.Scroller;
+	public roundList: eui.List;
+	public playWayList: eui.List;
+	public antesList: eui.List;
+	public constructor()
+	{
+		super();
+		this.skinName = UISkinName.CreateRoomPanel;
+	}
+	protected onAwake(event: eui.UIEvent)
+	{
+		super.onAwake(event);
+
+		let dp: eui.ArrayCollection = new eui.ArrayCollection(ProjectDefined.GetInstance().round);
+		this.roundList.dataProvider = dp;
+		dp = new eui.ArrayCollection(ProjectDefined.GetInstance().playWay);
+		this.playWayList.dataProvider = dp;
+		dp = new eui.ArrayCollection(ProjectDefined.GetInstance().antes);
+		this.antesList.dataProvider = dp;
+
+		this.roundList.itemRenderer = CreateRoomPanelItemRenderer;
+		this.playWayList.itemRenderer = CreateRoomPanelItemRenderer;
+		this.antesList.itemRenderer = CreateRoomPanelItemRenderer;
+		this.playWayScroller.scrollPolicyH = eui.ScrollPolicy.AUTO;
+		this.roundScroller.scrollPolicyH = eui.ScrollPolicy.AUTO;
+
+		this.antesScroller.scrollPolicyH = eui.ScrollPolicy.OFF;
+		this.antesScroller.scrollPolicyV = eui.ScrollPolicy.AUTO;
+
+	}
+
+	public init(appendData: any)
+	{
+		super.init(appendData);
+	}
+	protected onEnable(event: eui.UIEvent): void
+	{
+		super.onEnable(event);
+		this.createRoomBtn.addEventListener(egret.TouchEvent.TOUCH_TAP, this.onCreateRoomHandler, this);
+		RoomManager.createRoomEA.addListener(this.createRoomResult, this);
+
+		this.roundList.addEventListener(egret.Event.CHANGE, this.onSelectItemChange, this);
+		this.playWayList.addEventListener(egret.Event.CHANGE, this.onSelectItemChange, this);
+		this.antesList.addEventListener(egret.Event.CHANGE, this.onSelectItemChange, this);
+	}
+
+	protected onDisable(event: eui.UIEvent): void
+	{
+		super.onDisable(event);
+		this.createRoomBtn.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.onCreateRoomHandler, this);
+		RoomManager.createRoomEA.removeListener(this.createRoomResult);
+
+		this.roundList.removeEventListener(egret.Event.CHANGE, this.onSelectItemChange, this);
+		this.playWayList.removeEventListener(egret.Event.CHANGE, this.onSelectItemChange, this);
+		this.antesList.removeEventListener(egret.Event.CHANGE, this.onSelectItemChange, this);
+
+	}
+	protected onRender(event: egret.Event)
+	{
+		super.onRender(event);
+
+
+		UIUtil.hideScrollerBar(this.roundScroller);
+		UIUtil.hideScrollerBar(this.playWayScroller);
+		UIUtil.hideScrollerBar(this.antesScroller);
+		this.refreshUI();
+		this.onSelectItemChange(null, this.roundList);
+		this.onSelectItemChange(null, this.playWayList);
+		this.onSelectItemChange(null, this.antesList);
+	}
+	private refreshUI()
+	{
+		let item: CreateRoomPanelItemRenderer;
+		if (!RoomManager.roomInfo)
+		{
+			this.roundList.selectedIndex = 0;
+			this.playWayList.selectedIndex = 0;
+			this.antesList.selectedIndex = 0;
+			item = this.roundList.getElementAt(0) as CreateRoomPanelItemRenderer;
+			if (item)
+			{
+				item.radioBtn1.selected = true;
+			}
+			item = this.playWayList.getElementAt(0) as CreateRoomPanelItemRenderer;
+			if (item)
+			{
+				item.radioBtn1.selected = true;
+			}
+			item = this.antesList.getElementAt(0) as CreateRoomPanelItemRenderer;
+			if (item)
+			{
+				item.radioBtn1.selected = true;
+			}
+			return;
+		}
+		let index: number = ArrayUtil.getIndex(RoomManager.roomInfo.round, ProjectDefined.GetInstance().round, "num");
+		if (index != -1)
+		{
+			this.roundList.selectedIndex = index;
+			item = this.roundList.getElementAt(index) as CreateRoomPanelItemRenderer;
+			if (item)
+			{
+				item.radioBtn1.selected = true;
+			}
+		}
+		else
+		{
+			this.roundList.selectedIndex = 0;
+		}
+		index = ArrayUtil.getIndex(RoomManager.roomInfo.type, ProjectDefined.GetInstance().playWay, "type");
+		if (index != -1)
+		{
+			this.playWayList.selectedIndex = index;
+			item = this.playWayList.getElementAt(index) as CreateRoomPanelItemRenderer;
+			if (item)
+			{
+				item.radioBtn1.selected = true;
+			}
+		}
+		else
+		{
+			this.playWayList.selectedIndex = 0;
+		}
+		index = ArrayUtil.getIndex(RoomManager.roomInfo.ante, ProjectDefined.GetInstance().antes, "score");
+		if (index != -1)
+		{
+			this.antesList.selectedIndex = index;
+			item = this.antesList.getElementAt(index) as CreateRoomPanelItemRenderer;
+			if (item)
+			{
+				item.radioBtn1.selected = true;
+			}
+		}
+		else
+		{
+			this.antesList.selectedIndex = 0;
+		}
+	}
+	private createRoomResult()
+	{
+		UIManager.showFloatTips("创建房间成功！");
+		SceneManager.goToGame(true);
+		this.onCloseBtnClickHandler(null);
+	}
+	private onCreateRoomHandler(event: egret.Event)
+	{
+		SoundManager.playButtonEffect(event.target);
+		if (!this.roundList.selectedItem)
+		{
+			UIManager.showFloatTips("请选择局数！");
+			return;
+		}
+		if (!this.playWayList.selectedItem)
+		{
+			UIManager.showFloatTips("请选择玩法！");
+			return;
+		}
+		if (!this.antesList.selectedItem)
+		{
+			UIManager.showFloatTips("请选择底分！");
+			return;
+		}
+		RoomManager.reqCreateRoom(this.roundList.selectedItem.num, this.playWayList.selectedItem.type, this.antesList.selectedItem.score);
+	}
+	private onSelectItemChange(event: egret.Event, target?: eui.List)
+	{
+		let list: eui.List;
+		if (target != undefined)
+		{
+			list = target;
+		}
+		else
+		{
+			list = event.target;
+		}
+		if (list instanceof eui.List)
+		{
+			let index: number = list.selectedIndex;
+			if (index == -1)
+			{
+				index = 0;
+			}
+			this.setListUnSelect(list);
+			let selectItem: any = list.getElementAt(index);
+			if (selectItem)
+			{
+				selectItem.radioBtn1.labelDisplay.textColor = 0x1c7b13;
+			}
+			if (event)
+			{
+				SoundManager.playEffect(Sex.Male, MusicAction.buttonClick);
+			}
+		}
+	}
+	private setListUnSelect(list: eui.List)
+	{
+		let lastSelectItem: any;
+		for (let i: number = 0; i < list.numElements; i++)
+		{
+			lastSelectItem = list.getElementAt(i);
+			if (lastSelectItem)
+			{
+				lastSelectItem.radioBtn1.labelDisplay.textColor = 0xa1522b;
+			}
+		}
+	}
+}

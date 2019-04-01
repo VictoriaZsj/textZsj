@@ -1,0 +1,229 @@
+/**
+ * 版本管理
+ */
+class VersionManager
+{
+	/**
+	 * 登录端口
+	 */
+	public static get loginPort(): number
+	{
+		if (VersionManager._isClientTest)
+		{
+			return ProjectDefined.GetInstance().getValue(ProjectDefined.testPort);
+		}
+		return ProjectDefined.GetInstance().getValue(ProjectDefined.port);
+	}
+	/**
+	 * 登录地址
+	 */
+	public static get loginAddress(): string
+	{
+		if (VersionManager._isClientTest)
+		{
+			return ProjectDefined.GetInstance().getValue(ProjectDefined.testAddress);
+
+		}
+		return ProjectDefined.GetInstance().getValue(ProjectDefined.address);
+	}
+
+	private static _isMaintain: boolean;
+	private static _clientVersion: string;
+	private static _clientVersionArray: Array<number>;
+	private static _isClientTest: boolean;
+	public static get isClientTest(): boolean
+	{
+		return VersionManager._isClientTest;
+	}
+	private static _isSafe: boolean = false;
+	public static get isSafe(): boolean
+	{
+		return VersionManager._isClientTest && VersionManager._isSafe;
+	}
+	private static _updateHandler: UpdateHandler = new UpdateHandler();
+	public static get updateHandler()
+	{
+		return VersionManager._updateHandler;
+	}
+	/**
+	 * 初始化，获取安装包版本号
+	 */
+	public static Initialize(): void
+	{
+		let clientVersion: string;
+		if (ChannelManager.clientVersion) //todo开发模式用
+		{
+			clientVersion = ChannelManager.clientVersion;
+		}
+		else
+		{
+			clientVersion = ProjectDefined.GetInstance().getValue(ProjectDefined.version);
+		}
+		VersionManager.SetClientVersion(clientVersion);
+	}
+	/**
+	 * 渠道初始化完毕
+	 */
+	public static loadServerVersion()
+	{
+		if(egret.Capabilities.runtimeType == egret.RuntimeType.WEB)
+		{
+			ChannelManager.sdkHotUpdateComplete();
+		}
+		else
+		{
+			RES.getResByUrl(ProjectDefined.GetInstance().getValue(ProjectDefined.versionUrl) + "?" + Date.now().toString() + Math.random().toString(), VersionManager.onLoadVersionComplete, this, RES.ResourceItem.TYPE_JSON);
+		}
+	}
+	private static onLoadVersionComplete(data: any)
+	{
+		if (data)
+		{
+			VersionManager._isSafe = DEBUG ? false : StringUtil.toBoolean(data.safe);
+			VersionManager._isMaintain = parseInt(data.mt) == 1;
+			let serverVersion: string = data.version;
+			VersionManager.verifyVersion(serverVersion, JSON.stringify(data));
+		}
+		else
+		{
+			VersionManager.onLoadError();
+		}
+	}
+	/**
+	 * 检测安装包版本
+	 */
+	private static verifyVersion(serverVersion: string, data: string)
+	{
+		if (!serverVersion)
+		{
+			VersionManager.onLoadError();
+			return ;
+		}
+		let serverVList: Array<number> = StringUtil.toIntArray(serverVersion, StringConstant.Dot);
+		VersionManager._isClientTest = DEBUG ? true : VersionUtil.CompareAllForce(VersionManager._clientVersionArray, serverVList);
+		if (serverVList && VersionManager._clientVersionArray && serverVList.length > 2 && VersionManager._clientVersionArray.length > 2
+			&& egret.Capabilities.runtimeType == egret.RuntimeType.NATIVE) //原生版本检测
+		{
+			if (VersionUtil.CompareForce(serverVList, VersionManager._clientVersionArray)) //强制更新版本 | 版本的前两位 | 服务器的版本大于本地版本
+			{
+				AlertManager.showAlert("有新版本更新，需要更新才能进入游戏，点击确定前往更新!", VersionManager.gotoLoadNewVersion);
+			}
+			else
+			{
+				if (VersionUtil.CompareOptimize(serverVList, VersionManager._clientVersionArray))//有优化包
+				{
+					AlertManager.showConfirm("有新版本更新，是否前往更新？", VersionManager.gotoLoadNewVersion, VersionManager.verifyVersion2, null, null, null, null, null, data);
+				}
+				else
+				{
+					VersionManager.verifyVersion2(data);
+				}
+			}
+		}
+		else
+		{
+			ChannelManager.sdkHotUpdateComplete();
+		}
+	}
+	private static verifyVersion2(data: string)
+	{
+		if (VersionManager._isClientTest) //提审or测试版本|本地版本大于服务器版本
+		{
+			ChannelManager.sdkHotUpdateComplete();
+		}
+		else if (VersionManager._isMaintain)
+		{
+			VersionManager.LoadMaintainTxt();
+		}
+		else
+		{
+			ChannelManager.hotUpdate(data);
+		}
+	}
+	private static onLoadError()
+	{
+		AlertManager.showAlert("加载版本文件失败！点击确定重新加载！", VersionManager.onReTryLoadVersion);
+	}
+	private static onReTryLoadVersion()
+	{
+		VersionManager.loadServerVersion();
+	}
+	private static SetClientVersion(value: string)
+	{
+		VersionManager._clientVersion = value;
+		VersionManager._clientVersionArray = StringUtil.toIntArray(value, StringConstant.Dot);
+	}
+	/**
+	 * 跳转下载新的版本
+	 */
+	private static gotoLoadNewVersion()
+	{
+		VersionManager._updateHandler.OpenUpdateUrl();
+	}
+	/**
+	 * 验证服务器版本(游戏内容版本)
+	 */
+	public static VerifyGameServer(gameServerVersion: string): boolean
+	{
+		let gsv: Array<number> = StringUtil.toIntArray(gameServerVersion, StringConstant.Dot);
+		if ((VersionManager._clientVersionArray[0] != gsv[0]) || (VersionManager._clientVersionArray[1] < gsv[1]))
+		{
+			let info: AlertInfo = new AlertInfo();
+			info.title = "版本错误";
+			info.message = "客户端版本与服务器版本不匹配，请更新客户端再进游戏。";
+			info.confirmLabel = "前往下载";
+			info.OnConfirm = VersionManager.gotoLoadNewVersion;
+			AlertManager.showAlertInfo(info);
+			return false;
+		}
+		return true;
+	}
+	/**
+	 * 加载维护文件
+	 */
+	private static LoadMaintainTxt()
+	{
+		RES.getResByUrl(ProjectDefined.GetInstance().getValue(ProjectDefined.maintainUrl) + "?" + Date.now().toString() + Math.random().toString(), VersionManager.OnMaintainComplete, this, RES.ResourceItem.TYPE_TEXT);
+	}
+	private static OnMaintainComplete(data: any)
+	{
+		if (data)
+		{
+			AlertManager.showAlert(data.text, VersionManager.onReTryLoadVersion);
+		}
+		else
+		{
+			AlertManager.showAlert("游戏停机维护中，届时将无法登录游戏，请各位相互转告。具体开服时间可能会根据实际情况通告，敬请谅解。", VersionManager.onReTryLoadVersion);
+		}
+	}
+
+	/**
+	 * 根据安全开关来控制组件的显示
+	 */
+	public static setComponentVisibleBySafe(...args)
+	{
+		if (args != null)
+		{
+			if (VersionManager.isSafe)
+			{
+				for (let i: number = 0; i < args.length; i++)
+				{
+					if (args[i])
+					{
+						args[i].visible = false;
+					}
+				}
+			}
+			else
+			{
+				for (let i: number = 0; i < args.length; i++)
+				{
+					if (args[i])
+					{
+						args[i].visible = true;
+					}
+				}
+			}
+		}
+	}
+}

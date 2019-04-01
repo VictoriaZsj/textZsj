@@ -1,0 +1,85 @@
+[ {
+  "id" : 1,
+  "awardId" : 801,
+  "type" : 1,
+  "ignoreInPanel" : 0,
+  "iconName" : "pay_01",
+  "isWhiteView" : 0
+}, {
+  "id" : 2,
+  "awardId" : 802,
+  "type" : 1,
+  "ignoreInPanel" : 0,
+  "iconName" : "pay_01",
+  "isWhiteView" : 0
+}, {
+  "id" : 3,
+  "awardId" : 803,
+  "type" : 1,
+  "ignoreInPanel" : 0,
+  "iconName" : "pay_01",
+  "isWhiteView" : 0
+}, {
+  "id" : 4,
+  "awardId" : 804,
+  "type" : 1,
+  "ignoreInPanel" : 0,
+  "iconName" : "pay_01",
+  "isWhiteView" : 0
+}, {
+  "id" : 5,
+  "awardId" : 805,
+  "type" : 1,
+  "ignoreInPanel" : 0,
+  "iconName" : "pay_01",
+  "isWhiteView" : 0
+}, {
+  "id" : 6,
+  "awardId" : 806,
+  "type" : 1,
+  "ignoreInPanel" : 0,
+  "iconName" : "pay_01",
+  "isWhiteView" : 0
+}, {
+  "id" : 7,
+  "awardId" : 821,
+  "type" : 2,
+  "ignoreInPanel" : 0,
+  "iconName" : "pay_01",
+  "isWhiteView" : 0
+}, {
+  "id" : 8,
+  "awardId" : 822,
+  "type" : 2,
+  "ignoreInPanel" : 0,
+  "iconName" : "pay_01",
+  "isWhiteView" : 0
+}, {
+  "id" : 9,
+  "awardId" : 823,
+  "type" : 2,
+  "ignoreInPanel" : 0,
+  "iconName" : "pay_01",
+  "isWhiteView" : 0
+}, {
+  "id" : 10,
+  "awardId" : 824,
+  "type" : 2,
+  "ignoreInPanel" : 0,
+  "iconName" : "pay_01",
+  "isWhiteView" : 0
+}, {
+  "id" : 11,
+  "awardId" : 825,
+  "type" : 2,
+  "ignoreInPanel" : 0,
+  "iconName" : "pay_01",
+  "isWhiteView" : 0
+}, {
+  "id" : 12,
+  "awardId" : 826,
+  "type" : 2,
+  "ignoreInPanel" : 0,
+  "iconName" : "pay_01",
+  "isWhiteView" : 0
+} ]

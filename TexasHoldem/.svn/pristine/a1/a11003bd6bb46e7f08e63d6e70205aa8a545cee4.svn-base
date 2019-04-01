@@ -1,0 +1,72 @@
+/**
+ * 好友消息面板
+ */
+class FriendMsgPanel extends BasePanel
+{
+	public inviteMsg_bg:eui.Image;
+	public requireMsg_bg:eui.Image;
+	public constructor()
+	{
+		super();
+		this.setGrayMask(false);
+		this.skinName = UISkinName.FriendMsgPanel;
+	}
+	protected onAwake(event: eui.UIEvent)
+	{
+		super.onAwake(event);
+	}
+	public init(appendData: any)
+	{		
+		super.init(appendData);
+		if(appendData=="inviteMsg")
+		{
+			this.inviteMsg_bg.visible=true;
+			this.requireMsg_bg.visible=false;			
+		}
+		else if(appendData=="requireMsg")
+		{
+			this.requireMsg_bg.visible=true;	
+			this.inviteMsg_bg.visible=false;
+		}
+	}
+	protected onRender(event: egret.Event)
+	{
+		super.onRender(event);
+	}
+	protected onEnable(event: eui.UIEvent): void
+	{
+		this.addEventListener(egret.TouchEvent.TOUCH_TAP, this.checkMsg, this);
+		super.onEnable(event);
+	}
+	protected onDisable(event: eui.UIEvent): void
+	{
+		this.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.checkMsg, this);
+		super.onDisable(event);
+	}
+	protected checkMsg(event: egret.TouchEvent)
+	{
+		UIManager.closePanel(this);	
+		switch (event.target)
+		{
+			case this.inviteMsg_bg:
+			UIManager.showPanel(UIModuleName.InviteMsgPanel);
+			case this.requireMsg_bg:
+			UIManager.showPanel(UIModuleName.InviteMsgPanel);
+		}		
+		
+	}
+}
+
+class FriendMsgType
+{
+	/**
+	 * 请求加好友信息
+	*/
+    public static requireMsg="requireMsg";
+	/**
+	 * 邀请好友信息
+	*/
+	public static inviteMsg="inviteMsg";
+
+}
+ 

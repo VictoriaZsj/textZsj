@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="GangSelectPanelSkin" width="1280" height="720" xmlns:e="http://ns.egret.com/eui">
+    <e:Group id="tweenGroup">
+        <e:DataGroup id="contentGroup"></e:DataGroup>
+    </e:Group>
+</e:Skin>

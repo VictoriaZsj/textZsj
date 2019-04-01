@@ -1,0 +1,219 @@
+/**
+ * 兑换奖品的定义
+ * */
+class AwardDefined extends BaseDefined<AwardDefinition>
+{
+	private static readonly awardConfig: string = "award";
+	private static _instance: AwardDefined;
+	public static GetInstance(): AwardDefined
+	{
+		if (!AwardDefined._instance)
+		{
+			AwardDefined._instance = new AwardDefined();
+		}
+		if (DefinedManager.IsParsed(AwardDefined.awardConfig) == false)
+		{
+			AwardDefined._instance.initialize();
+		}
+		return AwardDefined._instance;
+	}
+	public awardDefinitionDic: Dictionary<number, AwardDefinition>;
+
+	public initialize()
+	{
+		this.awardDefinitionDic = new Dictionary<number, AwardDefinition>();
+		let obj: Object = DefinedManager.GetData(AwardDefined.awardConfig);
+		this.dataList = ShortNameDefined.GetInstance().convertEnter(obj) as Array<AwardDefinition>;
+		for (let def of this.dataList)
+		{
+			this.setAwardInfoDefinitionList(def);
+			this.awardDefinitionDic.add(def.id, def);
+		}
+	}
+
+	private setAwardInfoDefinitionList(awardDef: AwardDefinition)
+	{
+		if (awardDef.costType)
+		{
+			awardDef.costList = new Array<AwardInfoDefinition>();
+			for (let i: number = 0; i < awardDef.costType.length; i++)
+			{
+				let cost: AwardInfoDefinition = new AwardInfoDefinition();
+				cost.type = awardDef.costType[i];
+				if (awardDef.costId)
+				{
+					cost.id = awardDef.costId[i];
+				}
+				if (awardDef.costNum)
+				{
+					cost.count = awardDef.costNum[i];
+				}
+				awardDef.costList.push(cost);
+			}
+		}
+		if (awardDef.rewardType)
+		{
+			awardDef.rewardList = new Array<AwardInfoDefinition>();
+			for (let i: number = 0; i < awardDef.rewardType.length; i++)
+			{
+				let reward: AwardInfoDefinition = new AwardInfoDefinition();
+				reward.type = awardDef.rewardType[i];
+				if (awardDef.rewardId)
+				{
+					reward.id = awardDef.rewardId[i];
+				}
+				if (awardDef.rewardNum)
+				{
+					reward.count = awardDef.rewardNum[i];
+				}
+				awardDef.rewardList.push(reward);
+			}
+		}
+	}
+
+	/**
+	 * 获取道具定义
+	 */
+	public getAwardDefinition(id: number): AwardDefinition
+	{
+		for (let def of AwardDefined.GetInstance().dataList)
+		{
+			if (def.id == id)
+			{
+				return def;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * 获取某一兑换ID前置ID列表是否空
+	 */
+	public getPrevIdIsNull(id: number): boolean
+	{
+		let def: AwardDefinition = this.getAwardDefinition(id);
+		return def.preId == null;
+	}
+}
+/**
+ * 奖品的定义
+ * */
+class AwardDefinition implements IBaseDefintion
+{
+    /**
+     * 奖品id
+     */
+	public id: number;
+	/**
+	 * 奖品类型
+	 */
+	public type: number;
+    /**
+     * 消耗类型
+     */
+	public costType: Array<number>;
+    /**
+     * 消耗ID
+     */
+	public costId: Array<number>;
+    /**
+     * 消耗数量
+     */
+	public costNum: Array<number>;
+	/**
+	 * 消耗列表
+	 */
+	public costList: Array<AwardInfoDefinition>;
+    /**
+     * 是否消耗
+     */
+	public isCost: boolean;
+    /**
+     * 消耗名称
+     */
+	public costName: string;
+    /**
+     * 奖励类型
+     */
+	public rewardType: Array<number>;
+    /**
+     * 奖励ID
+     */
+	public rewardId: Array<number>;
+    /**
+     * 奖励数量
+     */
+	public rewardNum: Array<number>;
+	/**
+	 * 奖励列表
+	 */
+	public rewardList: Array<AwardInfoDefinition>;
+	/**
+	 * 时间编号
+	 */
+	public timeId: number;
+	/**
+	 * 用户等级
+	 */
+	public level: number;
+	/**
+	 * 前置奖励
+	 */
+	public preId: number;
+	/**
+	 * 限制次数
+	 */
+	public limit: number;
+	/**
+	 * vip等级要求
+	 */
+	public vipLevel: number;
+	/**
+	 * 名字
+	 */
+	public name: string;
+	/**
+	 * 描述
+	 */
+	public des: string;
+	/**
+	 * 不能通过兑换协议直接兑换
+	 */
+	public nacr: boolean;
+	/**
+	 * 邮件id
+	 */
+	public mailId: number;
+}
+
+/**
+ *  配表中奖励的结构体封装
+ */
+class AwardInfoDefinition
+{
+	private _id: number;
+	public get id(): number
+	{
+		return this._id;
+	}
+	public set id(value: number)
+	{
+		this._id = value;
+		this._definition = AwardDefined.GetInstance().getAwardDefinition(this._id);
+	}
+
+	private _definition: AwardDefinition;
+
+	public get definition(): AwardDefinition
+	{
+		return this._definition;
+	}
+    /**
+     * 数量
+     */
+	public count: number;
+    /**
+     * 物品的类型
+     */
+	public type: number;
+}

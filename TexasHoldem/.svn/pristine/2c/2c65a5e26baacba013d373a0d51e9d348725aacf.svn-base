@@ -1,0 +1,64 @@
+/**
+ * 场景管理
+ */
+class SceneManager
+{
+	/**
+	 * 场景切换时显示的面板
+	 */
+	public static switchPanel: LoadingSwitchPanel;
+	/**
+	 * 场景缓存列表
+	 */
+	public static cacheSceneList: Dictionary<SceneType, BaseScene>;
+	/**
+	 * 当前场景
+	 */
+	private static _currentScene: BaseScene;
+
+	/**
+	 * 当前场景类型
+	 */
+	public static _currentSceneType: SceneType;
+	/**
+	 * 切换场景
+	 */
+	public static switcScene(type: SceneType)
+	{
+		if (!SceneManager.cacheSceneList)
+		{
+			SceneManager.cacheSceneList = new Dictionary<SceneType, BaseScene>();
+		}
+		SceneManager._currentSceneType = type;
+		if (SceneManager._currentScene)
+		{
+			SceneManager._currentScene.clear();
+		}
+		let scene: BaseScene = SceneManager.cacheSceneList.getValue(type);
+		if (!scene)
+		{
+			switch (SceneManager._currentSceneType)
+			{
+				case SceneType.Login:
+					scene = new LoginScene();
+					break;
+				case SceneType.Hall:
+					scene = new HallScene();
+					break;
+				case SceneType.Game:
+					scene = new GameScene();
+					break;
+			}
+			if (scene)
+			{
+				SceneManager.cacheSceneList.add(type, scene);
+			}
+		}
+		if (scene)
+		{
+			scene.initialize();
+		}
+		SoundManager.playBgMusic(SceneManager._currentSceneType);
+	}
+}
+

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="AchievementItemPanelSkin" width="400" height="500" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing" xmlns:ns1="*">
+	<e:Group id="tweenGroup" width="400" height="500" x="0" y="0">
+		<e:Image id="bg" width="400" height="500" x="0" y="0" source="bg_page19_2_png" scale9Grid="19,19,116,115"/>
+		<ns1:AchievementItemRenderer id="item" width="80" height="80" y="40" skinName="AchievementItemSkin" scaleX="2" scaleY="2" horizontalCenter="0"/>
+		<e:Label id="achieveName" text="成就名称-1" y="230" bold="true" fontFamily="Arial" textAlign="center" size="35" horizontalCenter="0" textColor="0x000000"/>
+		<e:Label id="progress" text="1000/1000" y="280" bold="true" fontFamily="Arial" textAlign="center" size="35" horizontalCenter="0" textColor="0x000000"/>
+		<e:Label id="des" text="成就描述成就描述" y="330" bold="true" fontFamily="Arial" textAlign="center" size="35" width="360" horizontalCenter="0" textColor="0x000000"/>
+		<e:Label id="complete" text="已完成" y="400" bold="true" fontFamily="Arial" textAlign="center" size="40" horizontalCenter="0" textColor="0xff6b35"/>
+	</e:Group>
+</e:Skin>

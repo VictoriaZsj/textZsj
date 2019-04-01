@@ -1,0 +1,165 @@
+/**
+ * 我的奖品管理
+*/
+class MyAwardManager
+{
+    /**
+     * 未领取的奖品列表
+    */
+    public static notReceiveList: Array<AwardInfo>;
+    /**
+     * 已领取的奖品列表
+    */
+    public static hasReceiveList: Array<AwardInfo>;
+    /**
+     * 用于奖品列表项的内容是已领取还是未领取的判断
+    */
+    public static renderFlag: number;
+
+    /**
+     * 发送获取奖品信息请求 
+    */
+    public static reqGetAwardList()
+    {
+        //todo 协议待添加
+        SocketManager.AddCommandListener(Command.Req_AddPlayer_3152, MyAwardManager.getAwardListResponse);
+        SocketManager.Send(Command.Req_AddPlayer_3152);
+    }
+    /**
+     * 获取奖品信息成功回调
+    */
+    public static getAwardListResponse(result: SpRpcResult)
+    {
+        SocketManager.RemoveCommandListener(Command.Req_ReceiveGift_3150, MyAwardManager.getAwardListResponse);
+        if (result.data)
+        {
+            if (!MyAwardManager.notReceiveList)
+            {
+                MyAwardManager.notReceiveList = new Array<AwardInfo>();
+            }
+            if (!MyAwardManager.hasReceiveList)
+            {
+                MyAwardManager.hasReceiveList = new Array<AwardInfo>();
+            }
+            for (let def of result.data['awardList'])
+            {
+                let info: ItemDefinition = new ItemDefinition();
+                info = ItemDefined.GetInstance().getItemDefinition(def.id);
+                def.name = info.name;
+                def.icon = info.icon;
+                def.des = info.des;
+                def.effectType = info.effectType;
+                if (def.state == MyAwardState.NotReceive)
+                {
+                    MyAwardManager.notReceiveList.push(def);
+                } else
+                {
+                    MyAwardManager.hasReceiveList.push(def);
+                }
+            }
+        }
+        MyAwardManager.onGetAwardListEvent.dispatch();
+    }
+    /**
+     * 发送领取奖品请求
+    */
+    public static reqGetAward(id: number)
+    {
+        let callback: Function = function (result: SpRpcResult)
+        {
+            SocketManager.RemoveCommandListener(Command.Req_AddPlayer_3152, callback);
+            MyAwardManager.onGetAwardEvent.dispatch(id);
+        }
+        //todo 协议待添加
+        SocketManager.AddCommandListener(Command.Req_AddPlayer_3152, callback);
+        SocketManager.Send(Command.Req_AddPlayer_3152);
+    }
+    /**
+     * 发送保存领奖信息请求
+    */
+    public static reqSaveInfo(name: string, tel: number, qq: number, email: string, address: string)
+    {
+        //todo 协议待添加
+        SocketManager.AddCommandListener(Command.Req_AddPlayer_3152, MyAwardManager.saveInfoResponse);
+        SocketManager.Send(Command.Req_AddPlayer_3152, { name: name, tel: tel, qq: qq, email: email, address: address });
+    }
+    /**
+     * 保存领奖信息成功回调
+    */
+    public static saveInfoResponse(result: SpRpcResult)
+    {
+        SocketManager.RemoveCommandListener(Command.Req_AddPlayer_3152, MyAwardManager.saveInfoResponse);
+        AlertManager.showAlert("领奖信息保存成功");
+    }
+
+    /**
+     * 获取奖品信息成功后发送的广播
+    */
+    public static onGetAwardListEvent: ActionDispatcher = new ActionDispatcher();
+    /**
+     * 领取奖品成功后发送的广播
+    */
+    public static onGetAwardEvent: ActionDispatcher = new ActionDispatcher();
+}
+/**
+ * 奖品信息
+*/
+class AwardInfo
+{
+    /**
+     * id
+    */
+    public id: number;
+    /**
+     * 奖品名称
+    */
+    public name: string;
+    /**
+     * 奖品图标
+    */
+    public icon: number;
+    /**
+     * 奖品描述
+    */
+    public des: string;
+    /**
+     * 效果类型 （用于区分是不是实物）
+    */
+    public effectType: number;
+    /**
+     * 奖品状态
+    */
+    public state: number;
+}
+/**
+ * 奖品类型 
+*/
+enum EffectType
+{
+    /**
+     * 实物
+    */
+    Kind = 2,
+    /**
+     * 话费
+    */
+    Cost = 3
+}
+/**
+ * 奖品状态
+*/
+enum MyAwardState
+{
+    /**
+     * 未领取
+    */
+    NotReceive = 1,
+    /**
+     * 处理中 （等待发货或充值中）
+    */
+    Underway = 2,
+    /**
+     * 处理完成 （已发货或已充值）
+    */
+    Complete = 3
+}

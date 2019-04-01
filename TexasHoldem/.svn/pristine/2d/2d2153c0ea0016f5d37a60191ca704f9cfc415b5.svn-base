@@ -1,0 +1,169 @@
+/*单位基础*/
+class UnitBase extends egret.DisplayObjectContainer
+{
+	private _modelFramerate: number;
+	/*帧速率*/
+	public get modelFramerate()
+	{
+		return this._modelFramerate;
+	}
+	/*单位ID*/
+	private _unitId: number;
+	public get unitId(): number
+	{
+		return this._unitId;
+	}
+	protected set uintId(value: number)
+	{
+		this._unitId = value;
+	}
+	/*模型配置数据*/
+	private _modelData: Object;
+	public get modelData(): Object
+	{
+		return this._modelData;
+	}
+	/*模型图片*/
+	private _modelTexture: egret.Texture;
+	public get modelTexture(): egret.Texture
+	{
+		return this._modelTexture;
+	}
+	/*模型动画*/
+	private _model: egret.MovieClip;
+	public get model(): egret.MovieClip
+	{
+		return this._model;
+	}
+	/*模型创建工厂*/
+	private _movieClipFactory: egret.MovieClipDataFactory;
+	public get movieClipFactory()
+	{
+		return this._movieClipFactory;
+	}
+	private _modelIsLoadComplete: boolean;
+	public get modelIsLoadComplete(): boolean
+	{
+		return this._modelIsLoadComplete;
+	}
+	/*模型加载完成事件*/
+	private _modelLoadCompleteCallBack: Function;
+	/*播放完毕*/
+	private _playComplete: Function;
+	private _preFixName: string;
+	public constructor()
+	{
+		super();
+		this.addEventListener(egret.Event.ADDED_TO_STAGE, this.onAddToStage, this);
+		this.addEventListener(egret.Event.REMOVED_FROM_STAGE, this.onRemoveToStage, this);
+	}
+	protected onAddToStage(event: egret.Event)
+	{
+		this.addEventListener(egret.Event.ENTER_FRAME, this.onFrameHandler, this);
+	}
+	protected onRemoveToStage(event: egret.Event)
+	{
+		this.removeEventListener(egret.Event.ADDED_TO_STAGE, this.onAddToStage, this);
+		this.removeEventListener(egret.Event.REMOVED_FROM_STAGE, this.onRemoveToStage, this);
+		this.removeEventListener(egret.Event.ENTER_FRAME, this.onFrameHandler, this);
+	}
+	protected onFrameHandler(event: egret.Event)
+	{
+		if (this._model && this._playComplete && this._model.currentFrame == this._model.totalFrames)
+		{
+			this._playComplete(this);
+		}
+	}
+	public Init(id: number, prefix: string, completeFunc: Function, playComplete: Function = null)
+	{
+		this._modelIsLoadComplete = false;
+		this._modelLoadCompleteCallBack = completeFunc;
+		this._playComplete = playComplete;
+		this._unitId = id;
+		this._preFixName = prefix;
+		RES.addEventListener(RES.ResourceEvent.COMPLETE, this.loadDataComplete, this);
+		RES.addEventListener(RES.ResourceEvent.ITEM_LOAD_ERROR, this.loadError, this);
+
+		RES.getResByUrl(prefix + id + ResSuffixName.JSONSuffix, this.loadDataComplete, this, RES.ResourceItem.TYPE_JSON);
+	}
+	protected loadDataComplete(event: RES.ResourceEvent)
+	{
+		RES.removeEventListener(RES.ResourceEvent.COMPLETE, this.loadDataComplete, this);
+		this._modelData = event.resItem.data;
+
+		RES.addEventListener(RES.ResourceEvent.COMPLETE, this.loadTextureComplete, this);
+		RES.getResByUrl(this._preFixName + this._unitId + ResSuffixName.PNGSuffix, this.loadDataComplete, this, RES.ResourceItem.TYPE_IMAGE);
+	}
+	protected loadTextureComplete(event: RES.ResourceEvent)
+	{
+		this._modelTexture = event.resItem.data;
+		if (this._modelData && this._modelTexture)
+		{
+			this._modelIsLoadComplete = true;
+			this._movieClipFactory = new egret.MovieClipDataFactory(this._modelData, this._modelTexture);
+			this._model = new egret.MovieClip(this._movieClipFactory.generateMovieClipData(this._unitId.toString()));
+			if (this._model)
+			{
+				this._modelFramerate = this.model.frameRate;
+			}
+			if (this._modelLoadCompleteCallBack != null)
+			{
+				this._modelLoadCompleteCallBack(this);
+			}
+		}
+	}
+	private loadError(event: RES.ResourceEvent)
+	{
+		console.log("模型图片加载出错：" + event.resItem.url);
+	}
+	/*播放*/
+	public play(actionName: string = "", speed: number = 1)
+	{
+		if (this.model)
+		{
+			if (actionName)
+			{
+				this.model.gotoAndPlay(actionName);
+			}
+			else
+			{
+				this.model.gotoAndPlay(1);
+			}
+			this.changeSpeed(speed);
+		}
+	}
+
+	public stop(actionName: string = "")
+	{
+		if (this.model)
+		{
+			if (actionName)
+			{
+				this.model.gotoAndStop(actionName);
+			}
+			else
+			{
+				this.model.gotoAndStop(1);
+			}
+		}
+	}
+	public changeSpeed(speed: number)
+	{
+		if (speed < 0)
+		{
+			speed = 0;
+		}
+		this.model.frameRate = this._modelFramerate * speed;
+	}
+	public Reset()
+	{
+		this._unitId = 0;
+		this._modelTexture = null;
+		this._model = null;
+		this._modelData = null;
+		this._modelIsLoadComplete = false;
+		this._modelLoadCompleteCallBack = null;
+		this._playComplete = null;
+	}
+}
+

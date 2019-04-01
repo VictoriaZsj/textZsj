@@ -1,0 +1,8 @@
+/**
+ * 头像组件状态执行接口
+ */
+interface IGamblingHeadStateHandler
+{
+	target: GamblingHeadComponent;
+	run(...args);
+}

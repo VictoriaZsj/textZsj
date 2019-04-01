@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="panelSkin15" width="400" height="143" xmlns:e="http://ns.egret.com/eui"
+        xmlns:w="http://ns.egret.com/wing" xmlns:ns1="*">
+	<e:Group>
+		<e:Image id="bg" width="400" height="143" x="0" y="0"  scale9Grid="19,18,52,45" source=""/>
+		<ns1:CommonIcon id="commonIcon" width="120" height="120" x="15" y="10" scaleX="1" scaleY="1" skinName="CommonIconSkin" enabled="true"/>
+		<e:Image id="sexImg" width="40" height="40" x="95.33" y="94.67" source="girl_png"/>
+		<e:Group id="textInfo" width="240" height="120" x="145" y="10" anchorOffsetY="0">
+			<e:Label id="nameLabel" text="用户名称六字" x="10" y="20" size="26" bold="true" textColor="0x4f5d60" fontFamily="SimHei" scaleX="1" scaleY="1"/>
+			<e:Label text="ID:" x="10" y="60" size="26" bold="true" textColor="0x4f5d60" fontFamily="SimHei" scaleX="1" scaleY="1"/>
+			<e:Label id="idLabel" text="999999" x="55" y="60" size="26" bold="true" textColor="0x4f5d60" fontFamily="SimHei" scaleX="1" scaleY="1"/>
+		</e:Group>
+	</e:Group>
+</e:Skin>

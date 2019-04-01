@@ -1,0 +1,282 @@
+/**
+ * 用户信息管理
+ */
+class UserManager
+{
+	/**
+	 * 玩家资料
+	 */
+	public static userInfo: UserInfo;
+	/**
+	 * 其他用户资料缓存
+	 */
+	public static otherUserInfo: UserInfo;
+	/**
+	 * 服务器信息
+	 */
+	public static serverInfo: ServerInfo;
+	/**
+     * 等级升级事件
+     */
+	public static levelUpgrade: ActionDispatcher = new ActionDispatcher();
+	/**
+	 * 资产变更事件
+	 */
+	public static propertyChangeEvent: ActionDispatcher = new ActionDispatcher();
+	/**
+	 * 重新登录
+	 */
+	public static reLogin()
+	{
+		UserManager.userInfo = null;
+		//ArrayUtil.Clear(UserManager.achievementInfoList);
+		UserManager.otherUserInfoClear();
+	}
+	private static otherUserInfoClear()
+	{
+		if (UserManager.otherUserInfo)
+		{
+			UserManager.otherUserInfo.reset();
+		}
+	}
+	public static initialize(roleId: number, data: any)
+	{
+		UserManager.otherUserInfoClear();
+		UserManager.userInfo = new UserInfo();
+
+		if (ChannelManager.loginType == ChannelLoginType.Weixin)
+		{
+			let name: string = undefined;
+			if (LoginManager.loginInfo.channeldata.hasOwnProperty("name"))
+			{
+				name = LoginManager.loginInfo.channeldata["name"];
+			}
+			let head: string = undefined;
+			if (LoginManager.loginInfo.channeldata.hasOwnProperty("head"))
+			{
+				head = LoginManager.loginInfo.channeldata["head"];
+			}
+			let sex: number = Sex.Male;
+			if (LoginManager.loginInfo.channeldata.hasOwnProperty("sex"))
+			{
+				sex = parseInt(LoginManager.loginInfo.channeldata["sex"]);
+			}
+			if ((name !== null && name !== undefined && UserManager.userInfo.name != name) ||
+				(head !== null && head !== undefined && UserManager.userInfo.head != head) || (UserManager.userInfo.sex != sex))
+			{
+				UserManager.reqSetUserInfo(name, head, null, sex, null);
+			}
+		}
+		UserManager.userInfo.copyValueFrom(data);
+		UserManager.playerNameOper(UserManager.userInfo);
+		SocketManager.AddCommandListener(Command.Rec_ExpChange_2028, UserManager.onExpChangeResult, this);
+		SocketManager.AddCommandListener(Command.Rec_PushPropertyChange_2000, UserManager.onPropetyChangeHandler, this);
+	}
+	/**
+	 * 用户经验更改
+	 */
+	public static onExpChangeResult(result: SpRpcResult)
+	{
+		if (result.data)
+		{
+			if (UserManager.userInfo.level < ExpDefined.GetInstance().dataList[ExpDefined.GetInstance().dataList.length - 1].level && UserManager.userInfo.level != result.data["level"])
+			{
+				UserManager.userInfo.level = result.data["level"];
+				UserManager.levelUpgrade.dispatch();
+			}
+			UserManager.userInfo.exp = result.data["exp"];
+		}
+	}
+	public static onPropetyChangeHandler(result: SpRpcResult)
+	{
+		if (result.data && UserManager.userInfo)
+		{
+			UserManager.setNumProperty("gold", result.data);
+			UserManager.setNumProperty("diamond", result.data);
+			UserManager.setNumProperty("safeGold", result.data);
+			UserManager.propertyChangeEvent.dispatch();
+		}
+	}
+	/**
+	 * 仅限于number类型
+	 */
+	private static setNumProperty(name: string, source: any)
+	{
+		if (source[name])
+		{
+			UserManager.userInfo[name] = source[name];
+		}
+		else
+		{
+			UserManager.userInfo[name] = 0;
+		}
+	}
+	public static reqGetOtherUserInfo(roleId: number, flag?: number)
+	{
+		let callback: Function = function (result: SpRpcResult)
+		{
+			if (!UserManager.otherUserInfo)
+			{
+				UserManager.otherUserInfo = new UserInfo();
+			}
+			if (result.data)
+			{
+				UserManager.playerNameOper(result.data);
+				UserManager.otherUserInfo.copyValueFrom(result.data);
+				AchievementManager.setAllAchieveList(UserManager.otherUserInfo, result);
+				if (flag == FriendUIType.FriendList || flag == FriendUIType.GiftList)
+				{
+					FriendManager.getUserInfoResult(result, flag);
+				}
+				else
+				{
+					UserManager.otherUserInfo.vipType = VipManager.getVipType(UserManager.otherUserInfo.vipTime, UserManager.otherUserInfo.yearVipTime);
+					UserManager.otherUserInfo.vipSpeed = ProjectDefined.GetInstance().getVipSpeedDefinition(UserManager.otherUserInfo.vipType).speed;
+					UserManager.getOtherUserInfoEa.dispatch();
+				}
+
+			}
+		}
+		UserManager.sendGetUserInfo(roleId, callback, null);
+	}
+	public static reqShowOtherUserInfoPanel(roleId: number)
+	{
+		let callback: Function = function (result: SpRpcResult)
+		{
+			if (!UserManager.otherUserInfo)
+			{
+				UserManager.otherUserInfo = new UserInfo();
+			}
+			if (result.data)
+			{
+				UserManager.playerNameOper(result.data);
+				UserManager.otherUserInfo.copyValueFrom(result.data);
+				AchievementManager.setAllAchieveList(UserManager.otherUserInfo, result);
+				UserManager.otherUserInfo.vipType = VipManager.getVipType(UserManager.otherUserInfo.vipTime, UserManager.otherUserInfo.yearVipTime);
+				UserManager.otherUserInfo.vipSpeed = ProjectDefined.GetInstance().getVipSpeedDefinition(UserManager.otherUserInfo.vipType).speed;
+				UserManager.getOtherUserInfoEa.dispatch();
+			}
+			if (FriendManager.isFriend(UserManager.otherUserInfo.roleId))
+			{
+				UIManager.showPanel(UIModuleName.UserInfoPanel);
+			}
+			else
+			{
+				UIManager.showPanel(UIModuleName.UserInfoPanel, { type: FriendInfoType.Send });
+			}
+		}
+		UserManager.sendGetUserInfo(roleId, callback);
+	}
+
+	/**
+	 * 获取其他用户信息
+	 */
+	public static sendGetUserInfo(roleId: number, callback: Function, errorCallBack?: Function)
+	{
+		SocketManager.Send(Command.Req_GetUserInfo_3023, { "roleId": roleId }, callback, errorCallBack);
+	}
+	/**
+	 * 设置用户信息
+	 */
+	public static editUserInfo(head: string, des: string, sex: number, age: number)
+	{
+		UserManager.reqSetUserInfo(null, head, des, sex, age);
+	}
+	/**
+	 * 设置用户昵称
+	 */
+	public static editUserName(name: string)
+	{
+		UserManager.reqSetUserInfo(name, null, null, null, null);
+	}
+
+	/**
+	 * 设置用户基础信息
+	 */
+	private static reqSetUserInfo(name: string, head: string, des: string, sex: number, age: number)
+	{
+		let callBack: Function = function (result: SpRpcResult)
+		{
+			SocketManager.RemoveCommandListener(Command.Req_SetUserInfo_3609, callBack);
+			if (obj["name"] != null)
+			{
+				UserManager.userInfo.name = obj["name"];
+			}
+			if (obj["head"] != null)
+			{
+				UserManager.userInfo.head = obj["head"];
+			}
+			if (obj["des"] != null)
+			{
+				UserManager.userInfo.des = obj["des"];
+			}
+			if (obj["sex"] != null)
+			{
+				UserManager.userInfo.sex = obj["sex"];
+			}
+			if (obj["age"] != null)
+			{
+				UserManager.userInfo.age = obj["age"];
+			}
+			UserManager.playerNameOper(UserManager.userInfo);
+			UserManager.onSetUserInfoComplete.dispatch();
+		};
+		SocketManager.AddCommandListener(Command.Req_SetUserInfo_3609, callBack);
+		let obj: Object = {};
+		if (head !== null)
+		{
+			obj["head"] = head;
+		}
+		if (des != null)
+		{
+			obj["des"] = des;
+		}
+		if (name != null)
+		{
+			if (UserUtil.isLegalNickName(name))
+			{
+				obj["name"] = name;
+			}
+		}
+		if (sex != null)
+		{
+			obj["sex"] = sex;
+		}
+		if (age != null)
+		{
+			obj["age"] = age;
+		}
+		SocketManager.Send(Command.Req_SetUserInfo_3609, obj);
+	}
+	public static playerNameOper(pInfo: Object, propertyName: string = "name", propertyId: string = "roleId")
+	{
+		if (pInfo && pInfo.hasOwnProperty(propertyId))
+		{
+			let tmpObj: any = pInfo;
+			let pre: string = StringConstant.empty;
+			if (ChannelManager.loginType == ChannelLoginType.Guest && tmpObj[propertyName] != "游客")
+			{
+				pre = "游客";
+			}
+			if (!tmpObj[propertyName])
+			{
+				tmpObj[propertyName] = pre + "";
+			}
+			else
+			{
+				tmpObj[propertyName] = pre + tmpObj[propertyName];
+			}
+		}
+	}
+	//---------------------------------------------
+	// event
+	//---------------------------------------------
+	/**
+	 * 拉取用户信息事件
+	 */
+	public static getOtherUserInfoEa: ActionDispatcher = new ActionDispatcher();
+	/**
+	 * 设置用户信息完毕
+	 */
+	public static onSetUserInfoComplete: ActionDispatcher = new ActionDispatcher();
+}

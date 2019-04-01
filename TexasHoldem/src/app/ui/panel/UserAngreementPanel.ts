@@ -1,0 +1,75 @@
+/**
+ * 用户协议面板
+ */
+class UserAngreementPanel extends BasePanel
+{
+	public agreeBtn: eui.Button;
+	public infoTxt: eui.Label;
+	public txtGroup: eui.Group;
+	private _txtScroller: eui.Scroller;
+
+	public textInput: eui.TextInput;
+
+	public constructor()
+	{
+		super();
+		this.isMaskClickClose = true;
+		this.skinName = UISkinName.UserAngreementPanel;
+	}
+	protected onAwake(event: eui.UIEvent)
+	{
+		super.onAwake(event);
+		this.isCloseButtonTween = false;
+		this._txtScroller = new eui.Scroller();
+		this._txtScroller.width = 442;
+		this._txtScroller.height = 446;
+		this._txtScroller.viewport = this.txtGroup;
+		this._txtScroller.x = 54;
+		this._txtScroller.y = 82;
+		this.tweenGroup.addChild(this._txtScroller);
+	}
+	public init(appendData: any)
+	{
+		super.init(appendData);
+	}
+	protected onTweenOver()
+	{
+		super.onTweenOver();
+		let def: TextDefinition = TextDefined.GetInstance().getDefinition(TextId.UserAngreement);
+		if (def)
+		{
+			if (!this.infoTxt.text)
+			{
+				this.infoTxt.visible = false;
+				this.infoTxt.text = def.text;
+				this.infoTxt.visible = true;
+			}
+		}
+	}
+	protected onEnable(event: eui.UIEvent): void
+	{
+		super.onEnable(event);
+		this._txtScroller.stopAnimation();
+
+		this.agreeBtn.addEventListener(egret.TouchEvent.TOUCH_TAP, this.agreeBtnClickHandler, this);
+	}
+	protected onDisable(event: eui.UIEvent): void
+	{
+		super.onDisable(event);
+		this.agreeBtn.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.agreeBtnClickHandler, this);
+	}
+	protected onRender(event: egret.Event)
+	{
+		super.onRender(event);
+		//需要在scroller添加到舞台上面之后再访问verticalScrollBar
+		UIUtil.hideScrollerBar(this._txtScroller);
+		this._txtScroller.viewport.scrollV = 0;
+		UIUtil.hideScrollerBar(this._txtScroller, true);
+	}
+	private agreeBtnClickHandler(event: egret.TouchEvent)
+	{
+		GameSetting.IsAgreeUserAgreement = true;
+		UIManager.dispatchEvent(UIModuleName.UserAngreementPanel, UIModuleEvent.CHANGE);
+		super.onCloseBtnClickHandler(event);
+	}
+}

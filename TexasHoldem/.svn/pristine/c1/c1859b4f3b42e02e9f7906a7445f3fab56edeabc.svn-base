@@ -1,0 +1,46 @@
+/**
+ * 积分变化效果
+ */
+class ScoreEffectComponent extends BaseComponent<ScoreChangeInfo>
+{
+	public group: eui.Group;
+	public effectGroup: egret.tween.TweenGroup;
+	public constructor()
+	{
+		super();
+		this.skinName = UIComponentSkinName.ScoreEffectComponent;
+	}
+	public init(data: ScoreChangeInfo)
+	{
+		super.init(data);
+
+	}
+	protected rendererStart(event: egret.Event)
+	{
+		if (this.bindData.offsetScore != undefined)
+		{
+			UIUtil.ShowScoreImg(this.bindData.offsetScore, this.group, 1, 1, true, true);
+		}
+		this.effectGroup.play();
+		super.rendererStart(event);
+	}
+	protected onEnable(event: eui.UIEvent): void
+	{
+		super.onEnable(event);
+		this.effectGroup.addEventListener(egret.Event.COMPLETE, this.onCompletehandler, this);
+	}
+	protected onDisable(event: eui.UIEvent)
+	{
+		super.onDisable(event);
+		this.effectGroup.removeEventListener(egret.Event.COMPLETE, this.onCompletehandler, this);
+	}
+	private onCompletehandler(event: egret.Event)
+	{
+		this.effectGroup.removeEventListener(egret.Event.COMPLETE, this.onCompletehandler, this);
+		if (this.parent)
+		{
+			this.parent.removeChild(this);
+			this.destroy();
+		}
+	}
+}

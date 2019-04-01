@@ -1,0 +1,34 @@
+[ {
+  "id" : 1,
+  "type" : 0,
+  "costType" : 0,
+  "costId" : 0,
+  "costNum" : 0,
+  "isCost" : 0,
+  "rewardType" : 5,
+  "rewardId" : 1,
+  "rewardNum" : 5000,
+  "mailId" : 1
+}, {
+  "id" : 2,
+  "type" : 0,
+  "costType" : 0,
+  "costId" : 0,
+  "costNum" : 0,
+  "isCost" : 0,
+  "rewardType" : 5,
+  "rewardId" : 1,
+  "rewardNum" : 50000,
+  "mailId" : 2
+}, {
+  "id" : 3,
+  "type" : 0,
+  "costType" : 0,
+  "costId" : 0,
+  "costNum" : 0,
+  "isCost" : 0,
+  "rewardType" : 5,
+  "rewardId" : 1,
+  "rewardNum" : 500000,
+  "mailId" : 3
+} ]

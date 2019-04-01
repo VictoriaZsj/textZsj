@@ -1,0 +1,106 @@
+/**
+ * 邀请好友面板
+ */
+class InviteFriendPanel extends BackHomeAnimePanel
+{
+	public inviteFriendGroup: eui.Group;
+	public inviteFriend_scroller: eui.Scroller;
+	public inviteFriendList: eui.List;
+	public _dp: eui.ArrayCollection;
+	public inviteBtn: eui.Button;
+	public checkAll: eui.CheckBox;
+
+	public constructor()
+	{
+		super();
+		this.skinName = UISkinName.InviteFriendPanel;
+	}
+	protected onAwake(event: eui.UIEvent)
+	{
+		super.onAwake(event);
+		UIUtil.listRenderer(this.inviteFriendList, this.inviteFriend_scroller, InviteFriendListItemRenderer, ScrollViewDirection.Vertical_T_D, eui.ScrollPolicy.ON, null, true);
+	}
+	public init(appendData: any)
+	{
+		super.init(appendData);
+	}
+	protected onRender(event: egret.Event)
+	{
+		super.onRender(event);
+		this.setFriendListInfo();
+	}
+	protected onEnable(event: eui.UIEvent): void
+	{
+		super.onEnable(event);
+		this.checkAll.addEventListener(egret.Event.CHANGE, this.checkAllHandler, this)
+		this.inviteFriendList.addEventListener(eui.ItemTapEvent.ITEM_TAP, this.checkBtnHandler, this);
+		this.inviteBtn.addEventListener(egret.TouchEvent.TOUCH_TAP,this.sendInviteHandler,this)
+	}
+	protected onDisable(event: eui.UIEvent): void
+	{
+		super.onDisable(event);
+		this.checkAll.removeEventListener(egret.Event.CHANGE, this.checkAllHandler, this)
+		this.inviteFriendList.removeEventListener(eui.ItemTapEvent.ITEM_TAP, this.checkBtnHandler, this);
+		this.inviteBtn.removeEventListener(egret.TouchEvent.TOUCH_TAP,this.sendInviteHandler,this)
+	}
+	protected setFriendListInfo()
+	{
+		if (FriendManager.friendList && FriendManager.friendList.length > 0)
+		{
+			this._dp = new eui.ArrayCollection(FriendManager.friendList);
+			this.inviteFriendList.dataProvider = this._dp;
+		}
+	}
+	public checkAllHandler()
+	{
+		if (FriendManager.friendList && FriendManager.friendList.length > 0)
+		{
+			for (let i = 0; i < FriendManager.friendList.length; i++)
+			{
+				let inviteFriendListItem:InviteFriendListItemRenderer = this.inviteFriendList.getChildAt(i) as InviteFriendListItemRenderer;
+				if (this.checkAll.selected&& !inviteFriendListItem.isCheckedBtn.selected)
+				{
+					inviteFriendListItem.isCheckedBtn.selected = true;
+				}
+				if(!this.checkAll.selected&& inviteFriendListItem.isCheckedBtn.selected)
+				{
+					inviteFriendListItem.isCheckedBtn.selected = false;
+				}
+			}
+		}
+	}
+	public checkBtnHandler(event: eui.ItemTapEvent)
+	{
+	   let itemIndex=event.itemIndex;
+	   let inviteFriendListItem:InviteFriendListItemRenderer = this.inviteFriendList.getChildAt(itemIndex) as InviteFriendListItemRenderer;
+	   inviteFriendListItem.isCheckedBtn.selected=!inviteFriendListItem.isCheckedBtn.selected;
+       if(!inviteFriendListItem.isCheckedBtn.selected)
+	   {
+		   this.checkAll.selected=false;
+	   }
+	}
+	public sendInviteHandler()
+	{
+		let friendIdArray:Array<number>=new Array<number>();
+		if (FriendManager.friendList && FriendManager.friendList.length > 0)
+		{
+			for (let i = 0; i < FriendManager.friendList.length; i++)
+			{
+				let inviteFriendListItem:InviteFriendListItemRenderer = this.inviteFriendList.getChildAt(i) as InviteFriendListItemRenderer;
+				if(inviteFriendListItem.isCheckedBtn.selected)
+				{
+					friendIdArray.push(FriendManager.friendList[i].roleId);
+				}
+			}
+            if(friendIdArray.length>0)
+			{
+				AlertManager.showSingleAlert("好友邀请已发送");
+				// let callback:Function = function()
+				// {
+				// 	AlertManager.showSingleAlert("好友邀请已发送");
+				// }
+				// SocketManager.Send(Command.Req_SendGameInvite_3608, { "Id": roomId, "roleId": friendIdArray},callback); 
+			}			  	
+		}		    
+	}
+}

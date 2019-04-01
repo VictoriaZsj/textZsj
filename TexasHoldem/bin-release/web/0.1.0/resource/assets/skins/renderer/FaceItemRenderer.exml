@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="faceItemRenderer" width="120" xmlns:e="http://ns.egret.com/eui" xmlns:ns1="*"
+        xmlns:w="http://ns.egret.com/wing" height="120">
+	<e:Image id="faceImg" width="120" height="120" source="fangka_png" horizontalCenter="0" verticalCenter="0"/>
+
+
+</e:Skin>

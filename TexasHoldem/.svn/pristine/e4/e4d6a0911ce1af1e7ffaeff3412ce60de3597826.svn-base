@@ -1,0 +1,24 @@
+//基础定义
+interface IBaseDefintion 
+{
+	id: number;
+}
+class BaseDefined 
+{
+	public getDefinition<T extends IBaseDefintion>(id: number, list: Array<T>): T
+	{
+		if (list != null)
+		{
+			for (let i: number = 0; i < list.length; i++)
+			{
+				if (list[i].id == id)
+				{
+					return list[i];
+				}
+			}
+		}
+		return null;
+	}
+}
+
+

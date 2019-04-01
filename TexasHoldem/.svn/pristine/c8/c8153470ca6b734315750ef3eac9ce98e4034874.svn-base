@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="panelSkin9" width="1280" height="720" xmlns:e="http://ns.egret.com/eui"
+        xmlns:w="http://ns.egret.com/wing" xmlns:ns1="*" xmlns:tween="egret.tween.*">
+	<e:Group id="tweenGroup" horizontalCenter="0" verticalCenter="0" width="1280" height="720">
+		<e:Group id="anmGroup" width="1280" height="90" x="0" y="0">
+			<e:Image width="1280" height="90" horizontalCenter="0" source="bg_page8_png" anchorOffsetX="0" anchorOffsetY="0"
+			         scale9Grid="228,0,12,80" y="-7" x="0" scaleX="1" scaleY="1" />
+			<e:Image width="419" scaleX="1" scaleY="1" source="bg_page14_png" scale9Grid="169,0,7,69" y="0" horizontalCenter="0" />
+			<e:Image horizontalCenter="0" y="12" source="h_zjxx_png" />
+			<ns1:GameButton id="closeButton" label="Button" skinName="buttonSkin42" x="16" y="10" scaleX="1.1" scaleY="1.1"/>
+		</e:Group>
+		<e:Group id="anmGroup1" width="1280" height="630" x="0" y="90">
+			<e:Image width="1222" height="641" source="bg_page9_png" scale9Grid="17,16,14,15" horizontalCenter="0"
+			         verticalCenter="3.5" x="29" y="11" scaleX="1" scaleY="1" />
+			<e:Image width="1189" height="578" horizontalCenter="0.5" verticalCenter="35.5" source="bg_page10_png"
+			         scale9Grid="8,11,16,12" />
+			<e:Scroller id="infoScroller" width="1170" height="552.33" horizontalCenter="0" anchorOffsetY="0" y="69">
+				<e:List id="infoList" width="1192" height="552.33" x="0" y="0">
+					<e:layout>
+						<e:VerticalLayout verticalAlign="top" gap="2" />
+					</e:layout>
+				</e:List>
+			</e:Scroller>
+			<e:Label text="对局时间" x="170.01" y="18.02" fontFamily="SimHei" />
+			<e:Label id="nameLabel1" text="玩家名字" x="407.98" fontFamily="SimHei"  y="18" textAlign="center" width="135"/>
+			<e:Label id="nameLabel2" text="玩家名字" x="582.66" fontFamily="SimHei"  y="18" textAlign="center" width="135"/>
+			<e:Label id="nameLabel3" text="玩家名字" x="756.66" fontFamily="SimHei"  y="18" textAlign="center" width="135"/>
+			<e:Label id="nameLabel4" text="10009" x="930.68" fontFamily="SimHei"  y="18" width="135" textAlign="center"/>
+			<e:Label text="操作" x="1122.64" y="18.02" fontFamily="SimHei" />
+		</e:Group>
+	</e:Group>
+</e:Skin>

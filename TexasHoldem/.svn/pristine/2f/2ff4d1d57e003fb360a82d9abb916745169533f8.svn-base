@@ -1,0 +1,32 @@
+/**
+ * 进入游戏前初始化应用，登录之后
+ */
+class InitAppHandler
+{
+	private _isAppComplete: boolean = false;
+	public get isAppComplete(): boolean
+	{
+		return this._isAppComplete;
+	}
+	public Invoke()
+	{
+		if (this._isAppComplete == false)
+		{
+			//第一次登录初始化一次
+			this._isAppComplete = true;
+			//
+			SocketManager.AddCommandListener(Command.Rec_AddFriendSuccess_2036, FriendManager.onAddFriendSuccessRec, this);
+			SocketManager.AddCommandListener(Command.Rec_DelFriendSuccess_2035, FriendManager.onDelFriendSuccessRec, this);
+			SocketManager.AddCommandListener(Command.Rec_OnlineState_2064, FriendManager.onOnlineStateChangeRec, this);
+			SocketManager.AddCommandListener(Command.Rec_GiveGold_2037, FriendManager.onGiveGoldRec, this);
+			SocketManager.AddCommandListener(Command.Rec_RequestFriend_2038, FriendManager.onRequestFriendRec, this);
+		}
+		else
+		{
+			//非第一次登录执行
+			//重登录,做了数据缓存的都清除
+		}
+		//每次登录都执行
+		MailManager.Reset();
+	}
+}

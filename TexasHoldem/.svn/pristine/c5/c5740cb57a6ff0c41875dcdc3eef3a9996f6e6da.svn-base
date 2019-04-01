@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="MessagePanel" width="720" height="1280" xmlns:e="http://ns.egret.com/eui" xmlns:ns1="*" xmlns:w="http://ns.egret.com/wing">
+	<e:Group id="anmGroup" width="111.99" height="136.67" anchorOffsetX="0" anchorOffsetY="0" x="600" y="-1">
+		<e:Image id="inviteMsg_bg" width="103.62" height="115.78" anchorOffsetX="0" anchorOffsetY="0" scaleX="1" scaleY="1" scale9Grid="19,18,23,23" source="bg_page19_png" x="5"/>
+		<e:Image id="requireMsg_bg" width="103.62" height="115.78" x="5" y="0" source="bg_page2_png" scale9Grid="21,20,106,107" anchorOffsetY="0" />
+		<e:Label text="+" x="56" y="49.11" textColor="0x0f0000" size="76" anchorOffsetY="0" height="66.67"/>
+	</e:Group>
+</e:Skin>

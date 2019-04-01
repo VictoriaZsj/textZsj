@@ -1,0 +1,122 @@
+/**
+ * 层级控制
+ */
+class LayerController
+{
+	/**
+ * 对家组层级
+ */
+	private _duiJiaGrouplayerContainer: LayerContainer;
+	/**
+ * 对家手牌层级
+ */
+	private _duiJiaShouPaiLayerContainer: LayerContainer;
+	/**
+ * 上家手牌层级
+ */
+	private _shangJiaShouPaiLayerContainer: LayerContainer;
+	/**
+ * 上家碰杠牌层级
+ */
+	private _shangJiaGroupLayerContainer: LayerContainer;
+	/**
+ * 下家碰杠牌层级
+ */
+	private _xiaJiaGroupLayer: LayerContainer;
+	/**
+ * 下家手牌层级
+ */
+	private _xiaJiaShouPaiLayer: LayerContainer;
+	/**
+ * 出牌层级 本家
+ */
+	private _outBenJiaLayerContainer: LayerContainer;
+	/**
+	 * 出牌层级 对家
+	 */
+	private _outDuiJiaLayerContainer: LayerContainer;
+	/**
+	 * 出牌层级下家
+	 */
+	private _outXiaJiaLayerContainer: LayerContainer;
+	/**
+	 * 出牌层级对家
+	 */
+	private _outShangJiaLayerContainer: LayerContainer;
+	/**
+ * 牌墙层级其他家
+ */
+	private _cardWallOtherContainer: LayerContainer;
+	/**
+ * 牌墙层级本家
+ */
+	private _cardWallLayerBenJiaContainer: LayerContainer;
+	/**
+ * 本家组牌层级
+ */
+	private _benJiaGroupLayerContainer: LayerContainer;
+	/**
+ * 本家手牌层级
+ */
+	private _benJiaShouPaiLayerContainer: LayerContainer;
+
+	private _group: eui.Group;
+
+	public init(group: eui.Group)
+	{
+		this._group = group;
+		this._duiJiaGrouplayerContainer = new LayerContainer(GameSetting.DuiJiaGrouplayer);
+		this._duiJiaShouPaiLayerContainer = new LayerContainer(GameSetting.DuiJiaShouPaiLayer);
+		this._shangJiaShouPaiLayerContainer = new LayerContainer(GameSetting.ShangJiaShouPaiLayer);
+		this._shangJiaGroupLayerContainer = new LayerContainer(GameSetting.ShangJiaGroupLayer);
+		this._xiaJiaGroupLayer = new LayerContainer(GameSetting.XiaJiaGroupLayer);
+		this._xiaJiaShouPaiLayer = new LayerContainer(GameSetting.XiaJiaShouPaiLayer);
+
+		this._outBenJiaLayerContainer = new LayerContainer(GameSetting.OutBenJiaLayer);
+		this._outXiaJiaLayerContainer = new LayerContainer(GameSetting.OutXiaJiaLayer);
+		this._outDuiJiaLayerContainer = new LayerContainer(GameSetting.OutDuiJiaLayer);
+		this._outShangJiaLayerContainer = new LayerContainer(GameSetting.OutShangJiaLayer);
+
+
+
+		this._cardWallOtherContainer = new LayerContainer(GameSetting.CardWallOther);
+		this._cardWallLayerBenJiaContainer = new LayerContainer(GameSetting.CardWallLayerBenJia);
+		this._benJiaGroupLayerContainer = new LayerContainer(GameSetting.BenJiaGroupLayer);
+		this._benJiaShouPaiLayerContainer = new LayerContainer(GameSetting.BenJiaShouPaiLayer);
+
+		group.addChild(this._duiJiaGrouplayerContainer);
+		group.addChild(this._duiJiaShouPaiLayerContainer);
+		group.addChild(this._shangJiaGroupLayerContainer);
+		
+		group.addChild(this._shangJiaShouPaiLayerContainer);
+		group.addChild(this._xiaJiaGroupLayer);
+		group.addChild(this._xiaJiaShouPaiLayer);
+		group.addChild(this._outXiaJiaLayerContainer);
+		group.addChild(this._outDuiJiaLayerContainer);
+		group.addChild(this._outShangJiaLayerContainer);
+		group.addChild(this._outBenJiaLayerContainer);
+
+
+
+		group.addChild(this._cardWallOtherContainer);
+		group.addChild(this._benJiaGroupLayerContainer);
+		group.addChild(this._cardWallLayerBenJiaContainer);
+		group.addChild(this._benJiaShouPaiLayerContainer);
+	}
+	/**
+	 * 获取指定层级的容器
+	 */
+	public getContainer(layer: number): LayerContainer
+	{
+		let container: LayerContainer;
+		for (let i: number = 0; i < this._group.numChildren; i++)
+		{
+			container = this._group.getChildAt(i) as LayerContainer;
+			if (container.layer == layer)
+			{
+				return container;
+			}
+		}
+		return null;
+	}
+}

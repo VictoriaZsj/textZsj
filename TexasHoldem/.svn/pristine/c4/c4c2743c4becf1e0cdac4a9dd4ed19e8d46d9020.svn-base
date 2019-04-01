@@ -1,0 +1,490 @@
+/**
+ * 好友面板
+*/
+class FriendPanel extends BaseAnmiatePanel
+{
+    /**
+     * 邀请按钮
+    */
+    private inviteLabel: eui.Label;
+    /**
+     * 快速领取按钮
+    */
+    private fastReceiveBtn: eui.Button;
+    /**
+     * 查询按钮
+    */
+    private searchBtn: eui.Button;
+    /**
+     * 选项卡内容group
+    */
+    private tabGroup: eui.Group;
+    private giftTabGroup: eui.Group;
+    private requestTabGroup: eui.Group;
+    private addTabGroup: eui.Group;
+    /**
+     * 有内容显示的group
+    */
+    private hasFriendGroup: eui.Group;
+    private hasGiftGroup: eui.Group;
+    private hasRequestGroup: eui.Group;
+    /**
+     * 无内容显示的group
+    */
+    private noFriendGroup: eui.Group;
+    private noGiftGroup: eui.Group;
+    private noRequestGroup: eui.Group;
+    /**
+     * 搜索输入框
+    */
+    private searchText: eui.EditableText;
+
+    private friendTabCompontent: TabComponent;
+    private scroller: eui.Scroller;
+    private giftScroller: eui.Scroller;
+    private requestScroller: eui.Scroller;
+    private addScroller: eui.Scroller;
+    private list: eui.List;
+    private giftList: eui.List;
+    private requestList: eui.List;
+    private addList: eui.List;
+    private _dp: eui.ArrayCollection;
+    private _ly: eui.TileLayout;
+    private _giftly: eui.TileLayout;
+    private _requestly: eui.TileLayout;
+    private _addly: eui.TileLayout;
+
+    public constructor()
+    {
+        super();
+        this.skinName = UISkinName.FriendPanel;
+    }
+    protected onAwake(event: eui.UIEvent)
+    {
+        super.onAwake(event);
+        this._ly = UIUtil.getVTileLayout(1, 1, egret.VerticalAlign.TOP);
+        this._giftly = UIUtil.getVTileLayout(1, 1, egret.VerticalAlign.TOP);
+        this._requestly = UIUtil.getVTileLayout(1, 1, egret.VerticalAlign.TOP);
+        this._addly = UIUtil.getVTileLayout(1, 1, egret.VerticalAlign.TOP);
+        this.list.layout = this._ly;
+        this.giftList.layout = this._giftly;
+        this.requestList.layout = this._requestly;
+        this.addList.layout = this._addly;
+        UIUtil.listRenderer(this.list, this.scroller, FriendItemRenderer, ScrollViewDirection.Vertical_T_D, eui.ScrollPolicy.ON, null, true);
+        UIUtil.listRenderer(this.giftList, this.giftScroller, GiftItemRenderer, ScrollViewDirection.Vertical_T_D, eui.ScrollPolicy.ON, null, true);
+        UIUtil.listRenderer(this.requestList, this.requestScroller, FriendRequestItemRenderer, ScrollViewDirection.Vertical_T_D, eui.ScrollPolicy.ON, null, true);
+        UIUtil.listRenderer(this.addList, this.addScroller, AddFriendItemRenderer, ScrollViewDirection.Vertical_T_D);
+        this.scroller.scrollPolicyH = this.giftScroller.scrollPolicyH = this.requestScroller.scrollPolicyH = this.addScroller.scrollPolicyH = eui.ScrollPolicy.OFF;
+        let array: Array<eui.Group> = new Array<eui.Group>();
+        array.push(this.tabGroup);
+        array.push(this.giftTabGroup);
+        array.push(this.requestTabGroup);
+        array.push(this.addTabGroup);
+        this.friendTabCompontent.init(array);
+    }
+    protected onRender(event: egret.Event)
+    {
+        super.onRender(event);
+        this.hasFriendGroup.visible = false;
+        this.noFriendGroup.visible = false;
+        this.hasGiftGroup.visible = false;
+        this.noGiftGroup.visible = false;
+        this.hasRequestGroup.visible = false;
+        this.noRequestGroup.visible = false;
+        //发送请求获得好友信息列表
+        // FriendManager.reqFriendListInfo();
+        this.setFriendListInfo();  //todo 测试代码
+    }
+    protected onEnable(event: eui.UIEvent): void
+    {
+        super.onEnable(event);
+        FriendManager.onGetFriendListEa.addListener(this.setFriendListInfo, this);
+        FriendManager.onGetFriendDetailInfoEa.addListener(this.setFriendDetailInfo, this);
+        this.list.addEventListener(eui.ItemTapEvent.ITEM_TAP, this.onListClickHandler, this);
+        this.requestList.addEventListener(eui.ItemTapEvent.ITEM_TAP, this.onRequestListClickHandler, this);
+        this.giftList.addEventListener(eui.ItemTapEvent.ITEM_TAP, this.onGiftListClickHandler, this);  //todo 领取金币成功功能测试代码 要删除
+        this.inviteLabel.addEventListener(egret.TouchEvent.TOUCH_TAP, this.inviteFriend, this);
+        this.friendTabCompontent.tabBar.addEventListener(eui.ItemTapEvent.ITEM_TAP, this.onTabClickHandler, this);
+        FriendManager.onReceiveGiftEa.addListener(this.receiveGiftSuccess, this);
+        this.fastReceiveBtn.addEventListener(egret.TouchEvent.TOUCH_TAP, this.fastReceive, this);
+        FriendManager.onFriendRequestEa.addListener(this.setFriendRequestList, this);
+        FriendManager.onReceiveFriendRequestEa.addListener(this.refreshFriendRequestList, this);
+        this.searchBtn.addEventListener(egret.TouchEvent.TOUCH_TAP, this.searchPlayer, this);
+        this.searchText.addEventListener(eui.UIEvent.CHANGE, this.searchTextChange, this);
+        FriendManager.onSearchPlayerEa.addListener(this.setAddList, this);
+        FriendManager.onFastReceiveEa.addListener(this.fastReceiveSuccess, this);
+    }
+    protected onDisable(event: eui.UIEvent): void
+    {
+        super.onDisable(event);
+        FriendManager.onGetFriendListEa.removeListener(this.setFriendListInfo);
+        FriendManager.onGetFriendDetailInfoEa.removeListener(this.setFriendDetailInfo);
+        this.list.removeEventListener(eui.ItemTapEvent.ITEM_TAP, this.onListClickHandler, this);
+        this.requestList.removeEventListener(eui.ItemTapEvent.ITEM_TAP, this.onRequestListClickHandler, this);
+        this.inviteLabel.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.inviteFriend, this);
+        this.friendTabCompontent.tabBar.removeEventListener(eui.ItemTapEvent.ITEM_TAP, this.onTabClickHandler, this);
+        FriendManager.onReceiveGiftEa.removeListener(this.receiveGiftSuccess);
+        this.fastReceiveBtn.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.fastReceive, this);
+        FriendManager.onFriendRequestEa.removeListener(this.setFriendRequestList);
+        FriendManager.onReceiveFriendRequestEa.removeListener(this.refreshFriendRequestList);
+        this.searchBtn.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.searchPlayer, this);
+        this.searchText.removeEventListener(eui.UIEvent.CHANGE, this.searchTextChange, this);
+        FriendManager.onSearchPlayerEa.removeListener(this.setAddList);
+        FriendManager.onFastReceiveEa.removeListener(this.fastReceiveSuccess);
+    }
+    /**
+     * 监听搜索框内容改变
+    */
+    private searchTextChange(event: eui.UIEvent)
+    {
+        if (this.searchText.text.trim().length <= 0)
+        {
+            this.searchBtn.visible = false;
+        } else
+        {
+            if (this.searchText.text.trim().length >= 15)
+            {
+                this.searchText.text = this.searchText.text.slice(0, 15);
+            }
+            this.searchBtn.visible = true;
+        }
+    }
+    /**
+     * 设置添加查询列表的数据
+    */
+    private setAddList()
+    {
+        //测试代码
+        let list0: FriendInfo = new FriendInfo();
+        list0.id = 0;
+        list0.headImg = "";
+        list0.glodNum = 1000;
+        list0.isCanGet = 0;
+        list0.isHadGiven = 0;
+        list0.isOnline = 1;
+        list0.name = "seven";
+        let list1: FriendInfo = new FriendInfo();
+        list1.id = 1;
+        list1.headImg = "";
+        list1.glodNum = 1000;
+        list1.isCanGet = 0;
+        list1.isHadGiven = 1;
+        list1.isOnline = 0;
+        list1.name = "aaaaaa";
+        FriendManager.searchList = new Array<FriendInfo>();
+        FriendManager.searchList.push(list0);
+        FriendManager.searchList.push(list1);
+        //
+        if (FriendManager.searchList.length > 0)
+        {
+            this._dp = new eui.ArrayCollection(FriendManager.searchList);
+            this.addList.dataProvider = this._dp;
+        }
+    }
+    /**
+     * 搜索按钮事件
+    */
+    private searchPlayer()
+    {
+        if (this.searchText.text.trim().length > 0)
+        {
+            //发送查找好友请求
+            // FriendManager.reqSearchPlayer(this.searchText.text.trim());
+            this.setAddList();  //todo 测试代码
+        }
+    }
+    /**
+     * 接受或拒绝好友请求成功接受广播后续执行事件
+    */
+    private refreshFriendRequestList()
+    {
+        if (FriendManager.isReceive)
+        {
+            AlertManager.showSingleAlertByString("您已成功添加此好友。");
+        } else
+        {
+            AlertManager.showSingleAlertByString("您已拒绝此条好友申请。");
+        }
+        if (FriendManager.requestFriendList.length > 0)
+        {
+            for (let i: number = 0; i < FriendManager.requestFriendList.length; i++)
+            {
+                if (FriendManager.requestFriendList[i].id == FriendManager.requestFriendId)
+                {
+                    FriendManager.requestFriendList.splice(i, 1);
+                }
+            }
+            if (FriendManager.requestFriendList.length <= 0)
+            {
+                this.hasRequestGroup.visible = false;
+                this.noRequestGroup.visible = true;
+            }
+            this._dp = new eui.ArrayCollection(FriendManager.requestFriendList);
+            this.requestList.dataProvider = this._dp;
+        } else
+        {
+            this.noRequestGroup.visible = true;
+            this.hasRequestGroup.visible = false;
+        }
+    }
+    /**
+     * 获取好友请求列表成功后接受广播后续执行事件
+    */
+    private setFriendRequestList()
+    {
+        //测试代码
+        let list0: FriendInfo = new FriendInfo();
+        list0.id = 0;
+        list0.headImg = "";
+        list0.glodNum = 1000;
+        list0.isCanGet = 0;
+        list0.isHadGiven = 0;
+        list0.isOnline = 1;
+        list0.name = "seven";
+        let list1: FriendInfo = new FriendInfo();
+        list1.id = 1;
+        list1.headImg = "";
+        list1.glodNum = 1000;
+        list1.isCanGet = 0;
+        list1.isHadGiven = 1;
+        list1.isOnline = 0;
+        list1.name = "aaaaaa";
+        let list2: FriendInfo = new FriendInfo();
+        list2.id = 2;
+        list2.headImg = "";
+        list2.glodNum = 1000;
+        list2.isCanGet = 0;
+        list2.isHadGiven = 1;
+        list2.isOnline = 0;
+        list2.name = "bbbbbb";
+        let list3: FriendInfo = new FriendInfo();
+        list3.id = 3;
+        list3.headImg = "";
+        list3.glodNum = 1000;
+        list3.isCanGet = 0;
+        list3.isHadGiven = 1;
+        list3.isOnline = 0;
+        list3.name = "cccccc";
+        FriendManager.requestFriendList = new Array<FriendInfo>();
+        FriendManager.requestFriendList.push(list0);
+        FriendManager.requestFriendList.push(list1);
+        FriendManager.requestFriendList.push(list2);
+        FriendManager.requestFriendList.push(list3);
+        //
+        if (FriendManager.requestFriendList && FriendManager.requestFriendList.length > 0)
+        {
+            this._dp = new eui.ArrayCollection(FriendManager.requestFriendList);
+            this.requestList.dataProvider = this._dp;
+            this.hasRequestGroup.visible = true;
+        } else
+        {
+            this.noRequestGroup.visible = true;
+        }
+    }
+    /**
+     * 快速领取好友金币成功后续执行事件
+    */
+    private fastReceiveSuccess()
+    {
+        let goldNum: number = 500 * FriendManager.giftList.length;
+        FriendManager.giftList = [];
+        this._dp = new eui.ArrayCollection(FriendManager.giftList);
+        this.giftList.dataProvider = this._dp;
+        this.hasGiftGroup.visible = false;
+        this.noGiftGroup.visible = true;
+        this.fastReceiveBtn.enabled = false;
+        AlertManager.showSingleAlert("您已成功领取好友赠送的" + goldNum + "金币！");
+    }
+    /**
+     * 快速领取好友金币按钮的操作
+    */
+    private fastReceive()
+    {
+        //发送请求
+        // FriendManager.reqFastReceive();
+        this.fastReceiveSuccess();
+    }
+    //todo 领取金币成功功能测试代码 要删除
+    private onGiftListClickHandler(event: egret.TouchEvent)
+    {
+        FriendManager.friendId = this.giftList.selectedItem.id;
+        this.receiveGiftSuccess();
+    }
+    /**
+     * 领取好友金币成功后续执行事件
+    */
+    private receiveGiftSuccess()
+    {
+        for (let i: number = 0; i < FriendManager.giftList.length; i++)
+        {
+            if (FriendManager.friendId == FriendManager.giftList[i].id)
+            {
+                FriendManager.giftList.splice(i, 1);
+            }
+        }
+        if (FriendManager.giftList.length <= 0)
+        {
+            this.hasGiftGroup.visible = false;
+            this.noGiftGroup.visible = true;
+            this.fastReceiveBtn.enabled = false;
+        }
+        this._dp = new eui.ArrayCollection(FriendManager.giftList);
+        this.giftList.dataProvider = this._dp;
+        AlertManager.showSingleAlert("您已成功领取好友赠送的500金币！");
+    }
+    /**
+     * 选项卡按钮点击事件
+    */
+    private onTabClickHandler(e: eui.ItemTapEvent): void
+    {
+        SoundManager.playButtonEffect(event.target);
+        if (e.itemIndex == 0)
+        {
+            // 发送请求更新好友信息列表
+            // FriendManager.reqFriendListInfo();
+        } else if (e.itemIndex == 1)
+        {
+            FriendManager.giftList = [];
+            if (FriendManager.friendList.length > 0)
+            {
+                for (let def of FriendManager.friendList)
+                {
+                    if (def.isHadGiven == 1)
+                    {
+                        if (!FriendManager.giftList)
+                        {
+                            FriendManager.giftList = new Array<FriendInfo>();
+                        }
+                        FriendManager.giftList.push(def);
+                    }
+                }
+                if (FriendManager.giftList.length > 0)
+                {
+                    this._dp = new eui.ArrayCollection(FriendManager.giftList);
+                    this.giftList.dataProvider = this._dp;
+                    this.hasGiftGroup.visible = true;
+                    this.fastReceiveBtn.enabled = true;
+                    this.noGiftGroup.visible = false;
+                } else
+                {
+                    this.noGiftGroup.visible = true;
+                    this.fastReceiveBtn.enabled = false;
+                }
+            } else
+            {
+                this.noGiftGroup.visible = true;
+                this.fastReceiveBtn.enabled = false;
+            }
+        } else if (e.itemIndex == 2)
+        {
+            //发送获取好友请求列表请求
+            // FriendManager.reqFriendRequest();
+            this.setFriendRequestList();    //todo 测试代码
+        } else if (e.itemIndex == 3)
+        {
+            this.searchText.text = "";
+            FriendManager.searchList = [];
+            this._dp = new eui.ArrayCollection(FriendManager.searchList);
+            this.addList.dataProvider = this._dp;
+            this.searchText.setFocus();
+            this.searchBtn.visible = false;
+        }
+    }
+    /**
+     * 邀请好友按钮点击事件
+    */
+    private inviteFriend()
+    {
+        SoundManager.playButtonEffect(event.target);
+        if (ChannelManager.hasWeixin)
+        {
+            UIManager.showFloatTips("打开微信");  //todo 测试代码
+        }
+        else
+        {
+            AlertManager.showSingleAlert("您未安装微信，分享失败。");
+        }
+    }
+    /**
+     * 好友列表点击事件
+    */
+    private onListClickHandler(event: egret.TouchEvent)
+    {
+        if (this.list.selectedItem)
+        {
+            //发送获取好友详请的请求
+            // FriendManager.reqGetFriendDetailInfo(this.list.selectedItem.id);
+            UIManager.showFloatTips("发送获取好友详请的请求" + this.list.selectedItem.id);  //todo 测试代码
+        }
+    }
+    /**
+     * 好友请求列表点击事件
+    */
+    private onRequestListClickHandler(event: egret.TouchEvent)
+    {
+        if (this.requestList.selectedItem)
+        {
+            //发送获取好友详请的请求
+            // FriendManager.reqGetFriendDetailInfo(this.requestList.selectedItem.id);
+            UIManager.showFloatTips("发送获取好友详请的请求" + this.requestList.selectedItem.id);  //todo 测试代码
+        }
+    }
+    /**
+     * 获取好友面板信息成功后接受广播执行的操作
+    */
+    private setFriendDetailInfo()
+    {
+        UIManager.showPanel(UIModuleName.UserInfoPanel);
+    }
+    private setFriendListInfo()
+    {
+        //测试代码
+        let list0: FriendInfo = new FriendInfo();
+        list0.id = 0;
+        list0.headImg = "";
+        list0.glodNum = 1000;
+        list0.isCanGet = 0;
+        list0.isHadGiven = 0;
+        list0.isOnline = 1;
+        list0.name = "seven";
+        let list1: FriendInfo = new FriendInfo();
+        list1.id = 1;
+        list1.headImg = "";
+        list1.glodNum = 1000;
+        list1.isCanGet = 0;
+        list1.isHadGiven = 1;
+        list1.isOnline = 0;
+        list1.name = "aaaaaa";
+        let list2: FriendInfo = new FriendInfo();
+        list2.id = 2;
+        list2.headImg = "";
+        list2.glodNum = 1000;
+        list2.isCanGet = 0;
+        list2.isHadGiven = 1;
+        list2.isOnline = 0;
+        list2.name = "bbbbbb";
+        let list3: FriendInfo = new FriendInfo();
+        list3.id = 3;
+        list3.headImg = "";
+        list3.glodNum = 1000;
+        list3.isCanGet = 0;
+        list3.isHadGiven = 1;
+        list3.isOnline = 0;
+        list3.name = "cccccc";
+        FriendManager.friendList = new Array<FriendInfo>();
+        FriendManager.friendList.push(list0);
+        FriendManager.friendList.push(list1);
+        FriendManager.friendList.push(list2);
+        FriendManager.friendList.push(list3);
+        //
+        if (FriendManager.friendList && FriendManager.friendList.length > 0)
+        {
+            this._dp = new eui.ArrayCollection(FriendManager.friendList);
+            this.list.dataProvider = this._dp;
+            this.hasFriendGroup.visible = true;
+        } else
+        {
+            this.noFriendGroup.visible = true;
+        }
+    }
+}

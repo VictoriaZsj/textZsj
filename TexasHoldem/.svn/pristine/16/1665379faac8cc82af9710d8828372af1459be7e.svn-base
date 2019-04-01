@@ -1,0 +1,60 @@
+/**
+ * VIP的定义
+ * */
+class VipDefined extends BaseDefined
+{
+	private static readonly VipConfig: string = "vip";
+	private static _instance: VipDefined;
+	public vipDefinedList:Array<VipDefinition>;
+	
+	public static GetInstance(): VipDefined
+	{
+		if (!VipDefined._instance)
+		{
+			VipDefined._instance = new VipDefined();
+		}
+		if (DefinedManager.IsParsed(VipDefined.VipConfig) == false)
+		{
+			VipDefined._instance.initialize();
+		}
+		return VipDefined._instance;
+	}
+    
+
+	public initialize()
+	{
+		let obj: Object = DefinedManager.GetData(VipDefined.VipConfig);
+		this.vipDefinedList = ShortNameDefined.GetInstance().convertEnter(obj) as Array<VipDefinition>;
+	}	
+
+    /**
+	 * 获取vip定义
+	 */
+	public getVipDefinitionById(id: number): VipDefinition
+	{
+		for (let def of VipDefined.GetInstance().vipDefinedList)
+		{
+			if (def.id== id)
+			{
+				return def;
+			}
+		}
+		return null;
+	}
+}
+
+
+/**
+ * 商城选项的定义
+ * */
+class VipDefinition implements IBaseDefintion
+{
+	/**
+	 * id
+	 */
+	public id :number;
+	/**
+	 * 成长速度
+	 */
+	public speed:number
+}

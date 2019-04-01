@@ -1,0 +1,89 @@
+/**
+ * 充值管理
+ */
+class PayManager
+{
+	public static payList: Array<PayInfo> = new Array<PayInfo>();
+
+	public static buyOverAction: ActionDispatcher = new ActionDispatcher();
+	public static cardNumUpdateAction: ActionDispatcher = new ActionDispatcher();
+	public static initialize()
+	{
+		
+	}
+	public static recCardNumUpdate(result: SpRpcResult)
+	{
+		
+	}
+	public static reqBuyCard(price: number)
+	{
+		let obj: any = {};
+		obj.price = price;
+		let callBack: Function = function (result: SpRpcResult)
+		{
+			let payInfo: PayInfo = PayManager.getPayInfoByPrice(obj.price);
+			if (payInfo)
+			{
+				payInfo.dayCount++;
+			}
+			PayManager.dispatchBuyCardEvent(obj.price);
+			SocketManager.RemoveCommandListener(Command.Req_BuyCard_3001, callBack);
+		}
+		SocketManager.AddCommandListener(Command.Req_BuyCard_3001, callBack);
+		SocketManager.SendDiscRetry(Command.Req_BuyCard_3001, { "price": price });
+	}
+	public static getPayInfoByPrice(price: number): PayInfo
+	{
+		for (let info of PayManager.payList)
+		{
+			if (info.definition.price == price)
+			{
+				return info;
+			}
+		}
+		return null;
+	}
+
+	private static dispatchBuyCardEvent(price: number)
+	{
+		PayManager.buyOverAction.dispatch(price);
+	}
+	private static dispatchCardNumEvent(card: number)
+	{
+		PayManager.cardNumUpdateAction.dispatch(card);
+	}
+}
+/**
+ * 充值信息
+ */
+class PayInfo 
+{
+	private _id: number = 0;
+	public get id(): number
+	{
+		return this._id;
+	}
+	public set id(value: number)
+	{
+		this._id = value;
+		this._definition = PayDefined.GetInstance().getDefinition(value, PayDefined.GetInstance().payList);
+	}
+	private _definition: PayDefinition;
+	public get definition(): PayDefinition
+	{
+		return this._definition;
+	}
+	public set definition(value: PayDefinition)
+	{
+		this._definition = value;
+	}
+	private _dayCount: number = 0;
+	public get dayCount(): number
+	{
+		return this._dayCount;
+	}
+	public set dayCount(value: number)
+	{
+		this._dayCount = value;
+	}
+}

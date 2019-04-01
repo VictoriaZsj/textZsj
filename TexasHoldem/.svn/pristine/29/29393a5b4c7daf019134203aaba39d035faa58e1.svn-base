@@ -1,0 +1,68 @@
+/**
+ * 内网登录面板
+ */
+class LoginLocalPanel extends BasePanel
+{
+	public loginBtn: eui.Button;
+	public registerBtn: eui.Button;
+	public accountLabel: eui.Label;
+	public pwdLabel: eui.Label;
+
+	public constructor()
+	{
+		super();
+		this.isTween = true;
+		this.skinName = UISkinName.LoginLocalPanel;
+	}
+	protected onAwake(event: eui.UIEvent)
+	{
+		super.onAwake(event);
+		this.accountLabel.type = egret.TextFieldType.INPUT;
+		this.pwdLabel.type = egret.TextFieldType.INPUT;
+		this.pwdLabel.inputType = egret.TextFieldInputType.PASSWORD;
+
+		this.accountLabel.text = PrefsManager.getValue(PrefsManager.Login_Account);
+		this.pwdLabel.text = PrefsManager.getValue(PrefsManager.Login_Password);
+	}
+	protected rendererStart(event: egret.Event)
+	{
+		super.rendererStart(event);
+	}
+	protected onEnable(event: eui.UIEvent): void
+	{
+		super.onEnable(event);
+		this.loginBtn.addEventListener(egret.TouchEvent.TOUCH_TAP, this.loginHandler, this);
+		this.registerBtn.addEventListener(egret.TouchEvent.TOUCH_TAP, this.registerHandler, this);
+	}
+	protected onDisable(event: eui.UIEvent): void
+	{
+		super.onDisable(event);
+		this.loginBtn.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.loginHandler, this);
+		this.registerBtn.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.registerHandler, this);
+	}
+	private loginHandler(event: egret.TouchEvent)
+	{
+		let account: string = this.accountLabel.text.trim();
+		let pwd: string = this.pwdLabel.text.trim();
+		SoundManager.playButtonEffect(event.target);
+		if (!account)
+		{
+			UIManager.showFloatTips("请输入账号");
+			return;
+		}
+		if (!pwd)
+		{
+			UIManager.showFloatTips("请输入密码");
+			return;
+		}
+		this.onCloseBtnClickHandler(event);
+
+		ChannelManager.DispatchAccountLoginSucceed(account, pwd, false);
+	}
+	private registerHandler(event: egret.TouchEvent)
+	{
+		SoundManager.playButtonEffect(event.target);
+		this.onCloseBtnClickHandler(event);
+		UIManager.showPanel(UIModuleName.RegisterPanel);
+	}
+}

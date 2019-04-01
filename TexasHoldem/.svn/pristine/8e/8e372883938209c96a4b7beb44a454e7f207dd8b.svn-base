@@ -1,0 +1,138 @@
+/**
+ * 下家手牌操作
+ */
+class ShouPaiXiaJiaHandler extends BaseShouPaiHandler<OtherShouCard>
+{
+	private _isInsertTarget: boolean;
+	constructor(lc: LayerContainer)
+	{
+		super(lc);
+		this._posType = PosType.XiaJia;
+	}
+	public init(instanceT: { new (def: ShouPaiDefinition, pos: number): OtherShouCard; }, isDefaultShow: boolean)
+	{
+		super.init(instanceT, isDefaultShow);
+		if (this._shouPaiPosList)
+		{
+			this.exactlyCard(isDefaultShow);
+			this.layerContainer.addChildAt(this._lastPit.card, 0);
+		}
+		this.onEnable();
+	}
+	public exactlyCard(isDefaultShow: boolean, isBuGang?: boolean)
+	{
+		super.exactlyCard(isDefaultShow, isBuGang);
+	}
+	protected showByY()
+	{
+		let pit: MoveCardPit;
+		for (let i: number = this._pitLen - 1; i >= 0; i--)
+		{
+			pit = this.pitList[i];
+			if (pit.card && pit.card.visible)
+			{
+				this.refreshPit(pit);
+				this.layerContainer.addChild(pit.card);
+			}
+		}
+	}
+	public startInsertCard(insertCard: number)
+	{
+		super.startInsertCard(insertCard);
+		if (this._nowInsertPit && this._nowInsertPit.card && this._outProxyPit.card && this._lastPit.card.visible)
+		{
+			this.layerContainer.addChild(this._outProxyPit.card);
+			this._newCardTween = egret.Tween.get(this._outProxyPit.card);
+			let def: ShouPaiDefinition = this._nowInsertPit.def;
+			this._newCardTween.to({ rotation: 5 }, 200).to({ y: this._outProxyPit.card.y - 50 }, 200).to({ x: def.x, y: def.y - 50 }, 300, egret.Ease.quintOut).to({ rotation: 0 }, 100).call(this.playInsert.bind(this)).to({ y: def.y }, 200, egret.Ease.quadInOut).call(this.moveOver.bind(this));
+			this._newCardTween.play();
+			this.hideLastCard();
+		}
+	}
+	protected playInsert()
+	{
+		if (this._isInserting)
+		{
+			this._isInsertTarget = true;
+			let len: number = this._needMoveList.length;
+			let moveTween: egret.Tween;
+			let pit: MoveCardPit;
+			for (let i = 0; i < len; i++)
+			{
+				pit = this._needMoveList[i];
+				moveTween = egret.Tween.get(pit.card);
+				moveTween.to({ x: pit.targetPit.def.x, y: pit.targetPit.def.y }, 200, egret.Ease.quintOut);
+				moveTween.play();
+			}
+		}
+		else
+		{
+			console.log("下家插牌动画，调用异常！");
+		}
+	}
+	protected tryImmediatelyMoveOver()
+	{
+		super.tryImmediatelyMoveOver();
+		this.showByY();
+	}
+	public onEnable()
+	{
+		super.onEnable();
+		GameManager.stage.addEventListener(egret.Event.ENTER_FRAME, this.update, this);
+	}
+	public onDisable()
+	{
+		super.onDisable();
+		GameManager.stage.removeEventListener(egret.Event.ENTER_FRAME, this.update, this);
+	}
+	private update(event: egret.Event)
+	{
+		if (this._isInsertTarget)
+		{
+			this.showByY();
+		}
+	}
+	protected moveOver()
+	{
+		super.moveOver();
+		this._isInsertTarget = false;
+		this.showByY();
+	}
+	public setNewCard(cardnum: number)
+	{
+		super.setNewCard(cardnum);
+		if (GoCardProcessManager.isReady)
+		{
+			this.layerContainer.addChildAt(this._lastPit.card, 0);
+		}
+	}
+	/**
+ * 显示4张卡牌
+ */
+	public get4Card()
+	{
+		this._showFaIndex++;
+		let end: number = this._showFaIndex * 4;
+		let len: number = this._pitLen;
+		len = Math.min(end, len);
+		let def: ShouPaiDefinition;
+		let pit: MoveCardPit;
+		for (let i = len - 1; i >= 0; i--)
+		{
+			pit = this.pitList[i];
+			this.refreshPit(pit);
+			if (pit.card)
+			{
+				this.layerContainer.addChild(pit.card);
+			}
+		}
+		if (this._pitLen >= end)
+		{
+			RoomManager.updateHead(4);
+		}
+		else
+		{
+			RoomManager.updateHead(1);
+		}
+	}
+}

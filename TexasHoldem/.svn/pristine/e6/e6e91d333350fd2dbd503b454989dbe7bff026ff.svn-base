@@ -1,0 +1,39 @@
+/**
+ * 牌的定义
+ * */
+class PaiDefined extends BaseDefined
+{
+	private static readonly paiConfig: string = "pai";
+	private static _instance: PaiDefined;
+	public static GetInstance(): PaiDefined
+	{
+		if (!PaiDefined._instance)
+		{
+			PaiDefined._instance = new PaiDefined();
+		}
+		if (DefinedManager.IsParsed(PaiDefined.paiConfig) == false)
+		{
+			PaiDefined._instance.initialize();
+		}
+		return PaiDefined._instance;
+	}
+	public paiList: Array<PaiDefinition>;
+
+	public initialize()
+	{
+		let obj: Object = DefinedManager.GetText(PaiDefined.paiConfig);
+		this.paiList = ShortNameDefined.GetInstance().convertEnter(obj) as Array<PaiDefinition>;
+	}
+}
+/**
+ * 牌的定义
+ * */
+class PaiDefinition implements IBaseDefintion
+{
+	/*牌的ID*/
+	public id: number;
+	/*牌的资源名*/
+	public img: string;
+	/*牌名*/
+	public name: string;
+}

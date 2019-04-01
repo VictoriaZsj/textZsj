@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="buttonSkin_55" width="150" height="60" xmlns:e="http://ns.egret.com/eui">
+<e:Image  id="btnImg" x="0" y="0" source="button_7_png" anchorOffsetX="0" width="150" scale9Grid="18,21,115,41" height="60" anchorOffsetY="0"/>
+	<e:Label id="labelDisplay" size="30" verticalAlign="middle" textAlign="center" text="会员福利"
+	         fontFamily="SimHei" anchorOffsetX="0" anchorOffsetY="0"  bold="true" textColor="0xffffff" x="14.5" y="13.5"/>
+</e:Skin>

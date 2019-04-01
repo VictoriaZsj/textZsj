@@ -1,0 +1,27 @@
+/**
+ * 消费管理
+ */
+class CostManager
+{
+    /**
+     * 验证钻石不足
+     */
+    public static verifyDiamond(diamond:number):boolean
+    {
+        if(diamond<=UserManager.userInfo.diamond)
+        {
+            return true;
+        }
+
+    }
+    /**
+     * 显示购买钻石提示
+     */
+    public static showBuyDiamond(panel?:any,callback?:Function)
+    {
+        if(panel && callback)
+        {
+            AlertManager.showDoubleAlert("钻石数量不足，是否前往充值？",callback.bind(panel));
+        }
+    }   
+}

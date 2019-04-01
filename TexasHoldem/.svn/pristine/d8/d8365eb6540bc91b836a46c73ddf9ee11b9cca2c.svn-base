@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="jifenSkin" width="300" height="100" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing" xmlns:ns1="*" xmlns:tween="egret.tween.*">
+	<w:Declarations>
+		<tween:TweenGroup id="a">
+			<tween:TweenItem target="{group}">
+				<tween:Set>
+					<tween:props>
+						<e:Object scaleX="{2}" scaleY="{2}" alpha="{0.2}"/>
+					</tween:props>
+				</tween:Set>
+				<tween:To duration="150" ease="quadIn">
+					<tween:props>
+						<e:Object scaleX="{1}" scaleY="{1}" alpha="{1}"/>
+					</tween:props>
+				</tween:To>
+			</tween:TweenItem>
+		</tween:TweenGroup>
+	</w:Declarations>
+	<e:Group id="group" width="200" height="100" y="50" anchorOffsetY="50" anchorOffsetX="100" x="150">
+		<e:Label id="label" text="积分" x="26" y="29" size="40" bold="true" scaleX="1" scaleY="1"/>
+		<e:Label text="-50" x="108" y="29" size="40" bold="true" textColor="0x2dff00" scaleX="1" scaleY="1"/>
+	</e:Group>
+</e:Skin>

@@ -1,0 +1,32 @@
+/**
+ * 邮件管理
+ */
+class MailManager
+{
+    private mailList:Array<MailInfo>  = new Array<MailInfo>();
+
+    public static initialize()
+	{
+		
+	}
+}
+
+class MailInfo
+{
+    /**
+     * 邮件标题
+     */
+    public title: string;
+    /**
+     * 邮件内容
+     */
+    public des: string;
+    /**
+     * 附件
+     */
+    public item:number;
+    /**
+     * 是否领取
+     */
+    public isTake:boolean;
+}

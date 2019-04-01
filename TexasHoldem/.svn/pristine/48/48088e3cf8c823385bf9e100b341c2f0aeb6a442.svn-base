@@ -1,0 +1,28 @@
+<e:Skin class="panelSkin13" width="720" height="1280" xmlns:e="http://ns.egret.com/eui"
+        xmlns:w="http://ns.egret.com/wing" xmlns:ns1="*">
+    <e:Group id="anmGroup" x="-3" y="-2" width="720" height="100">
+        <e:Image id="bg" width="720" height="100" anchorOffsetX="0" anchorOffsetY="0" y="0" scaleX="1" scaleY="1"
+                 scale9Grid="19,18,23,23" source="bg_page19_png" x="0" />
+        <e:Label id="titleImg" text="好友" y="41" size="50" textColor="0x09f2c0" textAlign="center" verticalAlign="middle"
+                 x="288" />
+        <ns1:GameButton id="closeButton" label="Button" skinName="buttonSkin4" x="-4" y="0" />
+        <e:Label text="___" x="626.5" y="59" anchorOffsetY="0" height="36" textColor="0x110202" />
+        <e:Label id="inviteLabel" text="邀请" x="622" y="56" textColor="0x140404" />
+    </e:Group>
+    <e:Group id="anmGroup1" x="0" y="100" height="1180" width="720">
+        <e:Image width="720" height="1180" source="bg_page2_png" scale9Grid="24,21,101,105" anchorOffsetY="0" x="0" />
+        <ns1:TabComponent id="friendTabCompontent" width="720" height="1144" x="0" y="28" anchorOffsetY="0" />
+        <e:Group id="tabGroup" x="1" y="260" anchorOffsetY="0" height="903">
+            <e:Group id="hasFriendGroup" x="0" y="0">
+                <e:Scroller id="scroller" width="720" height="898.24" x="0.9700000000000273" anchorOffsetX="0"
+                            anchorOffsetY="0" y="0" />
+                <e:List id="list" width="720" height="889.33" x="0" anchorOffsetX="0" anchorOffsetY="0" y="0" />
+            </e:Group>
+            <e:Group id="noFriendGroup" width="720" height="899" x="0" y="0" scaleX="1" scaleY="1">
+                <e:Label text="您暂时还没有添加好友，点击上方按钮邀请好友一起游戏吧！" anchorOffsetY="0" height="122" anchorOffsetX="0" width="532"
+                         textAlign="center" horizontalCenter="0" verticalCenter="0" verticalAlign="middle"
+                         lineSpacing="5" />
+            </e:Group>
+        </e:Group>
+    </e:Group>
+</e:Skin>

@@ -1,0 +1,65 @@
+/**
+ *商城管理
+ */
+class ShoppingManager
+{
+    public static shoppingList:Array<ShoppingInfo> = new Array<ShoppingInfo>();
+	public static goldList:Array<ShoppingInfo> = new Array<ShoppingInfo>();
+	public static diamondList:Array<ShoppingInfo> = new Array<ShoppingInfo>();
+
+	public static initialize()
+	{
+		ArrayUtil.Clear(ShoppingManager.shoppingList);
+		let def: ShoppingInfo;
+		for (let i: number = 0; i < ShoppingDefined.GetInstance().shoppingList.length; i++)
+		{		
+			def=new ShoppingInfo();	
+			def.id = ShoppingDefined.GetInstance().shoppingList[i].id;
+		    if (def.definition.type==1){
+		    	ShoppingManager.goldList.push(def); 
+			}else{
+                ShoppingManager.diamondList.push(def);
+			}
+		}//todo		
+		// SocketManager.RemoveCommandListener(Command.Rec_PushCard_2000, PayManager.recCardNumUpdate);
+		// SocketManager.AddCommandListener(Command.Rec_PushCard_2000, PayManager.recCardNumUpdate);
+	}
+	public static getListByType(type:number):Array<ShoppingInfo>
+	{		
+		if (type==ShoppingType.gold){
+			return ShoppingManager.goldList;
+		}else{
+			return ShoppingManager.diamondList;
+		}
+	}
+}
+
+class ShoppingInfo 
+{
+	private _id: number = 0;
+	public get id(): number
+	{
+		return this._id;
+	}
+	public set id(value: number)
+	{
+		this._id = value;
+		this._definition = ShoppingDefined.GetInstance().getDefinition(value, ShoppingDefined.GetInstance().shoppingList);
+	}	
+	
+	private _definition: ShoppingDefinition
+	public get definition(): ShoppingDefinition
+	{
+		return this._definition;
+	}
+	public set definition(value: ShoppingDefinition)
+	{
+		this._definition = value;
+	}
+}
+
+enum ShoppingType
+{
+	gold=1,
+	diamond=2
+}

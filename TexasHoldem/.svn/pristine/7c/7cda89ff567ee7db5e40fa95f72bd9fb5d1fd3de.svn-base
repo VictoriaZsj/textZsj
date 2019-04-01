@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="AssignmentItemRendererSkin" width="680" height="150" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing">
+	<e:Image width="680" height="200" x="0" y="0" source="bg_page19_3_png"/>
+	<e:Image id="img" width="120" height="120" x="20" y="20" source=""/>
+	<e:Label id="desLabel" text="在德州扑克初级场对局20场" x="150" y="20" height="30" width="500" size="30"/>
+	<e:Label id="des" text="奖励：" x="150" y="60" height="30" width="90" size="30" anchorOffsetX="0" textAlign="left"/>
+	<e:Label id="rewardLabel" text="999999" x="280" y="60" height="30" width="120" size="30" anchorOffsetX="0" textAlign="left"/>
+	<e:Image id="rewardImg" width="30" height="30" x="240" y="60"/>
+	<e:Button id="takePrizeBtn" label="Button" width="200" height="80" skinName="buttonSkin33" enabled="true" scaleX="0.5" scaleY="0.5" anchorOffsetX="0" anchorOffsetY="0" x="540" y="60"/>
+	<e:Button id="gotoBtn" label="Button" width="200" height="80" skinName="buttonSkin33" enabled="true" scaleX="0.5" scaleY="0.5" anchorOffsetX="0" anchorOffsetY="0" x="540" y="60"/>
+	<e:Image width="600" height="50" x="150" y="110" source="loading_bg_png" scaleX="0.5" scaleY="0.5" scale9Grid="31,19,11,3"/>
+	<e:Image id="processImg" width="300" height="30" x="150" y="107.5" scaleX="1" scaleY="1" source="loading_line_png" scale9Grid="12,11,48,19"/>
+	<e:Label text="999/999" x="460" y="110" height="25" size="25" width="100"/>
+</e:Skin>

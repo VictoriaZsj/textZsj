@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="WinCardComponentSkin" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing" height="115" width="88">	
+		<e:Image id="winnerHead" width="88" height="115" source="pai_bg2_png" anchorOffsetX="0" anchorOffsetY="0" horizontalCenter="0" verticalCenter="0"/>
+	<e:Group id="mcGroup" height="115" horizontalCenter="-0.5" anchorOffsetY="0" anchorOffsetX="0" verticalCenter="0" width="88"/>
+	<e:Group id="seat_mcGroup" height="115" anchorOffsetY="0" anchorOffsetX="0" width="88"/>
+
+</e:Skin>

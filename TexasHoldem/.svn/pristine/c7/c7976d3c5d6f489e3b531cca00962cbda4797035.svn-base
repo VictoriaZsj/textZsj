@@ -1,0 +1,103 @@
+/**
+ * 我的奖品管理
+*/
+class PrizeManager
+{
+    /**
+     * 未领取的奖品列表
+    */
+    public static notReceiveList: Array<PrizeInfo>;
+    /**
+     * 已领取的奖品列表
+    */
+    public static hasReceiveList: Array<PrizeInfo>;
+    /**
+     * 用于奖品列表项的内容是已领取还是未领取的判断
+    */
+    public static renderFlag: number;
+
+    /**
+     * 发送获取奖品信息请求 
+    */
+    public static reqGetAwardList()
+    {
+        //todo 协议待添加
+        SocketManager.AddCommandListener(Command.Friend_AddPlayer_3152, PrizeManager.getAwardListResponse);
+        SocketManager.Send(Command.Friend_AddPlayer_3152);
+    }
+    /**
+     * 获取奖品信息成功回调
+    */
+    public static getAwardListResponse(result: SpRpcResult)
+    {
+        SocketManager.RemoveCommandListener(Command.Friend_ReceiveGift_3150, PrizeManager.getAwardListResponse);
+        if (result.data)
+        {
+            if (!PrizeManager.notReceiveList)
+            {
+                PrizeManager.notReceiveList = new Array<PrizeInfo>();
+            }
+            if (!PrizeManager.hasReceiveList)
+            {
+                PrizeManager.hasReceiveList = new Array<PrizeInfo>();
+            }
+            for (let def of result.data['awardList'])
+            {
+                let info: ItemDefinition = new ItemDefinition();
+                info = ItemDefined.GetInstance().getItemDefinition(def.id);
+                def.name = info.name;
+                def.icon = info.icon;
+                def.des = info.des;
+                def.effectType = info.effectType;
+                if (def.state == PrizeState.NotReceive)
+                {
+                    PrizeManager.notReceiveList.push(def);
+                } else
+                {
+                    PrizeManager.hasReceiveList.push(def);
+                }
+            }
+        }
+        PrizeManager.onGetAwardListEvent.dispatch();
+    }
+    /**
+     * 发送领取奖品请求
+    */
+    public static reqGetAward(id: number)
+    {
+        let callback: Function = function (result: SpRpcResult)
+        {
+            SocketManager.RemoveCommandListener(Command.Friend_AddPlayer_3152, callback);
+            PrizeManager.onGetAwardEvent.dispatch(id);
+        }
+        //todo 协议待添加
+        SocketManager.AddCommandListener(Command.Friend_AddPlayer_3152, callback);
+        SocketManager.Send(Command.Friend_AddPlayer_3152);
+    }
+    /**
+     * 发送保存领奖信息请求
+    */
+    public static reqSaveInfo(name: string, tel: number, qq: number, email: string, address: string)
+    {
+        //todo 协议待添加
+        SocketManager.AddCommandListener(Command.Friend_AddPlayer_3152, PrizeManager.saveInfoResponse);
+        SocketManager.Send(Command.Friend_AddPlayer_3152, { name: name, tel: tel, qq: qq, email: email, address: address });
+    }
+    /**
+     * 保存领奖信息成功回调
+    */
+    public static saveInfoResponse(result: SpRpcResult)
+    {
+        SocketManager.RemoveCommandListener(Command.Friend_AddPlayer_3152, PrizeManager.saveInfoResponse);
+        AlertManager.showAlert("领奖信息保存成功");
+    }
+
+    /**
+     * 获取奖品信息成功后发送的广播
+    */
+    public static onGetAwardListEvent: ActionDispatcher = new ActionDispatcher();
+    /**
+     * 领取奖品成功后发送的广播
+    */
+    public static onGetAwardEvent: ActionDispatcher = new ActionDispatcher();
+}

@@ -1,0 +1,148 @@
+/**
+ * 排行榜面板
+ */
+class RankPanel extends BasePanel
+{
+	public rankTypeTab: TabComponent;
+	public listTypeTab: TabComponent;
+	public rankList: eui.List;
+	public rankScroller: eui.Scroller;
+
+	private currentRankType: number;
+	private currentListType: number;
+
+	public constructor()
+	{
+		super();
+		this.skinName = UISkinName.RankPanel;
+	}
+	protected onAwake(event: eui.UIEvent)
+	{
+		super.onAwake(event);
+		this.isCloseButtonTween = false;
+	}
+	public init(appendData: any)
+	{
+		super.init(appendData);
+		let array = new Array<String>("财富", "等级", "VIP");
+		this.rankTypeTab.init(array);
+		this.rankTypeTab.isTween = false;
+		this.rankTypeTab.setSelectIndex(0);
+		array = new Array<String>("全部", "好友");
+		this.listTypeTab.init(array);
+		this.listTypeTab.isTween = false;
+		this.listTypeTab.setSelectIndex(0);
+		this.currentRankType = this.rankTypeTab.tabBar.selectedIndex;
+		this.currentListType = this.listTypeTab.tabBar.selectedIndex;
+		UIUtil.listRenderer(this.rankList, this.rankScroller, RankItemRenderer, ScrollViewDirection.Vertical_T_D, eui.ScrollPolicy.ON, null, true);
+	}
+	protected onRender(event: egret.Event)
+	{
+		super.onRender(event);
+		RankManager.reqRankList(this.getListType(this.currentRankType, this.currentListType));
+		this.rankScroller.viewport.scrollV = 0;
+	}
+	protected onEnable(event: eui.UIEvent): void
+	{
+		super.onEnable(event);
+		this.rankTypeTab.tabBar.addEventListener(eui.ItemTapEvent.ITEM_TAP, this.onRankTypeTabTap, this);
+		this.listTypeTab.tabBar.addEventListener(eui.ItemTapEvent.ITEM_TAP, this.onListTypeTabTap, this);
+		RankManager.getRankListEvent.addListener(this.getRankList, this);
+	}
+	protected onDisable(event: eui.UIEvent): void
+	{
+		super.onDisable(event);
+		this.rankTypeTab.tabBar.removeEventListener(eui.ItemTapEvent.ITEM_TAP, this.onRankTypeTabTap, this);
+		this.listTypeTab.tabBar.removeEventListener(eui.ItemTapEvent.ITEM_TAP, this.onListTypeTabTap, this);
+		RankManager.getRankListEvent.removeListener(this.getRankList, this);
+	}
+
+	private getRankList(type: number)
+	{
+		this.refreshUI();
+	}
+	/**
+     * 渲染信息
+    */
+	private refreshUI()
+	{
+		this.rankList.dataProvider = new eui.ArrayCollection(RankManager.currentRankList);
+	}
+
+	private onRankTypeTabTap(e: eui.ItemTapEvent)
+	{
+		this.currentRankType = e.itemIndex;
+		this.currentListType = RankListType.All;
+		RankManager.reqRankList(this.getListType(this.currentRankType, this.currentListType));
+	}
+	private onListTypeTabTap(e: eui.ItemTapEvent)
+	{
+		this.currentListType = e.itemIndex;
+		RankManager.reqRankList(this.getListType(this.currentRankType, this.currentListType));
+	}
+	/**
+	 * 计算发送得的type类型
+	 */
+	private getListType(rankType: number, listType: number): number
+	{
+		if (rankType == RankType.Vip)
+		{
+			this.listTypeTab.visible = false;
+			return ReqRankType.Vip
+		}
+		else
+		{
+			this.listTypeTab.visible = true;
+			return rankType * 2 + listType + 1;
+		}
+	}
+}
+enum RankType
+{
+	/**
+	 * 财富
+	 */
+	Gold = 0,
+	/**
+	 * 等级
+	 */
+	Level = 1,
+	/**
+	 * Vip
+	 */
+	Vip = 2
+}
+enum RankListType
+{
+	/**
+	 * 所有
+	 */
+	All = 0,
+	/**
+	 * 朋友
+	 */
+	Friend = 1
+}
+enum ReqRankType
+{
+	/**
+	 * 财富
+	 */
+	Gold = 1,
+	/**
+	 * 好友财富
+	 */
+	FriendGold = 2,
+	/**
+	 * 等级
+	 */
+	Level = 3,
+	/**
+	 * 好友等级
+	 */
+	FriendLevel = 4,
+	/**
+	 * Vip
+	 */
+	Vip = 5
+}

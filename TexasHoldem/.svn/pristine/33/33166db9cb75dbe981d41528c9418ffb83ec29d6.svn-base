@@ -1,0 +1,317 @@
+{
+	"groups": [
+		{
+			"keys": "Bg2_png,prepare_zhuomian_png,saizi_json,saizi_png,login_json,s2c_bin,loginall_bin,c2s_bin,config_zip,hall_1_json,txt2_json,version_json,exp_json,maintain_json,name_json,forbidden_json,card_json,pai_bg2_png,cd_png",
+			"name": "preload"
+		},
+		{
+			"keys": "majiang_3_json,desktop_bg_png,txt1_json,effect_json,bg4_png",
+			"name": "gambling"
+		},
+		{
+			"keys": "background_2_png,hall_1_json,txt2_json",
+			"name": "hall"
+		},
+		{
+			"keys": "Logo_png,txt2_json,Bg3_png,shuzi_1_json,pub_1_json",
+			"name": "pub"
+		}
+	],
+	"resources": [
+		{
+			"url": "assets/Sheet/hall_1.json",
+			"type": "sheet",
+			"name": "hall_1_json",
+			"subkeys": "1001_png,bg_page15_png,bg_page16_png,bg_page3_2_png,button_15_png,button_1_png,button_2_png,button_3_png,button_6_png,button_7_2_png,button_7_3_png,button_7_png,button_8_png,button_add_2_png,button_add_png,button_chongzhi_png,button_fenxiang_png,button_neiwang_2_png,button_neiwang_png,button_shezhi_png,button_wanfa_png,button_weixin_png,button_xinxi_png,button_youke_2_png,button_youke_png,button_zhanji_png,fangka1_png,fangka2_png,fangka_png,fengxiang_1_png,fengxiang_2_png,hua1_png,hua2_png,hua3_png,hua4_png,icon_png,jushu_png,kelinqu_1_png,kelinqu_2_png,kong_png,lingfangka_png,nantou_png,nvtou_png,off_png,on_png,pengyouquan_png,qiehuanzhanghao_png,room_create_png,room_join_png,shareFriendGround_png,shareFriend_png,tongzhuo_png,weixin_png,xiangxi_png,xuyimajiang_png,yuehuiyuan_2_png,yuehuiyuan_png,zhouhuiyuan_1_png,zhouhuiyuan_png"
+		},
+		{
+			"url": "assets/Sheet/majiang_3.json",
+			"type": "sheet",
+			"name": "majiang_3_json",
+			"subkeys": "VoiceNotice_2_png,VoiceNotice_3_png,VoiceNotice_png,Voice_1_png,Voice_2_png,Voice_3_png,bai_png,bei_png,button_10_png,button_11_png,button_12_png,button_13_png,button_14_png,button_15_2_png,button_9_png,button_notice_png,dice_1_png,dice_2_png,dice_3_png,dice_4_png,dice_5_png,dice_6_png,dice_Action_0_png,dice_Action_1_png,dice_Action_2_png,dice_Action_3_png,dong_png,fa_png,fanhui_png,h_jt_png,haoyou_png,jiantou_png,jujue_png,nan_png,sendNotice_png,tiao_1_png,tiao_2_png,tiao_3_png,tiao_4_png,tiao_5_png,tiao_6_png,tiao_7_png,tiao_8_png,tiao_9_png,tong_1_png,tong_2_png,tong_3_png,tong_4_png,tong_5_png,tong_6_png,tong_7_png,tong_8_png,tong_9_png,tongyi_png,tuichu_png,w_1_png,w_2_png,w_3_png,w_4_png,w_5_png,w_6_png,w_7_png,w_8_png,w_9_png,xi_png,zhong_png"
+		},
+		{
+			"url": "assets/Sheet/shuzi_1.json",
+			"type": "sheet",
+			"name": "shuzi_1_json",
+			"subkeys": "greed_0_png,greed_1_png,greed_2_png,greed_3_png,greed_4_png,greed_5_png,greed_6_png,greed_7_png,greed_8_png,greed_9_png,greed_fen_png,greed_jia_png,greed_jian_png,jifen_png,red_0_png,red_1_png,red_2_png,red_3_png,red_4_png,red_5_png,red_6_png,red_7_png,red_8_png,red_9_png,red_fen_png,red_jia_png,red_jian_png,yellow_+_png,yellow_-_png,yellow_0_png,yellow_1_png,yellow_2_png,yellow_3_png,yellow_4_png,yellow_5_png,yellow_6_png,yellow_7_png,yellow_8_png,yellow_9_png,yellow_cheng_png,yellow_maohao_png"
+		},
+		{
+			"url": "assets/Sheet/txt1.json",
+			"type": "sheet",
+			"name": "txt1_json",
+			"subkeys": "daojishi_png,dengdai_png,effect_bg_png,effect_chi_png,effect_gang_png,effect_hu_png,effect_liuju_png,effect_maima_png,effect_peng_png,effect_ting_png,fangzhu_png,gang_png,guo_png,h_angang_png,h_dayingjia_png,h_diangang_png,h_hujiagang_png,h_hupai_png,h_jiagang_png,h_maima_png,h_minggang_png,h_wz_png,hu_png,hupai_png,jieshu_png,jiesuan_shengli_png,jiesuan_shibai_png,lixian_png,peng_png,quxiao_png,ready_png,ting_png,tingpai_png,zhuang_png"
+		},
+		{
+			"url": "assets/images/ui/bg/background_2.png",
+			"type": "image",
+			"name": "background_2_png"
+		},
+		{
+			"url": "assets/images/ui/bg/Bg2.png",
+			"type": "image",
+			"name": "Bg2_png"
+		},
+		{
+			"url": "assets/images/ui/bg/desktop_bg.png",
+			"type": "image",
+			"name": "desktop_bg_png"
+		},
+		{
+			"url": "assets/images/ui/bg/Logo.png",
+			"type": "image",
+			"name": "Logo_png"
+		},
+		{
+			"url": "assets/Sheet/txt2.json",
+			"type": "sheet",
+			"name": "txt2_json",
+			"subkeys": "h_chongzhi_png,h_cjfj_png,h_fenxiang_png,h_gerenxinxi_png,h_huiyuanfuli_png,h_jryx_png,h_jsfj_png,h_jsfjsq_png,h_lfk_png,h_paijujieshu_png,h_shezhi_png,h_tishi_png,h_wfjs_png,h_xinxi_png,h_yjj_png,h_yonghuxieyi_png,h_yty_png,h_zhanji_png,h_zjxx_png,h_zzjzz_png"
+		},
+		{
+			"url": "assets/images/ui/bg/Bg3.png",
+			"type": "image",
+			"name": "Bg3_png"
+		},
+		{
+			"url": "assets/images/ui/bg/bg4.png",
+			"type": "image",
+			"name": "bg4_png"
+		},
+		{
+			"url": "assets/images/ui/bg/prepare_zhuomian.png",
+			"type": "image",
+			"name": "prepare_zhuomian_png"
+		},
+		{
+			"url": "assets/mc/saizi.json",
+			"type": "json",
+			"name": "saizi_json"
+		},
+		{
+			"url": "assets/mc/saizi.png",
+			"type": "image",
+			"name": "saizi_png"
+		},
+		{
+			"url": "assets/Sheet/login.json",
+			"type": "sheet",
+			"name": "login_json",
+			"subkeys": "bg_page19_2_png,bg_page19_3_png,bg_page19_png,bg_page2_png,bg_page3_png,bg_page4_2_png,bg_page4_png,button_4_png,button_5_png,fanhui_png,zhuce_png"
+		},
+		{
+			"url": "assets/Sheet/pub_1.json",
+			"type": "sheet",
+			"name": "pub_1_json",
+			"subkeys": "bg_head_png,bg_page10_png,bg_page11_png,bg_page12_png,bg_page13_png,bg_page14_png,bg_page17_png,bg_page18_png,bg_page19_png,bg_page1_png,bg_page20_png,bg_page21_png,bg_page22_png,bg_page23_png,bg_page24_2_png,bg_page24_3_png,bg_page24_png,bg_page25_png,bg_page26_png,bg_page27_png,bg_page28_png,bg_page29_png,bg_page30_png,bg_page31_png,bg_page4_png,bg_page5_png,bg_page7_png,bg_page8_png,bg_page9_png,boy_png,button_close_png,chongxindenglu_png,girl_png,gou0_png,gou1_png,graymaskbg_1_png,handle_png,jiesan_png,loading_bg_png,loading_line_png,loading_png,radiobutton_select_disabled_png,radiobutton_select_down_png,radiobutton_select_up_png,radiobutton_unselect_png"
+		},
+		{
+			"url": "assets/Sheet/shaizi_1.json",
+			"type": "sheet",
+			"name": "shaizi_1_json",
+			"subkeys": "L_Saizi_01_png,L_Saizi_02_png,L_Saizi_03_png,L_Saizi_04_png,L_Saizi_05_png,L_Saizi_06_png,L_Saizi_07_png,L_Saizi_08_png,L_Saizi_09_png,L_Saizi_10_png,L_Saizi_11_png,L_Saizi_12_png,L_Saizi_13_png,L_Saizi_14_png,L_Saizi_15_png,L_Saizi_16_png,L_Saizi_17_png,L_Saizi_18_png,L_Saizi_19_png,L_Saizi_20_png,L_Saizi_21_png,L_Saizi_22_png,L_Saizi_23_png,L_Saizi_24_png,L_Saizi_25_png,L_Saizi_26_png,L_Saizi_27_png,L_Saizi_28_png,L_Saizi_29_png,L_Saizi_30_png,L_Saizi_31_png,L_Saizi_32_png,L_Saizi_33_png,L_Saizi_34_png,L_Saizi_35_png,L_Saizi_36_png"
+		},
+		{
+			"url": "assets/Sheet/effect.json",
+			"type": "sheet",
+			"name": "effect_json",
+			"subkeys": "Effect_1_png,Effect_2_png"
+		},
+		{
+			"url": "config/s2c.bin",
+			"type": "bin",
+			"name": "s2c_bin"
+		},
+		{
+			"url": "config/loginall.bin",
+			"type": "bin",
+			"name": "loginall_bin"
+		},
+		{
+			"url": "config/c2s.bin",
+			"type": "bin",
+			"name": "c2s_bin"
+		},
+		{
+			"url": "config/config.zip",
+			"type": "bin",
+			"name": "config_zip"
+		},
+		{
+			"url": "config/cardGroup.json",
+			"type": "json",
+			"name": "cardGroup_json"
+		},
+		{
+			"url": "config/cardWall.json",
+			"type": "json",
+			"name": "cardWall_json"
+		},
+		{
+			"url": "config/error.json",
+			"type": "json",
+			"name": "error_json"
+		},
+		{
+			"url": "config/files.json",
+			"type": "json",
+			"name": "files_json"
+		},
+		{
+			"url": "config/liangPai.json",
+			"type": "json",
+			"name": "liangPai_json"
+		},
+		{
+			"url": "config/music.json",
+			"type": "json",
+			"name": "music_json"
+		},
+		{
+			"url": "config/outCard.json",
+			"type": "json",
+			"name": "outCard_json"
+		},
+		{
+			"url": "config/pai.json",
+			"type": "json",
+			"name": "pai_json"
+		},
+		{
+			"url": "config/project.json",
+			"type": "json",
+			"name": "project_json"
+		},
+		{
+			"url": "config/shortName.json",
+			"type": "json",
+			"name": "shortName_json"
+		},
+		{
+			"url": "config/shouPai.json",
+			"type": "json",
+			"name": "shouPai_json"
+		},
+		{
+			"url": "config/text.json",
+			"type": "json",
+			"name": "text_json"
+		},
+		{
+			"url": "config/version.json",
+			"type": "json",
+			"name": "version_json"
+		},
+		{
+			"url": "config/exp.json",
+			"type": "json",
+			"name": "exp_json"
+		},
+		{
+			"url": "config/maintain.json",
+			"type": "json",
+			"name": "maintain_json"
+		},
+		{
+			"url": "config/name.json",
+			"type": "json",
+			"name": "name_json"
+		},
+		{
+			"url": "config/forbidden.json",
+			"type": "json",
+			"name": "forbidden_json"
+		},
+		{
+			"url": "config/shopping.json",
+			"type": "json",
+			"name": "shopping_json"
+		},
+		{
+			"url": "assets/Sheet/card.json",
+			"type": "sheet",
+			"name": "card_json",
+			"subkeys": "flush_1_png,flush_2_png,flush_3_png,flush_4_png,pai_1_11_png,pai_1_12_png,pai_1_13_png,pai_2_11_png,pai_2_12_png,pai_2_13_png,pai_3_11_png,pai_3_12_png,pai_3_13_png,pai_4_11_png,pai_4_12_png,pai_4_13_png,pai_bg1_png,pai_bg_png,pai_hei_10_png,pai_hei_11_png,pai_hei_12_png,pai_hei_13_png,pai_hei_14_png,pai_hei_2_png,pai_hei_3_png,pai_hei_4_png,pai_hei_5_png,pai_hei_6_png,pai_hei_7_png,pai_hei_8_png,pai_hei_9_png,pai_hong_10_png,pai_hong_11_png,pai_hong_12_png,pai_hong_13_png,pai_hong_14_png,pai_hong_2_png,pai_hong_3_png,pai_hong_4_png,pai_hong_5_png,pai_hong_6_png,pai_hong_7_png,pai_hong_8_png,pai_hong_9_png"
+		},
+		{
+			"url": "assets/Sheet/pai_bg2.png",
+			"type": "image",
+			"name": "pai_bg2_png"
+		},
+		{
+			"url": "assets/Sheet/chips_01.png",
+			"type": "image",
+			"name": "chips_01_png"
+		},
+		{
+			"url": "assets/Sheet/chips_02.png",
+			"type": "image",
+			"name": "chips_02_png"
+		},
+		{
+			"url": "assets/Sheet/chips_03.png",
+			"type": "image",
+			"name": "chips_03_png"
+		},
+		{
+			"url": "assets/Sheet/chips_04.png",
+			"type": "image",
+			"name": "chips_04_png"
+		},
+		{
+			"url": "assets/Sheet/cd.png",
+			"type": "image",
+			"name": "cd_png"
+		},
+		{
+			"url": "assets/Sheet/winCard_2.png",
+			"type": "image",
+			"name": "winCard_2_png"
+		},
+		{
+			"url": "assets/Sheet/winCard_3.png",
+			"type": "image",
+			"name": "winCard_3_png"
+		},
+		{
+			"url": "assets/Sheet/winCard_1.png",
+			"type": "image",
+			"name": "winCard_1_png"
+		},
+		{
+			"url": "assets/Sheet/head_bg.png",
+			"type": "image",
+			"name": "head_bg_png"
+		},
+		{
+			"url": "assets/mc/winCard.png",
+			"type": "image",
+			"name": "winCard_png"
+		},
+		{
+			"url": "assets/mc/winCard_mc.json",
+			"type": "json",
+			"name": "winCard_mc_json"
+		},
+		{
+			"url": "assets/mc/seatDown.png",
+			"type": "image",
+			"name": "seatDown_png"
+		},
+		{
+			"url": "assets/mc/seatDown_mc.json",
+			"type": "json",
+			"name": "seatDown_mc_json"
+		},
+		{
+			"url": "assets/Sheet/gold.png",
+			"type": "image",
+			"name": "gold_png"
+		},
+		{
+			"url": "assets/Sheet/diamond.png",
+			"type": "image",
+			"name": "diamond_png"
+		}
+	]
+}

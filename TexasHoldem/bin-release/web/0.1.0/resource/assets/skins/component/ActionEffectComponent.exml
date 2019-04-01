@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="caozuoSkin" width="400" height="300" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing" xmlns:ns1="*" xmlns:tween="egret.tween.*">
+	<w:Declarations>
+		<tween:TweenGroup id="effectTweenGroup">
+			<tween:TweenItem target="{imgAction}">
+				<tween:Set>
+				<tween:props>
+					<e:Object alpha="{0}" scaleY="{2.5}" scaleX="{2.5}"/>
+				</tween:props>
+				</tween:Set>
+				<tween:To duration="300">
+				<tween:props>
+					<e:Object alpha="{0.6}" scaleX="{2.2}" scaleY="{2.2}"/>
+				</tween:props>
+				</tween:To>
+				<tween:To duration="150">
+				<tween:props>
+					<e:Object alpha="{1}" scaleX="{0.8}" scaleY="{0.8}"/>
+				</tween:props>
+				</tween:To>
+				<tween:Wait duration="50"/>
+				<tween:Set>
+				<tween:props>
+					<e:Object scaleX="{1}" scaleY="{1}"/>
+				</tween:props>
+				</tween:Set>
+				<tween:Wait duration="300"/>
+				<tween:Set/>
+				<tween:To duration="400">
+				<tween:props>
+					<e:Object alpha="{0}"/>
+				</tween:props>
+				</tween:To>
+			</tween:TweenItem>
+			<tween:TweenItem target="{imgBg}">
+				<tween:Set>
+				<tween:props>
+					<e:Object alpha="{0}"/>
+				</tween:props>
+				</tween:Set>
+				<tween:Wait duration="400"/>
+				<tween:Set>
+				<tween:props>
+					<e:Object scaleX="{0.5}" scaleY="{0.5}" alpha="{0}"/>
+				</tween:props>
+				</tween:Set>
+				<tween:To duration="200">
+				<tween:props>
+					<e:Object alpha="{1}" scaleX="{2}" scaleY="{2}"/>
+				</tween:props>
+				</tween:To>
+				<tween:To duration="300">
+				<tween:props>
+					<e:Object alpha="{0}"/>
+				</tween:props>
+				</tween:To>
+				<tween:Wait duration="250"/>
+				<tween:Set>
+				<tween:props>
+					<e:Object alpha="{0}"/>
+				</tween:props>
+				</tween:Set>
+			</tween:TweenItem>
+		</tween:TweenGroup>
+	</w:Declarations>
+	<e:Image id="imgBg" source="effect_bg_png" verticalCenter="0" horizontalCenter="0"/>
+	<e:Image id="imgAction" verticalCenter="0" horizontalCenter="0" source="effect_hu_png"/>
+</e:Skin>

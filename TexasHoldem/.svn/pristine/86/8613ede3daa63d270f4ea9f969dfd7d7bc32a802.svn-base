@@ -1,0 +1,72 @@
+/**
+ * 创建私人房密码面板
+*/
+class CreateRoomPwdPanel extends EnterRoomPwdPanel
+{
+    /**
+     * 创建房间按钮
+    */
+    private createBtn: eui.Button;
+
+    public constructor()
+    {
+        super(true);
+        this.skinName = UISkinName.CreateRoomPwdPanel;
+    }
+    protected onAwake(event: eui.UIEvent)
+    {
+        super.onAwake(event);
+        this.callback = "enterPwd";
+        this.openPanelName = "CreateRoomPwdPanel";
+    }
+    protected onRender(event: egret.Event)
+    {
+        super.onRender(event);
+    }
+    protected onEnable(event: eui.UIEvent): void
+    {
+        super.onEnable(event);
+        this.createBtn.addEventListener(egret.TouchEvent.TOUCH_TAP, this.createRoom, this);
+    }
+    protected onDisable(event: eui.UIEvent): void
+    {
+        super.onDisable(event);
+        this.createBtn.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.createRoom, this);
+    }
+    private enterPwd(type: number, num?: string)
+    {
+        if (num)
+        {
+            let label: NumComponent = this.getUnWriteLabel();
+            if (label)
+            {
+                label.refresh(parseInt(num));
+            }
+        }
+        if (type == 2)
+        {
+            let delLabel: NumComponent = this.getWirteLabel();
+            if (delLabel)
+            {
+                delLabel.refresh();
+            }
+        } else if (type == 3)
+        {
+            this.resetLabel();
+        }
+    }
+    private createRoom()
+    {
+        let str: string = this.getRoomPwd();
+        let roompwd: number = parseInt(str);
+        if (roompwd <= 0 || roompwd.toString().length < 6)
+        {
+            AlertManager.showSingleAlert("请先输入6位数的密码再创建房间！");
+            return;
+        } else
+        {
+            // RoomManager.reqJoinRoom(roompwd, SocketManager.requestSessionMax);
+            UIManager.showFloatTips("发送加入房间请求");
+        }
+    }
+}

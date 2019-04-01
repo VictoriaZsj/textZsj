@@ -1,0 +1,119 @@
+/**
+ * 活动列表的定义
+ * */
+class ActivityListDefined extends BaseDefined<ActivityListDefintion>
+{
+    private static readonly achieveConfig: string = "activity_list";
+    private static _instance: ActivityListDefined;
+    public static GetInstance(): ActivityListDefined
+    {
+        if (!ActivityListDefined._instance)
+        {
+            ActivityListDefined._instance = new ActivityListDefined();
+        }
+        if (DefinedManager.IsParsed(ActivityListDefined.achieveConfig) == false)
+        {
+            ActivityListDefined._instance.initialize();
+        }
+        return ActivityListDefined._instance;
+    }
+
+    public initialize()
+    {
+        let obj: Object = DefinedManager.GetData(ActivityListDefined.achieveConfig);
+        this.dataList = ShortNameDefined.GetInstance().convertEnter(obj) as Array<ActivityListDefintion>;
+    }
+}
+
+class ActivityListDefintion
+{
+    public id: number;
+    /**
+     * 活动类型
+     */
+    public type: string;
+    /**
+     * 活动名称
+     */
+    public name: string;
+    /**
+     * 状态清理
+     */
+    public clearType: number;
+    /**
+     * 奖励清理
+     */
+    public clearType2: number;
+    /**
+     * 开服时间限制(开启限制)
+     */
+    public openServerTimeStart: number;
+    /**
+     * 开服倒计时（结束限制）
+     */
+    public openServerTimeEnd: number;
+    /**
+     * 创号时间限制(开启限制)
+     */
+    public keepDayStart: number;
+    /**
+     * 创号持续天数（结束限制）
+     */
+    public keepDayEnd: number;
+    /**
+     * 开始时间
+     */
+    public startTime: string;
+    /**
+     * 结束时间
+     */
+    public endTime: string;
+    /**
+     * 是否是服务器控制时间
+     */
+    public isByServerTime: boolean;
+    /**
+     * 活动完成是否显示
+     */
+    public showFinish: boolean;
+    /**
+     * 活动图标
+     */
+    public icon: string;
+    /**
+     * 活动内图片
+     */
+    public imgId: number;
+    /**
+     * 活动描述
+     */
+    public des: string;
+    /**
+     * 活动内描述
+     */
+    public des2: string;
+    /**
+     * 对应UI面板
+     */
+    public panelName: string;
+    /**
+     * 对应按钮
+     */
+    public buttonName: string
+    /**
+     * 不显示在活动中心
+     */
+    public unInShowPanel: boolean;
+    /**
+     * 子类型
+     */
+    public subType: string;
+    /**
+     * 跳转游戏内页面
+     */
+    public tran: string;
+    /**
+     * web链接
+     */
+    public url: string;
+}

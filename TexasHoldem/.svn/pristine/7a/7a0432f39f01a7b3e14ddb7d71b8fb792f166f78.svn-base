@@ -1,0 +1,44 @@
+/**
+ * 随机昵称
+*/
+class NameDefined extends BaseDefined
+{
+    private static readonly nameConfig: string = "name";
+    private static _instance: NameDefined;
+    /**
+     * 男名范围
+    */
+    public static readonly bboyFirstNameRange:number = 1807;
+    /**
+     * 姓氏范围
+    */
+    public static readonly lastNameRange:number = 1056;
+    public static GetInstance(): NameDefined
+    {
+        if (!NameDefined._instance)
+        {
+            NameDefined._instance = new NameDefined();
+        }
+        if (DefinedManager.IsParsed(NameDefined.nameConfig) == false)
+        {
+            NameDefined._instance.initialize();
+        }
+        return NameDefined._instance;
+    }
+    public nameList: Array<NameDefinition>;
+    public initialize()
+    {
+        let obj: Object = DefinedManager.GetData(NameDefined.nameConfig);
+        this.nameList = ShortNameDefined.GetInstance().convertEnter(obj) as Array<NameDefinition>;
+    }
+}
+/**
+* 随机昵称的定义
+*/
+class NameDefinition implements IBaseDefintion
+{
+    public id: number;
+    public name: string;
+    public boy: string;
+    public girl: string;
+}

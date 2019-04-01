@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="LoadingPanel1" width="1280" height="720" xmlns:e="http://ns.egret.com/eui"
+        xmlns:w="http://ns.egret.com/wing" xmlns:tween="egret.tween.*">
+	<w:Declarations>
+		<tween:TweenGroup id="loading">
+			<tween:TweenItem target="{image}">
+				<tween:TweenItem target="{image}" />
+				<tween:Set>
+					<tween:props>
+						<e:Object/>
+					</tween:props>
+				</tween:Set>
+				<tween:props>
+					<e:Object loop="{true}" />
+				</tween:props>
+				<tween:To duration="1000">
+					<tween:props>
+						<e:Object rotation="{360}" />
+					</tween:props>
+				</tween:To>
+			</tween:TweenItem>
+		</tween:TweenGroup>
+	</w:Declarations>
+	<e:Image width="1280" height="720" x="0" y="0" source="prepare_zhuomian_png" />
+	<e:Image id="image2" anchorOffsetX="0" anchorOffsetY="0" verticalCenter="111" horizontalCenter="0.5" scaleX="-1"
+	         width="301" source="bg_page4_png" height="56"  scale9Grid="10,10,126,126"/>
+	<e:Image id="image" width="130" height="130" source="loading_png" anchorOffsetX="65" anchorOffsetY="65"  horizontalCenter="0" verticalCenter="0"/>
+	<e:Image id="image0" anchorOffsetX="50" anchorOffsetY="50" source="h_zzjzz_png" horizontalCenter="0.5"
+	         verticalCenter="110.5" />
+	<e:Group id="mcGroup" width="85" height="85" verticalCenter="0" horizontalCenter="0" />
+</e:Skin>

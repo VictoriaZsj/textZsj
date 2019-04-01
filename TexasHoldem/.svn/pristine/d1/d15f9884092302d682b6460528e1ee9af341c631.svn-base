@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="UserInfoPanelSkin" width="640" height="575" xmlns:e="http://ns.egret.com/eui" xmlns:ns1="*"
+        xmlns:w="http://ns.egret.com/wing">
+	<w:Config id="15e08f14095"/>
+	<e:Group id="tweenGroup" width="640" height="575" anchorOffsetX="0" anchorOffsetY="0" x="0" y="0">
+
+
+
+
+
+
+
+
+		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		<e:Group id="buyAccessGp" x="0" y="-1" height="575">
+			<e:Image id="bg" source="bg_page11_png" scale9Grid="17,17,13,10" width="640" height="575" y="1" anchorOffsetY="0" x="4.5" scaleX="1" scaleY="1"/>
+			<e:Label id="userNameLabel" text="买入游戏" x="250" y="41" size="35" fontFamily="Arial" scaleX="1" scaleY="1" textColor="0x020f11"/>
+			<e:Image width="600" height="163" x="24.5" y="157" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" anchorOffsetY="0"/>
+			<e:Label text="最小买入" x="49" y="245" textColor="0x0C0000" size="20"/>
+			<e:Label id="bigChipsLabel" text="999" x="544" y="211.88" size="26" bold="true" fontFamily="SimHei" scaleX="1" scaleY="1" textColor="0x02171c"/>
+			<e:Label id="" text="现有资产：" x="233" y="111" size="20" bold="true" fontFamily="SimHei" scaleX="1" scaleY="1" textColor="0xeda710"/>
+			<e:Label id="smallChipsLabel" text="999" x="65.5" y="211.88" size="26" bold="true" fontFamily="SimHei" scaleX="1" scaleY="1" textColor="0x032026"/>
+			<e:Label id="countLable" text="999" x="304" y="224.88" size="26" bold="true" fontFamily="SimHei" scaleX="1" scaleY="1" textColor="0xea7d09"/>
+			<e:Label id="currentProperty" text="9999999" x="335" y="111" size="20" bold="true" fontFamily="SimHei" scaleX="1" scaleY="1" textColor="0xdda306"/>
+			<e:Label text="最大买入" x="526" y="245" textColor="0x0c0000" size="20"/>
+			<e:CheckBox id="autoBuyCheck" skinName="CheckBoxSkin1" anchorOffsetX="0" width="42" anchorOffsetY="0" height="45" scaleX="0.7" scaleY="0.7" x="515" y="333"/>
+			<e:Label text="自动买入" x="547.5" y="344.5" textColor="0x1e0303" size="18"/>
+			<e:HSlider id="buyAccessHs" width="451" height="40" x="88" y="409" skinName="HSliderSkin1" anchorOffsetX="0"/>
+			<e:Button id="shoppingBtn" label="商城充值" x="119" y="491" anchorOffsetX="0" width="165" anchorOffsetY="0" height="56"/>
+			<e:Button id="buyAccessBtn" label="买入游戏" x="361" y="491" anchorOffsetX="0" width="165" anchorOffsetY="0" height="56"/>
+			<e:Button id="closeButton" label="Button" x="585" y="35" skinName="buttonSkin2" width="150" height="85" scaleY="0.5" anchorOffsetY="40" anchorOffsetX="75" scaleX="0.5"/>
+		</e:Group>
+		<e:Group id="unEnoughGoldGp" x="-2" y="2" height="574" anchorOffsetX="0" width="641" anchorOffsetY="0">
+			<e:Image id="" source="bg_page11_png" scale9Grid="17,17,13,10" width="640" height="575" y="0" anchorOffsetY="0" x="0" scaleX="1" scaleY="1"/>
+			<e:Image width="472" height="172" x="91" y="192" source="bg_page2_png" anchorOffsetX="0" anchorOffsetY="0"/>
+			<e:Label id="priceLabel" text="仅需648元" x="213" y="224.88" anchorOffsetX="0" width="210" anchorOffsetY="0" height="31" textColor="0xfffdfc" size="41"/>
+			<e:Button id="buyNowBtn" label="立即购买" x="243" y="449" anchorOffsetX="0" width="165" anchorOffsetY="0" height="56"/>
+			<e:Label text="金币不足" x="253.5" y="81" textColor="0x0c0101" border="false" bold="true"/>
+			<e:Label id="goldLabel" text="1200万金币" x="213" y="263" size="40"/>
+		</e:Group>
+
+
+
+		</e:Group>
+
+
+
+</e:Skin>

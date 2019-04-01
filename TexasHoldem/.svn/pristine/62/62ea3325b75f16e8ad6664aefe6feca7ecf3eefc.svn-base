@@ -1,0 +1,1766 @@
+/**
+ * 算番
+ * */
+class CalculateFan
+{
+	/*一组序数牌的末尾索引*/
+	private static oneEnd: number = 2;
+	/*双数组合索引集合*/
+	private static doubleArray: Array<number> = [1, 3, 5, 7];
+	/*胡牌信息*/
+	private _huPaiInfo: HuPaiInfo;
+	/*番数的结果列表todo 查看log*/
+	private _resultFanList: Array<number>;
+	/*最大番数*/
+	private _maxFan: number = 0;
+	/*去除叠加不计的番数集合*/
+	private _exclude: Array<number>;
+
+	public constructor()
+	{
+		this._resultFanList = new Array<number>();
+		this._exclude = new Array<number>();
+	}
+	private clear()
+	{
+		this._maxFan = 0;
+		ArrayUtil.Clear(this._exclude);
+		ArrayUtil.Clear(this._resultFanList);
+		this._huPaiInfo.maxHuWayInfo = null;
+	}
+	public startCalculateFan(info: HuPaiInfo)
+	{
+		this._huPaiInfo = info;
+		if (!this._huPaiInfo)
+		{
+			return;
+		}
+		this.clear();
+
+		let defList: Array<FanCalcDefinition> = this.getAvliableList();
+		if (!defList || defList.length <= 0)
+		{
+			console.error("当前胡牌，无法算番！");
+			return;
+		}
+		for (let i: number = 0; i < this._huPaiInfo.huWayList.length; i++)
+		{
+			let huWayInfo: HuWayInfo = this._huPaiInfo.huWayList[i];
+			if (huWayInfo)
+			{
+				ArrayUtil.Clear(huWayInfo.fanList);
+				let fan: number = 0;
+				for (let j: number = 0; j < defList.length; j++)
+				{
+					let fanCalcDef: FanCalcDefinition = defList[j];
+					if (fanCalcDef)
+					{
+						let calcFunc: Function = this[fanCalcDef.funcName] as Function;
+						if (calcFunc)
+						{
+							let tmp: number = calcFunc(huWayInfo, fanCalcDef, this);
+							if (tmp > 0)
+							{
+								huWayInfo.fanList.push(fanCalcDef);
+							}
+							fan += tmp;
+						}
+						else
+						{
+							console.error("未找到算番的方法：" + fanCalcDef.funcName)
+						}
+					}
+				}
+				huWayInfo.fan = fan + this._huPaiInfo.huaList.length;
+				if (fan > this._maxFan)
+				{
+					this._maxFan = fan;
+					this._huPaiInfo.maxHuWayInfo = huWayInfo;
+				}
+			}
+		}
+		if (this._huPaiInfo.huaList)
+		{
+			console.log("去花番数：" + this._maxFan + "\n", "花的番数：" + this._huPaiInfo.huaList.length + "\n", "总番数：" + (this._maxFan + this._huPaiInfo.huaList.length));
+		}
+		else
+		{
+			console.log("总番数无花：" + this._maxFan);
+		}
+		return this._maxFan;
+	}
+	/*计算胡牌可用的番番定义*/
+	private getAvliableList(): Array<FanCalcDefinition>
+	{
+		let defList: Array<FanCalcDefinition> = FanCalcDefined.GetInstance().fanCalcList.concat();
+		let tmpDefList: Array<FanCalcDefinition>;
+		let resultList: Array<FanCalcDefinition>;
+		if (this._huPaiInfo.huWayList)
+		{
+			let onceTmpFan: number = 0;
+			let onceMaxFan: number = 0;
+			for (let i: number = 0; i < this._huPaiInfo.huWayList.length; i++)
+			{
+				let huWayInfo: HuWayInfo = this._huPaiInfo.huWayList[i];
+				if (huWayInfo)
+				{
+					onceTmpFan = 0;
+					tmpDefList = new Array<FanCalcDefinition>();
+					ArrayUtil.Clear(this._exclude);
+					for (let j: number = 0; j < defList.length; j++)
+					{
+						let fanCalcDef: FanCalcDefinition = defList[j];
+						if (fanCalcDef)
+						{
+							let calcFunc: Function = this[fanCalcDef.funcName] as Function;
+							if (calcFunc)
+							{
+								onceTmpFan += this.addFanNum(huWayInfo, fanCalcDef, tmpDefList, calcFunc);
+							}
+							else
+							{
+								console.error("未找到算番的方法：" + fanCalcDef.funcName)
+							}
+						}
+					}
+					for (let i: number = 0; i < this._exclude.length; i++)
+					{
+						let calcDef: FanCalcDefinition = FanCalcDefined.GetInstance().getDefinition(this._exclude[i], defList);
+						ArrayUtil.RemoveItem(calcDef, tmpDefList, -1);
+					}
+					if (onceTmpFan > onceMaxFan)
+					{
+						onceMaxFan = onceTmpFan;
+						resultList = tmpDefList.concat();
+					}
+				}
+			}
+		}
+		return resultList;
+	}
+	private addFanNum(huWayInfo: HuWayInfo, fanCalcDef: FanCalcDefinition, tmpDefList: Array<FanCalcDefinition>, caller: Function)
+	{
+		let tmpFan: number = 0;
+		if (fanCalcDef.funcName == "yaoJiuKe") //幺九刻胡法可以叠加
+		{
+			let isHasYaoJiu: boolean = false;
+			for (let m: number = 0; m < huWayInfo.sequenceList.length; m++)
+			{
+				let arr: Array<number> = huWayInfo.sequenceList[m];
+				let num: number = arr[0];
+				if (this.isKeZi(arr) && (this.isYao(num) || this.isJiu(num)))
+				{
+					tmpFan += fanCalcDef.fan;
+					tmpDefList.push(fanCalcDef);
+					isHasYaoJiu = true;
+				}
+			}
+			if (isHasYaoJiu)
+			{
+				this.runExclude(fanCalcDef);
+			}
+		}
+		else
+		{
+			tmpFan = caller(huWayInfo, fanCalcDef, this);
+			if (tmpFan > 0)
+			{
+				tmpDefList.push(fanCalcDef);
+				this.runExclude(fanCalcDef);
+			}
+		}
+		return tmpFan;
+	}
+	private runExclude(fanCalcDef: FanCalcDefinition)
+	{
+		if (fanCalcDef.exclude && fanCalcDef.exclude.length > 0) //剔除一些互斥的番数
+		{
+			this._exclude = this._exclude.concat(fanCalcDef.exclude);
+		}
+	}
+	//====================================================以下为88番胡牌种类========================================================//
+	/*天胡：庄家摸到牌后直接成牌。*/
+	private tianHu(huWayInfo: HuWayInfo, def: FanCalcDefinition, thisObj: CalculateFan): number
+	{
+		if (thisObj._huPaiInfo.isTianHu)
+		{
+			return def.fan;
+		}
+		return 0;
+	}
+	/*地胡 天听后不碰不杠直接成牌。*/
+	private diHu(huWayInfo: HuWayInfo, def: FanCalcDefinition, thisObj: CalculateFan): number
+	{
+		if (thisObj._huPaiInfo.isDiHu)
+		{
+			return def.fan;
+		}
+		// if(thisObj.huPaiInfo.pengList.length > 0 || thisObj.huPaiInfo.mingGanList.length > 0)
+		return 0;
+	}
+	/*大三元 和牌中，有中发白3副刻子。*/
+	private daSanYuan(huWayInfo: HuWayInfo, def: FanCalcDefinition, thisObj: CalculateFan): number
+	{
+		let pNum: number = huWayInfo.pairList[0];
+		if (thisObj.isJian(pNum)) //将牌为箭牌则直接返回
+		{
+			return 0;
+		}
+		let arrList: Array<Array<number>> = thisObj.getKeZiGroup(huWayInfo);
+		if (arrList.length < 3) //刻子数量不足3对直接返回
+		{
+			return 0;
+		}
+		let tmpJianList: Array<number> = jianList.concat();
+		for (let i: number = 0; i < arrList.length; i++)
+		{
+			let num1: number = arrList[i][0];
+			ArrayUtil.RemoveItem(num1, tmpJianList); //去除刻子的将牌类型
+			if (tmpJianList.length <= 0) //如果中发白全部去除则小三元成立
+			{
+				return def.fan;
+			}
+		}
+		return 0;
+	}
+	/*九莲宝灯 由一种花色序数牌子按1112345678999组成的特定牌型，见同花色任何1张序数牌即成和牌。(不计清一色、不求人、门前清、幺九刻、缺一门、无字。)*/
+	private jiuLianBaoDeng(huWayInfo: HuWayInfo, def: FanCalcDefinition, thisObj: CalculateFan): number
+	{
+		let qingYiSeNum: number = thisObj.qingYiSe(huWayInfo, def, thisObj);
+		if (qingYiSeNum == 0)
+		{
+			return 0;
+		}
+		let totalNumList: Array<number> = new Array<number>();
+		for (let i: number = 0; i < huWayInfo.pairList.length; i++)
+		{
+			totalNumList.push(thisObj.getIndex(huWayInfo.pairList[i])); //添加将牌的两个索引
+		}
+		for (let i: number = 0; i < huWayInfo.sequenceList.length; i++)
+		{
+			for (let j: number = 0; j < huWayInfo.sequenceList[i].length; j++)
+			{
+				totalNumList.push(thisObj.getIndex(huWayInfo.sequenceList[i][j]));  //添加每个序数牌的索引
+			}
+		}
+		for (let i: number = 0; i < 9; i++) //去除1到9
+		{
+			ArrayUtil.RemoveItem(i, totalNumList);
+		}
+		for (let i: number = 0; i < 2; i++) //去除2个1
+		{
+			ArrayUtil.RemoveItem(0, totalNumList);
+		}
+		for (let i: number = 0; i < 2; i++) //去除2个9
+		{
+			ArrayUtil.RemoveItem(8, totalNumList);
+		}
+		if (totalNumList.length == 1) //如果去除成功则数组仅剩余1个元素 则此牌型是九莲宝灯
+		{
+			return def.fan;
+		}
+		return 0;
+	}
+	/*四杠 4个暗杠。(不计碰碰和、三杠、双暗杠、双明杠、暗杠、明杠、单钓将。)*/
+	private siGang(huWayInfo: HuWayInfo, def: FanCalcDefinition, thisObj: CalculateFan)
+	{
+		let gangNum: number = thisObj.getAnGangNum() + thisObj.getMingGangNum();
+		if (gangNum == 4)
+		{
+			return def.fan;
+		}
+		return 0;
+	}
+	//====================================================88番胡牌种类END==========================================================//
+
+	//====================================================以下为64番胡牌种类========================================================//
+	/*清幺九 由序数牌一、九刻子组成的和牌。*/
+	private qingYaoJiu(huWayInfo: HuWayInfo, def: FanCalcDefinition, thisObj: CalculateFan): number
+	{
+		let pNum: number = huWayInfo.pairList[0];
+		if (!(thisObj.isYao(pNum) || thisObj.isJiu(pNum))) //将牌非幺或九直接返回
+		{
+			return 0;
+		}
+		let arrList: Array<Array<number>> = thisObj.getKeZiGroup(huWayInfo);
+		if (arrList.length < 4) //刻子数量不足4对直接返回
+		{
+			return 0;
+		}
+		for (let i: number = 0; i < arrList.length; i++)
+		{
+			let num1: number = arrList[i][0];
+			if (!(thisObj.isYao(num1) || thisObj.isJiu(num1))) //验证刻子是否是幺九，不是直接返回0
+			{
+				return 0;
+			}
+		}
+		return def.fan;
+	}
+	/*小三元 和牌时有箭牌的两副刻子及将牌。(不计箭刻、双箭刻、缺一门。)*/
+	private xiaoSanYuan(huWayInfo: HuWayInfo, def: FanCalcDefinition, thisObj: CalculateFan): number
+	{
+		let pNum: number = huWayInfo.pairList[0];
+		if (!thisObj.isJian(pNum)) //将牌非箭牌则直接返回
+		{
+			return 0;
+		}
+		let tmpJianList: Array<number> = jianList.concat();
+		ArrayUtil.RemoveItem(pNum, tmpJianList); //去除将牌的箭牌类型
+		let arrList: Array<Array<number>> = thisObj.getKeZiGroup(huWayInfo);
+		if (arrList.length < 2) //刻子数量不足2对直接返回
+		{
+			return 0;
+		}
+		for (let i: number = 0; i < arrList.length; i++)
+		{
+			let num1: number = arrList[i][0];
+			ArrayUtil.RemoveItem(num1, tmpJianList); //去除刻子的将牌类型
+			if (tmpJianList.length <= 0) //如果中发白全部去除则小三元成立
+			{
+				return def.fan;
+			}
+		}
+		return 0;
+	}
+	/*四暗刻 4个暗刻(4个暗杠)。(不计门前清、碰碰和。)*/
+	private siAnKe(huWayInfo: HuWayInfo, def: FanCalcDefinition, thisObj: CalculateFan): number
+	{
+		let num: number = thisObj.getAnKeNum(huWayInfo);
+		if (num == 4)
+		{
+			return def.fan;
+		}
+		return 0;
+	}
+	/*一色双龙会 一种花色的两个老少副，5为将牌。(不计平和、清一色、一般高、老少副、缺一门、无字。)*/
+	private yiSeShuangLongHui(huWayInfo: HuWayInfo, def: FanCalcDefinition, thisObj: CalculateFan): number
+	{
+		if (!thisObj.isDaiWu(huWayInfo.pairList)) //将牌不带5则直接返回
+		{
+			return 0;
+		}
+		let laoShaoFuNum: number = thisObj.getLaoShaoFu(huWayInfo);
+		if (laoShaoFuNum < 2) //老少副不足2对 直接返回
+		{
+			return 0;
+		}
+		let pNum: number = huWayInfo.pairList[0];
+		let type: MahJongType = HuCard.getCardType(pNum);
+		let typeArr: Array<MahJongType> = new Array<MahJongType>();
+		typeArr.push(type);
+		let fitNum: number = 0;
+		for (let i: number = 0; i < huWayInfo.sequenceList.length; i++)
+		{
+			let arr: Array<number> = huWayInfo.sequenceList[i];
+			let num1 = arr[0];
+			type = HuCard.getCardType(num1);
+			if (typeArr.indexOf(type) == -1) 
+			{
+				typeArr.push(type);
+			}
+			if (typeArr.length > 1) //如果有一种以上的花色则直接返回
+			{
+				return 0;
+			}
+		}
+		return def.fan;
+	}
+	//====================================================64番胡牌种类END==========================================================//
+
+	//====================================================以下为48番胡牌种类========================================================//
+	/*一色四同顺 一种花色4副序数相同的顺子。(不计一色三同顺、一色三节高、一般高、缺一门、四归一、七对、平和。)*/
+	private yiSeSiTongShun(huWayInfo: HuWayInfo, def: FanCalcDefinition, thisObj: CalculateFan): number
+	{
+		let arrList: Array<Array<number>> = thisObj.getShunZiGroup(huWayInfo);
+		if (arrList.length < 4)
+		{
+			return 0;
+		}
+		let arr: Array<number> = arrList[0];
+		let num1: number = arr[0];
+		let shunZiNum: number = 0;
+		for (let i: number = 1; i < arrList.length; i++)
+		{
+			let arr2: Array<number> = arrList[i];
+			let num2: number = arr2[0];
+			if (thisObj.isTongSe(num1, num2) && num1 == num2)
+			{
+				shunZiNum++;
+				if (shunZiNum >= 3)
+				{
+					return def.fan;
+				}
+			}
+		}
+		return 0;
+	}
+	/*一色四节高 一种花色4副依次递增一位数的刻子。(不计一色三同顺、一色三节高、一般高、缺一门、碰碰和。)*/
+	private yiSeSiJieGao(huWayInfo: HuWayInfo, def: FanCalcDefinition, thisObj: CalculateFan): number
+	{
+		let arrList: Array<Array<number>> = thisObj.getKeZiGroup(huWayInfo);
+		if (arrList.length < 4)
+		{
+			return 0;
+		}
+		for (let i: number = 0; i < arrList.length; i++)
+		{
+			let arr: Array<number> = arrList[i];
+			let num1: number = arr[0];
+			if (thisObj.isJian(num1))
+			{
+				return 0;
+			}
+			let boo2: boolean = false;
+			let boo3: boolean = false;
+			let boo4: boolean = false;
+			for (let j: number = 0; j < arrList.length; j++)
+			{
+				let arr2: Array<number> = arrList[j];
+				let num2: number = arr2[0];
+				if (!boo2 && thisObj.isTongSe(num1, num2) && num1 == num2 - 1)
+				{
+					boo2 = true;
+				}
+				if (!boo3 && thisObj.isTongSe(num1, num2) && num1 == num2 - 2)
+				{
+					boo3 = true;
+				}
+				if (!boo4 && thisObj.isTongSe(num1, num2) && num1 == num2 - 3)
+				{
+					boo4 = true;
+				}
+				if (boo2 && boo3 && boo4)
+				{
+					return def.fan;
+				}
+			}
+		}
+		return 0;
+	}
+	//====================================================48番胡牌种类END==========================================================//
+
+	//====================================================以下为32番胡牌种类========================================================//
+	/*一色四步高 一种花色4副依次递增一位数或依次递增二位数的顺子。 (不计一色三步高、缺一门。)*/
+	private yiSeSiBuGao(huWayInfo: HuWayInfo, def: FanCalcDefinition, thisObj: CalculateFan): number
+	{
+		let pNum: number = huWayInfo.pairList[0];
+		if (!thisObj.isJian(pNum) && !thisObj.isTongSe(pNum, huWayInfo.sequenceList[0][0])) //将非箭牌，且这个将和序数牌花色异色s
+		{
+			return 0;
+		}
+		let arrList: Array<Array<number>> = thisObj.getShunZiGroup(huWayInfo);
+		if (arrList.length < 4)
+		{
+			return 0;
+		}
+		for (let add: number = 1; add <= 2; add++)
+		{
+			for (let i: number = 0; i < arrList.length; i++)
+			{
+				let arr: Array<number> = arrList[i];
+				let num1: number = arr[0];
+				if (thisObj.isJian(num1))
+				{
+					return 0;
+				}
+				let boo2: boolean = false;
+				let boo3: boolean = false;
+				let boo4: boolean = false;
+				for (let j: number = 0; j < arrList.length; j++)
+				{
+					let arr2: Array<number> = arrList[j];
+					let num2: number = arr2[0];
+					if (!boo2 && thisObj.isTongSe(num1, num2) && num1 == num2 - add * 1)
+					{
+						boo2 = true;
+					}
+					if (!boo3 && thisObj.isTongSe(num1, num2) && num1 == num2 - add * 2)
+					{
+						boo3 = true;
+					}
+					if (!boo4 && thisObj.isTongSe(num1, num2) && num1 == num2 - add * 3)
+					{
+						boo4 = true;
+					}
+					if (boo2 && boo3 && boo4)
+					{
+						return def.fan;
+					}
+				}
+			}
+		}
+		return 0;
+	}
+	/*三杠 3个杠。(不计双暗杠、双明杠、暗杠、明杠。)*/
+	private sanGang(huWayInfo: HuWayInfo, def: FanCalcDefinition, thisObj: CalculateFan): number
+	{
+		let gangNum: number = thisObj.getMingGangNum() + thisObj.getAnGangNum();
+		if (gangNum == 3)
+		{
+			return def.fan;
+		}
+		return 0;
+	}
+	/*混幺九 由字牌和序数牌一、九的刻子、将牌组成的和牌。(不计碰碰和、全带幺、幺九刻。)*/
+	private hunYaoJiu(huWayInfo: HuWayInfo, def: FanCalcDefinition, thisObj: CalculateFan): number
+	{
+		let pNum: number = huWayInfo.pairList[0];
+		if (thisObj.isYao(pNum) || thisObj.isJiu(pNum) || thisObj.isJian(pNum))
+		{
+			let arrList: Array<Array<number>> = thisObj.getKeZiGroup(huWayInfo);
+			if (arrList.length < 4) //刻子数量不满足
+			{
+				return 0;
+			}
+			for (let i: number = 0; i < arrList.length; i++)
+			{
+				let num1: number = arrList[i][0];
+				if (!(thisObj.isYao(num1) || thisObj.isJiu(num1) || thisObj.isJian(num1))) 
+				{
+					return 0;
+				}
+			}
+			return def.fan;
+		}
+		return 0;
+	}
+	//====================================================32番胡牌种类END==========================================================//
+
+	//====================================================以下为24番胡牌种类========================================================//
+	/*全双刻 由2、4、6、8序数牌的刻子、将牌组成的和牌。(不计碰碰和、断幺、无字。)*/
+	private quanShuangKe(huWayInfo: HuWayInfo, def: FanCalcDefinition, thisObj: CalculateFan): number
+	{
+		let pNum: number = huWayInfo.pairList[0];
+		if (thisObj.isJian(pNum) || !thisObj.isDoubleIndex(pNum)) //将牌是箭牌或者非双数直接返回
+		{
+			return 0;
+		}
+		let arrList: Array<Array<number>> = thisObj.getKeZiGroup(huWayInfo);
+		if (arrList.length < 4) //刻子数量不满足
+		{
+			return 0;
+		}
+		for (let i: number = 0; i < arrList.length; i++)
+		{
+			if (!thisObj.isDoubleIndex(arrList[i][0])) //非双刻
+			{
+				return 0;
+			}
+		}
+		return def.fan;
+	}
+	/*清一色 由一种花色的序数牌组成和和牌。(不计无字、缺一门。)*/
+	private qingYiSe(huWayInfo: HuWayInfo, def: FanCalcDefinition, thisObj: CalculateFan): number
+	{
+		let pNum: number = huWayInfo.pairList[0];
+		if (thisObj.isJian(pNum)) //将牌是箭牌 则直接返回
+		{
+			return 0;
+		}
+		for (let i: number = 0; i < huWayInfo.sequenceList.length; i++)
+		{
+			let arr: Array<number> = huWayInfo.sequenceList[i];
+			for (let j: number = 0; j < arr.length; j++)
+			{
+				let num1: number = arr[j];
+				if (!thisObj.isTongSe(pNum, num1))
+				{
+					return 0;
+				}
+			}
+		}
+		return def.fan;
+	}
+	/*一色三同顺 和牌时有一种花色3副序数相同的顺子。 (不计一色三节高、一般高。)*/
+	private yiSeSanTongShun(huWayInfo: HuWayInfo, def: FanCalcDefinition, thisObj: CalculateFan): number
+	{
+		let arrList: Array<Array<number>> = thisObj.getShunZiGroup(huWayInfo);
+		if (arrList.length < 3)
+		{
+			return 0;
+		}
+		for (let i: number = 0; i < arrList.length; i++)
+		{
+			let arr: Array<number> = arrList[i];
+			let num1: number = arr[0];
+			let shunZiNum: number = 0;
+			for (let j: number = 0; j < arrList.length; j++)
+			{
+				let arr2: Array<number> = arrList[j];
+				let num2: number = arr2[0];
+				if (thisObj.isTongSe(num1, num2) && num1 == num2)
+				{
+					shunZiNum++;
+				}
+				if (shunZiNum >= 3)
+				{
+					return def.fan;
+				}
+			}
+		}
+		return 0;
+	}
+	/*一色三节高 和牌时有一种花色3副依次递增一位数字的刻子。(不计一色三同顺、一般高。)*/
+	private yiSeSanJieGao(huWayInfo: HuWayInfo, def: FanCalcDefinition, thisObj: CalculateFan): number
+	{
+		let arrList: Array<Array<number>> = thisObj.getKeZiGroup(huWayInfo);
+		if (arrList.length < 3)
+		{
+			return 0;
+		}
+		for (let i: number = 0; i < arrList.length; i++)
+		{
+			let arr: Array<number> = arrList[i];
+			if (thisObj.isKeZi(arr))
+			{
+				let num1: number = arr[0];
+				let bool2: boolean = false;
+				let bool3: boolean = false;
+				for (let j: number = 0; j < arrList.length; j++)
+				{
+					let arr2: Array<number> = arrList[j];
+					if (thisObj.isKeZi(arr2))
+					{
+						let num2: number = arr2[0];
+						if (!thisObj.isJian(num2))
+						{
+							if (!bool2 && thisObj.isTongSe(num1, num2) && num1 == num2 - 1)
+							{
+								bool2 = true;
+							}
+							if (!bool3 && thisObj.isTongSe(num1, num2) && num1 == num2 - 2)
+							{
+								bool3 = true;
+							}
+							if (bool2 && bool3)
+							{
+								return def.fan;
+							}
+						}
+					}
+				}
+			}
+
+		}
+		return 0;
+	}
+	/*全大 由序数牌789组成的顺子、刻子(杠)、将牌的和牌。(不计无字、大于5。)*/
+	private quanDa(huWayInfo: HuWayInfo, def: FanCalcDefinition, thisObj: CalculateFan): number
+	{
+		let pNum: number = huWayInfo.pairList[0];
+		if (thisObj.isJian(pNum) || thisObj.getIndex(pNum) < 6)
+		{
+			return 0;
+		}
+		for (let i: number = 0; i < huWayInfo.sequenceList.length; i++)
+		{
+			let arr: Array<number> = huWayInfo.sequenceList[i];
+			let num: number = arr[0];
+			if (thisObj.isJian(num) || thisObj.getIndex(num) < 6)
+			{
+				return 0;
+			}
+		}
+		return def.fan;
+	}
+	/*全中 由序数牌456组成的顺子、刻子(杠)、将牌的和牌。(不计无字、断幺。)*/
+	private quanZhong(huWayInfo: HuWayInfo, def: FanCalcDefinition, thisObj: CalculateFan): number
+	{
+		let pNum: number = huWayInfo.pairList[0];
+		if (thisObj.isJian(pNum) || thisObj.getIndex(pNum) < 3 || thisObj.getIndex(pNum) > 5)
+		{
+			return 0;
+		}
+		for (let i: number = 0; i < huWayInfo.sequenceList.length; i++)
+		{
+			let arr: Array<number> = huWayInfo.sequenceList[i];
+			let num: number = arr[0];
+			if (thisObj.isJian(num) || thisObj.getIndex(num) < 3 || thisObj.getIndex(num) > 5)
+			{
+				return 0;
+			}
+		}
+		return def.fan;
+	}
+	/*27.全小 由序数牌123组成的顺子、刻子(杠)将牌的的和牌。(不计无字、小于5。)*/
+	private quanXiao(huWayInfo: HuWayInfo, def: FanCalcDefinition, thisObj: CalculateFan): number
+	{
+		let pNum: number = huWayInfo.pairList[0];
+		if (thisObj.isJian(pNum) || thisObj.getIndex(pNum) > 2)
+		{
+			return 0;
+		}
+		for (let i: number = 0; i < huWayInfo.sequenceList.length; i++)
+		{
+			let arr: Array<number> = huWayInfo.sequenceList[i];
+			let num: number = arr[0];
+			if (thisObj.isJian(num) || thisObj.getIndex(num) > 2)
+			{
+				return 0;
+			}
+		}
+		return def.fan;
+	}
+	//====================================================24番胡牌种类END==========================================================//
+	//====================================================以下为16番胡牌种类========================================================//
+	/*清龙 和牌时，有一种花色1-9相连接的序数牌。(不计喜相逢、老少副、无字、平和。)*/
+	private qingLong(huWayInfo: HuWayInfo, def: FanCalcDefinition, thisObj: CalculateFan): number
+	{
+		let arrList: Array<Array<number>> = thisObj.getQingLong(huWayInfo);
+		if (arrList.length <= 0)
+		{
+			return 0;
+		}
+		let typeArr: Array<MahJongType> = new Array<MahJongType>();
+		let type: MahJongType = MahJongType.None;
+		for (let i: number = 0; i < arrList.length; i++)
+		{
+			let arr: Array<number> = arrList[i];
+			type = HuCard.getCardType(arr[0]);
+			if (typeArr.indexOf(type) == -1)
+			{
+				typeArr.push(HuCard.getCardType(arr[0]));
+			}
+			if (typeArr.length > 1) //大于1中花色直接返回
+			{
+				return 0;
+			}
+		}
+		return def.fan;
+	}
+	/*三色双龙会 2种花色2个老少副、另一种花色5作将的和牌。(不计喜相逢、老少副、无字、平和。)*/
+	private sanSeShuangLongHui(huWayInfo: HuWayInfo, def: FanCalcDefinition, thisObj: CalculateFan): number
+	{
+		if (!thisObj.isDaiWu(huWayInfo.pairList)) //将牌不带5则直接返回
+		{
+			return 0;
+		}
+		let num: number = thisObj.getLaoShaoFu(huWayInfo);
+		if (num < 2) //老少副不足2对 则直接返回
+		{
+			return 0;
+		}
+		let type: MahJongType = HuCard.getCardType(huWayInfo.pairList[0]); //是否满足3花色
+		let typeArr: Array<MahJongType> = [MahJongType.Tiao, MahJongType.Wan, MahJongType.Bin];
+		ArrayUtil.RemoveItem(type, typeArr);
+		for (let i: number = 0; i < huWayInfo.sequenceList.length; i++)
+		{
+			type = HuCard.getCardType(huWayInfo.sequenceList[i][0]);
+			ArrayUtil.RemoveItem(type, typeArr);
+			if (typeArr.length == 0) //满足3花色
+			{
+				return def.fan;
+			}
+		}
+		return 0;
+	}
+	/*一色三步高 和牌时，有一种花色3副依次递增一位或依次递增二位数字的顺子。*/
+	private yiSeSanBuGao(huWayInfo: HuWayInfo, def: FanCalcDefinition, thisObj: CalculateFan): number
+	{
+		let arrList: Array<Array<number>> = thisObj.getShunZiGroup(huWayInfo);
+		if (arrList.length < 3)
+		{
+			return 0;
+		}
+		for (let add: number = 1; add <= 2; add++) //递增1、2
+		{
+			for (let i: number = 0; i < arrList.length; i++)
+			{
+				let arr: Array<number> = arrList[i];
+				let num1: number = arr[0];
+				let bool2: boolean = false;
+				let bool3: boolean = false;
+				for (let j: number = 0; j < arrList.length; j++)
+				{
+					let arr2: Array<number> = arrList[j];
+					let num2: number = arr2[0];
+					if (thisObj.isTongSe(num1, num2))
+					{
+						if (!bool2 && thisObj.getIndex(num1) == thisObj.getIndex(num2) + add) 
+						{
+							bool2 = true;
+						}
+						else if (!bool3 && thisObj.getIndex(num1) == thisObj.getIndex(num2) + add * 2) 
+						{
+							bool3 = true;
+						}
+						if (bool2 && bool3)
+						{
+							return def.fan;
+						}
+					}
+				}
+			}
+		}
+		return 0;
+	}
+	/*全带五 每副牌及将牌必须有5的序数牌。(不计断幺、无字。)*/
+	private quanDaiWu(huWayInfo: HuWayInfo, def: FanCalcDefinition, thisObj: CalculateFan): number
+	{
+		if (!thisObj.isDaiWu(huWayInfo.pairList))
+		{
+			return 0;
+		}
+		for (let i: number = 0; i < huWayInfo.sequenceList.length; i++)
+		{
+			let arr: Array<number> = huWayInfo.sequenceList[i];
+			if (!thisObj.isDaiWu(arr))
+			{
+				return 0;
+			}
+		}
+		return def.fan;
+	}
+	/*三同刻 3个序数相同的刻子(杠)。(不计双同刻。)*/
+	private sanTongKe(huWayInfo: HuWayInfo, def: FanCalcDefinition, thisObj: CalculateFan): number
+	{
+		let tongNum: number = thisObj.getTongKeNum(huWayInfo);
+		if (tongNum > 1)
+		{
+			return def.fan;
+		}
+		return 0;
+	}
+	/*三暗刻 3个暗刻 (不计双暗刻。)*/
+	private sanAnKe(huWayInfo: HuWayInfo, def: FanCalcDefinition, thisObj: CalculateFan): number
+	{
+		let anKeNum: number = thisObj.getAnKeNum(huWayInfo);
+		if (anKeNum >= 3)
+		{
+			return def.fan;
+		}
+		return 0;
+	}
+	//====================================================16番胡牌种类END==========================================================//
+
+	//====================================================以下为12番胡牌种类========================================================//
+	/*大于五 由序数牌6-9的顺子、刻子、将牌组成的和牌。*/
+	private daYuWu(huWayInfo: HuWayInfo, def: FanCalcDefinition, thisObj: CalculateFan): number
+	{
+		let pNum: number = huWayInfo.pairList[0];
+		if (thisObj.getIndex(pNum) < 5 || thisObj.isJian(pNum)) //将牌小于6 或者是箭牌
+		{
+			return 0;
+		}
+		for (let i: number = 0; i < huWayInfo.sequenceList.length; i++)
+		{
+			let arr: Array<number> = huWayInfo.sequenceList[i];
+			for (let j: number = 0; j < arr.length; j++)
+			{
+				let num: number = arr[j];
+				if (thisObj.getIndex(num) < 5 || thisObj.isJian(num)) //非将牌小于6 或者是箭牌
+				{
+					return 0;
+				}
+			}
+		}
+		return def.fan;
+	}
+	/*小于五 由序数牌1-4的顺子、刻子、将牌组成的和牌。*/
+	private xiaoYuWu(huWayInfo: HuWayInfo, def: FanCalcDefinition, thisObj: CalculateFan): number
+	{
+		let pNum: number = huWayInfo.pairList[0];
+		if (thisObj.getIndex(pNum) > 3 || thisObj.isJian(pNum)) //将牌大于4 或者是箭牌直接返回
+		{
+			return 0;
+		}
+		for (let i: number = 0; i < huWayInfo.sequenceList.length; i++)
+		{
+			let arr: Array<number> = huWayInfo.sequenceList[i];
+			for (let j: number = 0; j < arr.length; j++)
+			{
+				let num: number = arr[j];
+				if (thisObj.getIndex(num) > 3 || thisObj.isJian(num)) //非将牌大于4 或者是箭牌直接返回
+				{
+					return 0;
+				}
+			}
+		}
+		return def.fan;
+	}
+	//====================================================12番胡牌种类END==========================================================//
+
+	//====================================================以下为8番胡牌种类=========================================================//
+	/*花龙 3种花色的3副顺子连接成1-9的序数牌*/
+	private huaLong(huWayInfo: HuWayInfo, def: FanCalcDefinition, thisObj: CalculateFan): number
+	{
+		let arrList: Array<Array<number>> = thisObj.getQingLong(huWayInfo);
+		if (arrList.length <= 0)
+		{
+			return 0;
+		}
+		let type: MahJongType = MahJongType.None; //是否满足3花色
+		let typeArr: Array<MahJongType> = [MahJongType.Tiao, MahJongType.Wan, MahJongType.Bin];
+		for (let i: number = 0; i < arrList.length; i++)
+		{
+			type = HuCard.getCardType(arrList[i][0]);
+			ArrayUtil.RemoveItem(type, typeArr);
+			if (typeArr.length == 0) //满足三种花色
+			{
+				return def.fan;
+			}
+		}
+		return 0;
+	}
+	/*三色三同顺 和牌时，有3种花色3副序数相同的顺子。*/
+	private sanSeSanTongShun(huWayInfo: HuWayInfo, def: FanCalcDefinition, thisObj: CalculateFan): number
+	{
+		let arrList: Array<Array<number>> = thisObj.getShunZiGroup(huWayInfo);
+		if (arrList.length < 3)
+		{
+			return 0;
+		}
+		for (let i: number = 0; i < arrList.length; i++)
+		{
+			let arr: Array<number> = arrList[i];
+			let num1: number = arr[0];
+			let typeArr: Array<MahJongType> = new Array<MahJongType>();
+			typeArr.push(HuCard.getCardType(num1));
+			for (let j: number = 0; j < arrList.length; j++)
+			{
+				let arr2: Array<number> = arrList[j];
+				let num2: number = arr2[0];
+				let nextType: MahJongType = HuCard.getCardType(num2);
+				if (typeArr.indexOf(nextType) == -1 && thisObj.getIndex(num1) == thisObj.getIndex(num2))
+				{
+					typeArr.push(nextType);
+					if (typeArr.length >= 3)
+					{
+						return def.fan;
+					}
+				}
+			}
+		}
+		return 0;
+	}
+	/*三色三节高 和牌时，有3种花色3副依次递增一位数的刻子。*/
+	private sanSeSanJieGao(huWayInfo: HuWayInfo, def: FanCalcDefinition, thisObj: CalculateFan): number
+	{
+		for (let i: number = 0; i < huWayInfo.sequenceList.length; i++)
+		{
+			let arr: Array<number> = huWayInfo.sequenceList[i];
+			let num1: number = arr[0];
+			if (thisObj.isKeZi(arr) && !thisObj.isJian(num1)) //刻子非箭刻
+			{
+				let typeArr: Array<MahJongType> = new Array<MahJongType>();
+				typeArr.push(HuCard.getCardType(num1));
+				let bool2: boolean = false;
+				let bool3: boolean = false;
+				for (let j: number = 0; j < huWayInfo.sequenceList.length; j++)
+				{
+					let arr2: Array<number> = huWayInfo.sequenceList[j];
+					let num2: number = arr2[0];
+					if (thisObj.isKeZi(arr2) && !thisObj.isJian(num2))
+					{
+						let nextType: MahJongType = HuCard.getCardType(num2);
+						if (typeArr.indexOf(nextType) == -1)
+						{
+							if (!bool2 && thisObj.getIndex(num1) == thisObj.getIndex(num2) + 1) //找多一个的
+							{
+								bool2 = true;
+								typeArr.push(nextType);
+							}
+							else if (!bool3 && thisObj.getIndex(num1) == thisObj.getIndex(num2) + 2) //找多两个的
+							{
+								bool3 = true;
+								typeArr.push(nextType);
+							}
+							if (bool2 && bool3) //一次内循环都找到则番数成立
+							{
+								return def.fan;
+							}
+						}
+					}
+				}
+			}
+		}
+		return 0;
+	}
+	/*妙手回春 自摸牌墙上最后一张牌和牌。 (不计自摸。)tips:自摸时场中没有牌*/
+	private miaoShouHuiChun(huWayInfo: HuWayInfo, def: FanCalcDefinition, thisObj: CalculateFan): number
+	{
+		let num: number = thisObj.getRemainNum();
+		if (thisObj._huPaiInfo.isZiMo && thisObj._huPaiInfo.isHaiDiLaoYue) //todo 算番显示用
+		{
+			return def.fan;
+		}
+		if (num > 0 || !thisObj._huPaiInfo.isZiMo)
+		{
+			return 0;
+		}
+		return def.fan;
+	}
+	/*.海底捞月 和打出的最后一张牌。tips:胡牌时场中没有牌*/
+	private haiDiLaoYue(huWayInfo: HuWayInfo, def: FanCalcDefinition, thisObj: CalculateFan): number
+	{
+		let num: number = thisObj.getRemainNum();
+		if (!thisObj._huPaiInfo.isZiMo && thisObj._huPaiInfo.isHaiDiLaoYue) //todo 算番显示用
+		{
+			return def.fan;
+		}
+		if (num > 0 || thisObj._huPaiInfo.isZiMo)
+		{
+			return 0;
+		}
+		return def.fan;
+	}
+	/*.杠上开花todo这个验证比较特殊需在外部处理 开杠抓进的牌成和牌。 摸一张牌后开杠  开杠后又摸进一张牌形成和牌 (不包括补花，不计自摸。)*/
+	private gangShangKaiHua(huWayInfo: HuWayInfo, def: FanCalcDefinition, thisObj: CalculateFan): number
+	{
+		if (thisObj._huPaiInfo.isGangShangKaiHua)
+		{
+			return def.fan;
+		}
+		return 0;
+	}
+	//====================================================8番胡牌种类END===========================================================//
+
+	//====================================================以下为6番胡牌种类=========================================================//
+	/*碰碰胡 由4副刻子(或杠)、将牌组成的和牌。*/
+	private pengPengHu(huWayInfo: HuWayInfo, def: FanCalcDefinition, thisObj: CalculateFan): number
+	{
+		for (let i: number = 0; i < huWayInfo.sequenceList.length; i++)
+		{
+			if (!thisObj.isKeZi(huWayInfo.sequenceList[i]))
+			{
+				return 0;
+			}
+		}
+		return def.fan;
+	}
+	/*混一色 由一种花色序数牌及箭牌组成的和牌。*/
+	private hunYiSe(huWayInfo: HuWayInfo, def: FanCalcDefinition, thisObj: CalculateFan): number
+	{
+		let typeList: Array<MahJongType> = new Array<MahJongType>();
+		typeList.push(HuCard.getCardType(huWayInfo.pairList[0]));
+
+		for (let i: number = 0; i < huWayInfo.sequenceList.length; i++)
+		{
+			let type: MahJongType = HuCard.getCardType(huWayInfo.sequenceList[i][0]);
+			if (typeList.indexOf(type) == -1)
+			{
+				typeList.push(type);
+			}
+		}
+		if (typeList.indexOf(MahJongType.Baida) != -1 && typeList.length == 2)
+		{
+			return def.fan;
+		}
+		return 0;
+	}
+	/*三色三步高 3种花色3副依次递增一位序数的顺子。*/
+	private sanSeSanBuGao(huWayInfo: HuWayInfo, def: FanCalcDefinition, thisObj: CalculateFan): number
+	{
+		for (let i: number = 0; i < huWayInfo.sequenceList.length; i++)
+		{
+			let arr: Array<number> = huWayInfo.sequenceList[i];
+			let num1: number = arr[0];
+			if (thisObj.isShunZi(arr))
+			{
+				let typeArr: Array<MahJongType> = new Array<MahJongType>();
+				typeArr.push(HuCard.getCardType(num1));
+				let bool2: boolean = false;
+				let bool3: boolean = false;
+				for (let j: number = 0; j < huWayInfo.sequenceList.length; j++)
+				{
+					let arr2: Array<number> = huWayInfo.sequenceList[j];
+					if (thisObj.isShunZi(arr2))
+					{
+						let num2: number = arr2[0];
+						let nextType: MahJongType = HuCard.getCardType(num2);
+						if (typeArr.indexOf(nextType) == -1)  //一次内循环都找到则番数成立
+						{
+							if (!bool2 && thisObj.getIndex(num1) == thisObj.getIndex(num2) + 1) 
+							{
+								bool2 = true;
+								typeArr.push(nextType);
+							}
+							else if (!bool3 && thisObj.getIndex(num1) == thisObj.getIndex(num2) + 2) 
+							{
+								bool3 = true;
+								typeArr.push(nextType);
+							}
+							if (bool2 && bool3)
+							{
+								return def.fan;
+							}
+						}
+					}
+				}
+			}
+		}
+		return 0;
+	}
+	/*双暗杠 2个暗杠*/
+	private shuangAnGang(huWayInfo: HuWayInfo, def: FanCalcDefinition, thisObj: CalculateFan): number
+	{
+		let anGangNum: number = thisObj.getAnGangNum();
+		if (anGangNum == 2)
+		{
+			return def.fan;
+		}
+		return 0;
+	}
+	/*双箭刻 2副箭刻(或杠)。(不计箭刻。)*/
+	private shuangJianKe(huWayInfo: HuWayInfo, def: FanCalcDefinition, thisObj: CalculateFan): number
+	{
+		let jianKeNum: number = 0;
+		for (let i: number = 0; i < huWayInfo.sequenceList.length; i++)
+		{
+			let arr: Array<number> = huWayInfo.sequenceList[i];
+			if (thisObj.isKeZi(arr) && thisObj.isJian(arr[0]))
+			{
+				jianKeNum++;
+				if (jianKeNum >= 2)
+				{
+					return def.fan;
+				}
+			}
+		}
+		return 0;
+	}
+	//====================================================6番胡牌种类END===========================================================//
+
+	//====================================================以下为4番胡牌种类=========================================================//
+	/*不求人 4副牌及将中没有、碰牌，自摸和牌。 (包括明杠，不计门前清、自摸。)*/
+	private buQiuRen(huWayInfo: HuWayInfo, def: FanCalcDefinition, thisObj: CalculateFan): number
+	{
+		let mingGangNum: number = thisObj.getMingGangNum();
+		if (thisObj._huPaiInfo.pengList.length <= 0 && mingGangNum <= 0 && thisObj._huPaiInfo.isZiMo)
+		{
+			return def.fan;
+		}
+		return 0;
+	}
+	/*双明杠 2个明杠(不计明杠。)*/
+	private shuangMingGang(huWayInfo: HuWayInfo, def: FanCalcDefinition, thisObj: CalculateFan): number
+	{
+		let gangNum: number = thisObj.getMingGangNum();
+		if (gangNum == 2)
+		{
+			return def.fan;
+		}
+		return 0;
+	}
+	/*和绝张 和牌池、桌面已亮明的3张牌所剩的第4张牌(抢杠和不计和绝张)*/
+	private heJueZhang(huWayInfo: HuWayInfo, def: FanCalcDefinition, thisObj: CalculateFan): number
+	{
+		let seeNum: number = thisObj.getCanSeeNum(thisObj._huPaiInfo.winCard);
+		if (seeNum == 4 || thisObj._huPaiInfo.isHeJueZhang) //和的牌能看到的有4张
+		{
+			return def.fan;
+		}
+		return 0;
+	}
+	//====================================================4番胡牌种类END=========================================================//
+
+	//====================================================以下为2番胡牌种类=========================================================//
+	/*箭刻 由中、发、白3张相同的牌组成的刻子。*/
+	private jianKe(huWayInfo: HuWayInfo, def: FanCalcDefinition, thisObj: CalculateFan): number
+	{
+		for (let i: number = 0; i < huWayInfo.sequenceList.length; i++)
+		{
+			let arr: Array<number> = huWayInfo.sequenceList[i];
+			if (thisObj.isKeZi(arr) && thisObj.isJian(arr[0]))
+			{
+				return def.fan;
+			}
+		}
+		return 0;
+	}
+	/*门前清 没有碰、明杠，和别人打出的牌。自摸不算*/
+	private menQianQing(huWayInfo: HuWayInfo, def: FanCalcDefinition, thisObj: CalculateFan): number
+	{
+		let mingGangNum: number = thisObj.getMingGangNum();
+		if (thisObj._huPaiInfo.pengList.length <= 0 && mingGangNum <= 0 && !thisObj._huPaiInfo.isZiMo)
+		{
+			return def.fan;
+		}
+		return 0;
+	}
+	/*平胡 4副顺子及序数牌作将组成的和牌(无字)，边、坎、钓不影响平和。(不计无字。）*/
+	private pingHu(huWayInfo: HuWayInfo, def: FanCalcDefinition, thisObj: CalculateFan): number
+	{
+		if (thisObj.isJian(huWayInfo.pairList[0])) //箭牌不能作将
+		{
+			return 0;
+		}
+		let arrList: Array<Array<number>> = thisObj.getShunZiGroup(huWayInfo);
+		if (arrList.length == 4)
+		{
+			return def.fan;
+		}
+		return 0;
+	}
+	/*双同刻 2副序数相同的刻子。*/
+	private shuangTongKe(huWayInfo: HuWayInfo, def: FanCalcDefinition, thisObj: CalculateFan): number
+	{
+		let tongNum: number = thisObj.getTongKeNum(huWayInfo);
+		if (tongNum > 0)
+		{
+			return def.fan;
+		}
+		return 0;
+	}
+	/*双暗刻 2个暗刻 暗刻即指在手中的，不能是碰别家牌成刻，两个暗刻*/
+	private shuangAnKe(huWayInfo: HuWayInfo, def: FanCalcDefinition, thisObj: CalculateFan): number
+	{
+		let keziNum: number = thisObj.getAnKeNum(huWayInfo);
+		if (keziNum == 2)
+		{
+			return def.fan;
+		}
+		return 0;
+	}
+	/*暗杠todo 自抓4张相同的牌开杠*/
+	private anGang(huWayInfo: HuWayInfo, def: FanCalcDefinition, thisObj: CalculateFan): number
+	{
+		let anGangNum = thisObj.getAnGangNum();
+		if (anGangNum == 1)
+		{
+			return def.fan;
+		}
+		return 0;
+	}
+	/*断幺 和牌中没有一、九及箭牌。*/
+	private duanYao(huWayInfo: HuWayInfo, def: FanCalcDefinition, thisObj: CalculateFan): number
+	{
+		let pNum: number = huWayInfo.pairList[0];
+		if (thisObj.isYao(pNum) || thisObj.isJiu(pNum) || thisObj.isJian(pNum))
+		{
+			return 0;
+		}
+		for (let i: number = 0; i < huWayInfo.sequenceList.length; i++) //排除非将牌
+		{
+			let arr: Array<number> = huWayInfo.sequenceList[i];
+			let num1: number = arr[0];
+			let num2: number = arr[2];
+			if (thisObj.isYao(num1) || thisObj.isJiu(num1) || thisObj.isJian(num1)) //一组牌中的第一张牌 如123
+			{
+				return 0;
+			}
+			if (thisObj.isYao(num2) || thisObj.isJiu(num2) || thisObj.isJian(num2)) //一组牌中的最后一张牌 如789
+			{
+				return 0;
+			}
+		}
+		return def.fan;
+	}
+	//=====================================================2番胡牌种类END===========================================================//
+
+	//==============================================以下为1番胡牌种类 注：花牌最后算===================================================//
+	/*一般高:一般高 由一种花色2副相同的顺子组成的牌*/
+	private yiBanGao(huWayInfo: HuWayInfo, def: FanCalcDefinition, thisObj: CalculateFan): number
+	{
+		for (let i: number = 0; i < huWayInfo.sequenceList.length; i++) 
+		{
+			let arr: Array<number> = huWayInfo.sequenceList[i];
+			if (thisObj.isShunZi(arr)) //找顺子
+			{
+				let num1: number = arr[0];
+				for (let j: number = i + 1; j < huWayInfo.sequenceList.length; j++)  //从下一组数据开始查找
+				{
+					let arr2: Array<number> = huWayInfo.sequenceList[j];
+					let num2: number = arr2[0];
+					if (thisObj.isShunZi(arr2) && num1 == num2)
+					{
+						return def.fan;
+					}
+				}
+			}
+		}
+		return 0;
+	}
+	/*喜相逢 2种花色2副序数相同的顺子。*/
+	private xiXiangFeng(huWayInfo: HuWayInfo, def: FanCalcDefinition, thisObj: CalculateFan): number
+	{
+		for (let i: number = 0; i < huWayInfo.sequenceList.length; i++) 
+		{
+			let arr: Array<number> = huWayInfo.sequenceList[i];
+			if (thisObj.isShunZi(arr)) //找顺子
+			{
+				let num1: number = arr[0];
+				for (let j: number = i + 1; j < huWayInfo.sequenceList.length; j++)  //从下一组数据开始查找
+				{
+					let arr2: Array<number> = huWayInfo.sequenceList[j];
+					let num2: number = arr2[0];
+					if (thisObj.isShunZi(arr2) && !thisObj.isTongSe(num1, num2) && thisObj.isSameIndex(num1, num2))
+					{
+						return def.fan;
+					}
+				}
+			}
+		}
+		return 0;
+	}
+	/*连6 一种花色6张相连接的序数牌。*/
+	private lianLiu(huWayInfo: HuWayInfo, def: FanCalcDefinition, thisObj: CalculateFan): number
+	{
+		for (let i: number = 0; i < huWayInfo.sequenceList.length; i++) 
+		{
+			let arr: Array<number> = huWayInfo.sequenceList[i];
+			if (thisObj.isShunZi(arr)) //找顺子
+			{
+				let num1: number = arr[0];
+				for (let j: number = i + 1; j < huWayInfo.sequenceList.length; j++)  //从下一组数据开始查找
+				{
+					let arr2: Array<number> = huWayInfo.sequenceList[j];
+					let num2: number = arr2[0];
+					if (thisObj.isShunZi(arr2) && thisObj.isTongSe(num1, num2))
+					{
+						if (num1 == num2 + 3 || num2 == num1 + 3)
+						{
+							return def.fan;
+						}
+					}
+				}
+			}
+		}
+		return 0;
+	}
+	/*老少副 一种花色牌的123、789两副顺子。*/
+	private laoShaoFu(huWayInfo: HuWayInfo, def: FanCalcDefinition, thisObj: CalculateFan): number
+	{
+		let num = thisObj.getLaoShaoFu(huWayInfo);
+		if (num == 1)
+		{
+			return def.fan;
+		}
+		return 0;
+	}
+	/*幺九刻 3张相同的一、九序数牌及字牌组成的刻子(或杠)*/
+	private yaoJiuKe(huWayInfo: HuWayInfo, def: FanCalcDefinition, thisObj: CalculateFan): number
+	{
+		for (let i: number = 0; i < huWayInfo.sequenceList.length; i++) 
+		{
+			let arr: Array<number> = huWayInfo.sequenceList[i];
+			let num: number = arr[0];
+			if (thisObj.isKeZi(arr) && (thisObj.isYao(num) || thisObj.isJiu(num))) // || thisObj.isJian(num)
+			{
+				return def.fan;
+			}
+		}
+		return 0;
+	}
+	/*明杠todo 自己有暗刻，碰别人打出的一张相同的牌开杠:或自己抓进一张与碰的明刻相同的牌开杠。*/
+	private mingGang(huWayInfo: HuWayInfo, def: FanCalcDefinition, thisObj: CalculateFan): number
+	{
+		let mingGangNum: number = thisObj.getMingGangNum();
+		if (mingGangNum == 1)
+		{
+			return def.fan;
+		}
+		return 0;
+	}
+	/*缺一门 和牌中缺少一种花色序数牌。和牌中必须含有两种花色的序数牌*/
+	private queYiMen(huWayInfo: HuWayInfo, def: FanCalcDefinition, thisObj: CalculateFan): number
+	{
+		let totalTypeArr: Array<MahJongType> = [MahJongType.Tiao, MahJongType.Wan, MahJongType.Bin, MahJongType.Baida];
+		let type: MahJongType = HuCard.getCardType(huWayInfo.pairList[0]);
+		ArrayUtil.RemoveItem(type, totalTypeArr);
+		for (let i: number = 0; i < huWayInfo.sequenceList.length; i++) 
+		{
+			type = HuCard.getCardType(huWayInfo.sequenceList[i][0]);
+			ArrayUtil.RemoveItem(type, totalTypeArr);
+		}
+		let num: number = 0;
+		if (totalTypeArr.indexOf(MahJongType.Tiao) != -1)
+		{
+			num++;
+		}
+		if (totalTypeArr.indexOf(MahJongType.Wan) != -1)
+		{
+			num++;
+		}
+		if (totalTypeArr.indexOf(MahJongType.Bin) != -1)
+		{
+			num++;
+		}
+		if (num == 1) //剩余一种花色的话则算缺一门
+		{
+			return def.fan;
+		}
+		return 0;
+	}
+	/*无字 和牌中没有箭牌。*/
+	private wuZi(huWayInfo: HuWayInfo, def: FanCalcDefinition, thisObj: CalculateFan): number
+	{
+		if (thisObj.isJian(huWayInfo.pairList[0])) //排除将
+		{
+			return 0;
+		}
+		for (let i: number = 0; i < huWayInfo.sequenceList.length; i++) //排除非将牌
+		{
+			if (thisObj.isJian(huWayInfo.sequenceList[i][0])) //第三张牌是箭牌的则直接返回
+			{
+				return 0;
+			}
+		}
+		return def.fan;
+	}
+	/*边张 单和123的3及789的7或1233和3、7789和7都为边张。手中有12345和3，56789和7不算边张。*/
+	private bianZhang(huWayInfo: HuWayInfo, def: FanCalcDefinition, thisObj: CalculateFan): number
+	{
+		if (thisObj._huPaiInfo.huWayList.length == 1 && thisObj._huPaiInfo.tingList.length == 1) //只有一种胡法
+		{
+			for (let i: number = 0; i < huWayInfo.sequenceList.length; i++) //头尾算过，单和123的3及789的7或1233和3、7789和7都为边张。手中有12345和3，56789和7不算边张。
+			{
+				let arr: Array<number> = huWayInfo.sequenceList[i];
+				if (thisObj.isShunZi(arr))
+				{
+					//胡7
+					if (thisObj._huPaiInfo.winCard == arr[0] && thisObj.getIndex(thisObj._huPaiInfo.winCard) == 6)
+					{
+						return def.fan;
+					}//胡3
+					else if (thisObj._huPaiInfo.winCard == arr[2] && thisObj.getIndex(thisObj._huPaiInfo.winCard) == 2)  
+					{
+						return def.fan;
+					}
+				}
+			}
+		}
+		return 0;
+	}
+	/*坎张 和2张牌之间的牌。4556和5也为坎张，手中有45567和6不算坎张。*/
+	private kanZhang(huWayInfo: HuWayInfo, def: FanCalcDefinition, thisObj: CalculateFan): number
+	{
+		if (thisObj._huPaiInfo.huWayList.length == 1 && thisObj._huPaiInfo.tingList.length == 1) //只有一种胡法
+		{
+			for (let i: number = 0; i < huWayInfo.sequenceList.length; i++) //如果是两张中间的牌则算坎张
+			{
+				let arr: Array<number> = huWayInfo.sequenceList[i];
+				if (thisObj.isShunZi(arr) && thisObj._huPaiInfo.winCard == arr[1])
+				{
+					return def.fan;
+				}
+			}
+		}
+		return 0;
+	}
+	/*单钓将 钓单张牌作将成和。*/
+	private danDiaoJiang(huWayInfo: HuWayInfo, def: FanCalcDefinition, thisObj: CalculateFan): number
+	{
+		if (huWayInfo.pairList.indexOf(thisObj._huPaiInfo.winCard) != -1 && thisObj._huPaiInfo.huWayList.length == 1 && thisObj._huPaiInfo.tingList.length == 1) //胡的牌和将牌一样，且只有一种胡法
+		{
+			return def.fan;
+		}
+		return 0;
+	}
+	/*自摸 自己抓进牌成和牌。*/
+	private ziMo(huWayInfo: HuWayInfo, def: FanCalcDefinition, thisObj: CalculateFan): number
+	{
+		if (thisObj._huPaiInfo.isZiMo)
+		{
+			return def.fan;
+		}
+		return 0;
+	}
+	/*花牌 即春夏秋冬，梅兰竹菊，每花计一番。花牌补花成和计自摸番，不计杠上开花 todo。*/
+	private huaPai(huWayInfo: HuWayInfo, def: FanCalcDefinition, thisObj: CalculateFan): number
+	{
+		return 0;
+	}
+	//==============================================1番胡牌种类END===================================================//
+	/*获取一张牌的序数 只限万条饼*/
+	private getIndex(a: number): number
+	{
+		let type: MahJongType = HuCard.getCardType(a);
+		switch (type)
+		{
+			case MahJongType.Tiao:
+				return tiaoList.indexOf(a);
+			case MahJongType.Wan:
+				return wanList.indexOf(a);
+			case MahJongType.Bin:
+				return bingList.indexOf(a);
+			default:
+				return -1;
+		}
+	}
+	/*获取一副牌中指定牌的总数量*/
+	private getPaiNum(huWayInfo: HuWayInfo, a: number): number
+	{
+		let cnt: number = 0;
+		for (let i: number = 0; i < huWayInfo.sequenceList.length; i++)
+		{
+			let arr: Array<number> = huWayInfo.sequenceList[i];
+			for (let j: number = 0; j < arr.length; j++)
+			{
+				if (arr[j] == a)
+				{
+					cnt++;
+				}
+			}
+		}
+		return cnt;
+	}
+	/*获取场中可以看见的指定牌的数量*/
+	private getCanSeeNum(a: number): number
+	{
+		if (a > 0 && a < this._huPaiInfo.canSeeList.length)
+		{
+			return this._huPaiInfo.canSeeList[a].length;
+		}
+		return 0;
+	}
+	/*获取未启牌的张数*/
+	private getRemainNum(): number
+	{
+		let num: number = 0;
+		for (let i: number = 0; i < this._huPaiInfo.remainList.length; i++)
+		{
+			num += this._huPaiInfo.remainList[i].length;
+		}
+		// return num;
+		return num + 1;//todo
+	}
+	/*获取一副牌中的暗刻数量*/
+	private getAnKeNum(huWayInfo: HuWayInfo): number
+	{
+		let keziNum: number = 0;
+		let num: number = 0;
+		for (let i: number = 0; i < huWayInfo.sequenceList.length; i++)
+		{
+			let arr: Array<number> = huWayInfo.sequenceList[i];
+			num = arr[0];
+			//刻字非碰非明杠
+			if (this.isKeZi(arr) && this._huPaiInfo.pengList.indexOf(num) == -1 && this._huPaiInfo.mingGanList.indexOf(num) == -1)
+			{
+				if (num == this._huPaiInfo.winCard) //赢的牌非暗刻
+				{
+					let cnt: number = this.getPaiNum(huWayInfo, num);
+					if (cnt == 4)
+					{
+						keziNum++;
+					}
+				}
+				else
+				{
+					keziNum++;
+				}
+			}
+		}
+		return keziNum;
+	}
+	/*获取同刻数量*/
+	private getTongKeNum(huWayInfo: HuWayInfo): number
+	{
+		let maxTongKeNum: number = 0;
+		for (let i: number = 0; i < huWayInfo.sequenceList.length; i++)
+		{
+			let arr: Array<number> = huWayInfo.sequenceList[i];
+			if (this.isKeZi(arr))
+			{
+				let num1: number = arr[0];
+				let tongKeNum = 0;
+				for (let j: number = i + 1; j < huWayInfo.sequenceList.length; j++)
+				{
+					let arr2: Array<number> = huWayInfo.sequenceList[j];
+					if (this.isKeZi(arr2) && this.isSameIndex(num1, arr2[0]) && !this.isJian(num1)) //非箭牌
+					{
+						tongKeNum++;
+					}
+				}
+				if (tongKeNum > maxTongKeNum)
+				{
+					maxTongKeNum = tongKeNum;
+				}
+			}
+		}
+		return maxTongKeNum;
+	}
+	/*获取一副牌中老少副的数量*/
+	private getLaoShaoFu(huWayInfo: HuWayInfo): number
+	{
+		let laoShaoFuNum: number = 0;
+		let tmpArr: Array<Array<number>> = huWayInfo.sequenceList.concat();
+		for (let i: number = tmpArr.length - 1; i >= 0; i--) 
+		{
+			if (i < tmpArr.length)
+			{
+				let arr: Array<number> = tmpArr[i];
+				let num1 = arr[0];
+				if (this.isShunZi(arr) && this.isYao(num1)) /*查少 1*/
+				{
+					for (let j: number = 0; j < tmpArr.length; j++)
+					{
+						let arr2: Array<number> = tmpArr[j];
+						let num2: number = arr2[2];
+						if (this.isTongSe(num1, num2) && this.isShunZi(arr2) && this.isJiu(num2)) /*查老 9*/
+						{
+							laoShaoFuNum++;
+							ArrayUtil.RemoveItem(arr, tmpArr);
+							ArrayUtil.RemoveItem(arr2, tmpArr); //找到删除继续找剩下的
+							break;
+						}
+					}
+				}
+			}
+		}
+		return laoShaoFuNum;
+	}
+	/*获取清龙组成的数组*/
+	private getQingLong(huWayInfo: HuWayInfo): Array<Array<number>>
+	{
+		let tmpArr: Array<Array<number>>;
+		for (let i: number = 0; i < huWayInfo.sequenceList.length; i++)
+		{
+			tmpArr = new Array<Array<number>>();
+			let arr: Array<number> = huWayInfo.sequenceList[i];
+			let num1: number = arr[0];
+			if (this.isShunZi(arr) && !this.isJian(num1)) 
+			{
+				tmpArr.push(arr);
+				let bool2: boolean = false;
+				let bool3: boolean = false;
+				for (let j: number = 0; j < huWayInfo.sequenceList.length; j++)
+				{
+					let arr2: Array<number> = huWayInfo.sequenceList[j];
+					if (this.isShunZi(arr2))
+					{
+						let num2: number = arr2[0];
+						if (!bool2 && this.getIndex(num1) == this.getIndex(num2) + 3)
+						{
+							bool2 = true;
+							tmpArr.push(arr2);
+						}
+						else if (!bool3 && this.getIndex(num1) == this.getIndex(num2) + 6)
+						{
+							bool3 = true;
+							tmpArr.push(arr2);
+						}
+						if (tmpArr.length >= 3)
+						{
+							return tmpArr;
+						}
+					}
+				}
+			}
+		}
+		return new Array<Array<number>>();
+	}
+	/*获取一副牌中顺子的组合*/
+	private getShunZiGroup(huWayInfo: HuWayInfo): Array<Array<number>>
+	{
+		let tmpArr: Array<Array<number>> = new Array<Array<number>>();
+		for (let i: number = 0; i < huWayInfo.sequenceList.length; i++)
+		{
+			let arr: Array<number> = huWayInfo.sequenceList[i];
+			if (this.isShunZi(arr)) 
+			{
+				tmpArr.push(arr);
+			}
+		}
+		return tmpArr;
+	}
+	/*获取一副牌中刻子的组合*/
+	private getKeZiGroup(huWayInfo: HuWayInfo): Array<Array<number>>
+	{
+		let tmpArr: Array<Array<number>> = new Array<Array<number>>();
+		for (let i: number = 0; i < huWayInfo.sequenceList.length; i++)
+		{
+			let arr: Array<number> = huWayInfo.sequenceList[i];
+			if (this.isKeZi(arr)) 
+			{
+				tmpArr.push(arr);
+			}
+		}
+		return tmpArr;
+	}
+	/*获取明杠数量*/
+	private getMingGangNum(): number
+	{
+		return this._huPaiInfo.mingGanList.length;
+	}
+	/*获取暗杠数量*/
+	private getAnGangNum(): number
+	{
+		return this._huPaiInfo.anGangList.length;
+	}
+	/*是否是顺子 不算中发白*/
+	private isShunZi(list: Array<number>): boolean
+	{
+		let num: number = list[0];
+		if (list && list.length >= 3 && num != list[1] && !this.isJian(num))
+		{
+			return true;
+		}
+		return false;
+	}
+	/*是否是刻子*/
+	private isKeZi(list: Array<number>): boolean
+	{
+		if (list && list.length >= 3 && list[0] == list[1])
+		{
+			return true;
+		}
+		return false;
+	}
+	/*是否是幺*/
+	private isYao(a: number): boolean
+	{
+		if (a == tiaoList[0] || a == wanList[0] || a == bingList[0])
+		{
+			return true;
+		}
+		return false;
+	}
+	/*是否是九*/
+	private isJiu(a: number): boolean
+	{
+		if (a == tiaoList[sequenceNumEnd] || a == wanList[sequenceNumEnd] || a == bingList[sequenceNumEnd])
+		{
+			return true;
+		}
+		return false;
+	}
+	/*是否是箭牌*/
+	private isJian(a: number): boolean
+	{
+		return HuCard.getCardType(a) == MahJongType.Baida;
+	}
+	/*a和b是否是同色 只算条万饼*/
+	private isTongSe(a: number, b: number): boolean
+	{
+		let aType: MahJongType = HuCard.getCardType(a);
+		let bType: MahJongType = HuCard.getCardType(b);
+		if (aType == bType && aType != MahJongType.Baida && aType != MahJongType.None)
+		{
+			return true;
+		}
+		return false;
+	}
+	/*是否是同一序数 包含同花色非同花色*/
+	private isSameIndex(a: number, b: number): boolean
+	{
+		if (this.getIndex(a) == this.getIndex(b))
+		{
+			return true;
+		}
+		return false;
+	}
+	/*是否带5*/
+	private isDaiWu(arr: Array<number>): boolean
+	{
+		for (let i: number = 0; i < arr.length; i++)
+		{
+			let num: number = arr[i];
+			if (this.isJian(num))
+			{
+				return false;
+			}
+			if (this.getIndex(num) == 4)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	/*是否是双数索引*/
+	private isDoubleIndex(a: number): boolean
+	{
+		return CalculateFan.doubleArray.indexOf(this.getIndex(a)) != -1;
+	}
+}

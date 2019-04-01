@@ -1,0 +1,40 @@
+<e:Skin class="panelSkin13" width="720" height="1280" xmlns:e="http://ns.egret.com/eui"
+        xmlns:w="http://ns.egret.com/wing" xmlns:ns1="*">
+	<e:Group id="tweenGroup" horizontalCenter="0" verticalCenter="0" width="720" height="1280">
+		<e:Image width="720" height="1280" source="bg_page2_png" scale9Grid="24,21,101,105" anchorOffsetY="0" x="0" y="0"/>
+		<e:Label text="游戏场" y="48" size="50" textColor="0x09f2c0" textAlign="center" verticalAlign="middle" horizontalCenter="0"/>
+
+
+
+
+
+
+
+		<e:Group id="tabGroup" x="1" y="256">
+			<e:Label id="searchLable" text="" y="46" anchorOffsetX="0" width="382" anchorOffsetY="0" height="60.67" verticalAlign="middle" border="true" borderColor="0xEA1717" x="168"/>
+			<e:Label id="roomIdLable" text="房间ID" x="49" y="0"/>
+			<e:Label id="playerNumLable" text="在玩人数" x="191" y="0"/>
+			<e:Label id="blindLable" text="小/大盲" x="356" y="0"/>
+			<e:Label id="buyLable" text="最小/最大买入" x="515" y="0"/>
+			<e:Scroller id="scroller" width="720" height="752.24" x="0.9700000000000273" y="129" anchorOffsetX="0" anchorOffsetY="0"/>
+			<e:List id="list" width="720" height="747.33" x="0" y="129" anchorOffsetX="0" anchorOffsetY="0"/>
+		</e:Group>
+		<e:Group id="keyboardGroup" touchEnabled="false" anchorOffsetX="0" anchorOffsetY="0" top="0" left="0" bottom="-4" right="0">
+
+			<e:Image width="740" height="470.33" anchorOffsetX="0" anchorOffsetY="0" y="788.09" scaleX="1" scaleY="1" source="bg_page19_png" horizontalCenter="0" scale9Grid="13,18,121,116"/>
+			<ns1:GameButton id="numBtn1" label="1" skinName="buttonSkin2" scaleX="1" scaleY="1" horizontalCenter="-218.5" verticalCenter="235.5"/>
+			<ns1:GameButton id="numBtn2" label="2" skinName="buttonSkin2" scaleX="1" scaleY="1" horizontalCenter="0.5" verticalCenter="235.5"/>
+			<ns1:GameButton id="numBtn3" label="3" skinName="buttonSkin2" scaleX="1" scaleY="1" horizontalCenter="219.5" verticalCenter="235.5"/>
+			<ns1:GameButton id="numBtn4" label="4" skinName="buttonSkin2" scaleX="1" scaleY="1" horizontalCenter="-218.5" verticalCenter="343.5"/>
+			<ns1:GameButton id="numBtn5" label="5" skinName="buttonSkin2" scaleX="1" scaleY="1" horizontalCenter="0.5" verticalCenter="343.5"/>
+			<ns1:GameButton id="numBtn6" label="6" skinName="buttonSkin2" scaleX="1" scaleY="1" horizontalCenter="219.5" verticalCenter="343.5"/>
+			<ns1:GameButton id="numBtn7" label="7" skinName="buttonSkin2" scaleX="1" scaleY="1" horizontalCenter="-218.5" verticalCenter="451.5"/>
+			<ns1:GameButton id="numBtn8" label="8" skinName="buttonSkin2" scaleX="1" scaleY="1" horizontalCenter="0.5" verticalCenter="451.5"/>
+			<ns1:GameButton id="numBtn9" label="9" skinName="buttonSkin2" scaleX="1" scaleY="1" horizontalCenter="219.5" verticalCenter="451.5"/>
+			<ns1:GameButton id="resetBtn" label="重输" skinName="buttonSkin26" scaleX="1" scaleY="1" horizontalCenter="-218.5" verticalCenter="560.5"/>
+			<ns1:GameButton id="numBtn0" label="0" skinName="buttonSkin2" scaleX="1" scaleY="1" horizontalCenter="0.5" verticalCenter="560.5"/>
+			<ns1:GameButton id="delBtn" label="删除" skinName="buttonSkin25" scaleX="1" scaleY="1" horizontalCenter="219.5" verticalCenter="560.5"/>
+		</e:Group>
+		<ns1:GameButton id="closeButton" label="Button" skinName="buttonSkin4" x="-3" y="-2"/>
+	</e:Group>
+</e:Skin>

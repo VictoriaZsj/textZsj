@@ -1,0 +1,111 @@
+/**
+ * 操作CD组件
+ */
+class GamblingCdComponent extends BaseComponent<number>
+{
+	public cdImg: eui.Image;
+	private _shape: egret.Shape;
+	private _colorMatrix: Array<number>;
+	private _angle: number = 0;
+	private _phase: number = 0;
+	private _index: number = 1;
+	private _speed: number;
+
+	public constructor()
+	{
+		super();
+		this.skinName = UIComponentSkinName.GamblingCdComponent;
+	}
+	protected onAwake(event: eui.UIEvent)
+	{
+		this._shape = new egret.Shape();
+		this.addChild(this._shape);
+		this._shape.x = this.cdImg.width / 2;
+		this._shape.y = this.cdImg.height / 2;
+		this.cdImg.mask = this._shape;
+	}
+	public init(data: number)
+	{
+		if (data != undefined)
+		{
+			this._speed = data;
+		}
+	}
+	public startTick()
+	{
+		egret.startTick(this.tick, this);
+	}
+	public stopTick()
+	{
+		egret.stopTick(this.tick, this);
+	}
+	protected rendererStart(event: egret.Event)
+	{
+		super.rendererStart(event);
+		this._colorMatrix = [
+			0, 0, 0, 0, 100,
+			0, 1, 0, 0, 100,
+			0, 0, 0, 0, 100,
+			0, 0, 0, 1, 0
+		];
+		this.cdImg.filters = null;
+		this._angle = 0;
+		this._index = 1;
+		this._phase = 0;
+		this._shape.rotation = -90;
+	}
+	private tick(timeStamp: number): boolean
+	{
+		this.mgraphics(this._angle);
+		this._angle += 0.3 * this._speed;
+		if (this._angle >= 360 * this._speed)
+		{
+			this._angle = this._angle % 360 * this._speed;
+			this._index *= -1;
+		}
+		if (this._phase >= 400 * this._speed && this._phase < 680 * this._speed)
+		{
+			this._colorMatrix[1] += 0.015 * this._speed;
+			this._colorMatrix[6] -= 0.0005 * this._speed;
+			this._colorMatrix[9] += 5 * this._speed;
+		}
+		else if (this._phase >= 680 * this._speed)
+		{
+			this._colorMatrix[6] -= 0.005 * this._speed;
+		}
+		if (this._colorMatrix[1] > 1)
+		{
+			this._colorMatrix[1] = 1;
+		}
+		if (this._colorMatrix[6] <= 0)
+		{
+			this._colorMatrix[6] = 0;
+		}
+		if (this._colorMatrix[9] < 30)
+		{
+			this._colorMatrix[9] = 30;
+		}
+		if (this._colorMatrix[9] >= 100)
+		{
+			this._colorMatrix[9] = 100;
+		}
+		var colorFlilter = new egret.ColorMatrixFilter(this._colorMatrix);
+		this.cdImg.filters = [colorFlilter];
+		this._phase++;
+		if (this._phase == 1220 * this._speed)
+		{
+			this.stopTick();
+		}
+		return false;
+	}
+	private mgraphics(_angle: number): void
+	{
+		this._shape.graphics.clear();
+		this._shape.graphics.beginFill(0xffffff, 1);
+		this._shape.graphics.moveTo(0, 0);
+		this._shape.graphics.lineTo(45, 0);
+		this._shape.graphics.drawArc(0, 0, 45, 0, _angle * Math.PI / 180, this._index == -1);
+		this._shape.graphics.lineTo(0, 0);
+		this._shape.graphics.endFill();
+	}
+}

@@ -1,0 +1,73 @@
+/**
+ * 随机昵称
+*/
+class NameDefined extends BaseDefined<NameDefinition>
+{
+    private static readonly nameConfig: string = "name";
+    private static _instance: NameDefined;
+    /**
+     * 男名范围
+    */
+    public bboyFirstNameRange: number;
+    /**
+     * 姓氏范围
+    */
+    public lastNameRange: number;
+    public static GetInstance(): NameDefined
+    {
+        if (!NameDefined._instance)
+        {
+            NameDefined._instance = new NameDefined();
+        }
+        if (DefinedManager.IsParsed(NameDefined.nameConfig) == false)
+        {
+            NameDefined._instance.initialize();
+        }
+        return NameDefined._instance;
+    }
+    public initialize()
+    {
+        let obj: Object = DefinedManager.GetData(NameDefined.nameConfig);
+        this.dataList = ShortNameDefined.GetInstance().convertEnter(obj) as Array<NameDefinition>;
+        this.getRange();
+    }
+    /**
+     * 获得范围值
+    */
+    private getRange()
+    {
+        if (this.dataList && this.dataList.length > 0)
+        {
+            for (let def of this.dataList)
+            {
+                if (!this.lastNameRange)
+                {
+                    if (!def.name)
+                    {
+                        this.lastNameRange = def.id-1;
+                    }
+                }
+                if (!this.bboyFirstNameRange)
+                {
+                    if (!def.boy)
+                    {
+                        this.bboyFirstNameRange = def.id-1;
+                    }
+                }
+            }
+            if(!(this.lastNameRange || this.bboyFirstNameRange)){
+                console.log("获取姓名或男孩名范围失败");
+            }
+        }
+    }
+}
+/**
+* 随机昵称的定义
+*/
+class NameDefinition implements IBaseDefintion
+{
+    public id: number;
+    public name: string;
+    public boy: string;
+    public girl: string;
+}

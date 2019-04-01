@@ -1,0 +1,287 @@
+/**
+ * 用户信息面板
+ */
+class UserInfoPanel extends BasePanel
+{
+	//资料
+	public userInfoTab: TabComponent;
+	public userNameLabel: eui.Label;//用户名
+	public changeNameBtn: eui.Button;//修改昵称
+	public userImg: eui.Image;//头像
+	public borderImg: eui.Image;//边框
+	public vipLevelLabel: eui.Label;//用户vip等级
+	public vipGroup: eui.Group;//vip组
+	public sexImg: eui.Image;//性别
+	public ageLabel: eui.Label//年龄
+	public userIdLabel: eui.Label;//ID
+	public userDesLabel: eui.Label;//用户描述
+	public diamondNumLabel: eui.Label;//钻石数
+	public goldNumLabel: eui.Label;//金币数量
+	public levelLabel: eui.Label;//等级
+	public titleLabel: eui.Label;//称号
+	public levelProgressImg: eui.ProgressBar;//等级进度
+	public statusLabel: eui.Label;//目前状态
+	public myPrizeBtn: eui.Button;//我的奖品
+	public myVipBtn: eui.Button;//我的Vip
+	public dataGroup: eui.Group;//资料组
+
+	//概况
+	public joinTimeLabel: eui.Label;//加入时间
+	public maxGoldLabel: eui.Label;//最高拥有金币
+	public maxGoldOnetimeLabel: eui.Label;//一把最高赢取金币
+	public frindNumLabel: eui.Label;//好友数量
+	public winTimeLabel: eui.Label;//已完成局数/胜利
+	public winProbabilityLabel: eui.Label;//胜率
+	public maxHandLabel: eui.Label;//最大手牌
+	public maxHandGroup: eui.Group;//最大手牌组
+	public championTimesLabel: eui.Label;//夺冠次数
+	public situationGroup: eui.Group;//概况组
+
+	//成就
+	public achieveScroller: eui.Scroller;
+	public achieveList: eui.List;
+	public achievementGroup: eui.Group;//成就组
+
+	//好友申请类型
+	private friendInfoType: FriendInfoType;
+
+	/**
+	 * 我的信息
+	 */
+	public myInfoBtnGroup: eui.Group;
+	/**
+	 * 好友信息
+	 */
+	public friendInfoBtnGroup: eui.Group;
+	/**
+	 * 删除好友
+	 */
+	public deleteFriendBtn: eui.Button;
+	/**
+	 * 接收申请
+	 */
+	public receiveOtherBtnGroup: eui.Group;
+	/**
+	 * 拒绝申请
+	 */
+	public refuseBtn: eui.Button;
+	/**
+	 * 同意申请
+	 */
+	public acceptBtn: eui.Button;
+	/**
+	 * 发送申请
+	 */
+	public sendOtherInfoBtnGroup: eui.Group;
+	/**
+	 * 申请好友
+	 */
+	public requestBtn: eui.Button;
+
+
+	public constructor()
+	{
+		super();
+		this.skinName = UISkinName.UserInfoPanel;
+	}
+	protected onAwake(event: eui.UIEvent)
+	{
+		super.onAwake(event);
+		this.isCloseButtonTween = false;
+		this.isMaskClickClose = true;
+	}
+	public init(appendData: any)
+	{
+		super.init(appendData);
+		if (appendData)
+		{
+			this.friendInfoType = appendData.type;
+		}
+		let array: Array<eui.Group> = new Array<eui.Group>();
+		array.push(this.dataGroup);
+		array.push(this.situationGroup);
+		array.push(this.achievementGroup);
+
+		this.userInfoTab.init(array);
+		this.userInfoTab.isTween = false;
+		this.userInfoTab.viewStack.y = -150;
+		UIUtil.listRenderer(this.achieveList, this.achieveScroller, AchievementItemRenderer, ScrollViewDirection.Vertical_T_D, eui.ScrollPolicy.ON, null, false);
+	}
+	protected onRender(event: egret.Event)
+	{
+		super.onRender(event);
+		let otherUserInfo: UserInfo = UserManager.otherUserInfo;
+		if (otherUserInfo == null || otherUserInfo.roleId == UserManager.userInfo.roleId)
+		{
+			this.showFriendUI(this.myInfoBtnGroup);
+			this.setInfo(UserManager.userInfo);
+			this.refreshAchieveInfo(UserManager.userInfo);
+		}
+		else
+		{
+			if (this.friendInfoType)
+			{
+				switch (this.friendInfoType)
+				{
+					case FriendInfoType.Receive:
+						this.showFriendUI(this.receiveOtherBtnGroup);
+						break;
+					case FriendInfoType.Send:
+						this.showFriendUI(this.sendOtherInfoBtnGroup);
+						break;
+				}
+			}
+			else
+			{
+				this.showFriendUI(this.friendInfoBtnGroup);
+			}
+			this.setInfo(UserManager.otherUserInfo);
+			this.refreshAchieveInfo(UserManager.otherUserInfo);
+		}
+	}
+
+	private setInfo(info: UserInfo)
+	{
+		this.diamondNumLabel.text = info.diamond.toString();
+		this.goldNumLabel.text = info.gold.toString();
+		this.refreshUserInfo(info);
+		this.refreshOtherVipInfo(info);
+		this.userIdLabel.text = info.roleId.toString();
+		this.levelLabel.text = info.level.toString();
+		this.titleLabel.text = UserUtil.getTitle(info.level);
+		this.levelProgressImg.width = 328;
+		this.levelProgressImg.width *= UserUtil.getPercentage(info.level, info.exp);
+
+		this.joinTimeLabel.text = DateTimeUtil.formatDate(new Date(info.createdTime * 1000), DateTimeUtil.Format_Standard_Date);
+		this.maxGoldLabel.text = info.maxGold.toString();
+		this.maxGoldOnetimeLabel.text = info.maxGoldOnetimes.toString();
+		this.frindNumLabel.text = info.friendNum.toString();
+		this.winTimeLabel.text = info.gameTimes.toString() + "/" + info.winTimes.toString();
+		this.winProbabilityLabel.text = Math.round(info.gameTimes == 0 ? 0 : (info.winTimes / info.gameTimes) * 100).toString() + "%";
+
+		this.maxHandLabel.text = info.maxHandName;
+		this.championTimesLabel.text = info.championTimes.toString();
+		// for (let i: number = 0; i < this.maxHandGroup.numChildren; i++)
+		// {
+		// 	let img:eui.Image = this.maxHandGroup.getChildAt(i) as eui.Image;
+		// 	img.source = info.maxHandList[i].toString();
+		// }
+	}
+
+	private refreshUserInfo(info: UserInfo)
+	{
+		this.userNameLabel.text = info.name;
+		this.userImg.source = info.head;
+		this.sexImg.visible = true;
+		switch (info.sex)
+		{
+			case Sex.Female:
+				this.sexImg.source = ImageSource.FemaleImg;
+				break;
+			case Sex.Male:
+				this.sexImg.source = ImageSource.MaleImg;
+				break;
+			case Sex.Unknown:
+				this.sexImg.visible = false;
+				break;
+		}
+		this.ageLabel.text = info.age.toString();
+		this.userDesLabel.text = info.des;
+	}
+	private refreshMyInfo()
+	{
+		this.refreshUserInfo(UserManager.userInfo);
+	}
+	private refreshVipInfo()
+	{
+		this.refreshOtherVipInfo(UserManager.userInfo);
+	}
+	private refreshOtherVipInfo(info: UserInfo)
+	{
+		if (!VipManager.isVip(info))
+		{
+			this.vipGroup.visible = false;
+		}
+		else
+		{
+			this.vipLevelLabel.text = info.vipLevel.toString();
+		}
+	}
+
+	private refreshAchieveInfo(userInfo: UserInfo)
+	{
+		this.achieveList.dataProvider = new eui.ArrayCollection(AchievementManager.getAchieveListByTag(AchieveTag.Achievement));
+	}
+
+	protected onEnable(event: eui.UIEvent): void
+	{
+		super.onEnable(event);
+		this.addEventListener(egret.TouchEvent.TOUCH_TAP, this.clickHandler, this);
+		VipManager.vipUpgradeEvent.addListener(this.refreshVipInfo, this);
+		UserManager.onSetUserInfoComplete.addListener(this.refreshMyInfo, this);
+	}
+	protected onDisable(event: eui.UIEvent): void
+	{
+		super.onDisable(event);
+		this.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.clickHandler, this);
+		VipManager.vipUpgradeEvent.removeListener(this.refreshVipInfo);
+		UserManager.onSetUserInfoComplete.removeListener(this.refreshMyInfo);
+		UserManager.otherUserInfo = null;
+	}
+
+	/**
+	 * 点击面板按钮事件处理
+	*/
+	private clickHandler(event: egret.TouchEvent)
+	{
+		SoundManager.playButtonEffect(event.target);
+		switch (event.target)
+		{
+			case this.changeNameBtn:
+				UIManager.showPanel(UIModuleName.ChangeUserNamePanel);
+				break;
+			case this.myPrizeBtn:
+				UIManager.showPanel(UIModuleName.MyAwardPanel);
+				break;
+			case this.myVipBtn:
+				UIManager.showPanel(UIModuleName.VipPanel);
+				break;
+			case this.userImg:
+				UIManager.showPanel(UIModuleName.EditUserInfoPanel);
+				break;
+			case this.deleteFriendBtn:
+				if (UserManager.otherUserInfo)
+				{
+					FriendManager.reqRemovePlayer(UserManager.otherUserInfo.roleId);
+				}
+				break;
+			case this.requestBtn:
+				if (UserManager.otherUserInfo)
+				{
+					FriendManager.reqAddPlayer(UserManager.otherUserInfo.roleId);
+				}
+				break;
+			case this.refuseBtn:
+				if (UserManager.otherUserInfo)
+				{
+					FriendManager.reqReceiveFriendRequest(UserManager.otherUserInfo.roleId, IsReceive.NotREceive);
+				}
+				break;
+			case this.acceptBtn:
+				if (UserManager.otherUserInfo)
+				{
+					FriendManager.reqReceiveFriendRequest(UserManager.otherUserInfo.roleId, IsReceive.Receive);
+				}
+				break;
+		}
+	}
+
+	private showFriendUI(showGroup: eui.Group)
+	{
+		this.myInfoBtnGroup.visible = false;
+		this.friendInfoBtnGroup.visible = false;
+		this.receiveOtherBtnGroup.visible = false;
+		this.sendOtherInfoBtnGroup.visible = false;
+		showGroup.visible = true;
+	}
+}

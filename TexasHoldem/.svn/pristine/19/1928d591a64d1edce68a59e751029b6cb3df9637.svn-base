@@ -1,0 +1,24 @@
+/**
+ * 牌局面板支持
+ */
+abstract class BaseGamblingPanelSupport
+{
+	public target: GamblingPanel;
+	public constructor(panel: GamblingPanel)
+	{
+		this.target = panel;
+		this.initialize();
+	}
+	public initialize()
+	{
+
+	}
+	public onEnable()
+	{
+
+	}
+	public onDisable()
+	{
+
+	}
+}

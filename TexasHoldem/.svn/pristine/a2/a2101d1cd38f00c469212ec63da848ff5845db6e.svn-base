@@ -1,0 +1,57 @@
+/**
+ * 听项
+ */
+class TingRenderer extends BaseItemRenderer<ListenInfo>
+{
+	public face: eui.Image;
+	public countLabel: eui.Label;
+	public allLabel: eui.Label;
+	public constructor()
+	{
+		super();
+		this.skinName = UIRendererSkinName.TingRenderer;
+	}
+	protected dataChanged()
+	{
+		super.dataChanged();
+		if (!this.countLabel)
+		{
+			return;
+		}
+		if (this.bindData)
+		{
+			if (this.bindData.remainNum > 0)
+			{
+				this.countLabel.textColor = 0x4F5D60;
+			}
+			else
+			{
+				this.countLabel.textColor = 0xff0000;
+			}
+			this.countLabel.text = this.bindData.remainNum + "张";
+			this.allLabel.visible = false;
+			let paiDef: PaiDefinition = PaiDefined.GetInstance().getDefinition(this.bindData.pai, PaiDefined.GetInstance().paiList);
+			if (paiDef)
+			{
+				this.face.source = paiDef.img + ResSuffixName.PNGSuffix;
+			}
+			else
+			{
+				this.face.source = "";
+			}
+			this.showAllLabel(false);
+		}
+		else
+		{
+			this.showAllLabel(true);
+		}
+	}
+	private showAllLabel(state: boolean)
+	{
+		if (this.allLabel)
+		{
+			this.allLabel.visible = state;
+			this.countLabel.visible = !state;
+		}
+	}
+}

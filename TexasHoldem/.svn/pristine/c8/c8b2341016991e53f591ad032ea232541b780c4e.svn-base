@@ -1,0 +1,330 @@
+/**
+ * 游戏场面板
+ */
+class PlayingFieldPanel extends BasePanel
+{
+    /**
+     * 房间ID
+    */
+    private roomIdLable: eui.Label;
+    /**
+     * 在玩人数
+    */
+    private playerNumLable: eui.Label;
+    /**
+     * 小大盲
+    */
+    private blindLable: eui.Label;
+    /**
+     * 最小最大买入
+    */
+    private buyLable: eui.Label;
+    /**
+     * 创建私人房按钮
+    */
+    private createPrivateRoomBtn: eui.Button;
+    /**
+     * 开始游戏按钮
+    */
+    private startGameBtn: eui.Button;
+    /**
+     * 选项卡内容group
+    */
+    private tabGroup: eui.Group;
+
+    private scroller: eui.Scroller;
+    private list: eui.List;
+    private _dp: eui.ArrayCollection;
+    private _ly: eui.TileLayout;
+    private roomInfoList: Array<PlayingFieldRoomInfo>;
+
+    /**
+     * 升降序排序标记
+    */
+    private blindIsUpSort: boolean = true;
+    private playNumIsUpSort: boolean = true;
+    private roomIdIsUpSort: boolean = true;
+    private buyIsUpSort: boolean = true;
+    /**
+     * 包含数字键盘的group
+    */
+    private keyboardGroup: eui.Group;
+    /**
+     * 数字键盘按钮
+    */
+    public numBtn0: eui.Button;
+    public numBtn1: eui.Button;
+    public numBtn2: eui.Button;
+    public numBtn3: eui.Button;
+    public numBtn4: eui.Button;
+    public numBtn5: eui.Button;
+    public numBtn6: eui.Button;
+    public numBtn7: eui.Button;
+    public numBtn8: eui.Button;
+    public numBtn9: eui.Button;
+    public resetBtn: eui.Button;
+    public delBtn: eui.Button;
+    private _btnList: Array<eui.Button>;
+    /**
+     * 搜索框
+    */
+    private searchLable: eui.Label;
+
+    public constructor()
+    {
+        super();
+        this.skinName = UISkinName.PlayingFieldPanel;
+    }
+    protected onAwake(event: eui.UIEvent)
+    {
+        super.onAwake(event);
+        this.keyboardGroup.touchEnabled = true;
+        this._ly = UIUtil.getVTileLayout(1, 1, egret.VerticalAlign.TOP);
+        this.list.layout = this._ly;
+        UIUtil.listRenderer(this.list, this.scroller, PlayingFieldItemRenderer, ScrollViewDirection.Vertical_T_D);
+        this.scroller.scrollPolicyH = eui.ScrollPolicy.OFF;
+        this.searchLable.type = egret.TextFieldType.INPUT;
+        this._btnList = new Array<eui.Button>();
+        for (let i: number = 0; i <= 9; i++)
+        {
+            this._btnList.push(this["numBtn" + i.toString()]);
+        }
+    }
+    protected onRender(event: egret.Event)
+    {
+        super.onRender(event);
+        //重置
+        this.searchLable.text = "";
+        this.keyboardGroup.visible = false;
+        this.roomInfoList = new Array<PlayingFieldRoomInfo>();
+        //发送请求获得对应场的房间信息列表
+        // PlayingFieldManager.reqRoomListInfo(PlayingFieldPattern.PrimaryPattern);
+        this.setRoomListInfo();  //todo 测试代码
+    }
+    protected onEnable(event: eui.UIEvent): void
+    {
+        super.onEnable(event);
+        this.addEventListener(egret.TouchEvent.TOUCH_TAP, this.clickHandler, this);
+        this.keyboardGroup.addEventListener(egret.TouchEvent.TOUCH_TAP, this.keyboardClickHandler, this);
+        this.searchLable.addEventListener(egret.TouchEvent.FOCUS_IN, this.showKeyboard, this);
+        PlayingFieldManager.onGetRoomListEa.addListener(this.setRoomListInfo, this);
+    }
+    protected onDisable(event: eui.UIEvent): void
+    {
+        super.onDisable(event);
+        this.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.clickHandler, this);
+        this.keyboardGroup.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.keyboardClickHandler, this);
+        this.searchLable.removeEventListener(egret.TouchEvent.FOCUS_IN, this.showKeyboard, this);
+        PlayingFieldManager.onGetRoomListEa.removeListener(this.setRoomListInfo);
+    }
+    /**
+     * 写入列表默认数据
+    */
+    private setRoomListInfo()
+    {
+        //todo 测试代码
+        let list1: PlayingFieldRoomInfo = new PlayingFieldRoomInfo();
+        list1.pattern = 1;
+        list1.roomId = 1;
+        list1.roomMaxPlayNum = 5;
+        list1.roomPlayNum = 4;
+        list1.smallBlind = 5;
+        list1.bigBlind = 10;
+        list1.minBuy = 200;
+        list1.maxBuy = 2000;
+        list1.tax = 1;
+        let list2: PlayingFieldRoomInfo = new PlayingFieldRoomInfo();
+        list2.pattern = 1;
+        list2.roomId = 2;
+        list2.roomMaxPlayNum = 5;
+        list2.roomPlayNum = 4;
+        list2.smallBlind = 25;
+        list2.bigBlind = 50;
+        list2.minBuy = 1000;
+        list2.maxBuy = 10000;
+        list2.tax = 10;
+        let list3: PlayingFieldRoomInfo = new PlayingFieldRoomInfo();
+        list3.pattern = 1;
+        list3.roomId = 3;
+        list3.roomMaxPlayNum = 5;
+        list3.roomPlayNum = 2;
+        list3.smallBlind = 25;
+        list3.bigBlind = 50;
+        list3.minBuy = 1000;
+        list3.maxBuy = 10000;
+        list3.tax = 10;
+        PlayingFieldManager.roomList = new Array<PlayingFieldRoomInfo>();     
+        PlayingFieldManager.roomList.push(list1);
+        PlayingFieldManager.roomList.push(list2);
+        PlayingFieldManager.roomList.push(list3);
+        //
+        if (PlayingFieldManager.roomList.length > 0)
+        {
+
+            for (let def of PlayingFieldManager.roomList)
+            {
+                this.roomInfoList.push(def);
+            }
+        }
+        this._dp = new eui.ArrayCollection(this.roomInfoList.sort(SortUtil.blindUpSort));  //默认盲注升序排序
+        this.list.dataProvider = this._dp;
+    }
+    /**
+     * 搜索框获得焦点触发的操作
+    */
+    private showKeyboard()
+    {
+        this.keyboardGroup.visible = true;
+    }
+    /**
+     * 点击房间ID触发的操作
+    */
+    private roomIdSort()
+    {
+        if (this.roomIdIsUpSort)
+        {
+            this._dp = new eui.ArrayCollection(this.roomInfoList.sort(SortUtil.roomIdUpSort));
+        } else
+        {
+            this._dp = new eui.ArrayCollection(this.roomInfoList.sort(SortUtil.roomIdDownSort));
+        }
+        this.roomIdIsUpSort = !this.roomIdIsUpSort;
+        this.refreshUI();
+    }
+    /**
+     * 点击在玩人数触发的操作
+    */
+    private playerNumSort()
+    {
+        if (this.playNumIsUpSort)
+        {
+            this._dp = new eui.ArrayCollection(this.roomInfoList.sort(SortUtil.roomPlayNumUpSort));
+        } else
+        {
+            this._dp = new eui.ArrayCollection(this.roomInfoList.sort(SortUtil.roomPlayNumDownSort));
+        }
+        this.playNumIsUpSort = !this.playNumIsUpSort;
+        this.refreshUI();
+    }
+    /**
+     * 点击小、大盲注触发的操作
+    */
+    private blindSort()
+    {
+        if (this.blindIsUpSort)
+        {
+            this._dp = new eui.ArrayCollection(this.roomInfoList.sort(SortUtil.blindUpSort));
+        } else
+        {
+            this._dp = new eui.ArrayCollection(this.roomInfoList.sort(SortUtil.blindDownSort));
+        }
+        this.blindIsUpSort = !this.blindIsUpSort;
+        this.refreshUI();
+    }
+    /**
+     * 点击最小、最大买入触发的操作
+    */
+    private buySort()
+    {
+        if (this.buyIsUpSort)
+        {
+            this._dp = new eui.ArrayCollection(this.roomInfoList.sort(SortUtil.blindUpSort));
+        } else
+        {
+            this._dp = new eui.ArrayCollection(this.roomInfoList.sort(SortUtil.blindDownSort));
+        }
+        this.buyIsUpSort = !this.buyIsUpSort;
+        this.refreshUI();
+    }
+    /**
+     * 刷新页面
+    */
+    private refreshUI()
+    {
+        this.list.dataProvider = this._dp;
+    }
+    /**
+     * 面板按钮事件处理
+    */
+    private clickHandler(event: egret.TouchEvent)
+    {
+        SoundManager.playButtonEffect(event.target);
+        switch (event.target)
+        {
+            case this.roomIdLable:
+                this.roomIdSort();
+                break;
+            case this.playerNumLable:
+                this.playerNumSort();
+                break;
+            case this.blindLable:
+                this.blindSort();
+                break;
+            case this.buyLable:
+                this.buySort();
+                break;
+        }
+    }
+    /**
+     * 搜索房间
+    */
+    private searchRoom()
+    {
+        let str: string = this.searchLable.text;
+        if (str.length > 0)
+        {
+            let result: Array<PlayingFieldRoomInfo> = new Array<PlayingFieldRoomInfo>();
+            if (PlayingFieldManager.roomList.length > 0)
+            {
+                for (let def of PlayingFieldManager.roomList)
+                {
+                    if (def.roomId.toString().indexOf(str) >= 0)
+                    {
+                        result.push(def);
+                    }
+                }
+                this._dp = new eui.ArrayCollection(result.sort(SortUtil.blindUpSort));
+            }
+        } else
+        {
+            this._dp = new eui.ArrayCollection(this.roomInfoList.sort(SortUtil.blindUpSort));
+        }
+        this.refreshUI();
+    }
+    /**
+     * 数字键盘按钮事件处理
+    */
+    private keyboardClickHandler(event: egret.TouchEvent)
+    {
+        SoundManager.playButtonEffect(event.target);
+        let index: number = this._btnList.indexOf(event.target);
+        if (index >= 0)
+        {
+            if (this.searchLable.text.length < 5)
+            {
+                this.searchLable.text = this.searchLable.text + index.toString();
+                this.searchRoom();
+            }
+        }
+        else
+        {
+            switch (event.target)
+            {
+                case this.resetBtn:
+                    this.searchLable.text = "";  //重置输入框内容
+                    this.searchRoom();
+                    break;
+                case this.delBtn:
+                    if (this.searchLable.text.length > 0)
+                    {
+                        this.searchLable.text = this.searchLable.text.slice(0, this.searchLable.text.length - 1);
+                        this.searchRoom();
+                    }
+                    break;
+                case this.keyboardGroup:
+                    this.keyboardGroup.visible = false;
+                    break;
+            }
+        }
+    }
+}

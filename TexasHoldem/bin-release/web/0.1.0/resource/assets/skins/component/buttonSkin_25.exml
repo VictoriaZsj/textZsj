@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="buttonSkin25" states="up,down,disabled" minHeight="65" minWidth="172" xmlns:e="http://ns.egret.com/eui"
+        height="85" width="151">
+    <e:Image  id="btnImg" y="0" x="0" scale9Grid="29,29,113,7"  source="button_3_png" width="151" height="85"/>
+	<e:Label id="labelDisplay" size="40" verticalAlign="middle" textAlign="center" text="回删" fontFamily="SimHei" anchorOffsetX="0" anchorOffsetY="0" horizontalCenter="0" verticalCenter="-6" bold="true" textColor="0xA0522B"/>
+</e:Skin>

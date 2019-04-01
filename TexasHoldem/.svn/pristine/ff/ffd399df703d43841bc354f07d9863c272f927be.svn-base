@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="myAwardPanelItemSkin" width="500" height="100" xmlns:ns1="*" xmlns:e="http://ns.egret.com/eui"
+        xmlns:w="http://ns.egret.com/wing">
+	<e:Image id="bgImg" width="500" height="100" anchorOffsetX="0" anchorOffsetY="0" source="bg_page19_3_png" y="1"
+	         scale9Grid="10,9,276,25" />
+	<e:Image id="itemImg" width="80" height="80" x="10" y="10"  source="fangka_png"/>
+	<e:Label id="itemTitleLabel" text="iPhone7" x="100" y="10" height="30" width="200" />
+	<e:Label id="itemDesLabel" text="您可获得Iphone7一台，颜色随机。" x="100" y="50" height="50" width="280" size="20" />
+	<e:Button id="takePrizeBtn" label="Button" width="200" height="80" x="390" skinName="buttonSkin33" enabled="true"
+	          scaleX="0.5" scaleY="0.5" anchorOffsetX="0" anchorOffsetY="0" y="30" />
+	<e:Label id="takeDesLabel" text="等待发货" x="390" y="30" height="40" width="100" textAlign="center" verticalAlign="middle"
+	         size="20" />
+</e:Skin>

@@ -1,0 +1,28 @@
+/**
+ * 商城vip列表
+*/
+class VipListItemRenderer extends BaseItemRenderer<ShoppingInfo>{
+     public vipImg:eui.Image;//vip图片；
+     public monthVip:eui.Label;//vip数量；
+     public desVip:eui.Label;//vip描述
+     public vipCountBtn:eui.Button;//钻石（元）；
+    
+    public constructor(){
+        super();
+		this.skinName=UIRendererSkinName.VipListItemRenderer;
+    }
+     protected createChildren()
+	{
+		this.dataChanged();
+	}
+	protected dataChanged(): void
+	{
+		super.dataChanged();
+        if(this.bindData)
+        {
+            let awardDef=AwardDefined.GetInstance().getAwardDefinition;
+            this.monthVip.text=awardDef(this.bindData.definition.awardId).name;
+            this.vipCountBtn.label=awardDef(this.bindData.definition.awardId).costNum[0].toString()+"钻石";
+        }
+	}
+}

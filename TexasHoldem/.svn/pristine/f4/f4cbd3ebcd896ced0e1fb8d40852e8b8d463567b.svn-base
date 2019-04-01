@@ -1,0 +1,55 @@
+/**
+ * 充值选项的定义
+ * */
+class PayDefined extends BaseDefined
+{
+	private static readonly payConfig: string = "pay";
+	private static _instance: PayDefined;
+	public static GetInstance(): PayDefined
+	{
+		if (!PayDefined._instance)
+		{
+			PayDefined._instance = new PayDefined();
+		}
+		if (DefinedManager.IsParsed(PayDefined.payConfig) == false)
+		{
+			PayDefined._instance.initialize();
+		}
+		return PayDefined._instance;
+	}
+	public payList: Array<PayDefinition>;
+
+	public initialize()
+	{
+		let obj: Object = DefinedManager.GetData(PayDefined.payConfig);
+		this.payList = ShortNameDefined.GetInstance().convertEnter(obj) as Array<PayDefinition>;
+	}
+	/**
+	 * 获取充值定义
+	 */
+	public getPayDefinition(price: number): PayDefinition
+	{
+		for (let def of PayDefined.GetInstance().payList)
+		{
+			if (def.price == price)
+			{
+				return def;
+			}
+		}
+		return null;
+	}
+}
+/**
+ * 充值选项的定义
+ * */
+class PayDefinition implements IBaseDefintion
+{
+	public id: number;
+	public price: number;
+	public limit: number;
+	public get: number;
+	public img: string;
+	public name:string;
+	public des:string;
+	public title:string;
+}

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="HSliderSkin1" minWidth="20" minHeight="8" xmlns:e="http://ns.egret.com/eui" width="430" height="98">
+    <e:Image id="track" width="100%"
+             height="28" source="bg_page4_png" horizontalCenter="0" verticalCenter="0" scale9Grid="10,10,126,126"/>
+    <e:Image id="thumb" verticalCenter="0" x="3" scaleX="1.3" scaleY="1.3" source="radiobutton_select_disabled_png"/>
+</e:Skin>

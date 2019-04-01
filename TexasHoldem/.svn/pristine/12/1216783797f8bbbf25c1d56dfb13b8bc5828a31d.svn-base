@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="MailItemRendererSkin" width="600" height="120" xmlns:ns1="*" xmlns:e="http://ns.egret.com/eui"
+        xmlns:w="http://ns.egret.com/wing">
+    <e:Image id="bgImg" width="600" height="120" anchorOffsetX="0" anchorOffsetY="0"
+              source="bg_page19_3_png" y="1" scale9Grid="10,9,276,25"/>
+	<e:Image id="itemImg" width="70" height="70" x="10" y="40" source=""/>
+	<e:Label id="itemTitleLabel" text="iPhone7" x="10" y="10" height="30" width="200" size="30"/>
+	<e:Label id="itemDesLabel" text="您可获得Iphone7一台，颜色随机。" x="85" y="40" height="70" width="400" size="20"/>
+	<e:Button id="takePrizeBtn" label="Button" width="200" height="80" skinName="buttonSkin33" enabled="true" scaleX="0.5" scaleY="0.5" anchorOffsetX="0" anchorOffsetY="0" x="490" y="40"/>
+	<e:Label id="takeDesLabel" text="已领取" height="40" width="100" textAlign="center" verticalAlign="middle" size="20" x="490" y="40"/>
+
+
+
+</e:Skin>

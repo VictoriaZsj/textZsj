@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="GameRulePanelSkin" width="720" height="1280" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing"
+        xmlns:ns1="*" xmlns:tween="egret.tween.*">
+	<w:Config id="15c813d330f" />
+	<e:Group id="anmGroup" width="720" height="100" x="0" y="0">
+		<e:Image id="bg" width="720" height="100" x="0" y="0" source="bg_page4_png"/>
+		<e:Image id="titleImg" width="300" height="80" y="10" source="bg_page3_2_png" x="210" scaleX="1" scaleY="1"/>
+		<e:Button id="closeButton" label="返回" x="50" y="50" skinName="buttonSkin2" width="150" scaleX="0.5" height="80" scaleY="0.9" anchorOffsetX="75" anchorOffsetY="40"/>
+	</e:Group>
+	<e:Group id="anmGroup1" width="720" height="1180" x="0" y="100" anchorOffsetY="0">
+		<e:Image width="720" height="1180" x="0" y="3.03" source="bg_page2_png" scale9Grid="21,20,106,107" anchorOffsetY="0" />
+		<e:Label text="玩法" x="318" y="75" size="50" bold="true"  textColor="0x2e1cdb"/>
+		<ns1:TabComponent id="gameRullTab" height="734" y="146" left="0" right="0" anchorOffsetY="0"/>
+
+		<e:Group id="RuleIntroGroup" width="700" height="700" y="183" anchorOffsetX="0" anchorOffsetY="0" x="11" name="玩法介绍">
+			<e:Image width="68" height="68" y="39" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" horizontalCenter="-277" anchorOffsetY="0"/>
+			<e:Image width="68" height="68" y="39" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" horizontalCenter="99"/>
+			<e:Image width="50" height="68" y="39" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" horizontalCenter="-122"/>
+			<e:Group x="168" y="330" anchorOffsetX="0" width="373" anchorOffsetY="0" height="67">
+				<e:Image width="68" height="68" y="0" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" x="0"/>
+				<e:Image width="50" height="68" y="0" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" x="322"/>
+				<e:Image width="50" height="68" y="0" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" x="266"/>
+				<e:Image width="50" height="68" y="0" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" x="209"/>
+				<e:Image width="50" height="68" y="0" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" x="151"/>
+				<e:Image width="50" height="68" y="0" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" x="91"/>
+			</e:Group>
+			<e:Group x="169" y="446">
+				<e:Image width="68" height="68" y="0" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" x="0"/>
+				<e:Image width="50" height="68" y="0" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" x="322"/>
+				<e:Image width="50" height="68" y="0" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" x="266"/>
+				<e:Image width="50" height="68" y="0" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" x="209"/>
+				<e:Image width="50" height="68" y="0" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" x="151"/>
+				<e:Image width="50" height="68" y="0" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" x="91"/>
+			</e:Group>
+			<e:Image width="50" height="68" y="176" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" horizontalCenter="60"/>
+			<e:Image width="50" height="68" y="176" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" horizontalCenter="124"/>
+			<e:Image width="50" height="68" y="176" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" horizontalCenter="-117"/>
+			<e:Image width="50" height="68" y="176" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" horizontalCenter="-57"/>
+			<e:Image width="50" height="68" y="176" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" horizontalCenter="2"/>
+			<e:Image width="50" height="68" y="39" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" horizontalCenter="-191" anchorOffsetY="0"/>
+			<e:Image width="50" height="68" y="39" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" horizontalCenter="174"/>
+			<e:Image width="50" height="68" y="39" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" horizontalCenter="241"/>
+
+
+
+
+			<e:Label text="公共牌" x="317" y="130.5" size="25"/>
+
+			<e:Label text="河牌" x="459" y="248" size="20"/>
+			<e:Label text="翻牌" x="279" y="250" size="20"/>
+			<e:Label text="玩家B" x="196.5" y="528" size="20"/>
+			<e:Label text="葫芦win" x="435" y="407" size="26"/>
+			<e:Label text="两对Lose" x="435" y="523" size="25"/>
+			<e:Label text="玩家A" x="193" y="407" size="20"/>
+			<e:Label text="转牌" x="395" y="250" size="20"/>
+			<e:Label text="成牌" x="326" y="288" size="26"/>
+			<e:Label text="手牌" x="163" y="9"/>
+			<e:Label text="手牌" x="531" y="9"/>
+			<e:Label text="在牌局开始的时候，每个玩家分得两张牌作为“手牌”（仅自己可见），荷官会分三次陆续发出五张公共牌（3张+1张+1张）。从每个玩家的底牌和公共牌中，选出组合最大牌型的五张与其他玩家进行比较，决出胜负。" y="595" size="20" anchorOffsetY="0" left="2" right="-2" height="105"/>	
+		</e:Group>
+        <e:Group id="cardTypeGroup" width="700" height="700" y="183" anchorOffsetX="0" anchorOffsetY="0" x="11" name="牌型介绍" visible="false">
+            <e:Group x="39" y="20">
+                <e:Image width="68" height="68" y="0" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" anchorOffsetY="0" x="0"/>
+                <e:Image width="68" height="68" y="0" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" anchorOffsetY="0" x="276"/>
+                <e:Image width="68" height="68" y="0" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" anchorOffsetY="0" x="204"/>
+                <e:Image width="68" height="68" y="0" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" anchorOffsetY="0" x="136"/>
+                <e:Image width="68" height="68" y="0" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" anchorOffsetY="0" x="68"/>
+                <e:Label text="1.皇家同花顺" x="423" y="34"/>
+            </e:Group> 
+            <e:Group x="39" y="431">
+                <e:Image width="68" height="68" y="0" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" anchorOffsetY="0" x="0"/>
+                <e:Image width="68" height="68" y="0" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" anchorOffsetY="0" x="276"/>
+                <e:Image width="68" height="68" y="0" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" anchorOffsetY="0" x="204"/>
+                <e:Image width="68" height="68" y="0" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" anchorOffsetY="0" x="136"/>
+                <e:Image width="68" height="68" y="0" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" anchorOffsetY="0" x="68"/>
+                <e:Label text="6.顺子" x="423" y="34"/>
+            </e:Group> 
+            <e:Group x="39" y="350">
+                <e:Image width="68" height="68" y="0" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" anchorOffsetY="0" x="0"/>
+                <e:Image width="68" height="68" y="0" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" anchorOffsetY="0" x="276"/>
+                <e:Image width="68" height="68" y="0" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" anchorOffsetY="0" x="204"/>
+                <e:Image width="68" height="68" y="0" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" anchorOffsetY="0" x="136"/>
+                <e:Image width="68" height="68" y="0" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" anchorOffsetY="0" x="68"/>
+                <e:Label text="5.同花" x="423" y="34"/>
+            </e:Group> 
+             <e:Group x="39" y="265">
+                <e:Image width="68" height="68" y="0" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" anchorOffsetY="0" x="0"/>
+                <e:Image width="68" height="68" y="0" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" anchorOffsetY="0" x="276"/>
+                <e:Image width="68" height="68" y="0" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" anchorOffsetY="0" x="204"/>
+                <e:Image width="68" height="68" y="0" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" anchorOffsetY="0" x="136"/>
+                <e:Image width="68" height="68" y="0" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" anchorOffsetY="0" x="68"/>
+                <e:Label text="4.葫芦" x="423" y="34"/>
+            </e:Group> 
+            <e:Group x="39" y="180">
+                <e:Image width="68" height="68" y="0" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" anchorOffsetY="0" x="0"/>
+                <e:Image width="68" height="68" y="0" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" anchorOffsetY="0" x="276"/>
+                <e:Image width="68" height="68" y="0" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" anchorOffsetY="0" x="204"/>
+                <e:Image width="68" height="68" y="0" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" anchorOffsetY="0" x="136"/>
+                <e:Image width="68" height="68" y="0" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" anchorOffsetY="0" x="68"/>
+                <e:Label text="3.四条" x="423" y="34"/>
+            </e:Group> 
+         <e:Group x="41" y="99" anchorOffsetX="0" width="596">
+                <e:Image width="68" height="68" y="0" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" anchorOffsetY="0" x="0"/>
+                <e:Image width="68" height="68" y="0" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" anchorOffsetY="0" x="276"/>
+                <e:Image width="68" height="68" y="0" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" anchorOffsetY="0" x="204"/>
+                <e:Image width="68" height="68" y="0" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" anchorOffsetY="0" x="136"/>
+                <e:Image width="68" height="68" y="0" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" anchorOffsetY="0" x="68"/>
+                <e:Label text="2.同花顺" x="423" y="34"/>
+            </e:Group>    
+   
+   
+            <e:Group x="43" y="599">
+                <e:Image width="68" height="68" y="0" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" anchorOffsetY="0" x="0"/>
+                <e:Image width="68" height="68" y="0" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" anchorOffsetY="0" x="276"/>
+                <e:Image width="68" height="68" y="0" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" anchorOffsetY="0" x="204"/>
+                <e:Image width="68" height="68" y="0" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" anchorOffsetY="0" x="136"/>
+                <e:Image width="68" height="68" y="0" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" anchorOffsetY="0" x="68"/>
+                <e:Label text="8.两对" x="423" y="34"/>
+            </e:Group>   
+            <e:Group x="43" y="517">
+                <e:Image width="68" height="68" y="0" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" anchorOffsetY="0" x="0"/>
+                <e:Image width="68" height="68" y="0" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" anchorOffsetY="0" x="276"/>
+                <e:Image width="68" height="68" y="0" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" anchorOffsetY="0" x="204"/>
+                <e:Image width="68" height="68" y="0" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" anchorOffsetY="0" x="136"/>
+                <e:Image width="68" height="68" y="0" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" anchorOffsetY="0" x="68"/>
+                <e:Label text="7.三条" x="423" y="34"/>
+            </e:Group>                                   
+		</e:Group>
+         <e:Group id="funcKeyIntroGroup" width="700" height="700" y="183" anchorOffsetX="0" anchorOffsetY="0" x="11" name="功能键介绍" visible="false">
+						<e:Group x="94" y="16">
+							<e:Image width="68" height="68" y="0" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" anchorOffsetY="0" x="0"/>
+							<e:Label text="选择看牌，看牌是不进行下注的！" x="98" y="21" size="23"/>
+						</e:Group>
+
+
+                        <e:Group x="94" y="580">
+							<e:Image width="68" height="68" y="0" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" anchorOffsetY="0" x="0"/>
+							<e:Label text="首先让牌，如果需要下注则选择弃牌。" x="98" y="21" size="23"/>
+						</e:Group>
+                        <e:Group x="94" y="500">
+							<e:Image width="68" height="68" y="0" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" anchorOffsetY="0" x="0"/>
+							<e:Label text="自动选择跟注。" x="98" y="21" size="23"/>
+						</e:Group>
+                        <e:Group x="94" y="420">
+							<e:Image width="68" height="68" y="0" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" anchorOffsetY="0" x="0"/>
+							<e:Label text="首先让牌，如果需要下注则选择弃牌。" x="98" y="21" size="23"/>
+						</e:Group>
+                        <e:Group x="94" y="340">
+							<e:Image width="68" height="68" y="0" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" anchorOffsetY="0" x="0"/>
+							<e:Label text="如果对你的牌相当有信心，就全下吧。" x="98" y="21" size="23"/>
+						</e:Group>
+                        <e:Group x="94" y="260">
+							<e:Image width="68" height="68" y="0" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" anchorOffsetY="0" x="0"/>
+							<e:Label text="如果觉得牌优势明显，可进行加注。" x="98" y="21" size="23"/>
+						</e:Group>
+                        <e:Group x="94" y="180">
+							<e:Image width="68" height="68" y="0" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" anchorOffsetY="0" x="0"/>
+							<e:Label text="如果觉得牌可以，就可进行跟注。" x="98" y="21" size="23"/>
+						</e:Group>
+                        <e:Group x="94" y="99">
+							<e:Image width="68" height="68" y="0" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" anchorOffsetY="0" x="0"/>
+							<e:Label text="牌不好，就选择弃牌，不再参与这次对局。" x="98" y="21" size="23"/>
+						</e:Group>
+        </e:Group>
+	</e:Group>
+</e:Skin>

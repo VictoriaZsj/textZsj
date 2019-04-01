@@ -1,0 +1,106 @@
+
+class UpdateHandler
+{
+	private _updateChannelUrl: string;
+	private _updateXmlCallback: Function;
+
+	/// <summary>
+	/// 前往评价
+	/// </summary>
+	public GotoEvaluate()
+	{
+		if (!this._updateChannelUrl)
+		{
+			// URLLoader.DownloadText(HotAssetURL.GetUpdateXmlUrl(VersionManager.hotUrl), OnGotoEvaluateCompdate);
+		}
+		else
+		{
+			// Application.OpenURL(_updateChannelUrl);
+		}
+	}
+	private OnGotoEvaluateCompdate(text: string)
+	{
+		this.ParseUpdateXml(text);
+		if (this._updateChannelUrl)
+		{
+			// Application.OpenURL(_updateChannelUrl);
+		}
+	}
+	/// <summary>
+	/// 获取渠道客户端URL地址
+	/// </summary>
+	/// <param name="callback"></param>
+	public GetUpdateChannelURL(callback: Function)
+	{
+		if (!this._updateChannelUrl)
+		{
+			this._updateXmlCallback = callback;
+			// URLLoader.DownloadText(HotAssetURL.GetUpdateXmlUrl(VersionManager.hotUrl), OnGetUpdateChannelCompdate);
+		}
+		else
+		{
+			if (callback != null)
+			{
+				callback(this._updateChannelUrl);
+			}
+			this._updateXmlCallback = null;
+		}
+	}
+	private OnGetUpdateChannelCompdate(text: string)
+	{
+		this.ParseUpdateXml(text);
+		if (this._updateXmlCallback != null && this._updateChannelUrl)
+		{
+			this._updateXmlCallback(this._updateChannelUrl);
+			this._updateXmlCallback = null;
+		}
+	}
+	/// <summary>
+	/// 前往下载新版本安装包
+	/// </summary>
+	public OpenUpdateUrl()
+	{
+		if (this._updateChannelUrl)
+		{
+			// URLLoader.DownloadText(HotAssetURL.GetUpdateXmlUrl(VersionManager.hotUrl), OnUpdateXmlCompdate, OnUpdateXmlException);
+		}
+		else
+		{
+			// Application.OpenURL(_updateChannelUrl);
+		}
+	}
+	private OnUpdateXmlCompdate(text: string)
+	{
+		this.ParseUpdateXml(text, true);
+		if (this._updateChannelUrl)
+		{
+			// Application.OpenURL(_updateChannelUrl);
+		}
+		else
+		{
+			this.OnUpdateXmlException();
+		}
+	}
+	private OnUpdateXmlException(we: any = null) //WebException
+	{
+		// VersionManager.DispatchException(VersionException.Alert, LangDefined.GetText("下载出错，请到应用商店下载"), LangDefined.GetText("确定"));
+		this._updateXmlCallback = null;
+	}
+	private ParseUpdateXml(text: string, isAlert: boolean = false)
+	{
+		try
+		{
+			// XmlDocument xmlDoc = XmlUtil.ConvertStringToXmlDocument(text);
+			// XmlElement xmlNode = (XmlElement)xmlDoc.SelectSingleNode("root");
+			// string bid = Application.bundleIdentifier.Replace(StringConstants.Dot, StringConstants.UnderLine);
+			// _updateChannelUrl = xmlNode.GetAttribute(RuntimePlatformName.GetCurrentName() + StringConstants.UnderLine + bid);
+		}
+		catch (Exception)
+		{
+			if (isAlert)
+			{
+				this.OnUpdateXmlException();
+			}
+		}
+	}
+}

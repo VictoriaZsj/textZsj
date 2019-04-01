@@ -1,0 +1,68 @@
+/**
+ * 骰子动画
+ */
+class TouZiComponent extends BaseComponent<number>
+{
+	public touziAnimate: egret.tween.TweenGroup;
+	public touziImg1: eui.Image;
+	private _startPlayTime: number;
+	public onTouZiComplete:ActionDispatcher = new ActionDispatcher();
+
+	public constructor()
+	{
+		super();
+		this.skinName = UIComponentSkinName.TouZiComponent;
+	}
+	public init(data: number)
+	{
+		super.init(data);
+		this.stop();
+		this._startPlayTime = egret.getTimer();
+		this.touziImg1.visible = false;
+		this.play();
+	}
+	protected rendererStart(event: egret.Event)
+	{
+		super.rendererStart(event);
+	}
+	protected onEnable(event: eui.UIEvent)
+	{
+		super.onEnable(event);
+		this.addEventListener(egret.Event.ENTER_FRAME, this.onFrameHandler, this);
+	}
+	protected onDisable(event: eui.UIEvent)
+	{
+		super.onDisable(event);
+		this.removeEventListener(egret.Event.ENTER_FRAME, this.onFrameHandler, this);
+		this._startPlayTime = 0;
+	}
+	private onFrameHandler(event: egret.Event)
+	{
+		if (this._startPlayTime != 0)
+		{
+			let offsetTime: number = egret.getTimer() - this._startPlayTime;
+			if (offsetTime > 2000)
+			{
+				this.stop();
+				this.touziImg1.visible = true;
+				this.touziImg1.source = PathName.Touzi + this.bindData + ResSuffixName.PNGSuffix;
+				this.onTouZiComplete.dispatch();
+				this.onDisable(null);
+			}
+		}
+	}
+	private play()
+	{
+		if (this.touziAnimate)
+		{
+			this.touziAnimate.play();
+		}
+	}
+	private stop()
+	{
+		if (this.touziAnimate)
+		{
+			this.touziAnimate.pause();
+		}
+	}
+}

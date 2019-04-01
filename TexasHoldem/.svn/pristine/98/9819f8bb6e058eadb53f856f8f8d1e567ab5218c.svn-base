@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="panelSkin2" width="603" height="695" xmlns:ns1="*" xmlns:e="http://ns.egret.com/eui"
+        xmlns:w="http://ns.egret.com/wing">
+	<e:Group id="tweenGroup" width="560" height="650" horizontalCenter="0" verticalCenter=" 0">
+		<e:Image width="543" source="bg_page2_png" verticalCenter="12" horizontalCenter="0" height="649"
+		         scale9Grid="46,47,86,83" />
+		<e:Image width="346" source="bg_page5_png" horizontalCenter="0" verticalCenter="-299.5" scale9Grid="189,0,9,120"
+		         scaleX="0.8" scaleY="0.8" />
+		<e:Label text="用户协议" width="300" anchorOffsetX="150" textAlign="center" bold="true" textColor="0xffffff"
+		         fontFamily="SimHei" horizontalCenter="0" verticalCenter="-303.5" />
+		<ns1:GameButton id="agreeBtn" label="已阅读并同意用户协议" skinName="buttonSkin24" horizontalCenter="0.5" verticalCenter="260"
+		                scaleX="0.8" scaleY="0.8" />
+		<ns1:GameButton id="closeButton" label="Button" x="499.65" y="-20.46" skinName="buttonSkin4" />
+		<e:Group id="txtGroup" horizontalCenter="0.5" verticalCenter="-223.5" anchorOffsetY="0" height="-163">
+			<e:Label id="infoTxt" text="" x="0" y="0" width="442" textColor="0x000000" />
+		</e:Group>
+		<e:TextInput id="textInput" text="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa//				ssssssssssssssssssss   " width="478"
+		             height="456" x="43.05" y="84.01" anchorOffsetX="0" anchorOffsetY="0" enabled="true" />
+	</e:Group>
+</e:Skin>

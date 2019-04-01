@@ -1,0 +1,330 @@
+/**
+ * 锦标赛管理
+ */
+class ChampionshipManager
+{
+    /**
+     * 锦标赛赛事列表
+    */
+    public static matchList: Array<MatchRoomInfo>;
+    /**
+     * 锦标赛已报名赛事列表
+    */
+    public static applicationList: Array<MatchRoomInfo>;
+    /**
+     * 我的门票列表
+    */
+    public static myTicketList: Array<MyTicket>;
+    /**
+     * 最近赛况列表
+    */
+    public static outsList: Array<Outs>;
+
+    /**
+	 * 发送赛事列表信息获取请求
+	 */
+    public static reqMatchListInfo()
+    {
+        //todo 协议待添加
+        SocketManager.Send(Command.Req_RoomInfo_3002, ChampionshipManager.MatchListInfoResponse);
+    }
+    public static MatchListInfoResponse(result: SpRpcResult)
+    {
+        if (result.data)
+        {
+            ArrayUtil.Clear(ChampionshipManager.applicationList);
+            if (!ChampionshipManager.matchList)
+            {
+                ChampionshipManager.matchList = new Array<MatchRoomInfo>();
+            }
+            // 服务器返回 赛事id  该用户是否报名isApply  已报名人数 applyNum  赛事开始时间 startTime
+            for (let def of result.data['matchList'])
+            {
+                let info: MatchRoomInfo = new MatchRoomInfo();
+                let championshipInfo: ChampionshipDefinition = ChampionshipDefined.GetInstance().getDefinition(def.id);
+                info.copyValueFromThis(ChatChannelInfo);
+                info.isApply = def.isApply;
+                info.applyNum = def.applyNum;
+                info.startTime = def.startTime;
+                if (def.isApply == 1)
+                {
+                    ChampionshipManager.applicationList.push(info);
+                }
+                ChampionshipManager.matchList.push(info);
+            }
+            ChampionshipManager.onGetMatchListEvent.dispatch();
+        }
+    }
+    /**
+     * 发送获取赛事详细信息请求
+    */
+    public static reqGetMatchDetailInfo(id: number)
+    {
+        //todo 协议待添加
+        SocketManager.Send(Command.Req_RoomInfo_3002, { id: id }, ChampionshipManager.getMatchDetailInfoResponse);
+    }
+    public static getMatchDetailInfoResponse(result: SpRpcResult)
+    {
+        if (result.data)
+        {
+            //  数据写入待添加
+            ChampionshipManager.onGetMatchDetailEvent.dispatch();
+        }
+    }
+    /*发送获取最近赛况信息请求*/
+    public static reqGetRecentActionInfo()
+    {
+        //todo 协议待添加
+        SocketManager.Send(Command.Req_RoomInfo_3002, ChampionshipManager.getGetRecentActionInfoResponse);
+    }
+    public static getGetRecentActionInfoResponse(result: SpRpcResult)
+    {
+        if (result.data)
+        {
+            ArrayUtil.Clear(ChampionshipManager.outsList);
+            if (!ChampionshipManager.outsList)
+            {
+                ChampionshipManager.outsList = new Array<Outs>();
+            }
+            ChampionshipManager.outsList = result.data["outsList"];
+            ChampionshipManager.onGetRecentActionInfoEvent.dispatch();
+        }
+    }
+    /**
+     * 发送立即报名的请求
+    */
+    public static reqRequestJoin(id: number, flag: number)
+    {
+        let callback: Function = function (result: SpRpcResult)
+        {
+            let info: MatchRoomInfo = new MatchRoomInfo();
+            for (let def of ChampionshipManager.matchList)
+            {
+                if (def.id == id)
+                {
+                    def.isApply = 1;
+                    def.applyNum++;
+                    info = def;
+                    ChampionshipManager.applicationList.push(def);
+                    if (flag == JoinChampionshipWay.Ticket)
+                    {
+                        for (let i: number = 0; i < ChampionshipManager.myTicketList.length; i++)
+                        {
+                            if (ChampionshipManager.myTicketList[i].id == def.ticketId)
+                            {
+                                if (ChampionshipManager.myTicketList[i].num > 1)
+                                {
+                                    ChampionshipManager.myTicketList[i].num--;
+                                } else
+                                {
+                                    ChampionshipManager.myTicketList.splice(i, 1);
+                                }
+                            }
+                        }
+                    }
+                    break;
+                }
+            }
+            UIManager.showPanel(UIModuleName.JoinChampionshipSuccessPanel, { name: info.name, time: info.startTime, applyNum: info.applyNum, bNum: info.bNum, chip: info.initialChips });
+            ChampionshipManager.onRequestJoinEvent.dispatch();
+        };
+        //todo 协议待添加
+        SocketManager.Send(Command.Req_RoomInfo_3002, callback);
+    }
+
+    /**
+	 * 请求赛事列表广播事件
+	 */
+    public static onGetMatchListEvent: ActionDispatcher = new ActionDispatcher();
+    /**
+     * 请求赛事详细信息广播事件
+    */
+    public static onGetMatchDetailEvent: ActionDispatcher = new ActionDispatcher();
+    /**
+     * 请求最近赛况信息广播事件
+    */
+    public static onGetRecentActionInfoEvent: ActionDispatcher = new ActionDispatcher();
+    /**
+     * 刷新UI广播事件
+    */
+    public static onRefreshUIEvent: ActionDispatcher = new ActionDispatcher();
+    /**
+     * 立即报名成功广播事件
+    */
+    public static onRequestJoinEvent: ActionDispatcher = new ActionDispatcher();
+}
+
+/**
+ * 锦标赛赛事信息
+*/
+class MatchRoomInfo extends BaseServerValueInfo
+{
+    /**
+     * 赛事ID
+    */
+    public id: number;
+    /**
+     * 进入所需门票id
+    */
+    public ticketId: number;
+    /**
+     * 赛事icon
+    */
+    public icon: string;
+    /**
+     * 名称
+    */
+    public name: string;
+    /**
+     * 报名费
+    */
+    public signCost: number;
+    /**
+     * 手续费
+    */
+    public serveCost: number;
+    /**
+     * 总人数
+    */
+    public bNum: number;
+    /**
+     * 已报名人数
+    */
+    public applyNum: number;
+    /**
+     * 是否可重购
+    */
+    public rebuy: number;
+    /**
+     * 是否可增购
+    */
+    public addon: number;
+    /**
+     * 赛事开始时间
+    */
+    public startTime: number;
+    /**
+     * 赛事延迟报名时间
+    */
+    public delaySign: number;
+    /**
+     * 初始筹码
+     */
+    public initialChips: number;
+    /**
+     * 该用户是否已报名该赛事  已报名1 未报名0
+    */
+    public isApply: number;
+
+    public reset()
+    {
+
+    }
+}
+/**
+ * 我的门票类
+*/
+class MyTicket extends BaseServerValueInfo
+{
+    /**
+     * id
+    */
+    public id: number;
+    /**
+     * icon
+    */
+    public icon: string;
+    /**
+     * 名字
+    */
+    public name: string;
+    /**
+     * 描述
+    */
+    public des: string;
+    /**
+     * 数量
+    */
+    public num: number;
+
+    public reset()
+    {
+
+    }
+}
+/**
+ * 最近赛况
+*/
+class Outs
+{
+    /**
+     * 赛事id
+    */
+    public id: number;
+    /**
+     * 赛事时间
+    */
+    public time: number;
+    /**
+     * 名字
+    */
+    public name: string;
+    /**
+     * 排名列表
+    */
+    public rankList: Array<Rank>;
+}
+/**
+ * 比赛前10或前5玩家信息
+*/
+class Rank
+{
+    /**
+     * 名次
+    */
+    public rank: number;
+    /**
+     * 头像
+    */
+    public head: string;
+    /**
+     * 昵称
+    */
+    public name: string;
+    /**
+     * 奖励的描述
+    */
+    public award: string;
+}
+/**
+ * 门票种类
+*/
+enum EntranceTicketType
+{
+    /**
+     * 10元话费门票
+    */
+    TenTelephoneCharge = 101,
+    /**
+     * 100钻石门票
+    */
+    HundredDiamond = 102,
+    /**
+     * 100万金币欢乐赛门票
+    */
+    MillionGold = 103
+}
+/**
+ * 报名该赛事的方式枚举
+*/
+enum JoinChampionshipWay
+{
+    /**
+     * 金币
+    */
+    Gold = 1,
+    /**
+     * 门票
+    */
+    Ticket = 2
+}

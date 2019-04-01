@@ -1,0 +1,297 @@
+/**
+ * 保险箱面板
+ */
+class SavePanel extends BaseAnmiatePanel
+{ 
+	public SaveTab:TabComponent;
+
+	public saveGoldGroup:eui.Group;
+	public withdrawGroup:eui.Group;
+	public modifyPwdGroup:eui.Group;
+	public oldPwd: eui.Label;
+	public newPwd:eui.Label;
+	public againPwd:eui.Label;
+	public saveCreatePwd:eui.Label;
+	public saveAgainPwd:eui.Label;
+    public userWithdrawPwd:number=555555;
+	public isVip:Boolean=true;
+	
+	public currentGold:eui.Label;// 保险箱外当前的金币
+	public saveGold:eui.Label;// 保险箱内的金币
+
+    public saveGoldHs:eui.HSlider;	
+    public saveBtn:eui.Button;//存入按钮
+	public saveCount:eui.Label;// 存入数量	
+	public addBtn:eui.Button;
+	public subBtn:eui.Button;
+
+	public withdrawGoldHs:eui.HSlider;
+	public withdrawBtn:eui.Button;	// 取出按钮
+	public withdrawCount:eui.Label;// 取出数量
+    public withdrawSubBtn:eui.Button;
+	public withdrawAddBtn:eui.Button;
+	public withdrawPwd:eui.EditableText;// 取款密码
+	public tipPwd:eui.Label;// 密码提示
+	public saveScaleHs:number;// 存入滚动条刻度
+    public withdrawScaleHs:number; //取出滚动条刻度
+
+	public constructor()
+	{
+		super();
+		this.skinName = UISkinName.SavePanel;
+	}
+	protected onAwake(event: eui.UIEvent)
+	{
+		super.onAwake(event);
+		let array:Array<eui.Group>=new Array<eui.Group>();		
+		array.push(this.saveGoldGroup);
+        array.push(this.withdrawGroup);
+        array.push(this.modifyPwdGroup);
+        this.SaveTab.init(array); 	
+		// todo
+		this.currentGold.text="123342";
+		this.saveGold.text="500000";
+	}
+	public init(appendData: any)
+	{
+		super.init(appendData);
+		// 存入滑动条刻度
+		if (parseInt(this.currentGold.text)>=10000){
+           this.saveScaleHs=Math.floor(parseInt(this.currentGold.text)/10000);		
+		}else{
+		   this.saveScaleHs=0;
+		}	
+        // 取出滑动条刻度
+		if (parseInt(this.saveGold.text)>=10000){
+           this.withdrawScaleHs=parseInt(this.saveGold.text)/10000;		
+		}else{
+		   this.withdrawScaleHs=0;
+		}
+
+		//设置存入滑动条进度
+		this.saveGoldHs.value=0;		
+		this.saveGoldHs.maximum = this.saveScaleHs;
+		//设置取出滑动条进度
+		this.withdrawGoldHs.value=0;
+		this.withdrawGoldHs.maximum=this.withdrawScaleHs;
+        
+		console.log("当前的取出刻度："+this.withdrawGoldHs.maximum)
+		this.withdrawPwd.restrict="0-6";
+	}
+	protected onRender(event: egret.Event)
+	{
+		super.onRender(event);
+	}
+	protected onEnable(event: eui.UIEvent): void
+	{
+		super.onEnable(event);
+		this.saveGoldHs.addEventListener(egret.Event.CHANGE,this. importGoldHs,this);		
+		this.saveGoldHs.addEventListener(eui.UIEvent.CHANGE_START,this.unEnoughGold,this);
+		this.saveBtn.addEventListener(egret.TouchEvent.TOUCH_TAP,this.saveGoldHandler,this);	
+		this.addBtn.addEventListener(egret.TouchEvent.TOUCH_TAP,this.goldBtnHandle,this);
+		this.subBtn.addEventListener(egret.TouchEvent.TOUCH_TAP,this.goldBtnHandle,this);
+
+	    this.withdrawGoldHs.addEventListener(egret.Event.CHANGE,this. exportGoldHs,this);
+        this.withdrawGoldHs.addEventListener(eui.UIEvent.CHANGE_START,this.unEnoughGold,this);
+		this.withdrawBtn.addEventListener(egret.TouchEvent.TOUCH_TAP,this.withdrawGoldHandler,this);	
+		this.withdrawAddBtn.addEventListener(egret.TouchEvent.TOUCH_TAP,this.goldBtnHandle,this);
+		this.withdrawSubBtn.addEventListener(egret.TouchEvent.TOUCH_TAP,this.goldBtnHandle,this);
+		this.withdrawPwd.addEventListener(egret.TouchEvent.FOCUS_IN, this.showKeyboard, this);
+	}
+	protected onDisable(event: eui.UIEvent): void
+	{
+		super.onDisable(event);
+		this.saveGoldHs.removeEventListener(egret.Event.CHANGE,this. importGoldHs,this);
+		this.saveGoldHs.removeEventListener(eui.UIEvent.CHANGE_START,this.unEnoughGold,this);
+		this.saveBtn.removeEventListener(egret.TouchEvent.TOUCH_TAP,this.saveGoldHandler,this);
+		this.addBtn.removeEventListener(egret.TouchEvent.TOUCH_TAP,this.goldBtnHandle,this);
+		this.subBtn.removeEventListener(egret.TouchEvent.TOUCH_TAP,this.goldBtnHandle,this);
+		this.withdrawGoldHs.removeEventListener(egret.Event.CHANGE,this. exportGoldHs,this);
+		this.withdrawGoldHs.removeEventListener(eui.UIEvent.CHANGE_START,this.unEnoughGold,this);
+		this.withdrawBtn.removeEventListener(egret.TouchEvent.TOUCH_TAP,this.withdrawGoldHandler,this);
+		this.withdrawAddBtn.removeEventListener(egret.TouchEvent.TOUCH_TAP,this.goldBtnHandle,this);
+		this.withdrawSubBtn.removeEventListener(egret.TouchEvent.TOUCH_TAP,this.goldBtnHandle,this);
+	}
+	/** 
+	 * 滑动存入金币滚动条
+	*/
+	private importGoldHs()
+	{
+	   this.saveCount.text=(this.saveGoldHs.value).toString()+"万";
+	}
+    
+     /**
+	  * 存入金币
+	 */
+	private saveGoldHandler(){
+		if(parseInt(this.saveCount.text)!=0){
+			// 保险箱金币
+			this.saveGold.text=(parseInt(this.saveCount.text)*10000+parseInt(this.saveGold.text)).toString();		
+			//当前金币数
+			this.currentGold.text=(parseInt(this.currentGold.text)-parseInt(this.saveCount.text)*10000).toString();
+			//重置
+			UIManager.showFloatTips("存入成功");
+			this.saveGoldHs.value=0;
+			this.saveCount.text="0万";
+            this.currentGoldChange();
+		}else{
+            UIManager.showFloatTips("不能存入0");
+		}			
+	}
+    
+    //////////////////////////////////////////////////////////////////////////////////////////////
+	
+	/** 
+	 * 滑动取出金币滚动条
+	*/
+	private exportGoldHs()
+	{
+	   this.withdrawCount.text=(this.withdrawGoldHs.value).toString()+"万";
+	}
+    
+     /**
+	  * 取出金币
+	 */
+	private withdrawGoldHandler(){
+		console.log(parseInt(this.withdrawPwd.text))
+		if(this.withdrawPwd.text=="")
+		{
+               UIManager.showFloatTips("密码不能为空");
+		} 
+		else if(this.withdrawPwd.text.length<5)
+		{
+               this.tipPwd.visible=true;
+		}
+		else if(this.withdrawPwd.text.length==5){
+               this.tipPwd.visible=false;
+		}
+		else if(this.withdrawPwd.text==this.userWithdrawPwd.toString())
+		{
+            if(parseInt(this.withdrawCount.text)!=0)
+			{
+				// 保险箱金币
+				this.saveGold.text=((parseInt(this.saveGold.text)-parseInt(this.withdrawCount.text)*10000)).toString();
+				// 当前金币数
+				this.currentGold.text=(parseInt(this.currentGold.text)+parseInt(this.withdrawCount.text)*10000).toString();
+				UIManager.showFloatTips("取出成功");
+				this.withdrawGoldHs.value=0;
+			    this.withdrawCount.text="0万";
+				this.currentGoldChange();				
+			}
+			else
+			{
+				UIManager.showFloatTips("不能存入0");				
+			}	
+			this.withdrawPwd.text="";
+		}
+		else if(parseInt(this.withdrawPwd.text)!==this.userWithdrawPwd)
+		{
+                UIManager.showFloatTips("密码错误");
+		}
+			
+	}
+
+	/**
+	  * 金币不足
+	 */
+	protected unEnoughGold(){
+		if(this.saveGoldHs.maximum==0){
+            UIManager.showFloatTips("当前可存金币不足一万");
+		}
+		if(this.withdrawGoldHs.maximum==0){
+			UIManager.showFloatTips("保险箱金币为0");
+		}
+	}
+
+	/**
+	  * 点击金币加减按钮
+	 */
+    protected goldBtnHandle(event: egret.TouchEvent){
+		switch (event.target){
+			case this.addBtn:
+			this.saveGoldHs.value++;
+			break;
+			case this.subBtn:
+			this.saveGoldHs.value--;
+			break;
+			case this.withdrawAddBtn:
+			this.withdrawGoldHs.value++;
+			break;
+			case this.withdrawSubBtn:
+			this.withdrawGoldHs.value--;
+			break;
+		}
+
+		if(this.saveGoldHs.value>this.saveGoldHs.maximum){
+	        this.saveGoldHs.value=this.saveGoldHs.maximum;		
+		}
+		else if(this.withdrawGoldHs.value>this.withdrawGoldHs.maximum)
+		{
+			this.withdrawGoldHs.value=this.withdrawGoldHs.maximum;		
+		}
+		else if(this.saveGoldHs.value<0)
+		{
+			this.saveGoldHs.value=0
+		}
+		else if(this.withdrawGoldHs.value<0)
+		{
+			this.withdrawGoldHs.value=0
+		}
+		this.importGoldHs();
+        this.exportGoldHs();
+	}
+
+	  /**
+     * 搜索框获得焦点触发的操作
+    */
+    private showKeyboard()
+    {
+        UIManager.showPanel(UIModuleName.KeyBoardPanel,{ callback: this.keyboardHandle, target: this });
+    }
+
+	/**
+	 * 键盘事件处理
+	*/
+	private keyboardHandle(type: number, num?: string){
+		// 键盘按下
+	    if (type == 1)
+        {
+            if (this.withdrawPwd.text.length <6)
+            {
+                this.withdrawPwd.text = this.withdrawPwd.text + num;
+				this.tipPwd.visible=false;
+            }
+        } 
+		// 删除按钮
+		else if(type == 2)
+		{
+          if (this.withdrawPwd.text.length > 0)
+            {
+				this.withdrawPwd.text = this.withdrawPwd.text.slice(0, this.withdrawPwd.text.length - 1);
+            }
+		}
+		// 重输入按钮
+		else if(type==3){
+			this.withdrawPwd.text="";
+		}
+		else if (type == 4)
+        {
+            return;
+        } 
+		else
+        {
+            return;
+        }
+	}
+
+	/**
+	 * 重置刻度盘
+	*/
+	private currentGoldChange(){			
+		this.saveScaleHs=Math.floor(parseInt(this.currentGold.text)/10000);
+		this.saveGoldHs.maximum = this.saveScaleHs;
+		this.withdrawScaleHs=parseInt(this.saveGold.text)/10000;
+		this.withdrawGoldHs.maximum=this.withdrawScaleHs;
+		console.log("存入/取出后的刻度："+this.withdrawGoldHs.maximum)
+	}
+}

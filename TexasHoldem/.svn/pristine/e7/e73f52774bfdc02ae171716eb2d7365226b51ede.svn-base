@@ -1,0 +1,143 @@
+/**
+ * 打出去的牌容器
+ */
+class OutCardHandler
+{
+	private _outCardList: Array<OutCardDefinition>;
+	private _posType: PosType;
+	private _cardList: Array<OutCard>;
+	public static onOutCardChange:ActionDispatcher = new ActionDispatcher();
+	private _eventObj: any;
+	private _container: LayerContainer;
+	private _lastCard: OutCard;
+
+	public constructor(posType: PosType, lc: LayerController, layer: number)
+	{
+		this._cardList = new Array<OutCard>();
+		this._posType = posType;
+		this._container = lc.getContainer(layer);
+		this._outCardList = CardShowDefined.GetInstance().outCardMap.getValue(posType);
+
+		this._eventObj = {};
+	}
+	public addPai(card: number, pos?: number, isUnBuyHorse: boolean = true)
+	{
+		if (this._outCardList)
+		{
+			if (pos == undefined)
+			{
+				pos = this._cardList.length;
+			}
+			let def: OutCardDefinition = this.getOutDef(pos + 1);
+			let outCard: OutCard = new OutCard(def, card, isUnBuyHorse);
+			this._container.addChild(outCard);
+			if (def)
+			{
+				this._cardList.push(outCard);
+			}
+			this._lastCard = outCard;
+			this.showByY();
+			if (def)
+			{
+				this._eventObj.x = def.x + this.offsetX;
+				this._eventObj.y = def.y + this.offsetY;
+			}
+			OutCardHandler.onOutCardChange.dispatch(this._eventObj);
+		}
+	}
+	private get offsetX()
+	{
+		switch (this._posType)
+		{
+			case PosType.BenJia:
+				return -3;
+			case PosType.XiaJia:
+				return 5;
+			case PosType.DuiJia:
+				return -9;
+			case PosType.ShangJia:
+				return -2;
+		}
+	}
+	private get offsetY()
+	{
+		switch (this._posType)
+		{
+			case PosType.BenJia:
+				return -75;
+			case PosType.XiaJia:
+				return -85;
+			case PosType.DuiJia:
+				return -81;
+			case PosType.ShangJia:
+				return -80;
+		}
+	}
+	public showPai(list: Array<number>)
+	{
+		if (list)
+		{
+			ArrayUtil.Clear(this._cardList);
+			this._container.removeChildren();
+			let len: number = list.length;
+			for (let i: number = 0; i < len; i++)
+			{
+				this.addPai(list[i]);
+			}
+		}
+	}
+	public removePai(card: number)
+	{
+		if (this._lastCard && this._lastCard.card == card)
+		{
+			this._container.removeChild(this._lastCard)
+			ArrayUtil.RemoveItem(this._lastCard, this._cardList);
+			this._lastCard = null;
+		}
+	}
+	private showByY()
+	{
+		this._cardList.sort(this.sortLayer);
+		UIUtil.refreshSortContainer<OutCard, LayerContainer>(this._cardList, this._container);
+	}
+	private sortLayer(a: OutCard, b: OutCard): number
+	{
+		if (a.outCardDef && b.outCardDef)
+		{
+			if (a.outCardDef.layer > b.outCardDef.layer)
+			{
+				return -1;
+			}
+			if (a.outCardDef.layer < b.outCardDef.layer)
+			{
+				return 1;
+			}
+		}
+		return 0;
+	}
+	private getOutDef(pos: number): OutCardDefinition
+	{
+		if (this._outCardList)
+		{
+			for (let def of this._outCardList)
+			{
+				if (def.pos == pos)
+				{
+					return def;
+				}
+			}
+		}
+		return null;
+	}
+	public clear()
+	{
+		let outCard: OutCard;
+		let len: number = this._cardList.length;
+		for (let i: number = len - 1; i >= 0; i--)
+		{
+			outCard = this._cardList[i];
+			this._container.removeChild(outCard)
+		}
+		ArrayUtil.Clear(this._cardList);
+	}
+}

@@ -1,0 +1,118 @@
+/**
+ * 战绩信息列表
+ */
+class RoundUserListItemRenderer extends BaseItemRenderer<any>
+{
+	public idLabel: eui.Label;
+	public roundLabel: eui.Label;
+	public timeLabel: eui.Label;
+	private _ly: eui.TileLayout;
+	public roundIndexLabel: eui.Label;
+
+	// public user1: eui.Component;
+	// public user2: eui.Component;
+	// public user3: eui.Component;
+	// public user4: eui.Component;
+
+	public scoreLabel: eui.Label;
+	public scoreLabel2: eui.Label;
+	public scoreLabel3: eui.Label;
+	public scoreLabel4: eui.Label;
+
+	public nameLabel: eui.Label;
+	public nameLabel2: eui.Label;
+	public nameLabel3: eui.Label;
+	public nameLabel4: eui.Label;
+	public infoBtn: eui.Button;
+
+	public constructor()
+	{
+		super();
+		this.skinName = UIRendererSkinName.RoundUserListItemRenderer;
+	}
+	protected createChildren()
+	{
+		super.createChildren();
+		this.dataChanged();
+	}
+	protected dataChanged(): void
+	{
+		super.dataChanged();
+		// if (this.bindData)
+		// {
+		// 	this.idLabel.text = this.bindData.id.toString();
+		// 	this.roundLabel.text = this.bindData.round.toString();
+		// 	this.roundIndexLabel.text = this.bindData.roundIndex.toString();
+		// 	let date: Date = new Date(this.bindData.time * 1000);
+
+		// 	this.timeLabel.text = DateTimeUtil.formatDate(date);
+		// 	// UIUtil.bindRender(this.infoListGroup, RoundUserItemRenderer, this.bindData);
+		// 	this.scoreLabel.text = this.bindData.score.toString();
+		// 	for (let i: number = 2; i <= 4; i++)
+		// 	{
+		// 		// this.refresh(this["user" + (i + 1).toString()], this.bindData[i]);
+		// 		this["nameLabel" + i.toString()].text = this.bindData["name" + i.toString()];
+		// 		this["scoreLabel" + i.toString()].text = this.bindData["score" + i.toString()];
+		// 	}
+		// 	this.addEventListener(egret.Event.REMOVED_FROM_STAGE, this.onDisable, this);
+
+		// 	this.infoBtn.addEventListener(egret.TouchEvent.TOUCH_TAP, this.onInfoBtnClick, this);
+		// }
+	}
+	private refresh(target: any, data: any)
+	{
+		// target.targetOper = target;
+		// target.nameLabel.text = data.name;
+		// target.idLabel.text = data.roleId.toString();
+		// target.nameLabel2.text = data.name2;
+		// target.nameLabel3.text = data.name3;
+		// target.nameLabel4.text = data.name4;
+
+		// UIUtil.ShowScoreImg(data.score2, target.scoreLabel2, 0.5, 0.5);
+		// UIUtil.ShowScoreImg(data.score3, target.scoreLabel3, 0.5, 0.5);
+		// UIUtil.ShowScoreImg(data.score4, target.scoreLabel4, 0.5, 0.5);
+		// UIUtil.ShowScoreImg(data.score, target.scoreLabel, 0.8, 0.8);
+
+		// this.showScore(data.score2, target.scoreLabel2);
+		// this.showScore(data.score3, target.scoreLabel3);
+		// this.showScore(data.score4, target.scoreLabel4);
+		// this.showScore(data.score, target.scoreLabel1);
+
+		// UIUtil.ShowHead(target.headImg, data.head);
+		// target.sexImg.source = UIUtil.getSexImgSource(data.sex);
+		// target.hostImg.visible = data.isHost;
+	}
+	private showScore(score: number, label: eui.Label)
+	{
+		let str: string = StringConstant.empty;
+		if (score >= 0)
+		{
+			label.textColor = 0x00ff00;
+			str += "+"
+			str += score.toString() + "分";
+		}
+		else
+		{
+			label.textColor = 0xff0000;
+			str += score.toString() + "分";
+		}
+		label.text = str;
+	}
+	private onDisable(event: egret.Event)
+	{
+		this.removeEventListener(egret.Event.REMOVED_FROM_STAGE, this.onDisable, this);
+		if (this.infoBtn)
+		{
+			this.infoBtn.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.onInfoBtnClick, this);
+		}
+	}
+	private onInfoBtnClick(event: egret.TouchEvent)
+	{
+		SoundManager.playButtonEffect(event.target);
+		if (this.bindData)
+		{
+			//UserManager.reqGetRoundDetials(this.bindData.id);
+		}
+	}
+}
+

@@ -1,0 +1,183 @@
+/**
+ * 公共牌支持
+ */
+class GamblingPanelOneLoopOverSupport extends BaseGamblingPanelSupport
+{
+	private _lastCardLen: number;
+	private _lastChips: Array<number>;
+	public initialize()
+	{
+		super.initialize();
+		this.hideCard();
+		if (GamblingManager.roomInfo && GamblingManager.roomInfo.cardList)
+		{
+			this.target.cardTypeGroup.visible = false;
+
+			this._lastCardLen = GamblingManager.roomInfo.cardList.length;
+			let cardFace: CardFaceComponent;
+			let point: egret.Point;
+			for (let i: number = 0; i < this._lastCardLen; i++)
+			{
+				cardFace = this.target.cardList[i];
+				cardFace.visible = true;
+				cardFace.init(GamblingManager.roomInfo.cardList[i]);
+
+				//重置位置缩放和大小
+				point = GamblingPanelSetting.boardPosList[i];
+				cardFace.horizontalCenter = point.x;
+				cardFace.verticalCenter = point.y;
+				cardFace.alpha = 1;
+				cardFace.scaleX = cardFace.scaleY = 1;
+			}
+		}
+		else
+		{
+			this._lastCardLen = 0;
+		}
+	}
+	public onEnable()
+	{
+		super.onEnable();
+		GamblingManager.OneLoopOverEvent.addListener(this.oneLoopOverHandler, this);
+		GamblingManager.NextRoundStartEvent.addListener(this.nextRoundStartHandler, this);
+	}
+	public onDisable()
+	{
+		super.onDisable();
+		GamblingManager.OneLoopOverEvent.removeListener(this.oneLoopOverHandler, this);
+		GamblingManager.NextRoundStartEvent.removeListener(this.nextRoundStartHandler, this);
+	}
+	private oneLoopOverHandler()
+	{
+		if (GamblingManager.roomInfo && GamblingManager.roomInfo.cardList.length)
+		{
+			let nowLen: number = GamblingManager.roomInfo.cardList.length;
+			let offset: number = nowLen - this._lastCardLen;
+			this._lastCardLen = nowLen;
+			let card: CardFaceComponent;
+			if (offset > 1) //显示多张牌
+			{
+				for (let i: number = this._lastCardLen; i < nowLen; i++)
+				{
+					card = this.target.cardList[i];
+					card.visible = true;
+					this.runBoardAppearAnim(card, GamblingPanelSetting.boardPosList[i], i * 350, this.runOVer, this);
+				}
+			}
+			else
+			{
+				if (nowLen == 4)
+				{
+					card = this.target.cardList[3];
+					card.visible = true;
+					this.runBoardAppearAnim(card, GamblingPanelSetting.boardPosList[3], 0, this.runOVer, this);
+				}
+				else if (nowLen == 5)
+				{
+					card = this.target.cardList[4];
+					card.visible = true;
+					this.runBoardAppearAnim(card, GamblingPanelSetting.boardPosList[4], 0, this.runOVer, this);
+				}
+			}
+			if (GamblingManager.roomInfo.potChips)
+			{
+				this.target.potChipsList.visible = true;
+				if (this.target.potChipsList.dataProvider)
+				{
+					let lastLen: number = this._lastChips ? this._lastChips.length : 0;
+					let nowLen: number = GamblingManager.roomInfo.potChips.length;
+					for (let i: number = lastLen; i < nowLen; i++)
+					{
+						(<eui.ArrayCollection>this.target.potChipsList.dataProvider).addItem(GamblingManager.roomInfo.potChips[i]);
+					}
+				}
+				else
+				{
+					this.target.potChipsList.dataProvider = new eui.ArrayCollection(GamblingManager.roomInfo.potChips);
+				}
+				this._lastChips = GamblingManager.roomInfo.potChips.concat();
+			}
+		}
+	}
+	private _actionList1: Dictionary<CardFaceComponent, CardFaceBoardAppear>;
+	private _actionList2: Dictionary<CardFaceComponent, CardFaceTurnToFace>;
+	/**
+ 	* 跑公共牌动画
+ 	*/
+	public runBoardAppearAnim(target: CardFaceComponent, point: egret.Point, delay: number = 0, callBack: Function, thisObj: any)
+	{
+		if (!this._actionList1)
+		{
+			this._actionList1 = new Dictionary<CardFaceComponent, CardFaceBoardAppear>();
+			this._actionList2 = new Dictionary<CardFaceComponent, CardFaceTurnToFace>();
+		}
+		let run: CardFaceBoardAppear = this._actionList1.getValue(target);
+		let run2: CardFaceTurnToFace = this._actionList2.getValue(target);
+		if (!run)
+		{
+			run = <CardFaceBoardAppear>AnimationFactory.getCardFaceAnimation(AnimationType.CardFaceBoardAppear);
+		}
+		if (!run2)
+		{
+			run2 = <CardFaceTurnToFace>AnimationFactory.getCardFaceAnimation(AnimationType.CardFaceTurnToFace);
+		}
+		run.nextAnimation = run2;
+		(run.nextAnimation as CardFaceTurnToFace).callBack = callBack;
+		(run.nextAnimation as CardFaceTurnToFace).thisObj = thisObj;
+		run.run(point, delay);
+	}
+	private runOVer()
+	{
+		if (GamblingManager.roomInfo && GamblingManager.roomInfo.handCardList)
+		{
+			let result: boolean = GamblingCardTypeMatch.matchCardType(GamblingManager.roomInfo.handCardList);
+			if (result && GamblingCardTypeMatch.resultList && GamblingCardTypeMatch.resultList.length > 0)
+			{
+				/**
+				 * 牌型显示
+				 */
+				this.target.cardDeslabel.text = GamblingCardTypeMatch.getCardDes(GamblingCardTypeMatch.cardType);
+				this.target.cardTypeGroup.visible = true;
+
+				let len: number = this.target.cardList.length;
+				let card: CardFaceComponent;
+				for (let i: number = 0; i < len; i++)
+				{
+					card = this.target.cardList[i];
+					if (card.visible && card.bindData)
+					{
+						for (let resultInfo of GamblingCardTypeMatch.resultList)
+						{
+							if (resultInfo[2] == 1 && resultInfo[0] == card.bindData[0] && resultInfo[1] == card.bindData[1])
+							{
+								card.showMaxFlag(true);
+								break;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	private hideCard()
+	{
+		let len: number = this.target.cardList.length;
+		for (let i: number = 0; i < len; i++)
+		{
+			this.target.cardList[i].visible = false;
+		}
+	}
+	private nextRoundStartHandler()
+	{
+		this.clear();
+	}
+	public clear()
+	{
+		super.clear();
+		if (this._lastChips)
+		{
+			this._lastChips.length = 0;
+		}
+		(<eui.ArrayCollection>this.target.potChipsList.dataProvider).removeAll();
+	}
+}

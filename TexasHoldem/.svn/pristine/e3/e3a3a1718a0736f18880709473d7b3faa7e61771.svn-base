@@ -1,0 +1,270 @@
+/**
+ * 本家手牌操作
+ */
+class ShouPaiBenJiaHandler extends BaseShouPaiHandler<BenJiaShouCard>
+{
+	constructor(lc: LayerContainer)
+	{
+		super(lc);
+		this._posType = PosType.BenJia;
+	}
+	public init(instanceT: { new (def: ShouPaiDefinition, pos: number): BenJiaShouCard; }, isDefaultShow: boolean)
+	{
+		super.init(instanceT, isDefaultShow);
+	}
+	public exactlyCard(isDefaultShow: boolean, isBuGang?: boolean)
+	{
+		if (RoomManager.roomInfo && RoomManager.roomInfo.shouPai)
+		{
+			this.tryImmediatelyMoveOver();
+			this.playerInfo = RoomManager.getPlayerInfoByPosType(PosType.BenJia);
+			let showCount: number = 0;
+			if (RoomManager.roomInfo.myLastCard && RoomManager.isSelfAction && !isBuGang)
+			{
+				ArrayUtil.RemoveItem(RoomManager.roomInfo.myLastCard, RoomManager.roomInfo.shouPai, 1);
+			}
+			RoomManager.roomInfo.shouPai.sort(SortUtil.downSort);
+			let showNum: number = RoomManager.roomInfo.shouPai.length;
+			let pit: MoveCardPit;
+			for (let i: number = this._pitLen - 1; i >= 0; i--)
+			{
+				if (showCount > showNum)
+				{
+					break;
+				}
+				pit = this.pitList[i]
+				this.refreshPit(pit);
+				pit.card.refreshFace(RoomManager.roomInfo.shouPai[showCount]);
+				showCount++;
+			}
+			if (RoomManager.roomInfo.myLastCard && RoomManager.isSelfAction && !isBuGang)
+			{
+				RoomManager.roomInfo.shouPai.push(RoomManager.roomInfo.myLastCard);
+				this.setNewCard(RoomManager.roomInfo.myLastCard);
+			}
+			else
+			{
+				this.hideLastCard();
+			}
+			let remianNum: number = this._pitLen - showNum;
+			for (let i: number = 0; i < remianNum; i++)
+			{
+				this.pitList[i].card.visible = false;
+			}
+		}
+	}
+	public outCard(card?: BenJiaShouCard, isLast?: boolean)
+	{
+		let pit: MoveCardPit;
+		if (isLast)
+		{
+			this._lastPit.card.visible = false;
+			return;
+		}
+		else
+		{
+			pit = this.findPit(card); //本家寻找
+		}
+		if (card == this._lastPit.card)
+		{
+			this._lastPit.card.visible = false;
+		}
+		else
+		{
+			if (!pit)
+			{
+				return;
+			}
+			this._outIndex = this.pitList.indexOf(pit);
+			this._outProxyPit.card = pit.card; //将打出的牌，转移给打出的代理坑位
+			pit.card.visible = false;
+		}
+	}
+	private _moveTime: number;
+	public startInsertCard(insertCard: number)
+	{
+		if (this._isInserting)
+		{
+			this.tryImmediatelyMoveOver();
+		}
+		ArrayUtil.Clear(this._needMoveList);
+		this._nowInsertPit = this.getInsertPit(insertCard);
+		if (this._nowInsertPit && this._outProxyPit.card && this._lastPit.card.visible)  
+		{
+			this._isInserting = true;
+			let index: number = this.pitList.indexOf(this._nowInsertPit); //插入坑位的索引
+			let pit: MoveCardPit;
+			if (this._outIndex != undefined && index != undefined && index != -1)
+			{
+				if (this._outIndex > index) //打出的坑大于插入的坑
+				{
+					pit = this.pitList[index]; //左边插入，相等的放右边，所以索引+1
+					if (insertCard >= pit.card.cardNum)
+					{
+						index += 1;
+						this._nowInsertPit = this.pitList[index];
+					}
+					for (let i: number = index; i < this._outIndex; i++)
+					{
+						pit = this.pitList[i];
+						pit.targetPit = this.pitList[i + 1];
+						this._needMoveList.push(pit);
+					}
+					this._isReverse = false;
+				}
+				else if (this._outIndex < index) //打出的坑小于插入的坑
+				{
+					for (let i: number = this._outIndex + 1; i <= index; i++)
+					{
+						pit = this.pitList[i];
+						pit.targetPit = this.pitList[i - 1];
+						this._needMoveList.push(pit);
+					}
+					this._isReverse = true;
+				}
+				this._outProxyPit.card.x = this._lastPit.def.x;
+				this._outProxyPit.card.y = this._lastPit.def.y;
+				this._outProxyPit.card.refreshFace(insertCard);
+				this._outProxyPit.card.visible = true;
+			}
+			this._newCardTween = egret.Tween.get(this._outProxyPit.card);
+			let def: ShouPaiDefinition = this._nowInsertPit.def;
+			if (index == 12) //插入的位置索引最后一个则直接移动
+			{
+				this._moveTime = 500;
+				this._newCardTween.to({ x: def.x }, this._moveTime, egret.Ease.quintOut).call(this.moveOver.bind(this));
+				this.playInsert();
+			}
+			else
+			{
+				this._moveTime = 300; //quartInOut
+				this._newCardTween.to({ rotation: 15 }, 200).to({ y: def.y - 127 }, 200).to({ x: def.x }, 300, egret.Ease.quintOut).to({ rotation: 0 }, 100, egret.Ease.sineOut).call(this.playInsert.bind(this)).to({ y: def.y }, this._moveTime, egret.Ease.quadInOut).call(this.moveOver.bind(this));
+			}
+			this._newCardTween.play();
+			this.hideLastCard();
+		}
+	}
+	/**
+ * 本家则寻找，其他家则随机位置
+ */
+	protected getInsertPit(cardNum: number): MoveCardPit
+	{
+		let pit: MoveCardPit;
+		let viewPit: MoveCardPit;
+		for (let i: number = this._pitLen - 1; i >= 0; i--)
+		{
+			pit = this.pitList[i];
+			if (pit.card)
+			{
+				if (pit.card.visible)
+				{
+					viewPit = pit;
+					if (pit.card.cardNum <= cardNum)
+					{
+						return pit;
+					}
+					else if (pit.card.cardNum < cardNum)
+					{
+						return pit;
+					}
+				}
+			}
+		}
+		if (!viewPit)
+		{
+			return this.pitList[this._pitLen - 1]; //处理一张牌的特殊情况
+		}
+		let index: number = this.pitList.indexOf(viewPit);
+		if (this._outIndex > index) //往右移
+		{
+			return this.pitList[index];
+		}
+		else
+		{
+			if (index < 1)
+			{
+				index = 1;
+			}
+			return this.pitList[index - 1];
+		}
+	}
+	protected playInsert()
+	{
+		if (this._isInserting)
+		{
+			super.playInsert();
+			let len: number = this._needMoveList.length;
+			let moveTween: egret.Tween;
+			let nextPos: number = 0;
+			let pit: MoveCardPit;
+			for (let i = 0; i < len; i++)
+			{
+				pit = this._needMoveList[i];
+				moveTween = egret.Tween.get(pit.card, {});
+				moveTween.to({ x: pit.targetPit.def.x }, this._moveTime, egret.Ease.quintOut);
+				moveTween.play();
+			}
+			console.log("播放插入动画！");
+		}
+		else
+		{
+			console.log("本家插牌调用异常！");
+		}
+	}
+	protected immediatelyMoveOver()
+	{
+		super.immediatelyMoveOver();
+	}
+	protected moveOver()
+	{
+		super.moveOver();
+		// this.cardList.sort(this.sortPosIndex);
+		// this.exactlyCard();
+	}
+	/**
+	 * 显示箭头
+	 */
+	public showArrow(card: number)
+	{
+		let pit: MoveCardPit;
+		let len: number = this.pitList.length;
+		for (let i: number = 0; i < len; i++)
+		{
+			pit = this.pitList[i];
+			if (pit.card)
+			{
+				if (card != undefined && pit.card.cardNum == card)
+				{
+					(pit.card as BenJiaShouCard).setArrow(true);
+				}
+			}
+		}
+		if (this._lastPit)
+		{
+			if (card != undefined && this._lastPit.card.cardNum == card)
+			{
+				(this._lastPit.card as BenJiaShouCard).setArrow(true);
+			}
+		}
+	}
+	/**
+	 * 隐藏箭头
+	 */
+	public hideArrow()
+	{
+		let pit: MoveCardPit;
+		let len: number = this.pitList.length;
+		for (let i: number = 0; i < len; i++)
+		{
+			pit = this.pitList[i];
+			if (pit.card)
+			{
+				(pit.card as BenJiaShouCard).setArrow(false);
+			}
+		}
+		if (this._lastPit)
+		{
+			(this._lastPit.card as BenJiaShouCard).setArrow(false);
+		}
+	}
+}

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="buttonSkin20" width="180" height="160" xmlns:e="http://ns.egret.com/eui"
+        xmlns:w="http://ns.egret.com/wing" xmlns:ns1="*" xmlns:tween="egret.tween.*">
+	<w:Declarations>
+		<tween:TweenGroup id="animate">
+			<tween:TweenItem target="{image}">
+				<tween:Set>
+					<tween:props>
+						<e:Object scaleX="{1}" scaleY="{1}" alpha="{0.4}" />
+					</tween:props>
+				</tween:Set>
+				<tween:To duration="500">
+					<tween:props>
+						<e:Object scaleX="{1.2}" scaleY="{1.2}" alpha="{0.4}" />
+					</tween:props>
+				</tween:To>
+				<tween:To duration="500">
+					<tween:props>
+						<e:Object scaleX="{1}" scaleY="{1}" alpha="{0.4}" />
+					</tween:props>
+				</tween:To>
+				<tween:props>
+					<e:Object loop="{true}" />
+				</tween:props>
+			</tween:TweenItem>
+			<tween:TweenItem target="{image0}">
+				<tween:Set>
+					<tween:props>
+						<e:Object alpha="{0}" />
+					</tween:props>
+				</tween:Set>
+				<tween:To duration="500">
+					<tween:props>
+						<e:Object alpha="{1}" />
+					</tween:props>
+				</tween:To>
+				<tween:To duration="500">
+					<tween:props>
+						<e:Object alpha="{0}"/>
+					</tween:props>
+				</tween:To>
+				<tween:props>
+					<e:Object loop="{true}" />
+				</tween:props>
+			</tween:TweenItem>
+			<tween:TweenItem target="{image1}">
+				<tween:Set>
+					<tween:props>
+						<e:Object alpha="{0}" />
+					</tween:props>
+				</tween:Set>
+				<tween:To duration="500">
+					<tween:props>
+						<e:Object alpha="{1}" />
+					</tween:props>
+				</tween:To>
+				<tween:To duration="500">
+					<tween:props>
+						<e:Object alpha="{0}"/>
+					</tween:props>
+				</tween:To>
+				<tween:props>
+					<e:Object loop="{true}" />
+				</tween:props>
+			</tween:TweenItem>
+			<tween:TweenItem target="{image2}">
+				<tween:Set>
+					<tween:props>
+						<e:Object alpha="{0}" />
+					</tween:props>
+				</tween:Set>
+				<tween:To duration="500">
+					<tween:props>
+						<e:Object alpha="{1}" />
+					</tween:props>
+				</tween:To>
+				<tween:To duration="500">
+					<tween:props>
+						<e:Object alpha="{0}"/>
+					</tween:props>
+				</tween:To>
+				<tween:props>
+					<e:Object loop="{true}" />
+				</tween:props>
+			</tween:TweenItem>
+		</tween:TweenGroup>
+	</w:Declarations>
+	<e:Image id="image" width="149" height="137" source="hu_png" horizontalCenter="0" verticalCenter="0" />
+	<e:Image id="image0" x="-10" y="-17" anchorOffsetX="0" anchorOffsetY="0" source="Effect_1_png" scaleX="0.5"
+	         scaleY="0.5" width="378" height="378" />
+	<e:Image id="image1" x="-10" y="-17" anchorOffsetX="0" anchorOffsetY="0" source="Effect_1_png" scaleX="0.5"
+	         scaleY="0.5" width="378" height="378" />
+	<e:Image id="image2" x="-10" y="-17" anchorOffsetX="0" anchorOffsetY="0" source="Effect_1_png" scaleX="0.5"
+	         scaleY="0.5" width="378" height="378" />
+	<e:Image width="149" height="137" source="hu_png" horizontalCenter="0" verticalCenter="0" />
+</e:Skin>

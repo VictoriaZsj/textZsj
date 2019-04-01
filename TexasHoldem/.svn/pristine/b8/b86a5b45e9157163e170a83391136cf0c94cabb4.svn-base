@@ -1,0 +1,127 @@
+/**
+ * 游戏特效处理
+ */
+class GameEffectLogic
+{
+	public tweenGroup: eui.Group;
+	private _actionInfo: ActionInfo;
+	public constructor(group: eui.Group)
+	{
+		this.tweenGroup = group;
+	}
+	private index: number = 0;
+	/**
+	 * 显示积分效果
+	 */
+	public showScoreEffect()
+	{
+
+		// if (this.index > 4)
+		// {
+		// 	this.index = 4;
+		// }
+		// this.index++;
+		// let scoreEffect1: ScoreEffectComponent;
+
+		// scoreEffect1 = new ScoreEffectComponent();
+		// let score: ScoreChangeInfo = new ScoreChangeInfo();
+		// score.score = 100;
+		// score.offsetScore = 10;
+		// scoreEffect1.init(score);
+		// this.setPos(scoreEffect1, this.index);
+		// 	this.tweenGroup.addChild(scoreEffect1);
+
+		let scoreEffect1: ScoreEffectComponent;
+		let scoreInfo: ScoreChangeInfo;
+		let posType: PosType;
+		let playerInfo: PlayerInfo;
+		for (let i: number = 0; i < GoCardProcessManager.scroeInfoList.length; i++)
+		{
+			scoreInfo = GoCardProcessManager.scroeInfoList[i];
+			if (scoreInfo.offsetScore != 0)
+			{
+				scoreEffect1 = new ScoreEffectComponent();
+				scoreEffect1.init(scoreInfo);
+
+				playerInfo = RoomManager.getPlayerInfoByRoleId(scoreInfo.roleId);
+				if (playerInfo)
+				{
+					posType = RoomManager.getPosTypeForMine(playerInfo.pos);
+					this.setPos(scoreEffect1, posType);
+				}
+				this.tweenGroup.addChild(scoreEffect1);
+			}
+		}
+	}
+	/**
+	 * 显示行为特效
+	 */
+	public showActionEffect(actionType: ActionType, posType: PosType)
+	{
+		if (posType >= PosType.BenJia && posType <= PosType.ShangJia)
+		{
+			if (!this._actionInfo)
+			{
+				this._actionInfo = new ActionInfo();
+			}
+			let compoent: ActionEffectComponent = new ActionEffectComponent();
+			this._actionInfo.actionType = actionType;
+			this._actionInfo.posType = posType;
+			compoent.init(this._actionInfo);
+			this.setActionPos(compoent, posType);
+			this.tweenGroup.addChild(compoent);
+		}
+	}
+	private setPos(target: eui.Component, posType: PosType)
+	{
+		switch (posType)
+		{
+			case PosType.BenJia:
+				target.horizontalCenter = -3;
+				target.y = 496;
+				break;
+			case PosType.XiaJia:
+				target.horizontalCenter = 363;
+				target.verticalCenter = -50;
+				break;
+			case PosType.DuiJia:
+				target.horizontalCenter = 10;
+				target.y = 95;
+				break;
+			case PosType.ShangJia:
+				target.verticalCenter = -50;
+				target.x = 200;
+				break;
+		}
+	}
+	private setActionPos(target: eui.Component, posType: PosType)
+	{
+		switch (posType)
+		{
+			case PosType.BenJia:
+				target.horizontalCenter = -3;
+				target.y = 300;
+				break;
+			case PosType.XiaJia:
+				target.horizontalCenter = 250;
+				target.y = 150;
+				break;
+			case PosType.DuiJia:
+				target.horizontalCenter = 10;
+				target.y = 30;
+				break;
+			case PosType.ShangJia:
+				target.verticalCenter = -50;
+				target.x = 160;
+				break;
+		}
+	}
+}
+/**
+ * 行为信息
+ */
+class ActionInfo
+{
+	public actionType: ActionType;
+	public posType: PosType;
+}

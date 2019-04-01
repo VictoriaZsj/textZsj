@@ -1,0 +1,70 @@
+/**
+ * 邮件渲染项
+ */
+class MailItemRenderer extends BaseItemRenderer<MailInfo>
+{
+    public itemImg:eui.Image//附件图片
+    public itemTitleLabel:eui.Label//邮件标题
+    public itemDesLabel//邮件描述
+    public takePrizeBtn:eui.Button//领取附件
+    public takeDesLabel:eui.Label//附件状态
+
+    public constructor()
+	{
+		super();
+		this.skinName = UIRendererSkinName.MailItemRenderer;
+	}
+    protected createChildren()
+	{
+		this.dataChanged();
+        this.takePrizeBtn.addEventListener(egret.TouchEvent.TOUCH_TAP, this.takePrize, this);
+	}
+    protected dataChanged(): void
+	{
+        super.dataChanged();
+        this.refresh();
+    }
+
+    private refresh()
+    {
+        if(this.bindData)
+        {
+            this.itemTitleLabel.text = this.bindData.Title;
+            this.itemDesLabel.text = this.bindData.Content;
+            //this.itemImg.source = this.bindData.item;
+            if(this.bindData.IsGot)
+            {
+                this.takePrizeBtn.visible = false;
+                this.takeDesLabel.visible = true;
+            }
+            else
+            {
+                this.takePrizeBtn.visible = true;
+                this.takeDesLabel.visible = false;
+            }
+        }
+    }
+
+    //领取附件
+    private takePrize()
+    {
+        SocketManager.AddCommandListener(Command.Req_TakeMailPrize_3098,this.onTakePrize,this);
+        SocketManager.Send(Command.Req_TakeMailPrize_3098,{"MailId":this.bindData.Id});
+    }
+    private onTakePrize(result:SpRpcResult)
+    {
+        SocketManager.RemoveCommandListener(Command.Req_TakeMailPrize_3098,this.onTakePrize);
+        this.bindData.IsGot = true;
+        this.refresh();
+        MailManager.getMailPrizeEvent.dispatch();
+    }
+
+    private onDisable(event: egret.Event)
+    {
+        this.removeEventListener(egret.Event.REMOVED_FROM_STAGE, this.onDisable, this);
+		if (this.takePrizeBtn)
+		{
+			this.takePrizeBtn.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.takePrize, this);
+		}
+    }
+}

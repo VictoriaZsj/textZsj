@@ -1,0 +1,1452 @@
+/**
+ * 行牌流程管理器
+ */
+class GoCardProcessManager
+{
+    /**
+     * 是否是需要经过服务器确定的行为取消
+     */
+    public static isInActionSelect: boolean = false;
+    /**
+     * 游戏场景状态
+     */
+    public static state: GameSceneState;
+	/**
+	 * 出牌的玩家位置
+	 */
+    public static outOfCardPos: number;
+	/**
+	 * 当前出的牌坑
+	 */
+    public static curOutCard: OtherShouCard;
+    /**
+     * 是否正在出牌中
+     */
+    public static isReqPutOutCarding: boolean;
+	/**
+	 * 是否已经准备好
+	 */
+    public static isReady: boolean;
+    /**
+     * 是否已经请求听牌
+     */
+    public static isReqTinging: boolean;
+    /**
+     * 胡牌信息
+     */
+    public static huCardInfo: HuResultInfo;
+    /**
+     * 是否点击了听按钮
+     */
+    public static isClickTingBtn: boolean;
+    /**
+     *  一局买马信息
+     */
+    public static buyHorseInfo: BuyHorseinfo;
+    /**
+     * 是否请求碰
+     */
+    public static isReqPenging: boolean;
+    /**
+     * 是否请求杠
+     */
+    public static isReqGanging: boolean;
+    /**
+     * 是否请求胡牌
+     */
+    public static isReqHuIng: boolean;
+    /**
+     * 是否请求过牌
+     */
+    public static isReqGuoing: boolean;
+    /**
+     * 是否请求过继续
+     */
+    public static isReqGoOning: boolean;
+    /**
+     * 一局的算信息
+     */
+    public static onceResultInfoList: Array<OnceResultInfo>;
+    /**
+     * 游戏结束结算项
+     */
+    public static gameOverList: Array<GameOverInfo>;
+    /**
+     * 买马的序数牌索引
+     */
+    public static horseList: Array<number> = [0, 4, 8];
+    /**
+     * 积分变化列表
+     */
+    public static scroeInfoList: Array<ScoreChangeInfo>;
+    /**
+     * 是否需要抛送资源初始化完成事件 
+     */
+    public static isDispatchInit: boolean;
+    /**
+     * 上一次积分变化
+     */
+    public static lastScoreChangeType: ScoreChangeType;
+    /**
+     * 上一局的庄家位置
+     */
+    public static lastMastPos: number;
+
+    public static clear()
+    {
+        GoCardProcessManager.lastMastPos = undefined;
+
+        ArrayUtil.Clear(GoCardProcessManager.scroeInfoList);
+        UIManager.closePanel(UIModuleName.GameScenePanel);
+        UIManager.closePanel(UIModuleName.OnceResultPanel);
+    }
+    public static initialize()
+    {
+        GoCardProcessManager.clearReqFlag();
+        GoCardProcessManager.huCardInfo = new HuResultInfo();
+        GoCardProcessManager.buyHorseInfo = new BuyHorseinfo();
+        GoCardProcessManager.onceResultInfoList = new Array<OnceResultInfo>();
+        GoCardProcessManager.gameOverList = new Array<GameOverInfo>();
+        GoCardProcessManager.scroeInfoList = new Array<ScoreChangeInfo>();
+        GoCardProcessManager.onEnable();
+    }
+    /**
+     * 重新登录
+     */
+    public static reLogin()
+    {
+        GoCardProcessManager.isDispatchInit = false;
+        GoCardProcessManager.isClickTingBtn = false;
+        GoCardProcessManager.isReady = false;
+        GoCardProcessManager.isInActionSelect = false;
+        GoCardProcessManager.isReqPutOutCarding = false;
+
+        GoCardProcessManager.huCardInfo = new HuResultInfo();
+        GoCardProcessManager.buyHorseInfo = new BuyHorseinfo();
+        ArrayUtil.Clear(GoCardProcessManager.scroeInfoList);
+        ArrayUtil.Clear(GoCardProcessManager.gameOverList);
+        ArrayUtil.Clear(GoCardProcessManager.onceResultInfoList);
+
+        GoCardProcessManager.clearReqFlag();
+    }
+    /**
+     * 清除请求标记
+     */
+    public static clearReqFlag()
+    {
+        GoCardProcessManager.isReqPutOutCarding = false;
+        GoCardProcessManager.isReqTinging = false;
+        GoCardProcessManager.isReqPenging = false;
+        GoCardProcessManager.isReqGanging = false;
+        GoCardProcessManager.isReqHuIng = false;
+        GoCardProcessManager.isReqGuoing = false;
+        GoCardProcessManager.isReqGoOning = false;
+    }
+    public static onEnable()
+    {
+        SocketManager.AddCommandListener(Command.Rec_PushTouziResult_2004, GoCardProcessManager.onTouZiResult, this);
+        SocketManager.AddCommandListener(Command.Rec_PushShouPai_2005, GoCardProcessManager.onShouPaiResult, this);
+        SocketManager.AddCommandListener(Command.Rec_PushMoPaiResult_2016, GoCardProcessManager.onSelfMoPaiResult_2016, this);
+        SocketManager.AddCommandListener(Command.Rec_PushMoPai_2006, GoCardProcessManager.onMoPaiResult_2006, this);
+        SocketManager.AddCommandListener(Command.Rec_PushOutCard_2007, GoCardProcessManager.onOutCardResult, this);
+        SocketManager.AddCommandListener(Command.Rec_PushGangCard_2017, GoCardProcessManager.onGangCardResult, this);
+        SocketManager.AddCommandListener(Command.Rec_PushPengCard_2018, GoCardProcessManager.onPengCardResult, this);
+        SocketManager.AddCommandListener(Command.Rec_Push_2010, GoCardProcessManager.onTingCardResult, this);
+        SocketManager.AddCommandListener(Command.Rec_PushHuCard_2019, GoCardProcessManager.onHuCardResult, this);
+        SocketManager.AddCommandListener(Command.Rec_PushOnceResult_2011, GoCardProcessManager.onOnceResult, this);
+        SocketManager.AddCommandListener(Command.Rec_PushGameOver_2020, GoCardProcessManager.onGameOverResult, this);
+        SocketManager.AddCommandListener(Command.Rec_PushBuyHorse_2021, GoCardProcessManager.onBuyHorseResult, this);
+        SocketManager.AddCommandListener(Command.Rec_PushPlayReady_2022, GoCardProcessManager.onPlayerReadyResult, this);
+        SocketManager.AddCommandListener(Command.Rec_PushScore_2008, GoCardProcessManager.onPushScoreResult, this);
+        SocketManager.AddCommandListener(Command.Rec_PushPlayerHosted_2024, GoCardProcessManager.onPushPlayerHostedResult, this);
+        SocketManager.AddCommandListener(Command.Rec_PushSec_2025, GoCardProcessManager.onPushSecResult, this);
+        SocketManager.AddCommandListener(Command.Rec_Push_Offline_2026, GoCardProcessManager.onPushOfflineResult, this);
+    }
+    public static onDisable()
+    {
+        SocketManager.RemoveCommandListener(Command.Rec_PushTouziResult_2004, GoCardProcessManager.onTouZiResult);
+        SocketManager.RemoveCommandListener(Command.Rec_PushShouPai_2005, GoCardProcessManager.onShouPaiResult);
+        SocketManager.RemoveCommandListener(Command.Rec_PushMoPaiResult_2016, GoCardProcessManager.onSelfMoPaiResult_2016);
+        SocketManager.RemoveCommandListener(Command.Rec_PushMoPai_2006, GoCardProcessManager.onMoPaiResult_2006);
+        SocketManager.RemoveCommandListener(Command.Rec_PushOutCard_2007, GoCardProcessManager.onOutCardResult);
+        SocketManager.RemoveCommandListener(Command.Rec_PushGangCard_2017, GoCardProcessManager.onGangCardResult);
+        SocketManager.RemoveCommandListener(Command.Rec_PushPengCard_2018, GoCardProcessManager.onPengCardResult);
+        SocketManager.RemoveCommandListener(Command.Rec_Push_2010, GoCardProcessManager.onTingCardResult);
+        SocketManager.RemoveCommandListener(Command.Rec_PushHuCard_2019, GoCardProcessManager.onHuCardResult);
+        SocketManager.RemoveCommandListener(Command.Rec_PushOnceResult_2011, GoCardProcessManager.onOnceResult);
+        SocketManager.RemoveCommandListener(Command.Rec_PushGameOver_2020, GoCardProcessManager.onGameOverResult);
+        SocketManager.RemoveCommandListener(Command.Rec_PushBuyHorse_2021, GoCardProcessManager.onBuyHorseResult);
+        SocketManager.RemoveCommandListener(Command.Rec_PushPlayReady_2022, GoCardProcessManager.onPlayerReadyResult);
+        SocketManager.RemoveCommandListener(Command.Rec_PushScore_2008, GoCardProcessManager.onPushScoreResult);
+        SocketManager.RemoveCommandListener(Command.Rec_PushPlayerHosted_2024, GoCardProcessManager.onPushPlayerHostedResult);
+        SocketManager.RemoveCommandListener(Command.Rec_PushSec_2025, GoCardProcessManager.onPushSecResult);
+        SocketManager.RemoveCommandListener(Command.Rec_Push_Offline_2026, GoCardProcessManager.onPushOfflineResult);
+    }
+    public static ready()
+    {
+        UIManager.removeEventListener(UIModuleName.GameScenePanel, UIModuleEvent.COMPLETE, GoCardProcessManager.ready);
+        if (RoomManager.roomInfo.quitTime != undefined && RoomManager.mineInfo)
+        {
+            if (RoomManager.mineInfo.quit == RoomQuitState.ReqQuit)
+            {
+                UIManager.showPanel(UIModuleName.RoomDisbandInfoPanel);
+            }
+            else 
+            {
+                UIManager.showPanel(UIModuleName.RoomDisbandOperPanel);
+            }
+        }
+        /**
+         * 当自己处于非准备状态下
+         */
+        if (RoomManager.mineInfo && RoomManager.mineInfo.isReady)
+        {
+            GoCardProcessManager.dispatchAlreadyInRoomEvent();
+        }
+        else
+        {
+            if (RoomManager.roomInfo && RoomManager.roomInfo.roundNum > 0)
+            {
+                SceneManager.gameScene.gameProcesser.gameScenePanel.hideActionBtn();
+                UIManager.showPanel(UIModuleName.OnceResultPanel); //请求继续游戏
+            }
+            else
+            {
+                GoCardProcessManager.reqGoOnGame();
+            }
+        }
+        if (RoomManager.roomInfo && RoomManager.roomInfo.roundNum > 0)
+        {
+            SceneManager.gameScene.gameProcesser.gameScenePanel.showWaitGroup(false);
+        }
+    }
+    public static reqGoOnGame()
+    {
+        if (!GoCardProcessManager.isReqGoOning)
+        {
+            GoCardProcessManager.isReqGoOning = true;
+            let callBack: Function = function ()
+            {
+                GoCardProcessManager.isReqGoOning = false;
+                RoomManager.roomInfo.head = 0;
+                SocketManager.RemoveCommandListener(Command.Req_GoOnGame_3015, callBack);
+                GoCardProcessManager.dispatchGoOnGameEvent();
+            };
+            SocketManager.AddCommandListener(Command.Req_GoOnGame_3015, callBack);
+            SocketManager.AddErrorListener(Command.Req_GoOnGame_3015, GoCardProcessManager.goOnErrorResult);
+            SocketManager.Send(Command.Req_GoOnGame_3015);
+        }
+        // GoCardProcessManager.onTouZiResult(null);
+    }
+    private static goOnErrorResult(result: SpRpcResult)
+    {
+        GoCardProcessManager.isReqGoOning = false;
+        SocketManager.RemoveErrorListener(Command.Req_GoOnGame_3015, GoCardProcessManager.goOnErrorResult);
+    }
+    private static onTouZiResult(result: SpRpcResult)
+    {
+        if (result.data)
+        {
+            RoomManager.roomInfo.num1 = result.data["num1"];
+            RoomManager.roomInfo.num2 = result.data["num2"];
+            GoCardProcessManager.state = GameSceneState.RunFapai;
+            GoCardProcessManager.dispatchTouziResultEvent();
+        }
+        // RoomManager.roomInfo.num1 = 6;
+        // RoomManager.roomInfo.num2 = 5;
+    }
+    private static onShouPaiResult(result: SpRpcResult)
+    {
+        if (RoomManager.roomInfo && result.data["card"])
+        {
+            RoomManager.roomInfo.shouPai = result.data["card"] as Array<any>;
+            if (RoomManager.roomInfo.shouPai)
+            {
+                let len: number = RoomManager.roomInfo.shouPai.length;
+                if (len > 1)
+                {
+                    let index: number = MathUtil.getRandom(0, len - 2)
+                    ArrayUtil.moveSomeElementsToTheEnd(RoomManager.roomInfo.shouPai, 0, index);
+                }
+                if (RoomManager.mineInfo)
+                {
+                    RoomManager.mineInfo.shouPaiNum = len;
+                }
+            }
+            for (let pInfo of RoomManager.roomInfo.playerList)
+            {
+                if (pInfo.isMaster)
+                {
+                    pInfo.shouPaiNum = GameSetting.ZhuangJiaShouPaiNum; //发牌初始化手牌
+                }
+                else
+                {
+                    pInfo.shouPaiNum = GameSetting.MaxShouPaiNum; //发牌初始化手牌
+                }
+            }
+            GoCardProcessManager.dispatchShouPaiResultEvent();
+        }
+    }
+    private static onSelfMoPaiResult_2016(result: SpRpcResult)
+    {
+        if (RoomManager.roomInfo && result.data["card"])
+        {
+            let card: number = result.data["card"];
+            RoomManager.roomInfo.myLastCard = card;
+            RoomManager.roomInfo.shouPai.push(card);
+            if (RoomManager.mineInfo)
+            {
+                RoomManager.roomInfo.pos = RoomManager.mineInfo.pos;
+            }
+            GoCardProcessManager.isClickTingBtn = false;
+            GoCardProcessManager.dispatchMoPaiResultEvent_2016(card);
+        }
+    }
+    private static onMoPaiResult_2006(result: SpRpcResult)
+    {
+        if (RoomManager.roomInfo && result.data["roleId"])
+        {
+            let roleId: number = result.data["roleId"];
+            let pInfo: PlayerInfo = RoomManager.getPlayerInfoByRoleId(roleId);
+            if (pInfo)
+            {
+                RoomManager.roomInfo.pos = pInfo.pos;
+                let posType: PosType = RoomManager.getPosTypeForMine(pInfo.pos);
+                if (roleId == UserManager.userInfo.roleId)
+                {
+                    RoomManager.roomInfo.play = RoomState.PUT; //发牌 
+                }
+                else
+                {
+                    RoomManager.roomInfo.play = RoomState.WAIT; //发牌是别人则wait
+                }
+                GoCardProcessManager.dispatchMoPaiEvent_2006(posType);
+            }
+        }
+    }
+    private static onOutCardResult(result: SpRpcResult)
+    {
+        if (result.data && result.data["roleId"] && result.data["card"] && RoomManager.roomInfo)
+        {
+            let roleId: number = result.data["roleId"];
+            let card: number = result.data["card"];
+            if (roleId == UserManager.userInfo.roleId)
+            {
+                ArrayUtil.RemoveItem(card, RoomManager.roomInfo.shouPai);
+            }
+            RoomManager.roomInfo.play = RoomState.WAIT; //出牌状态是等待
+            let pInfo: PlayerInfo = RoomManager.getPlayerInfoByRoleId(roleId);
+            if (pInfo)
+            {
+                GoCardProcessManager.dispatchOutCardEvent(pInfo.pos, card);
+                SoundManager.playEffect(pInfo.sex, MusicAction.pai, card);
+            }
+        }
+    }
+    /**
+     * 推送杠结果
+     */
+    private static onGangCardResult(result: SpRpcResult)
+    {
+        if (result.data)
+        {
+            let card: number = result.data["card"];
+            let roleId: number = result.data["roleId"];
+            let type: number = result.data["action"];
+            let pos: number = result.data["pos"];
+            let pInfo: PlayerInfo = RoomManager.getPlayerInfoByRoleId(roleId);
+            if (pInfo)
+            {
+                RoomManager.roomInfo.pos = pInfo.pos;
+                SoundManager.playEffect(pInfo.sex, MusicAction.gang);
+            }
+            pInfo = RoomManager.getPlayerInfoByPos(pos);
+            if (pInfo)
+            {
+                ArrayUtil.RemoveItem(card, pInfo.outCard);
+            }
+            RoomManager.roomInfo.play = RoomState.WAIT; //杠牌结果房间状态等待
+            GoCardProcessManager.pengGangToGroupOper(roleId, pos, card, type);
+            GoCardProcessManager.dispatchPushGangEvent(card, roleId, pos, type);
+            // if (type == ActionType.Gang && pInfo.pos == RoomManager.mineInfo.pos && GoCardProcessManager.bugangCard != -1) //加杠的话，则抛送摸牌结果事件
+            // {
+            //     if (RoomManager.roomInfo)
+            //     {
+            //         GoCardProcessManager.dispatchMoPaiResultEvent_2016(RoomManager.roomInfo.myLastCard);
+            //     }
+            //     GoCardProcessManager.bugangCard = -1;
+            //     return; //加杠处理
+            // }
+        }
+    }
+    /**
+     * 推送碰牌结果
+     */
+    private static onPengCardResult(result: SpRpcResult)
+    {
+        if (result.data)
+        {
+            let card: number = result.data["card"];
+            let roleId: number = result.data["roleId"];
+            let pos: number = result.data["pos"];
+            let pInfo: PlayerInfo = RoomManager.getPlayerInfoByRoleId(roleId);
+            if (pInfo)
+            {
+                RoomManager.roomInfo.pos = pInfo.pos;
+                SoundManager.playEffect(pInfo.sex, MusicAction.peng);
+            }
+            pInfo = RoomManager.getPlayerInfoByPos(pos);
+            if (pInfo)
+            {
+                ArrayUtil.RemoveItem(card, pInfo.outCard);
+            }
+            if (roleId == UserManager.userInfo.roleId) //碰牌的是自己改变状态
+            {
+                RoomManager.roomInfo.play = RoomState.PUT;
+            }
+            else
+            {
+                RoomManager.roomInfo.play = RoomState.WAIT;
+            }
+            GoCardProcessManager.pengGangToGroupOper(roleId, pos, card, ActionType.Peng);
+            GoCardProcessManager.dispatchPushPengEvent(card, roleId, pos);
+        }
+    }
+    /**
+     * 推送听牌结果
+     */
+    private static onTingCardResult(result: SpRpcResult)
+    {
+        if (result.data)
+        {
+            let roleId: number = result.data["roleId"];
+            let isTing: boolean = result.data["isTing"];
+            let pInfo: PlayerInfo = RoomManager.getPlayerInfoByRoleId(roleId);
+            if (pInfo)
+            {
+                pInfo.isTing = isTing;
+                SoundManager.playEffect(pInfo.sex, MusicAction.ting);
+            }
+            GoCardProcessManager.dispatchPushTingEvent(roleId, isTing);
+        }
+    }
+    /**
+     * 胡牌推送
+     */
+    private static onHuCardResult(result: SpRpcResult)
+    {
+        GoCardProcessManager.huCardInfo.copyValueFrom(result.data);
+        let pInfo: PlayerInfo = RoomManager.getPlayerInfoByRoleId(GoCardProcessManager.huCardInfo.roleId);
+        if (pInfo)
+        {
+            RoomManager.roomInfo.pos = pInfo.pos;
+            SoundManager.playEffect(pInfo.sex, MusicAction.hu);
+        }
+        GoCardProcessManager.state = GameSceneState.OneRoundOver;
+        RoomManager.roomInfo.play = RoomState.HU;
+        GoCardProcessManager.dispatchPushHuEvent();
+        RoomManager.nextRoundOper();
+    }
+    /**
+     * 推送一局胡牌结果
+     */
+    private static onOnceResult(result: SpRpcResult)
+    {
+        if (result.data)
+        {
+            ArrayUtil.Clear(GoCardProcessManager.onceResultInfoList);
+            let arr: Array<any> = result.data["resultList"];
+            if (RoomManager.roomInfo)
+            {
+                for (let lastPInfo of RoomManager.roomInfo.playerList)
+                {
+                    if (lastPInfo.isMaster) 
+                    {
+                        GoCardProcessManager.lastMastPos = lastPInfo.pos; //记录上次的庄家位置
+						break;
+                    }
+                }
+            }
+            if (arr)
+            {
+                let onceResultInfo: OnceResultInfo;
+                let pInfo: PlayerInfo;
+                RoomManager.clearMaster();
+                for (let info of arr)
+                {
+                    onceResultInfo = new OnceResultInfo();
+                    onceResultInfo.copyValueFrom(info);
+                    if (onceResultInfo.shouPai)
+                    {
+                        onceResultInfo.shouPai.reverse();
+                    }
+                    if (onceResultInfo.groupList)
+                    {
+                        onceResultInfo.groupList.sort(SortUtil.sortGroupCard);
+                    }
+                    pInfo = RoomManager.getPlayerInfoByRoleId(onceResultInfo.roleId);
+                    if (pInfo) //庄家
+                    {
+                        pInfo.isMaster = onceResultInfo.isMaster;
+                    }
+                    GoCardProcessManager.onceResultInfoList.push(onceResultInfo);
+                }
+            }
+            if (RoomManager.roomInfo) //设置上一局的结束时间
+            {
+                RoomManager.roomInfo.roundEndTime = TimeManager.GetServerUtcTimestamp();
+                for (let i: number = 0; i < RoomManager.roomInfo.playerList.length; i++) //胡牌之后将准备状态设置为false
+                {
+                    RoomManager.roomInfo.playerList[i].isReady = false;
+                }
+            }
+            RoomManager.roomInfo.play = RoomState.NIL;
+            GoCardProcessManager.dispatchOnceReultEvent();
+        }
+    }
+    /**
+     * 推送买马结果
+     */
+    private static onBuyHorseResult(result: SpRpcResult)
+    {
+        if (result.data)
+        {
+            GoCardProcessManager.buyHorseInfo.copyValueFrom(result.data);
+            console.log(" GoCardProcessManager.buyHorseInfo---card1", GoCardProcessManager.buyHorseInfo.card1 + "card2" + GoCardProcessManager.buyHorseInfo.card2);
+            GoCardProcessManager.dispatchBuyHorseEvent();
+        }
+    }
+    /**
+     * 推送玩家准备
+     */
+    private static onPlayerReadyResult(result: SpRpcResult)
+    {
+        if (result.data)
+        {
+            let roleId: number = result.data["roleId"];
+            let pInfo: PlayerInfo = RoomManager.getPlayerInfoByRoleId(roleId);
+            if (pInfo)
+            {
+                pInfo.isReady = true;
+                pInfo.hosted = false;
+            }
+            GoCardProcessManager.dispatchPushPlayerReadyEvent();
+        }
+    }
+    private static onPushScoreResult(result: SpRpcResult)
+    {
+        if (result.data)
+        {
+            let pInfo: PlayerInfo;
+            let scoreChange: ScoreChangeInfo;
+            let isFind: boolean;
+            for (let info of result.data["scoreList"])
+            {
+                isFind = false;
+                for (let existInfo of GoCardProcessManager.scroeInfoList)
+                {
+                    if (existInfo.roleId == info.roleId)
+                    {
+                        isFind = true;
+                        existInfo.offsetScore = info.score - existInfo.score;
+                        existInfo.score = info.score;
+                        pInfo = RoomManager.getPlayerInfoByRoleId(info.roleId);
+                        if (pInfo)
+                        {
+                            pInfo.score = info.score;
+                        }
+                        break;
+                    }
+                }
+                if (!isFind)
+                {
+                    pInfo = RoomManager.getPlayerInfoByRoleId(info.roleId);
+                    if (pInfo) //过滤积分变化为0的情况
+                    {
+                        scoreChange = new ScoreChangeInfo();
+                        scoreChange.copyValueFrom(info);
+                        scoreChange.offsetScore = scoreChange.score - pInfo.score;
+                        pInfo.score = scoreChange.score;
+                        GoCardProcessManager.scroeInfoList.push(scoreChange);
+                    }
+                }
+            }
+            GoCardProcessManager.lastScoreChangeType = result.data["type"];
+            GoCardProcessManager.dispatchScoreChangeEvent();
+        }
+    }
+    /**
+     * 推送玩家托管状态
+     */
+    private static onPushPlayerHostedResult(result: SpRpcResult)
+    {
+        if (result.data)
+        {
+            let roleId: number = result.data["roleId"];
+            let hosted: boolean = result.data["hosted"];
+            let playerInfo: PlayerInfo = RoomManager.getPlayerInfoByRoleId(roleId);
+            if (playerInfo)
+            {
+                playerInfo.hosted = hosted;
+            }
+            GoCardProcessManager.dispatchPlayerHostedEvent(roleId, hosted);
+        }
+    }
+    private static onPushSecResult(result: SpRpcResult)
+    {
+        if (result.data)
+        {
+            let sec: number = result.data["sec"] - 1;
+            // GoCardProcessManager.dispatchSecChangeEvent(sec);
+        }
+    }
+    /**
+     * 推送玩家离线上限
+     */
+    private static onPushOfflineResult(result: SpRpcResult)
+    {
+        if (result.data)
+        {
+            let roleId: number = result.data["roleId"];
+            let offline: boolean = result.data["offline"];
+            let pInfo: PlayerInfo = RoomManager.getPlayerInfoByRoleId(roleId);
+            if (pInfo)
+            {
+                pInfo.offline = offline;
+            }
+            GoCardProcessManager.dispatchPlayerOfflineEvent();
+        }
+    }
+    /**
+     * 游戏结束
+     */
+    private static onGameOverResult(result: SpRpcResult)
+    {
+        ArrayUtil.Clear(GoCardProcessManager.gameOverList)
+        if (result.data)
+        {
+            let gameOverInfo: GameOverInfo;
+            for (let data of result.data["infoList"])
+            {
+                gameOverInfo = new GameOverInfo();
+                gameOverInfo.copyValueFrom(data);
+                GoCardProcessManager.gameOverList.push(gameOverInfo);
+            }
+            GoCardProcessManager.gameOverList.sort(GoCardProcessManager.sortOverList);
+            if (GoCardProcessManager.gameOverList.length > 0)
+            {
+                GoCardProcessManager.gameOverList[0].isMaxWin = true;
+            }
+            GoCardProcessManager.dispatchOnGameOverEvent();
+        }
+    }
+	/**
+	 * 请求出牌
+	 */
+    public static reqPutOutCard(clickCard: OtherShouCard, card: number)
+    {
+        if (!GoCardProcessManager.isReqPutOutCarding)
+        {
+            GoCardProcessManager.curOutCard = clickCard;
+            GoCardProcessManager.isReqPutOutCarding = true;
+            let callBack: Function = function (result: SpRpcResult)
+            {
+                if (GoCardProcessManager.state == GameSceneState.Processing && !RoomManager.mineInfo.isTing &&
+                    GoCardProcessManager.isClickTingBtn && RoomManager.mineInfo) //超时出牌，不发送听牌的请求
+                {
+                    GoCardProcessManager.reqTingCard();
+                }
+                GoCardProcessManager.isReqPutOutCarding = false;
+                SocketManager.RemoveCommandListener(Command.Req_PutOutCard_3008, callBack);
+            }
+            SocketManager.AddCommandListener(Command.Req_PutOutCard_3008, callBack);
+            SocketManager.AddErrorListener(Command.Req_PutOutCard_3008, GoCardProcessManager.putOutErrorResult);
+            SocketManager.ImplSend(Command.Req_PutOutCard_3008, { "card": card });
+        }
+    }
+    public static putOutErrorResult(result: SpRpcResult)
+    {
+        GoCardProcessManager.isReqPutOutCarding = false;
+        SocketManager.RemoveErrorListener(Command.Req_PutOutCard_3008, GoCardProcessManager.putOutErrorResult);
+    }
+    /**
+     * 请求碰牌
+     */
+    public static reqPengCard()
+    {
+        if (!GoCardProcessManager.isReqPenging)
+        {
+            GoCardProcessManager.isReqPenging = true;
+            let callBack: Function = function (result: SpRpcResult)
+            {
+                GoCardProcessManager.isReqPenging = false;
+                GoCardProcessManager.dispatchPengCardEvnt();
+                SocketManager.RemoveCommandListener(Command.Req_PengCard_3009, callBack);
+            }
+            SocketManager.AddCommandListener(Command.Req_PengCard_3009, callBack);
+            SocketManager.AddErrorListener(Command.Req_PengCard_3009, GoCardProcessManager.pengErrorResult);
+            SocketManager.ImplSend(Command.Req_PengCard_3009);
+        }
+    }
+    private static pengErrorResult(result: SpRpcResult)
+    {
+        GoCardProcessManager.isReqPenging = false;
+        SocketManager.RemoveErrorListener(Command.Req_PengCard_3009, GoCardProcessManager.pengErrorResult);
+    }
+    /**
+     * 请求杠牌
+     */
+    public static reqGangCard(card?: number)
+    {
+        if (!GoCardProcessManager.isReqGanging)
+        {
+            GoCardProcessManager.isReqGanging = true;
+            let callBack: Function = function (result: SpRpcResult)
+            {
+                GoCardProcessManager.isReqGanging = false;
+                GoCardProcessManager.dispatchGangCardEvent();
+                SocketManager.RemoveCommandListener(Command.Req_GangCard_3010, callBack);
+            }
+            SocketManager.AddCommandListener(Command.Req_GangCard_3010, callBack);
+            SocketManager.AddErrorListener(Command.Req_GangCard_3010, GoCardProcessManager.gangErrorResult);
+            if (!card)
+            {
+                card = this.tryGetSelfGang();
+            }
+            if (card != undefined && card != 0 && card != -1)
+            {
+                SocketManager.ImplSend(Command.Req_GangCard_3010, { "card": card });
+            }
+            else
+            {
+                SocketManager.ImplSend(Command.Req_GangCard_3010);
+            }
+        }
+    }
+    private static gangErrorResult(result: SpRpcResult)
+    {
+        GoCardProcessManager.isReqGanging = false;
+        SocketManager.RemoveErrorListener(Command.Req_GangCard_3010, GoCardProcessManager.gangErrorResult);
+    }
+    /**
+     * 请求胡牌
+     */
+    public static reqHuCard()
+    {
+        if (!GoCardProcessManager.isReqHuIng)
+        {
+            GoCardProcessManager.isReqHuIng = true;
+            let callBack: Function = function (result: SpRpcResult)
+            {
+                GoCardProcessManager.isReqHuIng = false;
+                GoCardProcessManager.dispatchHuCardEvent();
+                SocketManager.RemoveCommandListener(Command.Req_HuCard_3011, callBack);
+            }
+            SocketManager.AddCommandListener(Command.Req_HuCard_3011, callBack);
+            SocketManager.AddErrorListener(Command.Req_HuCard_3011, GoCardProcessManager.huErrorResult);
+            SocketManager.Send(Command.Req_HuCard_3011);
+        }
+    }
+    private static huErrorResult(result: SpRpcResult)
+    {
+        GoCardProcessManager.isReqHuIng = false;
+        SocketManager.RemoveErrorListener(Command.Req_HuCard_3011, GoCardProcessManager.huErrorResult);
+    }
+    /**
+     * 请求听牌
+     */
+    private static reqTingCard()
+    {
+        if (!GoCardProcessManager.isReqTinging)
+        {
+            GoCardProcessManager.isReqTinging = true;
+            let callBack: Function = function (result: SpRpcResult)
+            {
+                RoomManager.mineInfo.isTing = true;
+                GoCardProcessManager.isReqTinging = false;
+                GoCardProcessManager.dispatchTingCardEvent();
+                SocketManager.RemoveCommandListener(Command.Req_TingCard_3012, callBack);
+            }
+            SocketManager.AddCommandListener(Command.Req_TingCard_3012, callBack);
+            SocketManager.AddErrorListener(Command.Req_TingCard_3012, GoCardProcessManager.tingErrorResult);
+            SocketManager.Send(Command.Req_TingCard_3012);
+        }
+    }
+    private static tingErrorResult(result: SpRpcResult)
+    {
+        GoCardProcessManager.isReqTinging = false;
+        SocketManager.RemoveErrorListener(Command.Req_TingCard_3012, GoCardProcessManager.tingErrorResult);
+    }
+    /**
+     * 请求过牌
+     */
+    public static reqPass()
+    {
+        if (!GoCardProcessManager.isReqGuoing)
+        {
+            GoCardProcessManager.isReqGuoing = true;
+            let callBack: Function = function (result: SpRpcResult)
+            {
+                GoCardProcessManager.isReqGuoing = false;
+                SocketManager.RemoveCommandListener(Command.Req_Pass_3020, callBack);
+                GoCardProcessManager.dispatchPassEvent();
+            }
+            SocketManager.AddCommandListener(Command.Req_Pass_3020, callBack);
+            SocketManager.AddErrorListener(Command.Req_Pass_3020, GoCardProcessManager.guoErrorResult);
+            SocketManager.Send(Command.Req_Pass_3020);
+        }
+    }
+    private static guoErrorResult(result: SpRpcResult)
+    {
+        GoCardProcessManager.isReqGuoing = false;
+        SocketManager.RemoveErrorListener(Command.Req_Pass_3020, GoCardProcessManager.guoErrorResult);
+    }
+    /**
+     * 请求买马
+     */
+    public static reqBuyHorse()
+    {
+        // SocketManager.AddCommandListener(Command.Req_BuyHorse_3013, GoCardProcessManager.buyHorseResult);
+        SocketManager.Send(Command.Req_BuyHorse_3013);
+    }
+    /**
+     * 请求取消托管
+     */
+    public static reqCancelHosted()
+    {
+        SocketManager.AddCommandListener(Command.Req_Hosted_3022, GoCardProcessManager.hostedResult);
+        SocketManager.Send(Command.Req_Hosted_3022);
+    }
+    private static hostedResult(result: SpRpcResult)
+    {
+        SocketManager.RemoveCommandListener(Command.Req_Hosted_3022, GoCardProcessManager.hostedResult);
+    }
+    // private static buyHorseResult(result: SpRpcResult)
+    // {
+    //     if (result.data)
+    //     {
+    //         GoCardProcessManager.buyHorseInfo.copyValueFrom(result.data);
+    //         GoCardProcessManager.dispatchBuyHorseEvent();
+    //     }
+    // }
+    /**
+     * 检测是否可以暗杠或补杠
+     */
+    public static tryGetSelfGang(): number
+    {
+        if (RoomManager.roomInfo && RoomManager.roomInfo.shouPai && RoomManager.mineInfo && RoomManager.isSelfAction)
+        {
+            let num: number;
+            for (let card of RoomManager.roomInfo.shouPai)
+            {
+                num = GoCardProcessManager.getCardNum(card);
+                if (num == 4) //手牌有4张 暗杠
+                {
+                    return card;
+                }
+                if (RoomManager.mineInfo.groupList)
+                {
+                    let gpCardInfo: GroupCardInfo = GoCardProcessManager.getGroupCardForMine(card);
+                    if (gpCardInfo && gpCardInfo.action == ActionType.Peng) //手里有碰牌
+                    {
+                        return card;
+                    }
+                }
+            }
+        }
+        return -1;
+    }
+    /**
+     * 获取牌的组信息 仅自己
+     */
+    public static getGroupCardForMine(card: number): GroupCardInfo
+    {
+        if (RoomManager.mineInfo)
+        {
+            return GoCardProcessManager.getGroupCard(RoomManager.mineInfo.pos, card);
+        }
+        return null;
+    }
+    /**
+    * 获取牌的组信息
+    */
+    public static getGroupCard(pos: number, card: number): GroupCardInfo
+    {
+        let pInfo: PlayerInfo = RoomManager.getPlayerInfoByPos(pos);
+        if (pInfo)
+        {
+            for (let groupCard of pInfo.groupList) //有碰牌和手牌一样的牌
+            {
+                if (groupCard.card == card)
+                {
+                    return groupCard
+                }
+            }
+        }
+        return null;
+    }
+    /**
+     * 获取手牌中的牌的数量
+     */
+    public static getCardNum(card: number): number
+    {
+        let count: number = 0;
+        if (RoomManager.roomInfo && RoomManager.roomInfo.shouPai)
+        {
+            for (let i: number = 0; i < RoomManager.roomInfo.shouPai.length; i++)
+            {
+                if (card == RoomManager.roomInfo.shouPai[i])
+                {
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+    /**
+     * 获取所有的卡牌数量
+     */
+    public static getAllCardNum(card: number)
+    {
+        let count: number = GoCardProcessManager.getCardNum(card);
+        if (RoomManager.mineInfo && RoomManager.mineInfo.groupList)
+        {
+            for (let gpInfo of RoomManager.mineInfo.groupList)
+            {
+                if (gpInfo.card == card)
+                {
+                    if (gpInfo.action == ActionType.Peng)
+                    {
+                        return count += 3;
+                    }
+                    if (gpInfo.action == ActionType.Gang || gpInfo.action == ActionType.AnGang || gpInfo.action == ActionType.BuGang)
+                    {
+                        return count += 4;
+                    }
+                }
+            }
+        }
+        return count;
+    }
+    /**
+	 * 获取听哪张牌的剩余张数
+	 */
+    public static getListenerCardNum(card: number): number
+    {
+        if (RoomManager.roomInfo && RoomManager.roomInfo.playerList)
+        {
+            let pInfo: PlayerInfo;
+            let initNum: number = GameSetting.OneTypeTotalNum;
+            for (let i: number = 0; i < RoomManager.roomInfo.playerList.length; i++)
+            {
+                pInfo = RoomManager.roomInfo.playerList[i];
+                if (pInfo.groupList)
+                {
+                    for (let groupCard of pInfo.groupList) //去除明杠牌
+                    {
+                        if (groupCard.card == card)
+                        {
+                            switch (groupCard.action)
+                            {
+                                case ActionType.AnGang:
+                                case ActionType.Gang:
+                                case ActionType.BuGang:
+                                    initNum -= 4;
+                                    break;
+                                case ActionType.Peng:
+                                    initNum -= 3;
+                                    break;
+                            }
+                        }
+                    }
+                }
+                if (pInfo.outCard) //去掉每家打出去的牌
+                {
+                    for (let outCard of pInfo.outCard)
+                    {
+                        if (outCard == card)
+                        {
+                            initNum -= 1;
+                        }
+                    }
+                }
+            }
+            if (RoomManager.roomInfo.shouPai) //去掉自己的手牌
+            {
+                for (let shouCard of RoomManager.roomInfo.shouPai)
+                {
+                    if (shouCard == card)
+                    {
+                        initNum -= 1;
+                    }
+                }
+            }
+            return initNum;
+        }
+        return 0;
+    }
+    private static pengGangToGroupOper(roleId: number, targetPos: number, card: number, action: number)
+    {
+        let pInfo: PlayerInfo = RoomManager.getPlayerInfoByRoleId(roleId);
+        if (pInfo && RoomManager.mineInfo)
+        {
+            if (!pInfo.groupList)
+            {
+                pInfo.groupList = new Array<GroupCardInfo>();
+            }
+            if (action == ActionType.BuGang)
+            {
+                let groupCardInfo: GroupCardInfo = GoCardProcessManager.getGroupCard(pInfo.pos, card);
+                if (groupCardInfo)
+                {
+                    groupCardInfo.action = ActionType.BuGang;
+                }
+            }
+            else
+            {
+                let groupCardInfo: GroupCardInfo = new GroupCardInfo();
+                groupCardInfo.action = action;
+                groupCardInfo.card = card;
+                groupCardInfo.index = pInfo.groupList.length;
+                groupCardInfo.pos = targetPos;
+                pInfo.groupList.push(groupCardInfo);
+            }
+            if (pInfo.pos == RoomManager.mineInfo.pos)
+            {
+                switch (action)
+                {
+                    case ActionType.AnGang:
+                        ArrayUtil.RemoveItem(card, RoomManager.roomInfo.shouPai, 4);
+                        break;
+                    case ActionType.Gang:
+                        ArrayUtil.RemoveItem(card, RoomManager.roomInfo.shouPai, 4);
+                        break;
+                    case ActionType.BuGang:
+                        ArrayUtil.RemoveItem(card, RoomManager.roomInfo.shouPai, 4);
+                        break;
+                    case ActionType.Peng:
+                        ArrayUtil.RemoveItem(card, RoomManager.roomInfo.shouPai, 2);
+                        break;
+                }
+                pInfo.shouPaiNum = RoomManager.roomInfo.shouPai.length;
+            }
+            else
+            {
+                switch (action)
+                {
+                    case ActionType.AnGang:
+                    case ActionType.Gang:
+                    case ActionType.Peng:
+                        pInfo.shouPaiNum -= 3;
+                        break;
+                    // case ActionType.BuGang: //补杠的手牌数量无需变化
+                    //     pInfo.shouPaiNum -= 1;
+                    //     break;
+                }
+            }
+
+        }
+    }
+    public static isProcessing(): boolean
+    {
+        return GoCardProcessManager.state == GameSceneState.Processing;
+    }
+    /**
+     * 结束列表排序
+     */
+    private static sortOverList(a: GameOverInfo, b: GameOverInfo)
+    {
+        if (a.totalScore > b.totalScore)
+        {
+            return -1;
+        }
+        if (a.totalScore < b.totalScore)
+        {
+            return 1;
+        }
+        return 0;
+    }
+    //-------------------------------------------
+    // event
+    //-------------------------------------------
+	/**
+	 * 骰子数量返回事件
+	 */
+    public static touziResultEa: ActionDispatcher = new ActionDispatcher();
+    private static dispatchTouziResultEvent()
+    {
+        GoCardProcessManager.touziResultEa.dispatch();
+    }
+	/**
+	 * 已经在房间中（断线重连）事件
+	 */
+    public static alreadyInRoomEa: ActionDispatcher = new ActionDispatcher();
+    private static dispatchAlreadyInRoomEvent()
+    {
+        GoCardProcessManager.alreadyInRoomEa.dispatch();
+    }
+	/**
+	 * 手牌推送事件
+	 */
+    public static shouPaiResultEa: ActionDispatcher = new ActionDispatcher();
+    private static dispatchShouPaiResultEvent()
+    {
+        GoCardProcessManager.shouPaiResultEa.dispatch();
+    }
+	/**
+	 * 摸牌推送事件 不含具体摸牌结果
+	 */
+    public static moPaiEa: ActionDispatcher = new ActionDispatcher();
+    private static dispatchMoPaiEvent_2006(roleId: number)
+    {
+        GoCardProcessManager.moPaiEa.dispatch(roleId);
+    }
+	/**
+	 * 本家摸牌推送事件
+	 */
+    public static moPaiResultEa: ActionDispatcher = new ActionDispatcher();
+    private static dispatchMoPaiResultEvent_2016(card: number)
+    {
+        GoCardProcessManager.moPaiResultEa.dispatch(card);
+    }
+	/**
+	 * 推送出牌事件
+	 */
+    public static outCardEa: ActionDispatcher = new ActionDispatcher();
+    private static dispatchOutCardEvent(posType: PosType, card: number)
+    {
+        GoCardProcessManager.outCardEa.dispatch([posType, card]);
+    }
+    /**
+     * 碰牌事件
+     */
+    public static pengCardEa: ActionDispatcher = new ActionDispatcher();
+    private static dispatchPengCardEvnt()
+    {
+        GoCardProcessManager.pengCardEa.dispatch();
+    }
+    /**
+     * 杠牌事件
+     */
+    public static gangPaiEa: ActionDispatcher = new ActionDispatcher();
+    private static dispatchGangCardEvent()
+    {
+        GoCardProcessManager.gangPaiEa.dispatch();
+    }
+    /**
+     * 胡牌事件
+     */
+    public static huPaiEa: ActionDispatcher = new ActionDispatcher();
+    private static dispatchHuCardEvent()
+    {
+        GoCardProcessManager.huPaiEa.dispatch();
+    }
+    /**
+     * 杠牌推送事件
+     */
+    public static pushGangEa: ActionDispatcher = new ActionDispatcher();
+    private static dispatchPushGangEvent(card: number, roleId: number, pos: number, type: number)
+    {
+        GoCardProcessManager.pushGangEa.dispatch([card, roleId, pos, type]);
+    }
+    /**
+     * 碰牌推送
+     */
+    public static pushPengEa: ActionDispatcher = new ActionDispatcher();
+    private static dispatchPushPengEvent(card: number, roleId: number, pos: number)
+    {
+        GoCardProcessManager.pushPengEa.dispatch([card, roleId, pos]);
+    }
+    /**
+     * 听牌事件
+     */
+    public static tingCardEa: ActionDispatcher = new ActionDispatcher();
+    private static dispatchTingCardEvent()
+    {
+        GoCardProcessManager.tingCardEa.dispatch();
+    }
+    /**
+     * 请求过事件
+     */
+    public static passEa: ActionDispatcher = new ActionDispatcher();
+    private static dispatchPassEvent()
+    {
+        GoCardProcessManager.passEa.dispatch();
+    }
+    /**
+     * 推送玩家听牌
+     */
+    public static pushTingEa: ActionDispatcher = new ActionDispatcher();
+    private static dispatchPushTingEvent(roleId: number, isTing: boolean)
+    {
+        GoCardProcessManager.pushTingEa.dispatch([roleId, isTing]);
+    }
+    /**
+     * 推送胡牌信息
+     */
+    public static pushHuCardEa: ActionDispatcher = new ActionDispatcher();
+    private static dispatchPushHuEvent()
+    {
+        GoCardProcessManager.pushHuCardEa.dispatch();
+    }
+    /**
+     * 买马结果
+     */
+    public static buyHorseEa: ActionDispatcher = new ActionDispatcher();
+    private static dispatchBuyHorseEvent()
+    {
+        GoCardProcessManager.buyHorseEa.dispatch();
+    }
+    /**
+     * 一局结算结果
+     */
+    public static onceResultEa: ActionDispatcher = new ActionDispatcher();
+    private static dispatchOnceReultEvent()
+    {
+        GoCardProcessManager.onceResultEa.dispatch();
+    }
+    /**
+     * 继续游戏
+     */
+    public static onGoOnGameEa: ActionDispatcher = new ActionDispatcher();
+    private static dispatchGoOnGameEvent()
+    {
+        GoCardProcessManager.onGoOnGameEa.dispatch();
+    }
+    /**
+     * 游戏结束
+     */
+    public static onGameOverEa: ActionDispatcher = new ActionDispatcher();
+    private static dispatchOnGameOverEvent()
+    {
+        GoCardProcessManager.onGameOverEa.dispatch();
+    }
+    /**
+     * 玩家准备
+     */
+    public static pushPlayerReadyEa: ActionDispatcher = new ActionDispatcher();
+    private static dispatchPushPlayerReadyEvent()
+    {
+        GoCardProcessManager.pushPlayerReadyEa.dispatch();
+    }
+    /**
+     * 积分变化
+     */
+    public static pushScoreChangeEa: ActionDispatcher = new ActionDispatcher();
+    private static dispatchScoreChangeEvent()
+    {
+        GoCardProcessManager.pushScoreChangeEa.dispatch();
+    }
+    /**
+     * 推送玩家托管状态变化
+     */
+    public static pushPlayerHostedEa: ActionDispatcher = new ActionDispatcher();
+    private static dispatchPlayerHostedEvent(roleId: number, hosted: boolean)
+    {
+        GoCardProcessManager.pushPlayerHostedEa.dispatch([roleId, hosted]);
+    }
+    /**
+     * 推送等待时间变化
+     */
+    public static pushSecChangeEa: ActionDispatcher = new ActionDispatcher();
+    private static dispatchSecChangeEvent(sec: number)
+    {
+        GoCardProcessManager.pushSecChangeEa.dispatch(sec);
+    }
+    /**
+     * 推送玩家离线上线
+     */
+    public static pushPlayerOfflineEa: ActionDispatcher = new ActionDispatcher();
+    private static dispatchPlayerOfflineEvent()
+    {
+        GoCardProcessManager.pushPlayerOfflineEa.dispatch();
+    }
+}
+/**
+ * 胡牌结算信息
+ */
+class HuResultInfo extends BaseServerValueInfo
+{
+    /**
+     * 胡牌的角色ID
+     */
+    public roleId: number;
+    /**
+     * 胡的牌
+     */
+    public card: number;
+    /**
+     * 胡牌类型
+     */
+    public huType: HuResultType;
+    /**
+     * 加杠胡，胡谁的位置
+     */
+    public boomPos: number;
+
+    public reset()
+    {
+        this.roleId = undefined;
+        this.card = undefined;
+    }
+}
+/**
+ * 买马信息
+ */
+class BuyHorseinfo extends BaseServerValueInfo
+{
+    /**
+     * 角色ID
+     */
+    public roleId: number;
+    /**
+     * 买马的第一张牌
+     */
+    public card1: number;
+    /**
+     * 买马的第二张牌
+     */
+    public card2: number;
+    public reset()
+    {
+        this.roleId = undefined;
+        this.card1 = undefined;
+        this.card2 = undefined;
+    }
+}
+/**
+ * 一局的结算结果
+ */
+class OnceResultInfo extends BaseServerValueInfo
+{
+    /**
+     * 角色id
+     */
+    public roleId: number;
+    /**
+     * 胡的类型0.未胡牌 1.自摸胡2.加杠胡
+     */
+    public huType: number;
+    /**
+     * 买马数量
+     */
+    public buyHorse: number;
+    /**
+     * 成牌列表
+     */
+    public groupList: Array<GroupCardInfo>;
+    /**
+     * 当局积分
+     */
+    public currScore: number;
+    /**
+     * 是否是庄家
+     */
+    public isMaster: boolean;
+    /**
+     * 是否是流局
+     */
+    public isLiuJu: boolean;
+    /**
+     * 手牌列表
+     */
+    public shouPai: Array<number>;
+    public reset()
+    {
+        this.roleId = undefined;
+        this.huType = undefined;
+        this.buyHorse = undefined;
+        this.groupList = undefined;
+        this.currScore = undefined;
+    }
+}
+/**
+ * 游戏结束项信息
+ */
+class GameOverInfo extends BaseServerValueInfo
+{
+    public playerInfo: PlayerInfo;
+    private _roleId: number;
+    public set roleId(value: number)
+    {
+        this._roleId = value;
+        this.playerInfo = RoomManager.getPlayerInfoByRoleId(value);
+    }
+    public get roleId(): number
+    {
+        return this._roleId;
+    }
+    private _score: Array<number>;
+
+    public set score(value: Array<number>)
+    {
+        this._score = value;
+        if (this._score)
+        {
+            if (!this.scoreInfoList)
+            {
+                this.scoreInfoList = new Array<OneRoundScoreInfo>();
+            }
+            ArrayUtil.Clear(this.scoreInfoList);
+            this.totalScore = 0;
+            let scoreInfo: OneRoundScoreInfo;
+            let s: number;
+            for (let i: number = 0; i < value.length; i++)
+            {
+                s = value[i];
+                scoreInfo = new OneRoundScoreInfo();
+                scoreInfo.round = i + 1;
+                scoreInfo.score = s;
+                this.scoreInfoList.push(scoreInfo);
+
+                this.totalScore += s;
+            }
+
+        }
+    }
+    public scoreInfoList: Array<OneRoundScoreInfo>;
+    public get score(): Array<number>
+    {
+        return this._score;
+    }
+
+    public totalScore: number;
+    /**
+     * 是否是大赢家
+     */
+    public isMaxWin: boolean;
+    public reset()
+    {
+        this.roleId = undefined;
+        this.score = undefined;
+        this.isMaxWin = undefined;
+    }
+}
+/**
+ * 一局的积分信息
+ */
+class OneRoundScoreInfo
+{
+    /**
+     * 第几局
+     */
+    public round: number;
+    /**
+     * 积分
+     */
+    public score: number;
+}
+/**
+ * 积分变化信息
+ */
+class ScoreChangeInfo extends BaseServerValueInfo
+{
+    public roleId: number;
+    public score: number;
+    public offsetScore: number;
+    public reset()
+    {
+        this.score = 0;
+        this.offsetScore = 0;
+    }
+}

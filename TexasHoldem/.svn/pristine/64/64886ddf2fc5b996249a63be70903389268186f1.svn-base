@@ -1,0 +1,43 @@
+/**
+ * 计算番数的定义
+ * */
+class FanCalcDefined extends BaseDefined
+{
+	private static readonly fanConfig: string = "fan";
+	private static _instance: FanCalcDefined;
+	public static GetInstance(): FanCalcDefined
+	{
+		if (FanCalcDefined._instance == null)
+		{
+			FanCalcDefined._instance = new FanCalcDefined();
+		}
+		if (DefinedManager.IsParsed(FanCalcDefined.fanConfig) == false)
+		{
+			FanCalcDefined._instance.initialize();
+		}
+		return FanCalcDefined._instance;
+	}
+	public fanCalcList: Array<FanCalcDefinition>;
+
+	public initialize()
+	{
+		let obj: Object = DefinedManager.GetText(FanCalcDefined.fanConfig);
+		FanCalcDefined.GetInstance().fanCalcList = ShortNameDefined.GetInstance().convertEnter(obj) as Array<FanCalcDefinition>;
+	}
+}
+/**
+ * 番数计算定义
+ * */
+class FanCalcDefinition implements IBaseDefintion
+{
+	/*id*/
+	public id: number;
+	/*番番名称*/
+	public name: string;
+	/*函数名*/
+	public funcName: string;
+	/*几番*/
+	public fan: number;
+	/*不计其他番数的ID*/
+	public exclude: Array<number>;
+}

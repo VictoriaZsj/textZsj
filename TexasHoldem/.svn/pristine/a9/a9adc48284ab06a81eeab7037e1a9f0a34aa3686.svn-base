@@ -1,0 +1,26 @@
+/**
+ * 游戏结束一局积分的结算信息项
+ */
+class OneRoundScoreItemRenderer extends BaseItemRenderer<OneRoundScoreInfo>
+{
+	public roundLabel: eui.Label;
+	public scoreLabel: eui.Group;
+	public constructor()
+	{
+		super();
+		this.skinName = UIRendererSkinName.OneRoundScoreItemRenderer;
+	}
+	protected createChildren()
+	{
+		this.dataChanged();
+	}
+	protected dataChanged(): void
+	{
+		super.dataChanged();
+		if (this.bindData && this.roundLabel)
+		{
+			this.roundLabel.text = "第" + this.bindData.round + "局";
+			UIUtil.ShowScoreImg(this.bindData.score, this.scoreLabel, 0.7, 0.7);
+		}
+	}
+}

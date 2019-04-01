@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="panelSkin6" width="700" height="40" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing"
+        xmlns:tween="egret.tween.*">
+	<e:Group id="tweenGroup">
+		<e:Image id="bgImg" width="700" height="40" x="0" y="0"  source="bg_page4_png" scale9Grid="10,10,126,126" locked="true"/>
+		<e:Scroller id="scroller" width="691" x="3" height="30" scrollPolicyV="off" scrollPolicyH="off"  y="5" anchorOffsetX="0"/>
+		<e:Group id="textGroup" x="3" width="695" y="5" anchorOffsetX="0">
+			<e:Label id="textLabel" size="24" height="30" verticalAlign="middle"/>
+		</e:Group>
+	</e:Group>
+</e:Skin>

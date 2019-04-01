@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="panelSkin18" width="1280" height="720" xmlns:ns1="*" xmlns:e="http://ns.egret.com/eui"
+        xmlns:w="http://ns.egret.com/wing">
+	<e:Group id="tweenGroup" horizontalCenter="-1" verticalCenter="-3" width="1280" height="720">
+		<e:Image width="1212" height="662" anchorOffsetY="0" anchorOffsetX="0"
+		         source="bg_page2_png" scale9Grid="44,39,67,89"  x="34" y="37"/>
+		<e:Image width="1162.7" height="487.98" anchorOffsetX="0" anchorOffsetY="0" y="115.7" scaleX="1" scaleY="1" scale9Grid="19,18,23,23" source="bg_page19_png" horizontalCenter="0.5"/>
+		<ns1:GameButton id="shareBtn" label="分享游戏" skinName="buttonSkin31" x="361.00000000000006" y="611"/>
+		<ns1:GameButton id="exitBtn" label="退出房间" skinName="buttonSkin32" x="723.4000000000002" y="611"/>
+		<e:DataGroup id="infoGroup" anchorOffsetX="0" width="1147.88" anchorOffsetY="0" height="461.91" y="126.7" horizontalCenter="0">
+		</e:DataGroup>
+		<e:Image horizontalCenter="0" verticalCenter="-313.5" source="bg_page5_png" />
+		<e:Image horizontalCenter="0.5" verticalCenter="-313.5" source="h_paijujieshu_png" />
+		<e:Label id="timeLabel" text="2017-5-27   16.22.10" x="56.34" y="66.11" fontFamily="SimHei"  width="300" size="28" textColor="0xea9f48"/>
+		<e:Label id="roomInfoLabel" text="房间号：225241局数16/16" x="849.66" y="67.44" fontFamily="SimHei"
+		         textAlign="right"  width="374.67" anchorOffsetX="0" size="28" textColor="0xea9f48"/>
+	</e:Group>
+</e:Skin>

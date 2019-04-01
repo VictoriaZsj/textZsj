@@ -1,0 +1,23 @@
+/**
+ * 函数调用工具
+ */
+class CallUtil
+{
+	/**
+	 * 调用函数
+	 */
+	public static runFunc(callBack:Function, thisObj:any)
+	{
+		if(callBack)
+		{
+			if(thisObj)
+			{
+				callBack.call(thisObj);
+			}
+			else
+			{
+				callBack();
+			}
+		}
+	}
+}

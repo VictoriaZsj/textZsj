@@ -1,0 +1,54 @@
+/**
+ * 选择登录方式面板
+ */
+class EnterLoginPanel extends BasePanel
+{
+	public weixinLoginBtn: eui.Button;
+	public guestBtn: eui.Button;
+	public intranetAccountBtn: eui.Button;
+	public constructor()
+	{
+		super();
+		this.skinName = UISkinName.EnterLoginPanel;
+	}
+	protected onAwake(event: eui.UIEvent)
+	{
+		super.onAwake(event);
+	}
+	public init(appendData: any)
+	{
+		super.init(appendData);
+	}
+	protected rendererStart(event: egret.Event)
+	{
+		super.rendererStart(event);
+	}
+	protected onEnable(event: eui.UIEvent): void
+	{
+		super.onEnable(event);
+		this.addEventListener(egret.TouchEvent.TOUCH_TAP, this.clickHandler, this);
+	}
+	protected onDisable(event: eui.UIEvent): void
+	{
+		super.onDisable(event);
+		this.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.clickHandler, this);
+	}
+	private clickHandler(event: egret.TouchEvent)
+	{
+		SoundManager.playButtonEffect(event.target);
+		switch (event.target)
+		{
+			case this.weixinLoginBtn:
+				UIManager.showFloatTips("功能还未开放！");
+				//UIManager.dispatchEvent(UIModuleName.EnterLoginPanel, UIModuleEvent.COMPLETE,ChannelLoginType.Weixin);
+				break;
+			case this.guestBtn:
+				UIManager.showFloatTips("功能还未开放！");
+				//UIManager.dispatchEvent(UIModuleName.EnterLoginPanel, UIModuleEvent.COMPLETE,ChannelLoginType.Guest);
+				break;
+			case this.intranetAccountBtn:
+				UIManager.dispatchEvent(UIModuleName.EnterLoginPanel, UIModuleEvent.COMPLETE,ChannelLoginType.IntranetAccount);
+				break;
+		}
+	}
+}

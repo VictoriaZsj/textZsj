@@ -1,0 +1,74 @@
+/**
+ * 其他家手牌
+ */
+class OtherShouCard extends egret.DisplayObjectContainer
+{
+	protected _imageBg: eui.Image;
+	protected _shouPaiDef: ShouPaiDefinition;
+	public get shouPaiDef(): ShouPaiDefinition
+	{
+		return this._shouPaiDef;
+	}
+	protected _card: number;
+	public isLastCard: boolean;
+	public get cardNum(): number
+	{
+		return this._card;
+	}
+	public constructor(data: ShouPaiDefinition, pos: number)
+	{
+		super();
+		this._shouPaiDef = data;
+		this._imageBg = new eui.Image();
+		this.addChild(this._imageBg);
+		this.init();
+	}
+	public init()
+	{
+		if (!this._imageBg.source)
+		{
+			switch (this._shouPaiDef.posType)
+			{
+				case PosType.BenJia:
+					this._imageBg.source = ImageSource.BenJia_ShouCard_Bg;
+					this._imageBg.width = 92.4;
+					this._imageBg.height = 117;
+					break;
+				case PosType.XiaJia:
+					this._imageBg.source = ImageSource.XiaJia_ShouCard_Bg;
+					this._imageBg.width = 129;
+					this._imageBg.height = 185;
+					this.scaleX = -1;
+					break;
+				case PosType.DuiJia:
+					this._imageBg.source = ImageSource.DuiJia_ShouCard_Bg;
+					this._imageBg.width = 50;
+					this._imageBg.height = 59;
+					break;
+				case PosType.ShangJia:
+					this._imageBg.source = ImageSource.ShangJia_ShouCard_Bg;
+					this._imageBg.width = 129;
+					this._imageBg.height = 185;
+					break;
+			}
+		}
+	}
+	/**
+	 * 刷新牌面
+	 */
+	public refreshFace(card: number)
+	{
+
+	}
+	public setScale(scale: number)
+	{
+		if (scale)
+		{
+			this._imageBg.scaleX = this._imageBg.scaleY = scale;
+		}
+	}
+	public clear()
+	{
+
+	}
+}

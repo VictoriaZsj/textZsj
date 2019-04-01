@@ -1,0 +1,281 @@
+/**
+ * 奖励兑换管理
+ */
+class AwardManager
+{
+    public static OnExchanged: ActionDispatcher = new ActionDispatcher();
+    public static OnAwardValueChanged: ActionDispatcher = new ActionDispatcher();
+
+    private static _map: Dictionary<number, AwardTimesInfo> = new Dictionary<number, AwardTimesInfo>();
+
+    public static Initialize(data: SpRpcResult)
+    {
+        AwardManager.Reset();
+        let objs: Array<SpRpcResult> = data.data["DataList"] as Array<SpRpcResult>;
+        if (objs)
+        {
+            let data: SpRpcResult;
+            for (let i: number = 0; i < objs.length; i++)
+            {
+                data = objs[i];
+                let id: number = parseInt(data["Id"]);
+                if (AwardManager._map.containsKey(id))
+                {
+                    AwardManager._map.getValue(id).times = parseInt(data["Count"]);
+                    if (data["Time"] != null)
+                    {
+                        AwardManager._map.getValue(id).lastTime = parseInt(data["Time"]);
+                    }
+                    else
+                    {
+                        AwardManager._map.getValue(id).lastTime = 0;
+                    }
+                }
+            }
+        }
+        /**
+         * 次数更新推送
+         */
+        // SocketManager.AddCommandListener(Command.Role_Get_2031, AwardManager.OnExchangeNotifyFromServer, AwardManager);
+    }
+
+    private static OnExchangeNotifyFromServer(data: SpRpcResult)
+    {
+        let id: number = parseInt(data.data["Id"]);
+        let info: AwardTimesInfo;
+        if (AwardManager._map.getValue(id))
+        {
+            info = AwardManager._map.getValue(id);
+            info.times = parseInt(data.data["Count"]);
+            info.lastTime = TimeManager.GetServerUtcTimestamp();
+        }
+        AwardManager.OnAwardValueChanged.dispatch();
+    }
+
+    /**
+     * 发送兑换id
+     */
+    public static Exchange(id: number, count: number = 1, needAlert: boolean = true)
+    {
+        let type: AwardExchangeErrorType = AwardManager.GetNotFitErrorType(id);
+        if (type != AwardExchangeErrorType.NoError)
+        {
+            egret.log("[兑换错误，错误id]：" + type.toString());
+            return;
+        }
+        if (needAlert)
+        {
+            PropertyManager.OpenGet();
+        }
+        if (count < 1)
+        {
+            count = 1;
+        }
+        let callback: Function = function (result: SpRpcResult)
+        {
+            SocketManager.RemoveCommandListener(Command.Exchange_3113, callback);
+            AwardManager.OnExchangeFromServer(id, count, needAlert);
+        }
+        SocketManager.AddCommandListener(Command.Exchange_3113, callback, this);
+        SocketManager.Send(Command.Exchange_3113, { "Id": id, "Count": count });
+    }
+
+    private static OnExchangeFromServer(id: number, count: number, needAlert: boolean)
+    {
+        let info: AwardTimesInfo = null;
+        if (AwardManager._map.containsKey(id))
+        {
+            info = AwardManager._map.getValue(id);
+            info.times += count;
+            AwardManager.OnExchanged.dispatch();
+        }
+        if (needAlert)
+        {
+            PropertyManager.ShowItemList();
+        }
+    }
+    /**
+     * 获取不满足条件的错误信息
+     */
+    public static GetNotFitErrorType(id: number): AwardExchangeErrorType
+    {
+        let result: AwardExchangeErrorType = AwardExchangeErrorType.NoError;
+        let info: AwardTimesInfo = AwardManager.GetExchangeInfo(id);
+        if (!info)
+        {
+            result = result | AwardExchangeErrorType.NullAward;
+            return result;
+        }
+        let limit: number = AwardManager.GetAwardLimit(id);
+        if (limit != 0 && info.times >= limit) //次数达到上限
+        {
+            result = result | AwardExchangeErrorType.OverTimes;
+        }
+        let serverTime: Date = TimeManager.GetServerLocalDateTime();
+        if (info.definition.level > UserManager.userInfo.level) //用户等级不满足
+        {
+            result = result | AwardExchangeErrorType.LevelNotEnough;
+        }
+        if (!AwardDefined.GetInstance().getPrevIdIsNull(id))
+        {
+            let preInfo: AwardTimesInfo = AwardManager.GetExchangeInfo(info.definition.preId);
+            limit = AwardManager.GetAwardLimit(info.definition.preId);
+            if (preInfo.times < limit) //前置未完成
+            {
+                result = result | AwardExchangeErrorType.PreNotComplete;
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 客户端判断是否已经达到兑换上限
+     */
+    public static IsToLimitClient(awardId: number): boolean
+    {
+        let limit: number = AwardManager.GetAwardLimit(awardId);
+        let times: number = AwardManager.GetTimes(awardId);
+        if (times >= limit && limit != 0)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 获取当前兑换的次数
+     */
+    public static GetTimes(id: number): number
+    {
+        let info: AwardTimesInfo = AwardManager.GetExchangeInfo(id);
+        if (info)
+        {
+            return info.times;
+        }
+        return 0;
+    }
+    public static GetAwardLimit(awardId: number): number
+    {
+        let def: AwardDefinition = AwardDefined.GetInstance().getAwardDefinition(awardId);
+        if (def)
+        {
+            if (StringUtil.isNullOrEmpty(def.costName))
+            {
+                return def.limit;
+            }
+            return 0;
+        }
+    }
+    /**
+     * 获取最近一次的修改时间
+     */
+    public static GetLastAlterDate(id: number): number
+    {
+        let info: AwardTimesInfo = AwardManager.GetExchangeInfo(id);
+        if (info)
+        {
+            return info.lastTime;
+        }
+        return 0;
+    }
+    /**
+     * 获得兑换信息
+     */
+    public static GetExchangeInfo(id: number): AwardTimesInfo
+    {
+        let info: AwardTimesInfo;
+        if (AwardManager._map.getValue(id))
+        {
+            info = AwardManager._map.getValue(id);
+        }
+        return info;
+    }
+
+    private static Reset()
+    {
+        AwardManager._map.clear();
+        let defDic: Dictionary<number, AwardDefinition> = AwardDefined.GetInstance().awardDefinitionDic;
+        let keys:Array<number> = defDic.getKeys();
+        for (let i:number = 0; i < keys.length; i++)
+        {
+            let key = keys[i];
+            let info: AwardTimesInfo = new AwardTimesInfo();
+            info.id = key;
+            info.times = 0;
+            info.lastTime = TimeManager.Utc1970.getTime();
+            AwardManager._map.add(info.id, info);
+        }
+    }
+}
+
+enum AwardExchangeErrorType
+{
+    /**
+     * 没有错误
+     */
+    NoError = 0,
+    /**
+     * id为空
+     */
+    NullAward = 1,
+    /**
+     * 超出次数
+     */
+    OverTimes = 2,
+    /**
+     * 超出结束时间
+     */
+    OverDate = 4,
+    /**
+     * 时间还没有来
+     */
+    NotComeDate = 8,
+    /**
+     * 等级不足
+     */
+    LevelNotEnough = 9,
+    /**
+     * 前置兑换未完成
+     */
+    PreNotComplete = 10,
+    /**
+     * 不满足时间
+     */
+    NotInTime = OverDate | NotComeDate
+}
+
+/**
+ *  配表中奖励的结构体封装
+ */
+class AwardInfoDefinition extends BaseServerValueInfo
+{
+    public reset()
+    {
+
+    }
+    private _id: number;
+    public get id(): number
+    {
+        return this._id;
+    }
+    public set id(value: number)
+    {
+        this._id = value;
+        this._definition = AwardDefined.GetInstance().getAwardDefinition(this._id);
+    }
+
+    private _definition: AwardDefinition;
+
+    public get definition(): AwardDefinition
+    {
+        return this._definition;
+    }
+    /**
+     * 数量
+     */
+    public count: number;
+    /**
+     * 物品的类型
+     */
+    public type: number;
+}

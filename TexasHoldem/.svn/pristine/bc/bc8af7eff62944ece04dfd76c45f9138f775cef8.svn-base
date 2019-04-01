@@ -1,0 +1,62 @@
+/**
+ * 签到管理
+ */
+class SignInHandler
+{
+    public  signInList:Array<SignInInfo> = new Array<SignInInfo>();
+	public  initialize(json:string)
+	{
+		JSON.parse(json)
+		let def: SignInInfo;
+		for (let i: number = 0; i < SignInDefined.GetInstance().dataList.length; i++)
+		{		
+			def=new SignInInfo();	 
+			def.id = SignInDefined.GetInstance().dataList[i].id;
+			this.signInList.push(def); 
+		};
+	}
+	public onEnable()
+	{
+		ArrayUtil.Clear(this.signInList);
+	}
+}
+
+class SignInInfo 
+{
+	private _id: number = 0;
+	public get id(): number
+	{
+		return this._id;
+	}
+	public set id(value: number)
+	{
+		this._id = value;
+		this._definition = SignInDefined.GetInstance().getDefinition(value);
+	}		
+	private _definition: SignInDefinition
+	public get definition(): SignInDefinition
+	{
+		return this._definition;
+	}
+	public set definition(value: SignInDefinition)
+	{
+		this._definition = value;
+	}
+	public isSignIn:boolean=false;
+}
+
+enum SignInDay
+{
+	/**
+	 * 签到3天
+	*/
+	signInThree=2,
+	/**
+	 * 签到5天
+	*/
+	signInFive=4,
+	/**
+	 * 签到7天
+	*/
+	signInSeven=6,
+}

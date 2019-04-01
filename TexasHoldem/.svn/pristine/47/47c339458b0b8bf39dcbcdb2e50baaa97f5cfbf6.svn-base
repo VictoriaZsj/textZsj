@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="buttonSkin23" width="149" height="137" xmlns:e="http://ns.egret.com/eui">
+	<e:Image width="149" height="137" x="0" y="0" source="peng_png"/>
+	<e:Image width="149" height="137" x="0" y="0" source="gang_png" visible="false"/>
+	<e:Image width="149" height="137" x="0" y="0" source="ting_png" visible="false"/>
+	<e:Image width="149" height="137" x="0" y="0" source="hu_png" visible="false"/>
+</e:Skin>

@@ -1,0 +1,105 @@
+/**
+ * 房间信息
+ */
+class RoomInfo extends BaseServerValueInfo
+{
+	/**
+	 * 房间号
+	 */
+	public id: number;
+	/**
+	 * 庄家位置
+	 */
+	public buttonPos: number;
+	/**
+	 * 底池筹码(主池)
+	 */
+	public potChips: number;
+	/**
+	 * 房间的配置ID
+	 */
+	public roomId: number;
+	/**
+	 * 前注
+	 */
+	public ante: number;
+	/**
+	 * 小盲
+	 */
+	public sBlind: number;
+	/**
+	 * 大盲
+	 */
+	public bBlind: number;
+	/**
+	 * 1.常规 2.比赛 3.私人
+	 */
+	public gamblingType: number;
+	/**
+	 * 操作(说话)位置
+	 */
+	public pos: number;
+	/**
+	 * 操作(说话)开始时间戳
+	 */
+	public posTime: number;
+	/**
+	 * 房间开始时间戳
+	 */
+	public startTime: number;
+	/**
+	 * 公共牌列表
+	 */
+	public cardList: Array<Array<number>>;
+	/**
+	 * 玩家列表
+	 */
+	public playerList: Array<PlayerInfo>;
+	/**
+	 * 边池
+	 */
+	public sidePot: Array<number>;
+	/**
+	 * 结束时亮牌标记
+	 */
+	public isShowCard: boolean;
+	/**
+	 * 手牌列表
+	 */
+	public handCardList: Array<Array<number>>;
+	/**
+	 * 小盲注位置
+	 */
+	public sBlindPos: number;
+	/**
+	 * 大盲注位置
+	 */
+	public bBlindPos: number;
+	/**
+	 * 是否自动买入
+	 */
+	public isAutoBuy: boolean;
+
+	public reset()
+	{
+		this.id = 0;
+		this.buttonPos = 0;
+		this.potChips = 0;
+		this.roomId = 0;
+		this.ante = 0;
+		this.sBlind = 0;
+		this.bBlind = 0;
+		this.gamblingType = 0;
+		this.pos = 0;
+		this.posTime = 0;
+		this.startTime;
+		this.cardList = undefined;
+		this.playerList = undefined;
+		this.sidePot = undefined;
+		this.isShowCard = false;
+		this.handCardList = undefined;
+		this.bBlindPos = undefined;
+		this.sBlindPos = undefined;
+		this.isAutoBuy = false;
+	}
+}

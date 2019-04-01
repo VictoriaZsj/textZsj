@@ -1,0 +1,112 @@
+/**
+ *房间信息
+*/
+class RoomDefined extends BaseDefined<RoomDefinition>
+{
+    public static readonly forbiddenConfig: string = "room";
+    private static _instance: RoomDefined;
+    public static GetInstance(): RoomDefined
+    {
+        if (!RoomDefined._instance)
+        {
+            RoomDefined._instance = new RoomDefined();
+        }
+        if (DefinedManager.IsParsed(RoomDefined.forbiddenConfig) == false)
+        {
+            RoomDefined._instance.initialize();
+        }
+        return RoomDefined._instance;
+    }
+    public initialize()
+    {
+        let obj: Object = DefinedManager.GetData(RoomDefined.forbiddenConfig);
+        this.dataList = ShortNameDefined.GetInstance().convertEnter(obj) as Array<RoomDefinition>;
+    }
+    public getBlindInfoById(id: number): RoomDefinition
+    {
+        for (let def of this.dataList)
+        {
+            if (def.id == id)
+            {
+                return def;
+            }
+        }
+        return;
+    }
+    /**
+     * 通过type获得数据
+    */
+    public getInfoByType(type: number)
+    {
+        if (this.dataList != null)
+        {
+            let infoList: Array<RoomDefinition> = new Array<RoomDefinition>();
+            for (let def of this.dataList)
+            {
+                if (def.type == type)
+                {
+                    infoList.push(def);
+                }
+            }
+            return infoList;
+        }
+    }
+}
+/**
+* 盲注信息定义
+*/
+class RoomDefinition implements IBaseDefintion
+{
+    /**
+     * ID
+    */
+    public id: number;
+    /**
+     * 游戏场类型
+    */
+    public type: number;
+    /**
+     * 小盲注
+    */
+    public sBlind: number;
+    /**
+     * 大盲注
+    */
+    public bBlind: number;
+    /**
+     * 最小买入
+    */
+    public sBuyin: number;
+    /**
+     * 最大买入
+    */
+    public bBuyin: number;
+    /**
+     * 税
+    */
+    public tax: number;
+    /**
+     * 座位
+     */
+    public seat: number;
+    /**
+     * CD时间
+     */
+    public cd: number;
+    /**
+     * 前注1
+     */
+    public ante1: number;
+    /**
+     * 前注2
+     */
+    public ante2: number;
+    /**
+     * 前注3
+     */
+    public ante3: number;
+    /**
+     * 前注4
+     */
+    public ante4: number;
+}

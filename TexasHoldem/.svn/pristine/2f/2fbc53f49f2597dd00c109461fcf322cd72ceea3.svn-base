@@ -1,0 +1,200 @@
+/**
+ * 用户信息
+ */
+class UserInfo extends BaseServerValueInfo
+{
+	public reset()
+	{
+		this._diamondNum = 0;
+		this._goldNum = 0;
+		//this.cardLogList = new Array<CardLogInfo>();
+	}
+	/**
+	 * 钻石数量
+	 */
+	private _diamondNum: number;
+	public set diamondNum(value: number)
+	{
+		this._diamondNum = value;
+	}
+	public get diamondNum(): number
+	{
+		return this._diamondNum;
+	}
+	/**
+	 * 金币数量
+	 */	
+	private _goldNum: number;
+	public set goldNum(value: number)
+	{
+		this._goldNum = value;
+	}
+	public get goldNum(): number
+	{
+		return this._goldNum;
+	}	
+	// /**
+	//  * 保险箱金币数量
+	//  */	
+	// private _goldNum: number;
+	// public set goldNum(value: number)
+	// {
+	// 	this._goldNum = value;
+	// }
+	// public get goldNum(): number
+	// {
+	// 	return this._goldNum;
+	// }
+	//public cardLogList: Array<CardLogInfo>;
+	/**
+	 * 服务器时间戳
+	 */
+	public timestamp: number;
+	/**
+	 * 时区
+	 */
+	public timezone: number;
+	/**
+	 * 角色ID
+	 */
+	public roleId: number;
+	/**
+	 * 昵称
+	 */
+	public name: string;
+	/**
+	 * 头像
+	 */
+	public head: string;
+	/**
+	 * 性别
+	 */
+	public sex: Sex;
+	/**
+	 * 等级
+	 */
+	public level: number;
+	/**
+	 * 总经验值
+	 */
+	public exp: number;
+	/**
+	 * ip
+	 */
+	public ip: string;
+	/**
+	 * 个性签名
+	 */
+	public des:string;
+	/**
+	 * 年龄
+	 */
+	public age:number;
+}
+/**
+ * 用户概况
+ */
+class UserSituation extends BaseServerValueInfo
+{
+	public reset()
+	{
+
+	}
+	/**
+	 * 加入游戏时间
+	 */
+	public joinTime:string;
+	/**
+	 * 最高拥有金币
+	 */
+	public maxGold:number;
+	/**
+	 * 一把最高赢取金币
+	 */
+	public maxGoldOnetimes:number;
+	/**
+	 * 朋友数量
+	 */
+	public friendNum:number;
+	/**
+	 * 游戏局数
+	 */
+	public gameTimes:number;
+	/**
+	 * 胜利次数
+	 */
+	public winTimes:number;
+	/**
+	 * 最大手牌
+	 */
+	public maxHandList:Array<number>;
+	public maxHandName:string;
+	/**
+	 * 夺冠次数
+	 */	
+	public championTimes:number;
+
+}
+
+/**
+ * 玩家接收礼品信息
+ */
+class UserAddressInfo
+{
+	/**
+	 * 收货姓名
+	 */
+	public name:string;
+	/**
+	 * 收货手机
+	 */
+	public phoneNum:string;
+	/**
+	 * 收货qq
+	 */
+	public qqNum:string;
+	/**
+	 * 收货邮箱
+	 */
+	public eMail:string;
+	/**
+	 * 收货地址
+	 */
+	public address:string;
+}
+/**
+ * Vip信息
+ */
+class VipInfo
+{
+	/**
+	 * 是否为年会员
+	 */	
+	public isYearVip:boolean;
+	/**
+	 * 会员等级
+	 */	
+	public vipLevel:number;
+	/**
+	 * 会员成长值
+	 */	
+	public vipExp:number;
+	/**
+	 * 成长速度
+	 */	
+	public vipSpeed:number;
+	/**
+	 * vip开通时间戳
+	 */
+	public vipTime:number;
+
+}
+
+/**
+ * 购买卡牌信息
+ */
+class CardLogInfo
+{
+	public price: number;
+	public count: number;
+}

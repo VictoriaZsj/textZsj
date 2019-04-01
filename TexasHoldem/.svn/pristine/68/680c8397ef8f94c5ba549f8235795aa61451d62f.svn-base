@@ -1,0 +1,122 @@
+/**
+ * 单局结算面板
+ */
+class OnceResultPanel extends BasePanel
+{
+	public nameLabel: eui.Label;
+	public roundNumLabel: eui.Label;
+	public anteLabel: eui.Label;
+
+	public exitBtn: eui.Button;
+	public goOnBtn: eui.Button;
+	public gameOverBtn: eui.Button;
+	public resultGroup: eui.DataGroup;
+
+	public winImg: eui.Image;
+	public loseImg: eui.Image;
+	public liuJuImg: eui.Image;
+
+	public constructor()
+	{
+		super();
+		this.skinName = UISkinName.OnceResultPanel;
+	}
+	protected onAwake(event: eui.UIEvent)
+	{
+		super.onAwake(event);
+		this.resultGroup.layout = UIUtil.getVTileLayout(-6, 1, egret.VerticalAlign.TOP);
+	}
+	public init(appendData: any)
+	{
+		super.init(appendData);
+	}
+	protected rendererStart(event: egret.Event)
+	{
+		super.rendererStart(event);
+		this.anteLabel.text = "底分：" + RoomManager.roomInfo.ante;
+		let playWayDef: PlayWayDefinition = ProjectDefined.GetInstance().getPlayWayDefinition(RoomManager.roomInfo.type);
+		if (playWayDef)
+		{
+			this.anteLabel.text += "  " + playWayDef.des;
+		}
+		this.roundNumLabel.text = "第" + RoomManager.roomInfo.roundNum + "/" + RoomManager.roomInfo.round + "局";
+
+		UIUtil.bindRender(this.resultGroup, OnceResultItemRenderer, GoCardProcessManager.onceResultInfoList);
+
+		this.winImg.visible = false;
+		this.loseImg.visible = false;
+		this.liuJuImg.visible = false;
+		if (GoCardProcessManager.onceResultInfoList && GoCardProcessManager.onceResultInfoList.length > 0)
+		{
+			let oneInfo: OnceResultInfo;
+			let len: number = GoCardProcessManager.onceResultInfoList.length;
+			for (let i: number = 0; i < len; i++)
+			{
+				oneInfo = GoCardProcessManager.onceResultInfoList[i];
+				if (RoomManager.mineInfo && oneInfo.roleId == RoomManager.mineInfo.roleId)
+				{
+					break;
+				}
+			}
+			if (oneInfo)
+			{
+				if (oneInfo.huType == HuResultType.LiuJu) //流局
+				{
+					this.liuJuImg.visible = true;
+				}
+				else
+				{
+					if (oneInfo.currScore > -1)
+					{
+						this.winImg.visible = true;
+						SoundManager.playEffect(Sex.Male, MusicAction.win);
+					}
+					else 
+					{
+						this.loseImg.visible = true;
+						SoundManager.playEffect(Sex.Male, MusicAction.lost);
+					}
+				}
+			}
+		}
+		else
+		{
+			this.winImg.visible = true;
+		}
+		this.exitBtn.visible = false;
+		this.goOnBtn.visible = false;
+		this.gameOverBtn.visible = false;
+		if (RoomManager.roomInfo.roundNum == RoomManager.roomInfo.round)
+		{
+			this.gameOverBtn.visible = true;
+		}
+		else
+		{
+			this.exitBtn.visible = this.goOnBtn.visible = true;
+		}
+	}
+	protected onEnable(event: eui.UIEvent): void
+	{
+		super.onEnable(event);
+		this.exitBtn.addEventListener(egret.TouchEvent.TOUCH_TAP, this.exitClickHandler, this);
+		this.goOnBtn.addEventListener(egret.TouchEvent.TOUCH_TAP, this.goOnClickHandler, this);
+		this.gameOverBtn.addEventListener(egret.TouchEvent.TOUCH_TAP, this.goOnClickHandler, this);
+	}
+	protected onDisable(event: eui.UIEvent): void
+	{
+		super.onDisable(event);
+		this.exitBtn.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.exitClickHandler, this);
+		this.goOnBtn.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.goOnClickHandler, this);
+		this.gameOverBtn.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.goOnClickHandler, this);
+	}
+	private exitClickHandler(event: egret.TouchEvent)
+	{
+		SoundManager.playButtonEffect(event.target);
+		RoomManager.reqExitRoom();
+	}
+	private goOnClickHandler(event: egret.TouchEvent)
+	{
+		SoundManager.playButtonEffect(event.target);
+		GoCardProcessManager.reqGoOnGame();
+	}
+}

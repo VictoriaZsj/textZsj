@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="shareIDToggleSwitchSkin" states="up,down,disabled,upAndSelected,downAndSelected,disabledAndSelected" xmlns:e="http://ns.egret.com/eui">
+    <e:Image source="fengxiang_1_png"
+             source.up="fengxiang_2_png"
+             source.down="fengxiang_2_png"
+             source.disabled="fengxiang_2_png"/>
+</e:Skin>

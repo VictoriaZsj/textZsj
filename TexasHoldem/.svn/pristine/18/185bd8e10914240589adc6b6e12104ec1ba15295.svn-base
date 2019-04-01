@@ -1,0 +1,75 @@
+/**
+ * 消费管理
+ */
+class CostManager
+{
+    /**
+     * 验证钻石不足
+     */
+    public static verifyDiamond(diamond: number,isShowTips = false): boolean
+    {
+        if (diamond <= UserManager.userInfo.diamond)
+        {
+            return true;
+        }
+        if(isShowTips)
+        {
+            CostManager.showBuyDiamond();
+        }
+
+        return false;
+    }
+    /**
+     * 显示购买钻石提示
+     */
+    public static showBuyDiamond(callback?: Function)
+    {
+        if (callback)
+        {
+            AlertManager.showDoubleAlert("钻石数量不足，是否前往充值？", callback);
+        }
+        else
+        {
+            CostManager.currentTab = ShoppingGpIndex.Diamond;
+            AlertManager.showDoubleAlert("钻石数量不足，是否前往充值？", CostManager.gotoShoppingPanel);
+        }
+    }
+    /**
+     * 验证金币不足
+     */
+    public static verifyGold(gold: number,isShowTips = false): boolean
+    {
+        if (gold <= UserManager.userInfo.gold)
+        {
+            return true;
+        }
+        if(isShowTips)
+        {
+            CostManager.showBuyGold();
+        }
+        return false;
+    }
+    /**
+     * 显示购买金币提示
+     */
+    public static showBuyGold(callback?: Function)
+    {
+        if (callback)
+        {
+            AlertManager.showDoubleAlert("金币数量不足，是否前往充值？", callback);
+        }
+        else
+        {
+            CostManager.currentTab = ShoppingGpIndex.Gold;
+            AlertManager.showDoubleAlert("金币数量不足，是否前往充值？", CostManager.gotoShoppingPanel);
+        }
+    }
+
+
+    private static currentTab:number = 0;
+    private static gotoShoppingPanel()
+    {
+        UIManager.showPanel(UIModuleName.ShoppingPanel, { tab: CostManager.currentTab });
+    }
+
+}

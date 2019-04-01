@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="LoginBarPanelSkin" width="1280" height="720" xmlns:e="http://ns.egret.com/eui"
+        xmlns:w="http://ns.egret.com/wing" xmlns:ns1="*">
+    <e:Group id="tweenGroup" horizontalCenter="0" verticalCenter="0">
+        <e:Image width="700" height="350" source="bg_page2_png" horizontalCenter="0" verticalCenter="0"
+                  scale9Grid="22,22,103,104"/>
+			<ns1:GameButton id="switchAccountButton" label="切换账号" y="261.36" x="122" skinName="buttonSkin_63"/>
+			<e:Image width="663.28" height="235.05" anchorOffsetX="0" anchorOffsetY="0" y="21.19" scaleX="1" scaleY="1" scale9Grid="19,18,23,23" horizontalCenter="0" source="bg_page19_2_png"/>
+        <e:Label text="账号" textAlign="right" size="34" bold="true"
+                 fontFamily="SimHei" horizontalCenter="-178" verticalCenter="-35"  textColor="0xa0522b"/>
+        <e:Image width="340" height="42" anchorOffsetX="0" anchorOffsetY="0" horizontalCenter="53" verticalCenter="-35"
+                  source="bg_page17_png" scale9Grid="15,15,151,51"/>
+        <ns1:GameButton id="enterBtn" label="登录" y="261.32" skinName="buttonSkin24"
+                         anchorOffsetX="0" width="194" anchorOffsetY="0" height="75" x="382.6"/>
+        <e:Label id="accountLabel" text="Label11111111111111" wordWrap="false" anchorOffsetX="0" width="272"
+                 textAlign="left" size="24" horizontalCenter="40" verticalCenter="-35" />
+    </e:Group>
+</e:Skin>

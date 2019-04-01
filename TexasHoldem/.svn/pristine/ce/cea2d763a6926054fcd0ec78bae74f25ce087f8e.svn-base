@@ -1,0 +1,31 @@
+/**
+ * 房间管理
+ */
+class RoomManager 
+{
+	public static roomInfo: RoomInfo;
+	public static isInRoom:boolean;
+	
+	public static reqJoinRoom(roomId: number, session: number)
+	{
+		SocketManager.AddCommandListener(Command.Req_OfflineReconnect_3004, RoomManager.initialize);
+		SocketManager.Send(Command.Req_OfflineReconnect_3004, { "roomId": roomId, "session": session })
+	}
+	public static initialize(result: SpRpcResult)
+	{
+		SocketManager.RemoveCommandListener(Command.Req_OfflineReconnect_3004, RoomManager.initialize);
+		if (result.data && result.data["roomId"])
+		{
+			RoomManager.isInRoom = true;
+		}
+		RoomManager.dispatchReqJoinRoomEvent();
+	}
+	/**
+	 * 请求加入房间结果
+	 */
+	public static reqJoinRoomEA: ActionDispatcher = new ActionDispatcher();
+	private static dispatchReqJoinRoomEvent()
+	{
+		RoomManager.reqJoinRoomEA.dispatch();
+	}
+}

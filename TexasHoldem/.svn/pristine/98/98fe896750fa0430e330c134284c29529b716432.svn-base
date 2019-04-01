@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="ActivityItemRendererSkin" width="680" height="150" xmlns:ns1="*" xmlns:e="http://ns.egret.com/eui"
+        xmlns:w="http://ns.egret.com/wing">
+    <e:Image id="bgImg" width="680" height="150" anchorOffsetX="0" anchorOffsetY="0"
+              source="bg_page19_3_png" y="1" scale9Grid="10,9,276,25"/>
+	<e:Image id="itemImg" width="150" height="110" x="20" y="20" source=""/>
+	<e:Label id="itemTitleLabel" text="活动标题" x="180" y="20" height="35" width="200" size="35"/>
+	<e:Label id="itemDesLabel" text="购买后立即获得专属标识、专属客服、等级加速、创建私人房、免费使用保险箱等特权" x="180" y="60" height="70" width="400" size="20"/>
+
+
+
+
+
+</e:Skin>

@@ -1,0 +1,67 @@
+[ {
+  "id" : 1,
+  "level" : 0,
+  "exp" : 0,
+  "totalExp" : 0,
+  "exclusiveAchieve" : 0,
+  "expRate" : 1,
+  "friendRank" : 0,
+  "friendLimit" : 100,
+  "createRoom" : 0,
+  "useSafe" : 0
+}, {
+  "id" : 2,
+  "level" : 1,
+  "exp" : 0,
+  "totalExp" : 0,
+  "exclusiveAchieve" : 1,
+  "expRate" : 1.5,
+  "friendRank" : 1,
+  "friendLimit" : 200,
+  "createRoom" : 1,
+  "useSafe" : 1
+}, {
+  "id" : 3,
+  "level" : 2,
+  "exp" : 600,
+  "totalExp" : 600,
+  "exclusiveAchieve" : 1,
+  "expRate" : 2,
+  "friendRank" : 1,
+  "friendLimit" : 300,
+  "createRoom" : 1,
+  "useSafe" : 1
+}, {
+  "id" : 4,
+  "level" : 3,
+  "exp" : 1200,
+  "totalExp" : 1800,
+  "exclusiveAchieve" : 1,
+  "expRate" : 2.5,
+  "friendRank" : 1,
+  "friendLimit" : 400,
+  "createRoom" : 1,
+  "useSafe" : 1
+}, {
+  "id" : 5,
+  "level" : 4,
+  "exp" : 1800,
+  "totalExp" : 3600,
+  "exclusiveAchieve" : 1,
+  "expRate" : 3,
+  "friendRank" : 1,
+  "friendLimit" : 500,
+  "createRoom" : 1,
+  "useSafe" : 1
+}, {
+  "id" : 6,
+  "level" : 5,
+  "exp" : 2400,
+  "totalExp" : 6000,
+  "exclusiveAchieve" : 1,
+  "expRate" : 2.5,
+  "friendRank" : 1,
+  "friendLimit" : 600,
+  "createRoom" : 1,
+  "useSafe" : 1
+} ]

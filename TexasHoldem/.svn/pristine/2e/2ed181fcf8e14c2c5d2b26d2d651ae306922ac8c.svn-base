@@ -1,0 +1,86 @@
+/**
+ * 拖拽工具类
+ */
+class DragUtil
+{
+	/**
+	 * 拖动的容器
+	 */
+	public static dragContainer: eui.Group;
+	private static _isDragEnable: boolean = true;
+	private static _isMove: boolean = false;
+	public static dragEndEa: ActionDispatcher = new ActionDispatcher();
+	/**
+	 * 是否启用拖拽
+	 */
+	public static set isDragEnable(value: boolean)
+	{
+		DragUtil._isDragEnable = value;
+	}
+	public static dragTarget: egret.DisplayObject;
+	private static _offsetX: number;
+	private static _offsetY: number;
+	public static startDrag(target: egret.DisplayObject, offsetX: number = 0, offsetY: number = 0)
+	{
+		if (DragUtil._isDragEnable)
+		{
+			if (!DragUtil.dragContainer)
+			{
+				DragUtil.dragContainer = new eui.Group();
+			}
+			if (!DragUtil.dragContainer.parent)
+			{
+				UIManager.stage.addChild(DragUtil.dragContainer);
+			}
+			else
+			{
+				UIManager.stage.addChild(DragUtil.dragContainer); //添加到舞台最上显示
+			}
+			DragUtil.dragTarget = target;
+			DragUtil._offsetX = offsetX;
+			DragUtil._offsetY = offsetY;
+
+			DragUtil.dragContainer.removeChildren();
+			DragUtil.dragContainer.addChild(target);
+
+			DragUtil.dragContainer.visible = false;
+			DragUtil._isMove = false;
+			UIManager.stage.addEventListener(egret.TouchEvent.TOUCH_MOVE, DragUtil.onTouchMove, this);
+			UIManager.stage.addEventListener(egret.TouchEvent.TOUCH_END, DragUtil.onTouchEnd, this);
+		}
+	}
+	private static onTouchEnd(e: egret.TouchEvent)
+	{
+		DragUtil.stop();
+	}
+	private static onTouchMove(e: egret.TouchEvent)
+	{
+		if (DragUtil.dragContainer)
+		{
+			DragUtil.dragContainer.visible = true;
+			DragUtil.dragTarget.x = e.stageX - DragUtil.dragTarget.measuredWidth / 2 - DragUtil.dragTarget.anchorOffsetX * DragUtil.dragTarget.measuredWidth + DragUtil._offsetX;
+			DragUtil.dragTarget.y = e.stageY - DragUtil.dragTarget.measuredHeight / 2 - DragUtil.dragTarget.anchorOffsetY * DragUtil.dragTarget.measuredHeight + DragUtil._offsetY;
+			DragUtil._isMove = true;
+			// let v: number = DragUtil.dragContainer.anchorOffsetX * DragUtil.dragContainer.measuredWidth;
+			// console.log("targetX---:" + DragUtil.dragContainer.getChildAt(0).x + "e.stageX---:" + e.stageX, "DragUtil.dragContainer.x---:", DragUtil.dragContainer.x, "DragUtil.dragContainer.measuredWidth---:", DragUtil.dragContainer.measuredWidth, "offsetV---:" + v)
+		}
+		else
+		{
+			DragUtil.stop();
+		}
+	}
+	public static stop()
+	{
+		if (DragUtil._isMove) //移动了才抛送事件
+		{
+			DragUtil.dragEndEa.dispatch(DragUtil.dragContainer.getChildAt(0));
+		}
+		DragUtil.dragContainer.removeChildren();
+		if (DragUtil.dragContainer.parent)
+		{
+			DragUtil.dragContainer.parent.removeChild(DragUtil.dragContainer);
+		}
+		UIManager.stage.removeEventListener(egret.TouchEvent.TOUCH_MOVE, DragUtil.onTouchMove, this);
+		UIManager.stage.removeEventListener(egret.TouchEvent.TOUCH_END, DragUtil.onTouchEnd, this);
+	}
+}

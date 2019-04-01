@@ -1,0 +1,36 @@
+class ActionFunction
+{
+	private _thisObject: any;
+	private _func: Function;
+
+	public constructor(func: Function, thisObject?: any)
+	{
+		this._func = func;
+		this._thisObject = thisObject;
+	}
+	public invoke(data?:any)
+	{
+		if (this._thisObject)
+		{
+			if(data == undefined)
+			{
+				this._func.call(this._thisObject);
+			}
+			else
+			{
+				this._func.call(this._thisObject, data);
+			}
+		}
+		else
+		{
+			if(data == undefined)
+			{
+				this._func();
+			}
+			else
+			{
+				this._func(data);
+			}
+		}
+	}
+}

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="PromptComponent" width="50" height="72" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing" xmlns:ns1="*" xmlns:tween="egret.tween.*">
+	<w:Declarations>
+		<tween:TweenGroup id="animate">
+			<tween:TweenItem target="{pai}">
+				<tween:Set/>
+				<tween:To duration="500">
+					<tween:props>
+						<e:Object y="{14}"/>
+					</tween:props>
+				</tween:To>
+				<tween:To duration="500">
+					<tween:props>
+						<e:Object x="{8}" y="{29}"/>
+					</tween:props>
+				</tween:To>
+                <tween:props>
+					<e:Object loop="{true}" />
+				</tween:props>
+			</tween:TweenItem>
+		</tween:TweenGroup>
+	</w:Declarations>
+	<e:Image id="pai" source="jiantou_png" x="8" y="29"/>
+</e:Skin>

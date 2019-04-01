@@ -1,0 +1,74 @@
+/**
+ * 字符串工具
+ */
+class StringUtil 
+{
+	public static toBoolean(str:string):boolean
+	{
+		if(StringUtil.isNullOrEmpty(str))
+		{
+			return false;
+		}
+		if(str == '0' || str == 'false')
+		{
+			return false;
+		}
+		return true;
+	}
+	public static isNullOrEmpty(str: string): boolean
+	{
+		if (str === undefined || str === null || str === "")
+		{
+			return true;
+		}
+		return false;
+	}
+	/**
+	 * 格式化
+	 */
+	public static format(targetStr: string, ...args): string
+	{
+		if (args && targetStr)
+		{
+			for (let i: number = 0; i < args.length; i++)
+			{
+				targetStr = targetStr.replace("{" + i.toString() + "}", args[i])
+			}
+		}
+		return targetStr;
+	}
+	/**
+	 * 字符串转换成int数组
+	 */
+	public static toIntArray(content: string, separator: string = ','): Array<number>
+	{
+		let stringList: Array<string> = StringUtil.toStringArray(content, separator);
+		if (stringList == null)
+		{
+			return null;
+		}
+		let list: Array<number> = new Array<number>(stringList.length);
+		let str: string;
+		for (let i: number = 0; i < stringList.length; i++)
+		{
+			str = stringList[i];
+			if (str)
+			{
+				list[i] = parseInt(str);
+			}
+		}
+		return list;
+	}
+	/**
+	 * 字符串转换成字符数组
+	 */
+	public static toStringArray(content: string, separator: string = ','): Array<string>
+	{
+		if (!content)
+		{
+			return null;
+		}
+		return content.split(separator);
+	}
+}
+

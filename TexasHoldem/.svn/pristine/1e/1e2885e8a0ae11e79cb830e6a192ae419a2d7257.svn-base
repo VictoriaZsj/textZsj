@@ -1,0 +1,1185 @@
+/**
+ * 行牌流程处理
+ */
+class GameProcesser
+{
+	private _gameScenePanel: GameScenePanel;
+	public get gameScenePanel(): GameScenePanel
+	{
+		return this._gameScenePanel;
+	}
+	private _cardWall: CardWallHandler;
+
+	public _shouCardController: ShouCardController;
+	private _outCardController: OutCardController;
+	private _groupCardController: GroupCardController;
+	private _maiMaTimeId: number;
+	private _maiMaGap: number = 10;
+	private _listenerInfoList: Array<ListenResultInfo>;
+
+	private _huCard: HuCard;
+	/**
+	 * 显示买马之后的结算时间间隔
+	 */
+	private _onceResultTimeGap: number = 3000;
+	private _onceResultTimeId: number;
+
+	public canGangList: Array<number>;
+
+	private _isCanPeng: boolean;
+	private _isCanGang: boolean;
+	public isCanHu: boolean;
+	private _isCanTing: boolean;
+
+	/**
+	 * 层级控制
+	 */
+	public layerController: LayerController;
+
+
+	public constructor(gamescenPanel: GameScenePanel)
+	{
+		this._gameScenePanel = gamescenPanel;
+		if (!this.layerController)
+		{
+			this.layerController = new LayerController();
+		}
+		this.layerController.init(this._gameScenePanel.cardGroup);
+
+		this._huCard = new HuCard();
+
+		this._shouCardController = new ShouCardController(this._gameScenePanel.tweenGroup);
+		this._outCardController = new OutCardController(this.layerController);
+		this._groupCardController = new GroupCardController(this._gameScenePanel.tweenGroup, this.layerController);
+
+		this._cardWall = new CardWallHandler(this.layerController.getContainer(GameSetting.CardWallLayerBenJia), this.layerController.getContainer(GameSetting.CardWallOther));
+
+
+
+		this._listenerInfoList = new Array<ListenResultInfo>();
+		GoCardProcessManager.isReady = false;
+	}
+	public onEnable()
+	{
+		RoomManager.otherPlayerJoinEA.addListener(this.onPlayerJoin, this);
+		GoCardProcessManager.touziResultEa.addListener(this.runCardWall, this);
+		GoCardProcessManager.alreadyInRoomEa.addListener(this.showCardWall, this);
+		GoCardProcessManager.shouPaiResultEa.addListener(this.showShouPai, this);
+		GoCardProcessManager.moPaiResultEa.addListener(this.showBenJiaLastCard, this);
+		GoCardProcessManager.moPaiEa.addListener(this.showMoPai, this);
+		GoCardProcessManager.outCardEa.addListener(this.putOutCard, this);
+		RoomManager.reqExitRoomEA.addListener(this.clear, this);
+		GoCardProcessManager.pushPengEa.addListener(this.pushPengHandler, this);
+		GoCardProcessManager.pushGangEa.addListener(this.pushGangHandler, this);
+		GoCardProcessManager.pushTingEa.addListener(this.pushTingHandler, this);
+		GoCardProcessManager.passEa.addListener(this.onPassHandler, this);
+		GoCardProcessManager.tingCardEa.addListener(this.onTingHandler, this);
+		GoCardProcessManager.buyHorseEa.addListener(this.onBuyHorseHandler, this);
+		GoCardProcessManager.onceResultEa.addListener(this.pushOnceResultHandler, this);
+		GoCardProcessManager.onGoOnGameEa.addListener(this.onGoOnGameHandler, this);
+		GoCardProcessManager.onGameOverEa.addListener(this.onGameOverhandler, this);
+		GoCardProcessManager.huPaiEa.addListener(this.onHuPaiHandler, this);
+		GoCardProcessManager.pushHuCardEa.addListener(this.pushHuPaiHandler, this);
+		GoCardProcessManager.pushPlayerReadyEa.addListener(this.pushPlayerReadyHandler, this);
+		RoomManager.headChangeEa.addListener(this.headChangeHandler, this);
+		GoCardProcessManager.pushScoreChangeEa.addListener(this.pushScoreChangeHandler, this);
+		RoomManager.posChangeEa.addListener(this.posChangeHandler, this);
+		RoomManager.playerExitRoomEa.addListener(this.pushPlayerExitRoom, this);
+		GoCardProcessManager.pushPlayerHostedEa.addListener(this.pushPlayerHosted, this);
+		// ListenerManager.addFuncListener(GoCardProcessManager.pushSecChangeEa, this.pushSecChanged, this);
+		GoCardProcessManager.pushPlayerOfflineEa.addListener(this.pushPlayerOffline, this);
+	}
+	public onDisable()
+	{
+		RoomManager.otherPlayerJoinEA.removeListener(this.onPlayerJoin);
+		GoCardProcessManager.touziResultEa.removeListener(this.runCardWall);
+		GoCardProcessManager.alreadyInRoomEa.removeListener(this.showCardWall);
+		GoCardProcessManager.shouPaiResultEa.removeListener(this.showShouPai);
+		GoCardProcessManager.moPaiResultEa.removeListener(this.showBenJiaLastCard);
+		GoCardProcessManager.moPaiEa.removeListener(this.showMoPai);
+		GoCardProcessManager.outCardEa.removeListener(this.putOutCard);
+		RoomManager.reqExitRoomEA.removeListener(this.clear);
+		GoCardProcessManager.pushPengEa.removeListener(this.pushPengHandler);
+		GoCardProcessManager.pushGangEa.removeListener(this.pushGangHandler);
+		GoCardProcessManager.pushTingEa.removeListener(this.pushTingHandler);
+		GoCardProcessManager.passEa.removeListener(this.onPassHandler);
+		GoCardProcessManager.tingCardEa.removeListener(this.onTingHandler);
+		GoCardProcessManager.buyHorseEa.removeListener(this.onBuyHorseHandler);
+		GoCardProcessManager.onceResultEa.removeListener(this.pushOnceResultHandler);
+		GoCardProcessManager.onGoOnGameEa.removeListener(this.onGoOnGameHandler);
+		GoCardProcessManager.onGameOverEa.removeListener(this.onGameOverhandler);
+		GoCardProcessManager.huPaiEa.removeListener(this.onHuPaiHandler);
+		GoCardProcessManager.pushHuCardEa.removeListener(this.pushHuPaiHandler);
+		GoCardProcessManager.pushPlayerReadyEa.removeListener(this.pushPlayerReadyHandler);
+		RoomManager.headChangeEa.removeListener(this.headChangeHandler);
+		GoCardProcessManager.pushScoreChangeEa.removeListener(this.pushScoreChangeHandler);
+		RoomManager.posChangeEa.removeListener(this.posChangeHandler);
+		RoomManager.playerExitRoomEa.removeListener(this.pushPlayerExitRoom);
+		GoCardProcessManager.pushPlayerHostedEa.removeListener(this.pushPlayerHosted);
+		// ListenerManager.removeFuncListener(GoCardProcessManager.pushSecChangeEa, this.pushSecChanged, this);
+		GoCardProcessManager.pushPlayerOfflineEa.removeListener(this.pushPlayerOffline);
+		clearTimeout(this._onceResultTimeId);
+		clearTimeout(this._maiMaTimeId);
+	}
+	public exactlyBenJiaCard()
+	{
+		this._shouCardController.initExactlyCard();
+	}
+	public shouCardHandlerInit(isDefalutShow: boolean)
+	{
+		this._shouCardController.init(isDefalutShow);
+	}
+	/**
+	 * 显示听牌信息面板
+	 */
+	public showTingInfoPanel()
+	{
+		if (GoCardProcessManager.curOutCard)
+		{
+			this._shouCardController.showTingInfo(GoCardProcessManager.curOutCard.cardNum);
+		}
+		else
+		{
+			if (RoomManager.roomInfo && RoomManager.roomInfo.shouPai)
+			{
+				if (RoomManager.roomInfo.myLastCard)
+				{
+					let tmpList: Array<number> = RoomManager.roomInfo.shouPai.concat();
+					if (RoomManager.isSelfAction)
+					{
+						ArrayUtil.RemoveItem(RoomManager.roomInfo.myLastCard, tmpList);
+					}
+					let listenInfo: ListenResultInfo = this.checkTingShouPai(tmpList, RoomManager.roomInfo.myLastCard);
+					if (listenInfo)
+					{
+						UIManager.showPanel(UIModuleName.TingInfoPanel, listenInfo);
+					}
+				}
+				else
+				{
+					let listenInfo: ListenResultInfo = this.checkTingShouPai(RoomManager.roomInfo.shouPai.concat());
+					if (listenInfo)
+					{
+						UIManager.showPanel(UIModuleName.TingInfoPanel, listenInfo);
+					}
+				}
+			}
+		}
+	}
+	public runFaPai()
+	{
+		this._cardWall.runFaPai(this._shouCardController.runGetCard, this._shouCardController);
+	}
+	public showLastCard()
+	{
+		this.showPutCountDown();
+		this._shouCardController.showLastCard();
+		this._cardWall.showCardWall();
+		if (RoomManager.roomInfo)
+		{
+			this.checkSelfHuTingGang(RoomManager.roomInfo.myLastCard);
+		}
+	}
+	private onPlayerJoin(playerInfo: PlayerInfo)
+	{
+		if (playerInfo)
+		{
+			let mineInfo: PlayerInfo = RoomManager.mineInfo;
+			if (!mineInfo)
+			{
+				return;
+			}
+			let posType: PosType = RoomManager.getPosTypeForMine(playerInfo.pos);
+			this._gameScenePanel.onPlayerJoin(playerInfo, posType);
+		}
+	}
+	/**
+	 * 跑牌墙
+	 */
+	private runCardWall()
+	{
+		RoomManager.setMod();
+		this._gameScenePanel.refreshWaitTime(undefined);
+		this.clear();
+		this._gameScenePanel.nextRound();
+		this._cardWall.runCardWall();
+	}
+	/**
+	 * 断线重连直接显示牌墙
+	 */
+	public showCardWall()
+	{
+		if (!RoomManager.roomInfo || !RoomManager.mineInfo)
+		{
+			return;
+		}
+		GoCardProcessManager.isReady = true;
+		this._gameScenePanel.hideActionBtn();
+		this._gameScenePanel.refreshHeadInfo();
+		this._gameScenePanel.refreshHotedBtn();
+		RoomManager.setMod();
+		if (RoomManager.roomInfo.play == RoomState.NIL)
+		{
+			this.gameScenePanel.refreshWaitTime(RoomManager.waitReadyTime);
+			this._gameScenePanel.showPaiPosGroup(false);
+			if (RoomManager.mineInfo && !RoomManager.mineInfo.isReady)
+			{
+				UIManager.showPanel(UIModuleName.OnceResultPanel);
+			}
+		}
+		else
+		{
+			this._cardWall.showCardWall();
+			this._shouCardController.init(true);
+			// this._shouCardController.showLastCard();
+			this._outCardController.showPai();
+			this._groupCardController.showPai();
+			this._gameScenePanel.actionTimeLabel.visible = true;
+
+			if (RoomManager.roomInfo.play == RoomState.WAIT)
+			{
+				this._shouCardController.initExactlyCard();
+				if (RoomManager.roomInfo.boomCard != undefined)
+				{
+					if (RoomManager.roomInfo.boomPos != RoomManager.mineInfo.pos) //放杠的人不是自己，检测加杠胡 不检测碰杠
+					{
+						this.checkJiaGangHu(RoomManager.roomInfo.boomCard); //检测加杠胡
+					}
+				}
+				else if (RoomManager.roomInfo.pos != RoomManager.mineInfo.pos && RoomManager.roomInfo.lastCard != undefined) //检测碰杠(胡暂时不用)
+				{
+					this.actionClear();
+					this._isCanPeng = this.checkPeng(RoomManager.getPosTypeForMine(RoomManager.roomInfo.pos), RoomManager.roomInfo.lastCard);
+					this._isCanGang = this.checkGang(RoomManager.getPosTypeForMine(RoomManager.roomInfo.pos), RoomManager.roomInfo.lastCard);
+					this.refreshActionBtnState();
+				}
+				this.tryTing();
+			}
+			else if (RoomManager.roomInfo.play == RoomState.PUT) //出牌
+			{
+				if (RoomManager.roomInfo.pos == RoomManager.mineInfo.pos)
+				{
+					if (RoomManager.roomInfo.myLastCard == undefined) //自己碰牌之后断线未出牌的情况 只能出牌
+					{
+						this.pengLastCardOper();
+						this._shouCardController.initExactlyCard(true); //去除本家的理牌
+						this._shouCardController.pengExactlyCard(PosType.BenJia);
+						this.actionClear();
+						this._isCanTing = this.checkTing();
+						this.refreshActionBtnState();
+					}
+					else
+					{
+						this._shouCardController.initExactlyCard();
+						this.checkSelfHuTingGang();
+					}
+				}
+				else
+				{
+					this._shouCardController.initExactlyCard();
+				}
+				this.tryTing();
+			}
+			else if (RoomManager.roomInfo.play == RoomState.HU) //胡牌状态请求买马
+			{
+				let isRemoveSuc: boolean = ArrayUtil.RemoveItem(RoomManager.roomInfo.myLastCard, RoomManager.roomInfo.shouPai);
+				let pInfo: PlayerInfo = RoomManager.getPlayerInfoByPos(RoomManager.roomInfo.boomPos);
+				if (pInfo)
+				{
+					GoCardProcessManager.huCardInfo.card = RoomManager.roomInfo.boomCard;
+					GoCardProcessManager.huCardInfo.roleId = pInfo.roleId;
+					GoCardProcessManager.reqBuyHorse();
+				}
+			}
+			else if (RoomManager.roomInfo.play == RoomState.TAKE)
+			{
+				this._shouCardController.initExactlyCard();
+				console.log("摸牌状态");
+			}
+			this._isFirstMoPai = false;
+			this.showPutCountDown();
+		}
+	}
+	private tryTing()
+	{
+		if (RoomManager.roomInfo.shouPai && RoomManager.roomInfo.shouPai.length <= GameSetting.ZhuangJiaShouPaiNum)
+		{
+			this.refreshTingBtnState();
+		}
+	}
+	private refreshTingBtnState()
+	{
+		let tmpTingList: Array<number> = RoomManager.roomInfo.shouPai.concat();
+		if (RoomManager.roomInfo.myLastCard && RoomManager.isSelfAction)
+		{
+			ArrayUtil.RemoveItem(RoomManager.roomInfo.myLastCard, tmpTingList);
+		}
+		let listenResultInfo: ListenResultInfo = this.checkTingShouPai(tmpTingList);
+		//更新听牌按钮显示
+		if (listenResultInfo)
+		{
+			this._gameScenePanel.refreshTingHelpBtn(true);
+		}
+		else
+		{
+			this._gameScenePanel.refreshTingHelpBtn(false);
+		}
+	}
+
+	private testIndex: number = 1;
+	public testShowPeng(pos?: PosType)
+	{
+		// RoomManager.mineInfo.shouPaiNum -= 2;
+		this._groupCardController.addGroup(PosType.XiaJia, GroupCardType.PengShangJia, RoomManager.roomInfo.shouPai[6]);
+		let showPanel: BasePanel = UIManager.getPanel(UIModuleName.GameScenePanel);
+		console.log("游戏场景面板：" + showPanel.tweenGroup.x);
+		this.testIndex++;
+		if (this.testIndex > 6)
+		{
+			this.testIndex = 1;
+		}
+	}
+	public testBuGang(pos: PosType)
+	{
+		this._groupCardController.addBuGangGroup(PosType.ShangJia, GroupCardType.GangShangJia, 4);
+	}
+
+	/**
+	 * 显示手牌
+	 */
+	private showShouPai()
+	{
+		this._gameScenePanel.refreshWind();
+	}
+	/**
+	 * 显示本家最后一张牌 需要本家是庄家
+	 */
+	private showBenJiaLastCard(card: number)
+	{
+		if (RoomManager.mineInfo && RoomManager.mineInfo.isTing) //听的状态
+		{
+			this.isCanHu = this.checkHu();
+			this.refreshActionBtnState();
+			if (GoCardProcessManager.isReady)
+			{
+				this._shouCardController.setNewCard(PosType.BenJia, card);
+			}
+			if (!this.isCanHu) //不能胡的才开启听牌出牌倒计时
+			{
+				this._gameScenePanel.tingOutCardTime = egret.getTimer();
+			}
+		}
+		else
+		{
+			if (GoCardProcessManager.isReady)
+			{
+				this._shouCardController.setNewCard(PosType.BenJia, card);
+				this.checkSelfHuTingGang(card);
+			}
+		}
+	}
+	private checkSelfHuTingGang(card?: number)
+	{
+		this.actionClear();
+		this.isCanHu = this.checkHu();
+		this._isCanTing = this.checkTing();
+		this._isCanGang = this.checkGang(PosType.BenJia, card, true);
+		this.refreshActionBtnState();
+	}
+	/**
+	 * 是否是第一次摸牌
+	 */
+	private _isFirstMoPai: boolean;
+	/**
+	 * 显示其他家摸牌
+	 */
+	private showMoPai(posType: PosType)
+	{
+		if (GoCardProcessManager.isReady)
+		{
+			if (posType)
+			{
+				if (posType != PosType.BenJia)
+				{
+					this._shouCardController.setNewCard(posType);
+				}
+			}
+			if (RoomManager.roomInfo)
+			{
+				this.updateCardWall(1);
+			}
+			this.showPutCountDown();
+		}
+	}
+	private updateCardWall(num: number, mastPos?: number)
+	{
+		RoomManager.updateHead(num);
+		this._gameScenePanel.refreshRemainLabel();
+		this._cardWall.showCardWall(mastPos);
+	}
+	private showPutCountDown()
+	{
+		/**
+		 * 出牌时间倒计时
+		 */
+		if (this._isFirstMoPai) //第一次出牌时间加长
+		{
+			this._isFirstMoPai = false;
+			this._gameScenePanel.refreshTime(ProjectDefined.GetInstance().getValue(ProjectDefined.initPutTimeOutClient));
+		}
+		else
+		{
+			this._gameScenePanel.refreshTime(ProjectDefined.GetInstance().getValue(ProjectDefined.putTimeoutClient));
+		}
+	}
+	/**
+	 * 超时尝试胡牌 清除状态
+	 */
+	// public tryPutCardOut(coutDownNum: number)
+	// {
+	// 	if (RoomManager.roomInfo && RoomManager.isSelfAction && GoCardProcessManager.state == GameSceneState.Processing)
+	// 	{
+	// 		if (this.isCanHu) //可以胡超时自动胡牌 剩余3S的时候请求胡牌 
+	// 		{
+	// 			if (coutDownNum == 3)
+	// 			{
+	// 				GoCardProcessManager.reqHuCard();
+	// 				this.hostedOperTail();
+	// 			}
+	// 		}
+	// 		else
+	// 		{
+	// 			if (coutDownNum == 0)
+	// 			{
+	// 				this.actionClear();
+	// 				this.refreshActionBtnState();
+	// 				this.hostedOperTail();
+	// 			}
+	// 		}
+
+	// 	}
+	// }
+	// private hostedOperTail()
+	// {
+	// 	this.isCanHu = false;
+	// 	if (this.canGangList && this.canGangList.length > 1)
+	// 	{
+	// 		UIManager.closePanel(UIModuleName.GangSelectPanel);
+	// 	}
+	// 	this._gameScenePanel.showCancelBtn(false);
+	// }
+	/**
+	 * 出牌推送
+	 */
+	private putOutCard(args: Array<any>)
+	{
+		if (args && args.length > 1 && RoomManager.roomInfo)
+		{
+			let pos: number = args[0];
+			let posType: PosType = RoomManager.getPosTypeForMine(pos);
+			let card: number = args[1];
+			this.timeClear(); //出完牌清除计时器
+			if (posType == PosType.BenJia)
+			{
+				if (RoomManager.mineInfo.isTing)
+				{
+					this.putOutLastCard(posType);
+				}
+				else
+				{
+					if (GoCardProcessManager.curOutCard)
+					{
+						this._shouCardController.outCard(posType, GoCardProcessManager.curOutCard);
+						if (GoCardProcessManager.curOutCard && !GoCardProcessManager.curOutCard.isLastCard)
+						{
+							this._shouCardController.startInsert(posType, RoomManager.roomInfo.myLastCard);
+						}
+						RoomManager.roomInfo.myLastCard = undefined; //打出最后一张牌
+						GoCardProcessManager.curOutCard = undefined;
+						this.actionClear();
+						this.refreshTingBtnState();
+					}
+					else
+					{ //超时出最后一张
+						if (card == RoomManager.roomInfo.myLastCard)
+						{
+							this.putOutLastCard(posType);
+						}
+					}
+				}
+				this._gameScenePanel.hideActionBtn();
+				this._shouCardController.refreshTingState(null);
+				UIManager.closePanel(UIModuleName.TingInfoPanel);
+				if (this.canGangList && this.canGangList.length > 1)
+				{
+					this._gameScenePanel.showCancelBtn(false);
+					UIManager.closePanel(UIModuleName.GangSelectPanel);
+				}
+			}
+			else
+			{
+				this._shouCardController.outCard(posType);
+				this._shouCardController.startInsert(posType);
+				//
+				if (RoomManager.roomInfo && RoomManager.roomInfo.shouPai) //posType != PosType.BenJia && 
+				{
+					this.actionClear();
+					this._isCanPeng = this.checkPeng(posType, card);
+					this._isCanGang = this.checkGang(posType, card, false);
+					this.refreshActionBtnState();
+				}
+			}
+			this._outCardController.addPai(posType, card);
+		}
+	}
+	public putOutLastCard(posType: PosType)
+	{
+		this._shouCardController.outCard(posType, null, true);
+		if (RoomManager.roomInfo)
+		{
+			RoomManager.roomInfo.myLastCard = undefined;
+		}
+	}
+	private refreshActionBtnState()
+	{
+		let isGuoBtnShow: boolean = this._isCanPeng || this._isCanGang || this._isCanTing || this.isCanHu;
+
+		this._gameScenePanel.showBtnState(this._gameScenePanel.pengBtn, this._isCanPeng);
+		this._gameScenePanel.showBtnState(this._gameScenePanel.gangBtn, this._isCanGang);
+		this._gameScenePanel.showBtnState(this._gameScenePanel.huBtn, this.isCanHu);
+		if (this.isCanHu) //胡的时候不显示听
+		{
+			this._gameScenePanel.showBtnState(this._gameScenePanel.tingBtn, false);
+		}
+		else
+		{
+			this._gameScenePanel.showBtnState(this._gameScenePanel.tingBtn, this._isCanTing);
+		}
+		this._gameScenePanel.showGuoBtn(isGuoBtnShow);
+	}
+	private timeClear()
+	{
+		clearInterval(this._gangTimeId);
+		clearInterval(this._pengTimeId);
+	}
+	private actionClear()
+	{
+		this.isCanHu = false;
+		this._isCanGang = false;
+		this._isCanPeng = false;
+		this._isCanTing = false;
+	}
+	public clear()
+	{
+		this.timeClear();
+		this.actionClear();
+		ArrayUtil.Clear(this.canGangList);
+		this._isFirstMoPai = true;
+		GoCardProcessManager.isReady = false;
+		this._cardWall.clear();
+		this._outCardController.clear();
+		this._groupCardController.clear();
+		this._shouCardController.clear();
+		this._gameScenePanel.clear();
+		this._gameScenePanel.refreshWaitTime(undefined);
+		this._huCard.clear();
+		RoomManager.nextRoundOper();
+		RoomManager.roundNumOper();
+		GoCardProcessManager.isClickTingBtn = false;
+		GoCardProcessManager.huCardInfo.reset();
+		GoCardProcessManager.buyHorseInfo.reset();
+		GoCardProcessManager.clearReqFlag();
+	}
+	private pushPengHandler(args: Array<any>)
+	{
+		let card: number = args[0];
+		let roleId: number = args[1];
+		let pos: number = args[2];
+		let pInfo1: PlayerInfo = RoomManager.getPlayerInfoByRoleId(roleId);
+		if (pInfo1)
+		{
+			let posType: PosType = RoomManager.getPosType(pInfo1.pos, pos);
+			this._groupCardController.addGroup(pInfo1.pos, posType - 1, card);
+			if (pInfo1.pos == RoomManager.mineInfo.pos && RoomManager.roomInfo && RoomManager.roomInfo.shouPai)
+			{
+				this.setInAction(false);
+				this.pengLastCardOper();
+			}
+			this._gameScenePanel.refreshTime(ProjectDefined.GetInstance().getValue(ProjectDefined.putTimeoutClient));
+			/**
+			 * 显示碰牌特效
+			 */
+			posType = RoomManager.getPosTypeByRoleId(roleId);
+			this._gameScenePanel.showActionEffect(ActionType.Peng, posType);
+			this._shouCardController.pengExactlyCard(posType);
+			if (pInfo1.pos == RoomManager.mineInfo.pos)
+			{
+				this.actionClear();
+				/**
+				 * 碰牌之后只检测听
+				 */
+				this._isCanTing = this.checkTing();
+				this.refreshActionBtnState();
+			}
+			else
+			{
+				//设置碰牌的玩家的新牌显示 非本家
+				this._shouCardController.setNewCard(posType);
+			}
+			//移除被碰的那家的出牌
+			posType = RoomManager.getPosTypeForMine(pos);
+			this._outCardController.removePai(posType, card);
+		}
+	}
+	/**
+	 * 碰牌处理最后一张牌
+	 */
+	private pengLastCardOper()
+	{
+		RoomManager.roomInfo.shouPai.sort(SortUtil.downSort);
+		let newCard: number;
+		let len: number = RoomManager.roomInfo.shouPai.length;
+		let isFind: boolean = false;
+		for (let i: number = 0; i < len; i++)
+		{
+			newCard = RoomManager.roomInfo.shouPai[i];
+			if (baiDaList.indexOf(newCard) == -1) //处理最后一张牌
+			{
+				isFind = true;
+				RoomManager.roomInfo.myLastCard = newCard;
+				break;
+			}
+		}
+		if (!isFind && len > 0) //没有找到，则拿手牌中的最后一张牌
+		{
+			RoomManager.roomInfo.myLastCard = RoomManager.roomInfo.shouPai[len - 1];
+		}
+	}
+	/**
+	 * 推送杠牌结果
+	 */
+	private pushGangHandler(args: Array<any>)
+	{
+		let card: number = args[0];
+		let roleId: number = args[1];
+		let pos: number = args[2];
+		let type: number = args[3];
+
+		let pInfo1: PlayerInfo = RoomManager.getPlayerInfoByRoleId(roleId);
+		let posType: PosType;
+		if (pInfo1)
+		{
+			posType = RoomManager.getPosTypeForMine(pInfo1.pos);
+			this._gameScenePanel.showActionEffect(ActionType.Gang, posType);
+			if (RoomManager.mineInfo && pInfo1.pos == RoomManager.mineInfo.pos)
+			{
+				this.setInAction(false);
+			}
+			if (type == ActionType.Gang)
+			{
+				this.showGang(pInfo1, pos, card);
+				this._shouCardController.immediatelyInsert(posType);
+				this.clearLastCardState(roleId);
+			}
+			else if (type == ActionType.AnGang)
+			{
+				this._groupCardController.addGroup(pInfo1.pos, GroupCardType.AnGang, card);
+				UIManager.closePanel(UIModuleName.GangSelectPanel);
+				this._gameScenePanel.showCancelBtn(false);
+				this._shouCardController.immediatelyInsert(posType);
+
+				this.clearLastCardState(roleId);
+			}
+			else if (type == ActionType.BuGang)
+			{
+				this.showGang(pInfo1, pos, card, true);
+				UIManager.closePanel(UIModuleName.GangSelectPanel);
+				this._gameScenePanel.showCancelBtn(false);
+				// if (pInfo1 && posType != PosType.BenJia) //非本家手牌数量+1
+				// {
+				// 	pInfo1.shouPaiNum++;
+				// }
+				this._shouCardController.immediatelyInsert(posType);
+
+				if (roleId != UserManager.userInfo.roleId) //检测加杠胡
+				{
+					this.checkJiaGangHu(card);
+				}
+				else
+				{
+					this.actionClear();
+					this.refreshActionBtnState();
+					this._shouCardController.refreshTingState(null);
+				}
+			}
+		}
+	}
+	/**
+	 * 处理杠牌之后的无最后一张牌的状态显示问题 
+	 */
+	private clearLastCardState(roleId: number)
+	{
+		if (roleId == UserManager.userInfo.roleId) //最后一张牌暗杠之后，清理状态
+		{
+			let num: number = GameSetting.CardTotalNum - RoomManager.roomInfo.head;
+			if (num <= 0)
+			{
+				this.actionClear();
+				this.refreshActionBtnState();
+				this._shouCardController.refreshTingState(null);
+			}
+		}
+	}
+	private checkJiaGangHu(card: number)
+	{
+		this.actionClear();
+		this.isCanHu = this.checkHu(card);
+		if (this.isCanHu)
+		{
+			this.setInAction(true);
+		}
+		this.refreshActionBtnState();
+	}
+	private showGang(pInfo1: PlayerInfo, pos: number, card: number, isBuGang: boolean = false)
+	{
+		let targetCardType: GroupCardType;
+		if (!pos)
+		{
+			let groupCard: GroupCardInfo = GoCardProcessManager.getGroupCardForMine(card);
+
+			if (groupCard)
+			{
+				targetCardType = groupCard.pos + 2;
+			}
+		}
+		else
+		{
+			if (pInfo1)
+			{
+				let posType: PosType = RoomManager.getPosType(pInfo1.pos, pos);
+				targetCardType = posType + 2;
+				if (!isBuGang)
+				{
+					posType = RoomManager.getPosTypeForMine(pos);
+					this._outCardController.removePai(posType, card); //杠其他家，需要将其他家出的牌移除
+				}
+			}
+		}
+		if (pInfo1)
+		{
+			if (isBuGang)
+			{
+				this._groupCardController.addBuGangGroup(pInfo1.pos, targetCardType, card);
+			}
+			else
+			{
+				this._groupCardController.addGroup(pInfo1.pos, targetCardType, card);
+			}
+		}
+	}
+	private pushTingHandler(args: Array<any>)
+	{
+		let roleId: number = args[0];
+		let isTing: boolean = args[1];
+		let postType: PosType = RoomManager.getPosTypeByRoleId(roleId);
+		if (postType == PosType.BenJia)
+		{
+			this._gameScenePanel.hideActionBtn();
+		}
+		this._gameScenePanel.showTing(roleId, isTing);
+		this._gameScenePanel.showActionEffect(ActionType.Ting, postType);
+	}
+	private onPassHandler()
+	{
+		this._gameScenePanel.hideActionBtn();
+		this.setInAction(false);
+	}
+	private onTingHandler()
+	{
+		this._gameScenePanel.hideActionBtn();
+	}
+
+	private _buyHorseTimeId: number;
+	private _showHorseAnimId: number;
+	private _buyHorseScoreId: number;
+	private onBuyHorseHandler()
+	{
+		let pInfo: PlayerInfo = RoomManager.getPlayerInfoByRoleId(GoCardProcessManager.buyHorseInfo.roleId);
+		if (pInfo)
+		{
+			let posType: PosType = RoomManager.getPosTypeForMine(pInfo.pos);
+			if ((GoCardProcessManager.buyHorseInfo.card1 == undefined || GoCardProcessManager.buyHorseInfo.card1 == 0)
+				&& (GoCardProcessManager.buyHorseInfo.card2 == undefined || GoCardProcessManager.buyHorseInfo.card2 == 0)) //买马失败
+			{
+				this._onceResultTimeGap = 800;
+				this.showBuyHorseCard(posType);
+			}
+			else
+			{
+				this._onceResultTimeGap = 3000;
+				clearTimeout(this._showHorseAnimId);
+				this._showHorseAnimId = egret.setTimeout(this.showBuyHorseAnimation, this, 1000, posType);
+			}
+		}
+	}
+	private showBuyHorseAnimation(posType: PosType)
+	{
+		clearTimeout(this._showHorseAnimId);
+		this._gameScenePanel.showActionEffect(ActionType.MaiMa, posType);
+		clearTimeout(this._buyHorseTimeId);
+		this._buyHorseTimeId = egret.setTimeout(this.showBuyHorseCard, this, 1000, posType);
+		let pInfo: PlayerInfo = RoomManager.getPlayerInfoByRoleId(GoCardProcessManager.buyHorseInfo.roleId); //播放买马音效
+		if (pInfo)
+		{
+			SoundManager.playEffect(pInfo.sex, MusicAction.maima);
+		}
+	}
+	private showBuyHorseCard(posType: PosType)
+	{
+		clearTimeout(this._buyHorseTimeId);
+		if (GoCardProcessManager.buyHorseInfo)
+		{
+			let buyHorseNum: number = 0;
+			if (GoCardProcessManager.buyHorseInfo.card1 != undefined && GoCardProcessManager.buyHorseInfo.card1 != 0)
+			{
+				buyHorseNum++;
+			}
+			if (GoCardProcessManager.buyHorseInfo.card2 != undefined && GoCardProcessManager.buyHorseInfo.card2 != 0)
+			{
+				buyHorseNum++;
+			}
+			this.updateCardWall(buyHorseNum, GoCardProcessManager.lastMastPos);
+			this._outCardController.shoBuyHorse(posType, GoCardProcessManager.buyHorseInfo.card1, GoCardProcessManager.buyHorseInfo.card2);
+		}
+		clearTimeout(this._buyHorseScoreId);
+		this._buyHorseScoreId = egret.setTimeout(this.showBuyHorseScore, this, 200);
+	}
+	private showBuyHorseScore()
+	{
+		clearTimeout(this._buyHorseScoreId);
+		if (GoCardProcessManager.lastScoreChangeType == ScoreChangeType.MaiMa)
+		{
+			this._gameScenePanel.showScoreEffect();
+		}
+	}
+	private pushOnceResultHandler()
+	{
+		for (let info of GoCardProcessManager.onceResultInfoList)
+		{
+			this._shouCardController.showLiangPai(info.roleId, info.shouPai);
+		}
+		this._onceResultTimeId = egret.setTimeout(this.delayShowResultPanel, this, this._onceResultTimeGap);
+		this.gameScenePanel.refreshHeadInfo();
+		this.gameScenePanel.refreshTime(undefined);
+	}
+	private delayShowResultPanel()
+	{
+		clearTimeout(this._onceResultTimeId);
+		if (RoomManager.roomInfo) //这个时候可能已经退出房间
+		{
+			UIManager.showPanel(UIModuleName.OnceResultPanel);
+		}
+	}
+	/**
+	 * 继续游戏
+	 */
+	private onGoOnGameHandler()
+	{
+		UIManager.closePanel(UIModuleName.OnceResultPanel);	 //已准备	
+		if (GoCardProcessManager.state != GameSceneState.Processing && GoCardProcessManager.state != GameSceneState.RunFapai
+			&& RoomManager.roomInfo && RoomManager.roomInfo.roundNum > 0)
+		{
+			this._gameScenePanel.refreshWaitTime(RoomManager.waitReadyTime);
+		}
+		this._gameScenePanel.refreshWind(true);
+	}
+	private onGameOverhandler()
+	{
+		UIManager.showPanel(UIModuleName.GameOverPanel);
+	}
+	/**
+	 * 请求胡牌结果
+	 */
+	private onHuPaiHandler()
+	{
+		this._gameScenePanel.hideActionBtn();
+	}
+	/**
+	 * 胡牌推送
+	 */
+	private pushHuPaiHandler()
+	{
+		if (GoCardProcessManager.huCardInfo)
+		{
+			if (RoomManager.mineInfo && GoCardProcessManager.huCardInfo.roleId == RoomManager.mineInfo.roleId)
+			{
+				this._maiMaTimeId = egret.setTimeout(this.tryMaiMa, this, this._maiMaGap);
+			}
+			this._gameScenePanel.showActionEffect(ActionType.Hu, RoomManager.getPosTypeByRoleId(GoCardProcessManager.huCardInfo.roleId));
+			if (GoCardProcessManager.huCardInfo.huType == HuResultType.JiaGang)
+			{
+				let pInfo: PlayerInfo = RoomManager.getPlayerInfoByPos(GoCardProcessManager.huCardInfo.boomPos);
+				if (pInfo)
+				{
+					let groupCardInfo: GroupCardInfo = RoomManager.getGroupCard(GoCardProcessManager.huCardInfo.card, pInfo.groupList);
+					if (groupCardInfo)
+					{
+						let posType: PosType = RoomManager.getPosType(pInfo.pos, groupCardInfo.pos);
+						this._groupCardController.revertBuGang(GoCardProcessManager.huCardInfo.boomPos, posType - 1, GoCardProcessManager.huCardInfo.card);
+						groupCardInfo.action = ActionType.Peng;
+					}
+				}
+			}
+			this.actionClear();
+			this.refreshActionBtnState();
+		}
+		this.timeClear();
+	}
+	private tryMaiMa()
+	{
+		clearTimeout(this._maiMaTimeId);
+		GoCardProcessManager.reqBuyHorse();
+	}
+	private pushPlayerReadyHandler()
+	{
+		this.gameScenePanel.refreshHeadInfo();
+	}
+	private headChangeHandler()
+	{
+		this._gameScenePanel.refreshRemainLabel();
+	}
+	private pushScoreChangeHandler()
+	{
+		if (GoCardProcessManager.lastScoreChangeType != ScoreChangeType.MaiMa)
+		{
+			this._gameScenePanel.showScoreEffect();
+		}
+	}
+	private posChangeHandler()
+	{
+		this._gameScenePanel.refreshWind();
+	}
+	private pushPlayerExitRoom(roleId: number)
+	{
+		this._gameScenePanel.hidePlayerHead(roleId);
+	}
+	private pushPlayerHosted(args: Array<any>)
+	{
+		let roleId: number = args[0];
+		let hosted: boolean = args[1];
+		let pInfo: PlayerInfo = RoomManager.getPlayerInfoByRoleId(roleId);
+		if (pInfo)
+		{
+			pInfo.hosted = hosted;
+		}
+		this._gameScenePanel.refreshHeadInfo();
+		//托管变化
+		if (RoomManager.mineInfo && roleId == RoomManager.mineInfo.roleId)
+		{
+			this._gameScenePanel.refreshHotedBtn();
+		}
+	}
+	private pushSecChanged(sec: number)
+	{
+		// this._gameScenePanel.refreshTime(undefined);
+		// this._gameScenePanel.refreshTime(args[0]);
+	}
+	private pushPlayerOffline()
+	{
+		this._gameScenePanel.refreshHeadInfo();
+	}
+	private checkPeng(posType: PosType, card: number): boolean
+	{
+		if (RoomManager.mineInfo && !RoomManager.mineInfo.isTing) //非听牌状态检测碰
+		{
+			if (posType != PosType.BenJia) //听牌
+			{
+				let count: number = GoCardProcessManager.getCardNum(card);
+				if (count >= 2)
+				{
+					this.setInAction(true);
+					/**
+					 * 碰牌时间等待倒计时
+					 */
+					this.startPengCountDown(ProjectDefined.GetInstance().getValue(ProjectDefined.waitActionTimeClient));
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	private _pengNum: number;
+	private _pengTimeId: number;
+	private startPengCountDown(num: number)
+	{
+		if (num > 0)
+		{
+			this._pengNum = num;
+			clearInterval(this._pengTimeId);
+			this._pengTimeId = setInterval(this.pengCountDown.bind(this), GameSetting.OneSecondMS);
+		}
+	}
+	private pengCountDown()
+	{
+		this._pengNum--
+		if (this._pengNum <= 0)
+		{
+			clearInterval(this._pengTimeId);
+		}
+	}
+	private _gangNum: number;
+	private _gangTimeId: number;
+	private startGangCountDown(num: number)
+	{
+		if (num > 0)
+		{
+			this._gangNum = num;
+			clearInterval(this._gangTimeId);
+			this._gangTimeId = setInterval(this.gangCoundDowning.bind(this), GameSetting.OneSecondMS);
+		}
+	}
+	private gangCoundDowning()
+	{
+		this._gangNum--;
+		if (this._gangNum <= 0)
+		{
+			clearInterval(this._gangTimeId);
+		}
+	}
+	private checkGang(posType: PosType, card?: number, isSelf?: boolean): boolean
+	{
+		if (!this.canGangList)
+		{
+			this.canGangList = new Array<number>();
+		}
+		ArrayUtil.Clear(this.canGangList);
+		if (RoomManager.mineInfo && !RoomManager.mineInfo.isTing) 
+		{
+			if (posType != PosType.BenJia) //检测明杠
+			{
+				let count: number = GoCardProcessManager.getCardNum(card);
+				if (count == 3)
+				{
+					this.setInAction(true);
+					/**
+					 * 杠牌时间等待倒计时
+					 */
+					this.startGangCountDown(ProjectDefined.GetInstance().getValue(ProjectDefined.waitActionTimeClient));
+					return true;
+				}
+			}
+			else if (isSelf && RoomManager.isSelfAction) //补杠检测需要行牌至本家
+			{
+				let count: number;
+				let selfCard: number;
+				for (let i: number = 0; i < RoomManager.roomInfo.shouPai.length; i++)
+				{
+					selfCard = RoomManager.roomInfo.shouPai[i];
+					count = GoCardProcessManager.getAllCardNum(selfCard);
+					if (count == 4)
+					{
+						if (this.canGangList.indexOf(selfCard) == -1)
+						{
+							this.canGangList.push(selfCard);
+						}
+					}
+				}
+				if (this.canGangList.length > 0)
+				{
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	private checkHu(card?: number): boolean
+	{
+		if (RoomManager.roomInfo && RoomManager.roomInfo.shouPai)
+		{
+			let list: Array<number> = RoomManager.roomInfo.shouPai.concat();
+			let preCard: number = RoomManager.roomInfo.myLastCard;
+			if (card != undefined)
+			{
+				RoomManager.roomInfo.myLastCard = card;
+				list.push(card);
+			}
+			if (this._huCard.tryHu(list)) 
+			{
+				return true;
+			}
+			RoomManager.roomInfo.myLastCard = preCard;
+		}
+		return false;
+	}
+	private checkTing(): boolean
+	{
+		if (RoomManager.mineInfo && !RoomManager.mineInfo.isTing && RoomManager.roomInfo && RoomManager.roomInfo.shouPai && RoomManager.isSelfAction) //检测听牌需要行牌至本家
+		{
+			let tmpShouPaiList: Array<number>;
+			let card: number;
+			for (let i: number = this._listenerInfoList.length - 1; i >= 0; i--)
+			{
+				this._listenerInfoList[i] = null;
+			}
+			ArrayUtil.Clear(this._listenerInfoList);
+
+			/**
+			 * 打出去手牌
+			 */
+			for (let i: number = 0; i < RoomManager.roomInfo.shouPai.length; i++)
+			{
+				tmpShouPaiList = RoomManager.roomInfo.shouPai.concat();
+				card = tmpShouPaiList.splice(i, 1)[0];
+				if (baiDaList.indexOf(card) == -1)
+				{
+					this.tryPushLisenerInfo(tmpShouPaiList, card);
+				}
+			}
+			this._shouCardController.refreshTingState(this._listenerInfoList);
+			if (this._listenerInfoList.length > 0)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	private checkTingOutCard(tmpShouPaiList: Array<number>, card: number)
+	{
+		if (baiDaList.indexOf(card) == -1)
+		{
+			this.tryPushLisenerInfo(tmpShouPaiList, card);
+		}
+	}
+	/**
+	 * 检测手牌是否可以听牌 仅检测一张牌
+	 */
+	public checkTingShouPai(list: Array<number>, card?: number): ListenResultInfo
+	{
+		let listenResultInfo: ListenResultInfo = this._huCard.startListen(list, card);
+		if (listenResultInfo.listenerList && listenResultInfo.listenerList.length > 0)
+		{
+			return listenResultInfo;
+		}
+		return null;
+	}
+	public clearTingInfo()
+	{
+		for (let i: number = this._listenerInfoList.length - 1; i >= 0; i--)
+		{
+			this._listenerInfoList[i] = null;
+		}
+		ArrayUtil.Clear(this._listenerInfoList);
+	}
+	public tryPushLisenerInfo(tmpShouPaiList: Array<number>, card: number)
+	{
+		let listenResultInfo: ListenResultInfo = this._huCard.startListen(tmpShouPaiList, card);
+		if (listenResultInfo.listenerList && listenResultInfo.listenerList.length > 0)
+		{
+			this._listenerInfoList.push(listenResultInfo);
+		}
+	}
+	public setInAction(state: boolean)
+	{
+		GoCardProcessManager.isInActionSelect = state;
+	}
+}

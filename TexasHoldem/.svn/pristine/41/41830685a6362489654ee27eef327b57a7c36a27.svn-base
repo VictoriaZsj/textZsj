@@ -1,0 +1,103 @@
+/**
+ * 排行榜管理
+ */
+class RankManager
+{
+    /**
+     * 上次排行榜列表
+     */
+    public static lastRankList: Array<RankInfo> = new Array<RankInfo>();
+    /**
+     * 本次排行榜列表
+     */
+    public static currentRankList: Array<RankInfo> = new Array<RankInfo>();
+    /**
+    * 重置数据
+    */
+    public static reset()
+    {
+        ArrayUtil.Clear(RankManager.lastRankList);
+        ArrayUtil.Clear(RankManager.currentRankList);
+    }
+
+    /**
+     * 拉取排行榜列表
+     */
+    public static reqRankList(rankType: number, listType: number, isGetMyRank: number = 1)
+    {
+        
+        SocketManager.Send(Command.Req_RankList_3110, { "type": rankType, "rank": isGetMyRank }, RankManager.onGetRankList, null, this);
+    }
+
+    public static onGetRankList(result: SpRpcResult)
+    {
+        RankManager.initialize(result);
+        RankManager.getRankListEvent.dispatch();
+    }
+
+    public static initialize(result: SpRpcResult)
+    {
+        RankManager.lastRankList = RankManager.currentRankList;
+        ArrayUtil.Clear(RankManager.currentRankList);
+        if(result.data["rankList"])
+        {
+            for (let def of result.data["rankList"])
+            {
+                let rank: RankInfo = new RankInfo();
+                rank.copyValueFrom(def);
+                RankManager.currentRankList.push(rank);
+            }
+        }
+        if(RankManager.lastRankList && RankManager.lastRankList.length > 0)
+        {
+            for(let rank of RankManager.currentRankList)
+            {
+                for(let lastRank of RankManager.lastRankList)
+                {
+                    if(rank.userId == lastRank.userId)
+                    {
+                        rank.lastRank = lastRank.rank;
+                    }
+                }
+                rank.lastRank = 0;
+            }
+        }
+
+    }
+    /**
+     * 拉取排行榜事件
+     */
+    public static getRankListEvent: ActionDispatcher = new ActionDispatcher();
+}
+
+class RankInfo extends BaseServerValueInfo
+{
+    public reset()
+    {
+
+    }
+    /**
+     * id
+     */
+    public userId: number;
+    /**
+     * 昵称
+     */
+    public name: string;
+    /**
+    * 排行榜数值
+    */
+    public score: number;
+    /**
+     * 排行
+     */
+    public rank: number;
+    /**
+     * 上次排行
+     */
+    public lastRank:number;
+    /**
+    * 头像地址
+    */
+    public head: string;
+}

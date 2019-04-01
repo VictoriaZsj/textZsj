@@ -1,0 +1,104 @@
+/**
+ * 加注面板
+ */
+class AddChipsPanel extends BasePanel
+{
+	public addChipsVs: eui.VSlider;
+	public countLable: eui.Label;
+	public allInValue: number;
+    public trumbY:number;
+
+	public constructor()
+	{
+		super();
+		this.skinName = UISkinName.AddChipsPanel;
+	}
+	protected onAwake(event: eui.UIEvent)
+	{
+		super.onAwake(event);
+		this.isMaskClickClose = true;
+
+	}
+	public init(appendData: any)
+	{
+		super.init(appendData);
+		//设置存入滑动条进度
+		this.allInValue = appendData.maximum;
+		this.addChipsVs.value = appendData.followChips;
+		this.countLable.text = this.addChipsVs.value.toString();
+		this.addChipsVs.minimum = appendData.followChips;
+		this.addChipsVs.maximum = appendData.maximum
+		//每次滚动最小刻度数
+		this.addChipsVs.snapInterval = appendData.perChips;
+		this.trumbY=this.addChipsVs.y;
+	}
+	protected onRender(event: egret.Event)
+	{
+		super.onRender(event);
+	}
+	protected onEnable(event: eui.UIEvent): void
+	{
+		super.onEnable(event);
+		this.addChipsVs.addEventListener(egret.Event.CHANGE, this.addChipsHandle, this);
+		this.addChipsVs.thumb.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.confirmAddChips, this);
+		this.addChipsVs.thumb.addEventListener(egret.TouchEvent.TOUCH_END, this.confirmAddChips, this);
+	}
+	protected onDisable(event: eui.UIEvent): void
+	{
+		super.onDisable(event);
+		this.addChipsVs.removeEventListener(egret.Event.CHANGE, this.addChipsHandle, this);
+		this.addChipsVs.thumb.removeEventListener(egret.TouchEvent.TOUCH_BEGIN, this.confirmAddChips, this);
+		this.addChipsVs.thumb.removeEventListener(egret.TouchEvent.TOUCH_END, this.confirmAddChips, this);
+	}
+	/**
+	 * 加注变化
+	*/
+	private addChipsHandle()
+	{
+		this.countLable.text = this.addChipsVs.value.toString();
+        // let offsetY=this.trumbY-this.addChipsVs.thumb.y;
+		// this.countLable.y -=offsetY;
+	} 
+	private _posX: number;
+	private _posY: number;
+	/**
+	 * 确定加注
+	*/
+	public confirmAddChips(event: egret.TouchEvent)
+	{
+		switch (event.type)
+		{
+			case egret.TouchEvent.TOUCH_BEGIN:
+				this._posX = event.stageX;
+				this._posY = event.stageY;
+				break;
+			case egret.TouchEvent.TOUCH_END:
+				if (event.stageX == this._posX && event.stageY == this._posY)
+				{
+					UIManager.closePanel(this);
+					// this.addChipsVs.value  拿到加注值
+				}
+			break;
+		}
+	}
+	
+}
+
+/**
+ * 下注数据
+*/
+class AddChipsData
+{
+    /**
+     * 最大值
+    */
+    public maximum:number;
+    /**
+     * 大盲注值
+    */
+    public perChips:number;
+    /**
+     * 跟注值
+    */
+    public followChips:number;
+}

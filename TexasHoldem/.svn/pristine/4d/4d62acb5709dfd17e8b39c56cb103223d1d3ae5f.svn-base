@@ -1,0 +1,61 @@
+/**
+ * 邀请消息面板
+ */
+class InviteMsgPanel extends BasePanel
+{
+    public cancelBtn:eui.Button;
+	public joinBtn:eui.Button;
+	public headImg:eui.Image;
+	public inviteMsgLable:eui.Label;
+	public constructor()
+	{
+		super();
+		this.skinName = UISkinName.InviteMsgPanel;
+		this.isMaskClickClose=true;
+	}
+	protected onAwake(event: eui.UIEvent)
+	{
+		super.onAwake(event);
+	}
+	public init(appendData: any)
+	{
+		super.init(appendData);
+		let info=FriendManager.getFriendInfoById(appendData);
+		if(info){
+			this.inviteMsgLable.text="你的好友"+info.name+"现在邀请您一起游戏！";
+			this.headImg.source=info.head;
+		}
+		
+	}
+	protected onRender(event: egret.Event)
+	{
+		super.onRender(event);
+	}
+	protected onEnable(event: eui.UIEvent): void
+	{
+		this.cancelBtn.addEventListener(egret.TouchEvent.TOUCH_TAP, this.cancelBtnHandler, this);
+		this.joinBtn.addEventListener(egret.TouchEvent.TOUCH_TAP, this.joinBtnHandler, this);
+		
+		super.onEnable(event);
+	}
+	protected onDisable(event: eui.UIEvent): void
+	{
+		this.cancelBtn.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.cancelBtnHandler, this);
+		this.joinBtn.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.joinBtnHandler, this);
+		super.onDisable(event);
+	}
+	/**
+	 * 不加入房间
+	*/
+	protected cancelBtnHandler(event: egret.TouchEvent)
+	{
+      UIManager.closePanel(this);
+	}
+	/**
+	 * 立即加入房间
+	*/
+	protected joinBtnHandler(event: egret.TouchEvent)
+	{
+      UIManager.closePanel(this);
+	}
+}

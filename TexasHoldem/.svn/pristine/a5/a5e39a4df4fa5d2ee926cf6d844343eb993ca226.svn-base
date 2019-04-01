@@ -1,0 +1,312 @@
+/**
+ * 游戏功能配置定义 
+ */
+class ProjectDefined extends BaseDefined
+{
+	private static readonly projectConfig: string = "project";
+	private static _instance: ProjectDefined;
+	private projectObj: any;
+	/**
+	 * 游戏客户端版本号
+	 */
+	public static readonly version: string = "version";
+	/**
+	 * socket连接超时
+	 */
+	public static readonly onTimeOut: string = "onTimeOut";
+	/**
+	 * 内网登录IP
+	 */
+	public static readonly intranetIp: string = "intranetIp";
+	/**
+	 * 内容登录端口
+	 */
+	public static readonly intranetPort: string = "intranetPort";
+	/**
+	 * 服务器拥挤人数限定
+	 */
+	public static readonly serverCrowded: string = "serverCrowded";
+	/**
+	 * 等待碰杠时间 超时不给碰杠
+	 */
+	public static readonly waitActionTimeClient: string = "waitActionTimeClient";
+	/**
+	 * 出牌超时时间 超时自动本次出牌
+	 */
+	public static readonly putTimeoutClient: string = "putTimeoutClient";
+	/**
+	 * 出牌超时次数 超过次次数 则托管
+	 */
+	public static readonly putTimeoutTimes: string = "putTimeoutTimes";
+	/**
+    * 初始化出牌时间 庄家第一次出牌
+    */
+	public static readonly initPutTimeOutClient: string = "initPutTimeOutClient";
+	/**
+	 * 准备时间倒计时
+	 */
+	public static readonly waitReadyTime: string = "waitReadyTime";
+	/**
+	 * 解散房间等待时间
+	 */
+	public static readonly waitDisbandTime: string = "waitDisbandTime";
+	/**
+	 * 登录地址
+	 */
+	public static readonly address: string = "address";
+	/**
+	 * 登录端口
+	 */
+	public static readonly port: string = "port";
+	/**
+	 * 测试登录地址
+	 */
+	public static readonly testAddress: string = "testAddress";
+	/**
+	 * 测试登录端口
+	 */
+	public static readonly testPort: string = "testPort";
+	/**
+	 * 聊天最大记录时间
+	 */
+	public static readonly chatMaxRecordTime: string = "chatMaxRecordTime";
+	/**
+	 * 语音地址
+	 */
+	public static readonly voiceHost: string = "voiceHost";
+	/**
+	 * 语音测试地址
+	 */
+	public static readonly voiceHostTest: string = "voiceHostTest";
+	/**
+	 * 语音上传地址
+	 */
+	public static readonly voicePath: string = "voicePath";
+	/**
+	 * 版本验证文件
+	 */
+	public static readonly versionUrl: string = "versionUrl";
+	/**
+	 * 维护内容路径
+	 */
+	public static readonly maintainUrl: string = "maintainUrl";
+	/**
+	 * 安装包地址路径
+	 */
+	public static readonly updateUrl: string = "updateUrl";
+
+	/**
+	 * 局数配置
+	 */
+	public round: Array<RoundDefinition>;
+	/**
+	 * 玩法配置
+	 */
+	public playWay: Array<PlayWayDefinition>;
+	/**
+	 * 底分配置
+	 */
+	public antes: Array<AntesDefinition>;
+	/**
+	 * 领房卡数量配置
+	 */
+	public bringRoomCard: Array<BringRoomCardDefinition>;
+	/**
+	 * 游戏反馈配置
+	*/
+	public gameFeedback:GameFeedbackDefinition;
+	/**
+	 * vip等级经验
+	 */
+	public static readonly vipLevel:string = "vipLevel";
+
+	public static GetInstance(): ProjectDefined
+	{
+		if (ProjectDefined._instance == null)
+		{
+			ProjectDefined._instance = new ProjectDefined();
+		}
+		if (DefinedManager.IsParsed(ProjectDefined.projectConfig) == false)
+		{
+			ProjectDefined._instance.initialize();
+		}
+		return ProjectDefined._instance;
+	}
+	public errorList: Array<ErrorDefinition>;
+
+	public initialize()
+	{
+		let obj: Object = DefinedManager.GetData(ProjectDefined.projectConfig);
+		this.projectObj = ShortNameDefined.GetInstance().convertEnter(obj);
+		this.round = this.projectObj.round;
+		this.playWay = this.projectObj.playWay;
+		this.antes = this.projectObj.antes;
+		this.bringRoomCard = this.projectObj.bringRoomCard;
+		this.gameFeedback=this.projectObj.gameFeedback;
+
+		if (this.round)
+		{
+			this.round.forEach((rv: RoundDefinition, ri: number, rarr: RoundDefinition[]) =>
+			{
+				rv.groupName = "round";
+				rv.isRound = true;
+			});
+		}
+		if (this.playWay)
+		{
+			this.playWay.forEach((pv: PlayWayDefinition, pi: number, parr: PlayWayDefinition[]) =>
+			{
+				pv.groupName = "playWay";
+			});
+		}
+		if (this.antes)
+		{
+			this.antes.forEach((value: AntesDefinition, index: number, array: AntesDefinition[]) =>
+			{
+				value.groupName = "antes";
+			});
+		}
+
+	}
+	public getValue(key: string): any
+	{
+		if (this.projectObj)
+		{
+			return this.projectObj[key];
+		}
+		return null;
+	}
+	public getPlayWayDefinition(playWay: number): PlayWayDefinition
+	{
+		for (let way of this.playWay)
+		{
+			if (way.type == playWay)
+			{
+				return way;
+			}
+		}
+		return null;
+	}
+	public getAnteDefinition(score: number): AntesDefinition
+	{
+		for (let ante of this.antes)
+		{
+			if (ante.score == score)
+			{
+				return ante;
+			}
+		}
+		return null;
+	}
+	public getRoundDefinition(roundNum: number): RoundDefinition
+	{
+		for (let def of this.round)
+		{
+			if (def.num == roundNum)
+			{
+				return def;
+			}
+		}
+		return null;
+	}
+	public getBringRoomCardDefinition(type: string): BringRoomCardDefinition
+	{
+		for (let def of this.bringRoomCard)
+		{
+			if (def.type == type)
+			{
+				return def;
+			}
+		}
+		return null;
+	}
+}
+/**
+ * 局数定义
+ */
+class RoundDefinition
+{
+	/**
+	 * 消耗房卡
+	 */
+	public cost: number;
+	/**
+	 * 对局数量
+	 */
+	public num: number;
+	/**
+	 * 描述
+	 */
+	public des;
+	/**
+	 * 组名
+	 */
+	public groupName: string;
+	/**
+	 * 是否是创建房间
+	 */
+	public isRound: boolean;
+}
+/**
+ * 玩法定义
+ */
+class PlayWayDefinition
+{
+	/**
+	 * 类型
+	 */
+	public type: number;
+	/**
+	 * 描述
+	 */
+	public des: string;
+	/**
+	 * 组名
+	 */
+	public groupName: string;
+}
+/**
+ * 底分定义
+ */
+class AntesDefinition
+{
+	/**
+	 * 底分
+	 */
+	public score: number;
+	/**
+	 * 描述
+	 */
+	public des: string;
+	/**
+	 * 组名
+	 */
+	public groupName: string;
+}
+/**
+ * 底分定义
+ */
+class BringRoomCardDefinition
+{
+	/**
+	 * 类型
+	 */
+	public type: string;
+	/**
+	 * 朋友获得的数量
+	 */
+	public friend: number;
+	/**
+	 * 我获得的数量
+	 */
+	public your: number;
+}
+/**
+ * 游戏反馈
+*/
+class GameFeedbackDefinition
+{
+    public forum:string;
+	public QQ:string;
+	public customerService:string;
+}

@@ -1,0 +1,10 @@
+/**
+ * 牌局面板辅助
+ */
+class GamblingPanelLogicSupport extends BaseGamblingPanelSupport
+{
+	public initialize()
+	{
+		super.initialize();
+	}
+}

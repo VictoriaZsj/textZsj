@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="GamblingPanelSkin" width="720" height="1280" xmlns:e="http://ns.egret.com/eui" xmlns:ns1="*" xmlns:w="http://ns.egret.com/wing">
+	<e:Group id="tweenGroup">
+		<e:Group id="funcGroup" horizontalCenter="0" verticalCenter="0" width="100%" height="100%" locked="true">
+			<e:Image left="0" right="0" top="0" bottom="0" source="bg_page30_png" scale9Grid="1,1,10,10" locked="true"/>
+			<e:Group x="17.5" y="211">
+			<e:Button id="chargeBtn" label="充值商城" anchorOffsetX="0" width="276" anchorOffsetY="0" height="82" y="-246" x="28" scaleX="1" scaleY="1" horizontalCenter="-32"/>
+			<e:Button id="safeBtn" label="保险箱" anchorOffsetX="0" width="276" anchorOffsetY="0" height="82" horizontalCenter="0" y="-497" x="28" scaleX="1" scaleY="1"/>
+			<e:Button id="mailBtn" label="邮箱" anchorOffsetX="0" width="276" anchorOffsetY="0" height="82" horizontalCenter="0" y="-487" x="28" scaleX="1" scaleY="1"/>
+			<e:Button id="luckyBoxBtn" label="幸运盒" anchorOffsetX="0" width="276" anchorOffsetY="0" height="82" horizontalCenter="0" y="-477" x="28" scaleX="1" scaleY="1"/>
+			<e:Button id="activityBtn" label="活动中心" anchorOffsetX="0" width="276" anchorOffsetY="0" height="82" y="-363" horizontalCenter="-68" x="-40" scaleX="1" scaleY="1"/>
+			<e:Button id="helpBtn" label="帮助" anchorOffsetX="0" width="276" anchorOffsetY="0" height="82" y="-161" horizontalCenter="-98" x="-70" scaleX="1" scaleY="1"/>
+			<e:layout>
+				<e:VerticalLayout gap="84"/>
+			</e:layout>
+			</e:Group>
+		</e:Group>
+		<e:Button id="closeButton" label="返回大厅" anchorOffsetX="0" width="276" anchorOffsetY="0" height="82" horizontalCenter="-204" y="39" x="28" scaleX="1" scaleY="1"/>
+		<e:Group id="gameGroup" touchEnabled="false" anchorOffsetY="0" height="1280" width="720">
+			<e:Image width="100%" height="100%" source="bg_page18_png" horizontalCenter="0" verticalCenter="0" scale9Grid="13,14,31,36" locked="true"/>
+			<e:Button id="optionsBtn" label="菜单" y="11" x="26.95" scaleX="1" scaleY="1" skinName="buttonSkin1" anchorOffsetX="0" width="110"/>
+			<e:Button id="buyBtn" label="购买" y="11" x="589" scaleX="1" scaleY="1" skinName="buttonSkin1" anchorOffsetX="0" width="110"/>
+			<e:Button id="onlineAwardBtn" label="在线奖励" x="523" y="1158" scaleX="1" scaleY="1" skinName="buttonSkin1" anchorOffsetX="0" width="110"/>
+			<e:Button id="guessCardBtn" label="猜牌" y="1158" x="0" scaleX="1" scaleY="1" skinName="buttonSkin1" anchorOffsetX="0" width="110"/>
+			<e:Button id="achieveBtn" label="成就" x="114.64" y="1158" scaleX="1" scaleY="1" skinName="buttonSkin1" anchorOffsetX="0" width="110"/>
+			<e:Button id="chatBtn" label="Button" x="637" y="1170.5" scaleX="1" scaleY="1" skinName="buttonSkin22"/>
+			<e:Group anchorOffsetY="0" x="43.95" y="698">
+				<e:Label text="房间ID:" textAlign="left" anchorOffsetX="0" size="24" anchorOffsetY="0" fontFamily="Microsoft YaHei" width="95" height="28.33" textColor="0xb24f42" scaleX="1" scaleY="1" horizontalCenter="-52.5" verticalCenter="0"/>
+				<e:Label id="roomIdLabel" text="999999" textAlign="left" anchorOffsetX="0" size="24" anchorOffsetY="0" fontFamily="Microsoft YaHei" height="27.33" textColor="0xffc672" scaleX="1" scaleY="1" y="86" verticalCenter="0" horizontalCenter="31.5"/>
+			</e:Group>
+			<e:Group anchorOffsetY="0" x="263" y="698">
+				<e:Label text="盲注：" textAlign="left" anchorOffsetX="0" size="24" anchorOffsetY="0" fontFamily="Microsoft YaHei" width="95" height="28.33" textColor="0xb24f42" scaleX="1" scaleY="1" horizontalCenter="-52.5" verticalCenter="0"/>
+				<e:Label id="roundTypeLabel" text="25/25" size="24" anchorOffsetY="0" anchorOffsetX="0" width="124.3" scaleX="1" scaleY="1" fontFamily="Microsoft YaHei" height="23" textColor="0xffc672" horizontalCenter="33" verticalCenter="-1.5"/>
+			</e:Group>
+			<e:Group anchorOffsetY="0" x="467" y="698">
+				<e:Label text="底池：" textAlign="left" anchorOffsetX="0" size="24" anchorOffsetY="0" fontFamily="Microsoft YaHei" width="95" height="28.33" textColor="0xb24f42" horizontalCenter="-37.5" verticalCenter="0" x="73" y="34" scaleX="1" scaleY="1"/>
+				<e:Label id="roundNumLabel" text="123" textAlign="left" size="24" anchorOffsetY="0" anchorOffsetX="0" width="132" scaleX="1" scaleY="1" fontFamily="Microsoft YaHei" height="25.67" textColor="0xffc672" horizontalCenter="50" verticalCenter="0" x="152" y="35"/>
+			</e:Group>
+            <ns1:GamblingHeadComponent id="pit1" skinName="GamblingHeadComponentSkin" horizontalCenter="-7" verticalCenter="413"/>
+			<ns1:GamblingHeadComponent id="pit2" skinName="GamblingHeadComponentSkin" horizontalCenter="-311" verticalCenter="184"/>
+			<ns1:GamblingHeadComponent id="pit3" skinName="GamblingHeadComponentSkin" horizontalCenter="-311" verticalCenter="-164"/>
+			<ns1:GamblingHeadComponent id="pit4" skinName="GamblingHeadComponentSkin" horizontalCenter="-311" verticalCenter="-366"/>
+			<ns1:GamblingHeadComponent id="pit5" skinName="GamblingHeadComponentSkin" horizontalCenter="-90" verticalCenter="-478"/>
+			<ns1:GamblingHeadComponent id="pit6" skinName="GamblingHeadComponentSkin" horizontalCenter="133" verticalCenter="-478"/>
+			<ns1:GamblingHeadComponent id="pit7" skinName="GamblingHeadComponentSkin" horizontalCenter="308" verticalCenter="-366"/>
+			<ns1:GamblingHeadComponent id="pit8" skinName="GamblingHeadComponentSkin" horizontalCenter="308" verticalCenter="-164"/>
+			<ns1:GamblingHeadComponent id="pit9" skinName="GamblingHeadComponentSkin" horizontalCenter="308" verticalCenter="184"/>
+			<ns1:GamblingActionComponent id="actionGroup" skinName="GamblingActionComponentSkin" horizontalCenter="0" verticalCenter="385"/>
+			<e:Image id="buttonPosFlagImg" source="jiantou_png" x="258.5" y="964" scaleX="1" scaleY="1"/>
+		</e:Group>
+	</e:Group>
+</e:Skin>

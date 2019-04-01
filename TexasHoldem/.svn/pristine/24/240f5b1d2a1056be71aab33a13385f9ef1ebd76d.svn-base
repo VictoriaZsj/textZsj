@@ -1,0 +1,224 @@
+/**
+ * 碰杠牌处理 
+ */
+class GroupCardHandler
+{
+	public static GroupMoveAction: string = "GroupMoveEvent";
+
+	private _groupCount: number = 0;
+	private _posType: PosType;
+	private _list: Array<GroupCardDefinition>;
+	private _cardList: Array<GroupCard>;
+
+	private _moveEvent: UIModuleEvent;
+	public static moveAd:ActionDispatcher = new ActionDispatcher();
+	private _eventObj: any;
+	private _layerContainer: LayerContainer;
+
+	public constructor(posType: PosType, layerContainer: LayerContainer)
+	{
+		this._layerContainer = layerContainer;
+
+		this._posType = posType;
+		this._groupCount = 0;
+		this._cardList = new Array<GroupCard>();
+		this._list = CardShowDefined.GetInstance().groupCardMap.getValue(this._posType);
+		this._moveEvent = new UIModuleEvent(UIModuleEvent.CHANGE, GroupCardHandler.GroupMoveAction);
+		this._eventObj = {};
+	}
+	public addGroup(pengGangType: GroupCardType, card: number)
+	{
+		let total: number;
+		let actionType: ActionType;
+		if (pengGangType > GroupCardType.PengShangJia)
+		{
+			total = 4;
+			actionType = ActionType.Gang;
+			if (pengGangType > GroupCardType.GangShangJia)
+			{
+				actionType = ActionType.AnGang;
+			}
+		}
+		else
+		{
+			total = 3;
+			actionType = ActionType.Peng;
+		}
+		let groupCard: GroupCard;
+		let def: GroupCardDefinition;
+
+		for (let i = 1; i <= total; i++)
+		{
+			def = this.getGroupCardDef(pengGangType, i);
+			if (def)
+			{
+				groupCard = new GroupCard(def, card, this.initX + this.offsetX * this._groupCount, this.initY + this.offsetY * this._groupCount, this._groupCount);
+				// this._layerContainer.addChild(groupCard);
+				this._cardList.push(groupCard);
+			}
+		}
+		this.showByY();
+		this._eventObj.pos = this._posType;
+		this._groupCount++;
+		this.dispatchMoveEvent();
+	}
+	/**
+	 * 添加补杠牌显示
+	 */
+	public addBuGangGroup(pengGangType: GroupCardType, card: number)
+	{
+		this.reShowGroupCard(pengGangType, card, 4);
+	}
+	/**
+	 * 回退补杠
+	 */
+	public revertBuGang(pengGangType: GroupCardType, card: number)
+	{
+		this.reShowGroupCard(pengGangType, card, 3);
+	}
+	private reShowGroupCard(pengGangType: GroupCardType, card: number, total: number)
+	{
+		let groupCard: GroupCard;
+		let groupCount: number;
+		for (let i: number = this._cardList.length - 1; i >= 0; i--)
+		{
+			groupCard = this._cardList[i];
+			if (groupCard.card == card)
+			{
+				groupCount = groupCard.groupCount;
+				this._layerContainer.removeChild(groupCard);
+				this._cardList.splice(i, 1);
+			}
+		}
+		let def: GroupCardDefinition;
+		for (let i = 1; i <= total; i++)
+		{
+			def = this.getGroupCardDef(pengGangType, i);
+			if (def)
+			{
+				groupCard = new GroupCard(def, card, this.initX + this.offsetX * groupCount, this.initY + this.offsetY * groupCount, groupCount);
+				// this._layerContainer.addChild(groupCard);
+				this._cardList.push(groupCard);
+			}
+		}
+		this.showByY();
+	}
+	private dispatchMoveEvent()
+	{
+		this._eventObj.offsetX = this.offsetX * this._groupCount;
+		this._eventObj.offsetY = this.offsetY * this._groupCount;
+		this._moveEvent.data = this._eventObj;
+
+		GroupCardHandler.moveAd.dispatch(this._eventObj);
+	}
+	private get initX(): number
+	{
+		switch (this._posType)
+		{
+			case PosType.BenJia:
+				return 1038;
+			case PosType.DuiJia:
+				return 302;
+			case PosType.XiaJia:
+				return 1020;
+			case PosType.ShangJia:
+				return 0;
+		}
+	}
+	private get initY(): number
+	{
+		switch (this._posType)
+		{
+			case PosType.BenJia:
+				return 556;
+			case PosType.DuiJia:
+				return 5;
+			case PosType.XiaJia:
+				return 75;
+			case PosType.ShangJia:
+				return 430;
+		}
+	}
+	private get offsetX(): number
+	{
+		switch (this._posType)
+		{
+			case PosType.BenJia:
+				return -200;
+			case PosType.DuiJia:
+				return 128;
+			case PosType.XiaJia:
+				return 45;
+			case PosType.ShangJia:
+				return 45;
+		}
+	}
+	private get offsetY(): number
+	{
+		switch (this._posType)
+		{
+			case PosType.BenJia:
+			case PosType.DuiJia:
+				return 0;
+			case PosType.XiaJia:
+				return 102;
+			case PosType.ShangJia:
+				return -102;
+		}
+	}
+	private showByY()
+	{
+		this._cardList.sort(this.sortByLayer);
+		let groupCard: GroupCard;
+		// if (this._posType == PosType.ShangJia)
+		// {
+		// 	for (let i: number = 0; i < this._cardList.length; i++)
+		// 	{
+		// 		groupCard = this._cardList[i];
+		// 		this._layerContainer.addChild(groupCard);
+		// 	}
+		// }
+		// else
+		// {
+		for (let i: number = this._cardList.length - 1; i >= 0; i--)
+		{
+			groupCard = this._cardList[i];
+			this._layerContainer.addChild(groupCard);
+		}
+		// }
+
+		// UIUtil.refreshSortContainer<GroupCard, LayerContainer>(this._cardList, this._layerContainer);
+	}
+	private sortByLayer(a: GroupCard, b: GroupCard)
+	{
+		if (a.cardDef.layer > b.cardDef.layer)
+		{
+			return 1;
+		}
+		if (a.cardDef.layer < b.cardDef.layer)
+		{
+			return -1;
+		}
+		return 0;
+	}
+	public clear()
+	{
+		this._groupCount = 0;
+		ArrayUtil.Clear(this._cardList);
+		this._layerContainer.removeChildren();
+	}
+	public getGroupCardDef(pengGangType: GroupCardType, posNum: number): GroupCardDefinition
+	{
+		if (this._list)
+		{
+			for (let def of this._list)
+			{
+				if (def.groupType == pengGangType && def.cardType == posNum)
+				{
+					return def;
+				}
+			}
+		}
+		return null;
+	}
+}

@@ -1,0 +1,30 @@
+class MathUtil
+{
+	// Obtient une valeur comprise dans un interval
+	public static clamp(value, min, max):number
+	{
+		if (value < min)
+		{
+			return min;
+		}
+		else if (value > max)
+		{
+			return max;
+		}
+		return value;
+	};
+	// Obtient une interpolation linéaire entre 2 valeurs
+	public static lerp(value1, value2, amount):number
+	{
+		amount = amount < 0 ? 0 : amount;
+		amount = amount > 1 ? 1 : amount;
+		return value1 + (value2 - value1) * amount;
+	}
+	/**
+	 * 获取一个随机值含头尾
+	 */
+	public static getRandom(start:number, end:number):number
+	{
+		return Math.round(Math.random() * (end - start)) + start;
+	}
+}

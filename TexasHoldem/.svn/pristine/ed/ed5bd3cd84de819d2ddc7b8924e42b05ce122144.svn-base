@@ -1,0 +1,105 @@
+/**
+ * 锦标赛管理
+ */
+class ChampionshipManager
+{
+    /**
+     * 锦标赛赛事列表
+    */
+    public static matchList: Array<MatchRoomInfo>;
+    /**
+     * 锦标赛已报名赛事列表
+    */
+    public static applicationList: Array<ApplicationInfo>;
+    /**
+	 * 发送房间信息获取请求
+	 */
+    public static reqMatchListInfo()
+    {
+        //todo 协议待添加
+        SocketManager.AddCommandListener(Command.Req_RoomInfo_3002, ChampionshipManager.MatchListInfoResponse);
+        SocketManager.Send(Command.Req_RoomInfo_3002);
+    }
+    public static MatchListInfoResponse(result: SpRpcResult)
+    {
+        SocketManager.RemoveCommandListener(Command.Req_RoomInfo_3002, ChampionshipManager.MatchListInfoResponse);
+        if (result.data)
+        {
+            if (!PlayingFieldManager.roomList)
+            {
+                ChampionshipManager.matchList = new Array<MatchRoomInfo>();
+            }
+            ChampionshipManager.matchList = result.data['matchList'];
+            ChampionshipManager.onGetMatchListEvent.dispatch();
+        }
+    }
+    /**
+	 * 请求赛事列表事件
+	 */
+    public static onGetMatchListEvent: ActionDispatcher = new ActionDispatcher();
+}
+/**
+ * 已报名赛事信息
+*/
+class ApplicationInfo extends BaseServerValueInfo
+{
+    /**
+     * 赛事ID
+    */
+    public id: number;
+    public reset()
+    {
+
+    }
+}
+/**
+ * 锦标赛赛事信息
+*/
+class MatchRoomInfo extends ApplicationInfo
+{
+    /**
+     * 赛事icon
+    */
+    public icon: string;
+    /**
+     * 名称
+    */
+    public name: string;
+    /**
+     * 报名费
+    */
+    public price: number;
+    /**
+     * 手续费
+    */
+    public tax: number;
+    /**
+     * 总人数
+    */
+    public allNum: number;
+    /**
+     * 已报名人数
+    */
+    public applyNum: number;
+    /**
+     * 是否可重购
+    */
+    public isRebuy: number;
+    /**
+     * 是否可增购
+    */
+    public isAddon: number;
+    /**
+     * 赛事开始时间
+    */
+    public startTime: number;
+    /**
+     * 赛事延迟报名时间
+    */
+    public delayTime: number;
+
+    public reset()
+    {
+
+    }
+}

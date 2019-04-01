@@ -1,0 +1,84 @@
+class CallDispatcher<T>
+{
+	private _map: Dictionary<string, Array<ActionFunction>> = new Dictionary<string, Array<ActionFunction>>();
+	/**
+	 * 销毁
+	 */
+	public dispose()
+	{
+		this._map = null;
+	}
+	public clear()
+	{
+		this._map.clear();
+	}
+	/**
+	 * 已添加回调侦听的呼叫类型数量
+	 */
+	public get count(): number
+	{
+		return this._map.count;
+	}
+	/**
+	 * 添加呼叫回调侦听(自动过滤重复的方法)
+	 */
+	public addListener(callId: string, listener: Function, thisObject: any)
+	{
+		let list: Array<ActionFunction> = this._map.getValue(callId);
+		if (list)
+		{
+			for (let item of list)
+			{
+				if (item.func == listener && item.thisObject == thisObject)
+				{
+					return;
+				}
+			}
+		}
+		else
+		{
+			list = new Array<ActionFunction>();
+			this._map.add(callId, list);
+		}
+		list.push(new ActionFunction(listener, thisObject));
+	}
+	/**
+	 * 移除呼叫回调
+	 */
+	public removeListener(callId: string, listener: Function, thisObject: any)
+	{
+		let list: Array<ActionFunction> = this._map.getValue(callId);
+		if (list)
+		{
+			let item:ActionFunction;
+			for (let i: number = 0; i < list.length; i++)
+			{
+				item = list[i];
+				if (item.func == listener && item.thisObject == thisObject)
+				{
+					list.splice(i, 1);
+					break;
+				}
+			}
+		}
+	}
+	/**
+	 * 广播呼叫回调
+	 */
+	public dispatch(callId: string, data?: T)
+	{
+		let list: Array<ActionFunction> = this._map.getValue(callId);
+		if (list)
+		{
+			let count = list.length;
+			for (let i: number = 0; i < list.length; i++)
+			{
+				list[i].invoke(data);
+				if (list.length < count)
+				{
+					i -= (count - list.length);
+				}
+			}
+		}
+	}
+}

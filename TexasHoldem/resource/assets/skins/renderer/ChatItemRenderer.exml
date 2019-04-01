@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="chatItemRenderer" width="720" xmlns:e="http://ns.egret.com/eui" xmlns:ns1="*"
+        xmlns:w="http://ns.egret.com/wing">
+    <e:Image id="bgImage" width="695" anchorOffsetX="0" anchorOffsetY="0" scale9Grid="2,2,8,8" source="bg_page19_3_png"
+             y="2" horizontalCenter="-2.5" />
+    <e:Label id="textLabel" text="名字：内容内容内容内容" y="10" fontFamily="SimHei" size="30" textColor="0xa0522b"
+             anchorOffsetX="0" width="695" x="10"  anchorOffsetY="0" verticalAlign="middle"/>
+</e:Skin>

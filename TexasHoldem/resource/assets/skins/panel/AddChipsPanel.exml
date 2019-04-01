@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="addChipsPanelSkin" width="88" height="542.99" xmlns:e="http://ns.egret.com/eui"
+        xmlns:w="http://ns.egret.com/wing" xmlns:ns1="*" xmlns:tween="egret.tween.*">
+        <e:Group id="tweenGroup" width="87" height="542" anchorOffsetY="0" x="1" y="0.66" touchEnabled="true" touchThrough="true">
+					<e:VSlider id="addChipsVs" width="67" height="542" x="9" y="-1" anchorOffsetX="0" anchorOffsetY="0" skinName="CustomVSliderSkin"/>
+					<e:Label id="countLable" text="Label" x="-53" y="487" size="25"/>
+
+
+
+
+
+
+        </e:Group>
+
+
+</e:Skin>

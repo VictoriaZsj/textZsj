@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="ShoppingPanelSkin" width="720" height="1280" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing"
+        xmlns:ns1="*" xmlns:tween="egret.tween.*">
+	<w:Config id="15c813d330f" />
+	<e:Group id="anmGroup" width="720" height="100" x="0" y="0">
+		<e:Image id="bg" width="720" height="100" x="0" y="0" source="bg_page4_2_png"/>
+		<e:Image id="titleImg" width="300" height="80" y="10" source="bg_page3_2_png" x="210" scaleX="1" scaleY="1"/>
+		<e:Button id="closeButton" label="返回" x="50" y="50" skinName="buttonSkin2" width="150" scaleX="0.5" height="80" scaleY="0.9" anchorOffsetX="75" anchorOffsetY="40"/>
+	</e:Group>
+
+	<e:Group id="anmGroup1" width="720" height="1180" x="0" y="100" anchorOffsetY="0">
+		<e:Image width="720" height="1180" x="0" y="3.03" source="bg_page2_png" scale9Grid="21,20,106,107" anchorOffsetY="0" />
+
+
+
+
+
+		<e:Label text="商城" x="318" y="75" size="50" textColor="0xdd1c1c" bold="true" />
+		<ns1:TabComponent id="shoppingTab" width="700" height="800" y="160" anchorOffsetX="0" anchorOffsetY="0" x="11"/>
+		<e:Group id="goldGroup" width="700" height="700" y="233" anchorOffsetX="0" anchorOffsetY="0" name="金币" x="0">
+			<e:Scroller id="gold_scroller" width="660" height="660" y="20" anchorOffsetX="0" x="20">	
+			</e:Scroller>
+			<e:List id="goldList" width="660" height="660" anchorOffsetX="0" anchorOffsetY="0" y="20" x="20">
+			<e:layout>
+				<e:TileLayout rowHeight="190" requestedColumnCount="3" horizontalAlign="center" verticalAlign="top" orientation="rows" horizontalGap="17" verticalGap="11"/>
+			</e:layout>
+			</e:List>
+		</e:Group>
+
+		<e:Group id="diamondGroup" width="700" height="700" y="233" anchorOffsetX="0" anchorOffsetY="0" name="钻石" x="0">
+			<e:Scroller id="diamond_scroller" width="660" height="660" y="20" anchorOffsetX="0" x="20">
+			<e:Group/>
+			</e:Scroller>
+			<e:List id="diamondList" width="660" height="660" anchorOffsetX="0" anchorOffsetY="0" y="20" x="20">
+			<e:layout>
+				<e:TileLayout orientation="rows" requestedColumnCount="3" rowHeight="190" horizontalAlign="center" verticalAlign="top" horizontalGap="17" verticalGap="11"/>
+			</e:layout>
+			</e:List>
+		</e:Group>
+
+		<e:Group id="vipGroup" width="700" height="700" y="233" anchorOffsetX="0" anchorOffsetY="0" name="VIP" x="0">
+			<e:Scroller id="vip_scroller" width="660" height="660" y="20" anchorOffsetX="0" x="20">	
+			</e:Scroller>
+			<e:List id="vipList" width="660" height="660" anchorOffsetX="0" anchorOffsetY="0" y="20" x="20">
+			<e:layout>
+				<e:VerticalLayout gap="12" horizontalAlign="center" verticalAlign="top" paddingLeft="0"/>
+			</e:layout>
+			</e:List>
+		</e:Group>
+				<e:Group id="diamondNumLabelGroup" touchChildren="true" width="225" height="65" anchorOffsetY="0" anchorOffsetX="0" x="20" y="1100" scaleX="1" scaleY="1">
+			<e:Image anchorOffsetX="0" anchorOffsetY="0" source="bg_page3_2_png" verticalCenter="0" x="0" width="200"/>
+			<e:Image id="diamondImg" anchorOffsetX="0" anchorOffsetY="0" source="button_8_png" scaleX="1" scaleY="1" touchEnabled="true" verticalCenter="-2" x="0"/>
+			<e:Label id="diamondNumLabel" text="1000万" size="30" textAlign="left" fontFamily="SimHei" scaleX="1" scaleY="1" touchEnabled="false" textColor="0xFFC871" y="18" x="60"/>
+		</e:Group>
+		<e:Group id="goldNumLabelGroup" touchChildren="true" width="225" height="65" anchorOffsetY="0" anchorOffsetX="0" x="265" y="1100" scaleX="1" scaleY="1">
+			<e:Image anchorOffsetX="0" anchorOffsetY="0" source="bg_page3_2_png" verticalCenter="0" x="0" width="200"/>
+			<e:Image id="goldImg" anchorOffsetX="0" anchorOffsetY="0" source="button_8_png" scaleX="1" scaleY="1" touchEnabled="true" verticalCenter="-2" x="0"/>
+			<e:Label id="goldNumLabel" text="1000万" size="30" textAlign="left" fontFamily="SimHei" scaleX="1" scaleY="1" touchEnabled="false" textColor="0xFFC871" y="18" x="60"/>
+		</e:Group>
+
+
+
+
+
+
+
+
+
+	</e:Group>
+
+</e:Skin>

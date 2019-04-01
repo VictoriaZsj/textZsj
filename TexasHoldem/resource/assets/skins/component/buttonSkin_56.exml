@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="buttonSkin_56" width="216" height="80" xmlns:e="http://ns.egret.com/eui">
+<e:Image  id="btnImg" x="0" y="0" anchorOffsetX="0" anchorOffsetY="0" source="xuyimajiang_png"/>
+</e:Skin>

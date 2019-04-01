@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="panelSkin1" width="1280" height="140" xmlns:ns1="*" xmlns:e="http://ns.egret.com/eui"
+        xmlns:w="http://ns.egret.com/wing">
+    <e:Group id="tweenGroup" horizontalCenter="0" verticalCenter="0">
+        <ns1:GameButton id="weixinLoginBtn" label="微信登录" anchorOffsetX="75.63"
+                   anchorOffsetY="0" skinName="buttonSkin1" verticalCenter="0" horizontalCenter="410" scaleX="1.3" scaleY="1.3"/>
+        <ns1:GameButton id="guestBtn" label="游客登录"  skinName="buttonSkin27" horizontalCenter="0" verticalCenter="0" scaleX="1.3" scaleY="1.3"/>
+        <ns1:GameButton id="intranetAccountBtn" label="内网登录"  verticalCenter="0" horizontalCenter="-410" skinName="buttonSkin28" scaleX="1.3" scaleY="1.36"/>
+    </e:Group>
+</e:Skin>

@@ -1,0 +1,303 @@
+[ {
+  "id" : 1,
+  "type" : 0,
+  "rewardType" : [ 5 ],
+  "rewardId" : [ 1 ],
+  "rewardNum" : [ 5000 ],
+  "mailId" : 1
+}, {
+  "id" : 2,
+  "type" : 0,
+  "rewardType" : [ 5 ],
+  "rewardId" : [ 1 ],
+  "rewardNum" : [ 50000 ],
+  "mailId" : 2
+}, {
+  "id" : 3,
+  "type" : 0,
+  "rewardType" : [ 5 ],
+  "rewardId" : [ 1 ],
+  "rewardNum" : [ 500000 ],
+  "mailId" : 3
+}, {
+  "id" : 101,
+  "type" : 0,
+  "costType" : [ 3 ],
+  "costNum" : [ 99 ],
+  "rewardType" : [ 5 ],
+  "rewardId" : [ 5 ],
+  "rewardNum" : [ 1 ],
+  "name" : "1个月VIP"
+}, {
+  "id" : 102,
+  "type" : 0,
+  "costType" : [ 3 ],
+  "costNum" : [ 499 ],
+  "rewardType" : [ 5 ],
+  "rewardId" : [ 5 ],
+  "rewardNum" : [ 6 ],
+  "name" : "6个月VIP"
+}, {
+  "id" : 103,
+  "type" : 0,
+  "costType" : [ 3 ],
+  "costNum" : [ 999 ],
+  "rewardType" : [ 5, 5 ],
+  "rewardId" : [ 6, 3 ],
+  "rewardNum" : [ 1, 200 ],
+  "name" : "年费VIP"
+}, {
+  "id" : 801,
+  "type" : 0,
+  "costType" : [ 10 ],
+  "costNum" : [ 6 ],
+  "rewardType" : [ 5 ],
+  "rewardId" : [ 1 ],
+  "rewardNum" : [ 65000 ],
+  "name" : "6.5万金币",
+  "des" : "1元=1.08万"
+}, {
+  "id" : 802,
+  "type" : 0,
+  "costType" : [ 10 ],
+  "costNum" : [ 18 ],
+  "rewardType" : [ 5 ],
+  "rewardId" : [ 1 ],
+  "rewardNum" : [ 200000 ],
+  "name" : "20万金币",
+  "des" : "1元=1.11万"
+}, {
+  "id" : 803,
+  "type" : 0,
+  "costType" : [ 10 ],
+  "costNum" : [ 68 ],
+  "rewardType" : [ 5 ],
+  "rewardId" : [ 1 ],
+  "rewardNum" : [ 860000 ],
+  "name" : "86万金币",
+  "des" : "1元=1.26万"
+}, {
+  "id" : 804,
+  "type" : 0,
+  "costType" : [ 10 ],
+  "costNum" : [ 128 ],
+  "rewardType" : [ 5 ],
+  "rewardId" : [ 1 ],
+  "rewardNum" : [ 1830000 ],
+  "name" : "183万金币",
+  "des" : "1元=1.42万"
+}, {
+  "id" : 805,
+  "type" : 0,
+  "costType" : [ 10 ],
+  "costNum" : [ 328 ],
+  "rewardType" : [ 5 ],
+  "rewardId" : [ 1 ],
+  "rewardNum" : [ 5100000 ],
+  "name" : "510万金币",
+  "des" : "1元=1.55万"
+}, {
+  "id" : 806,
+  "type" : 0,
+  "costType" : [ 10 ],
+  "costNum" : [ 648 ],
+  "rewardType" : [ 5 ],
+  "rewardId" : [ 1 ],
+  "rewardNum" : [ 12000000 ],
+  "name" : "1200万金币",
+  "des" : "1元=1.85万"
+}, {
+  "id" : 821,
+  "type" : 0,
+  "costType" : [ 10 ],
+  "costNum" : [ 6 ],
+  "rewardType" : [ 5 ],
+  "rewardId" : [ 2 ],
+  "rewardNum" : [ 6 ],
+  "name" : "6钻石"
+}, {
+  "id" : 822,
+  "type" : 0,
+  "costType" : [ 10 ],
+  "costNum" : [ 18 ],
+  "rewardType" : [ 5 ],
+  "rewardId" : [ 2 ],
+  "rewardNum" : [ 18 ],
+  "name" : "18钻石"
+}, {
+  "id" : 823,
+  "type" : 0,
+  "costType" : [ 10 ],
+  "costNum" : [ 68 ],
+  "rewardType" : [ 5 ],
+  "rewardId" : [ 2 ],
+  "rewardNum" : [ 68 ],
+  "name" : "68钻石"
+}, {
+  "id" : 824,
+  "type" : 0,
+  "costType" : [ 10 ],
+  "costNum" : [ 128 ],
+  "rewardType" : [ 5 ],
+  "rewardId" : [ 2 ],
+  "rewardNum" : [ 128 ],
+  "name" : "128钻石"
+}, {
+  "id" : 825,
+  "type" : 0,
+  "costType" : [ 10 ],
+  "costNum" : [ 328 ],
+  "rewardType" : [ 5 ],
+  "rewardId" : [ 2 ],
+  "rewardNum" : [ 328 ],
+  "name" : "328钻石"
+}, {
+  "id" : 826,
+  "type" : 0,
+  "costType" : [ 10 ],
+  "costNum" : [ 648 ],
+  "rewardType" : [ 5 ],
+  "rewardId" : [ 2 ],
+  "rewardNum" : [ 648 ],
+  "name" : "648钻石"
+}, {
+  "id" : 1101,
+  "type" : 0,
+  "rewardType" : [ 5 ],
+  "rewardId" : [ 301 ],
+  "rewardNum" : [ 1 ],
+  "mailId" : 4
+}, {
+  "id" : 1102,
+  "type" : 0,
+  "rewardType" : [ 5 ],
+  "rewardId" : [ 1 ],
+  "rewardNum" : [ 100000 ],
+  "mailId" : 4
+}, {
+  "id" : 1103,
+  "type" : 0,
+  "rewardType" : [ 5 ],
+  "rewardId" : [ 1 ],
+  "rewardNum" : [ 90000 ],
+  "mailId" : 4
+}, {
+  "id" : 1104,
+  "type" : 0,
+  "rewardType" : [ 5 ],
+  "rewardId" : [ 1 ],
+  "rewardNum" : [ 80000 ],
+  "mailId" : 4
+}, {
+  "id" : 1105,
+  "type" : 0,
+  "rewardType" : [ 5 ],
+  "rewardId" : [ 1 ],
+  "rewardNum" : [ 70000 ],
+  "mailId" : 4
+}, {
+  "id" : 1106,
+  "type" : 0,
+  "rewardType" : [ 5 ],
+  "rewardId" : [ 1 ],
+  "rewardNum" : [ 60000 ],
+  "mailId" : 4
+}, {
+  "id" : 1107,
+  "type" : 0,
+  "rewardType" : [ 5 ],
+  "rewardId" : [ 1 ],
+  "rewardNum" : [ 50000 ],
+  "mailId" : 4
+}, {
+  "id" : 1108,
+  "type" : 0,
+  "rewardType" : [ 5 ],
+  "rewardId" : [ 1 ],
+  "rewardNum" : [ 40000 ],
+  "mailId" : 4
+}, {
+  "id" : 1109,
+  "type" : 0,
+  "rewardType" : [ 5 ],
+  "rewardId" : [ 1 ],
+  "rewardNum" : [ 30000 ],
+  "mailId" : 4
+}, {
+  "id" : 1110,
+  "type" : 0,
+  "rewardType" : [ 5 ],
+  "rewardId" : [ 1 ],
+  "rewardNum" : [ 20000 ],
+  "mailId" : 4
+}, {
+  "id" : 1201,
+  "type" : 0,
+  "rewardType" : [ 5 ],
+  "rewardId" : [ 201 ],
+  "rewardNum" : [ 1 ],
+  "mailId" : 4
+}, {
+  "id" : 1202,
+  "type" : 0,
+  "rewardType" : [ 5 ],
+  "rewardId" : [ 2 ],
+  "rewardNum" : [ 300 ],
+  "mailId" : 4
+}, {
+  "id" : 1203,
+  "type" : 0,
+  "rewardType" : [ 5 ],
+  "rewardId" : [ 2 ],
+  "rewardNum" : [ 200 ],
+  "mailId" : 4
+}, {
+  "id" : 1204,
+  "type" : 0,
+  "rewardType" : [ 5 ],
+  "rewardId" : [ 2 ],
+  "rewardNum" : [ 100 ],
+  "mailId" : 4
+}, {
+  "id" : 1205,
+  "type" : 0,
+  "rewardType" : [ 5 ],
+  "rewardId" : [ 2 ],
+  "rewardNum" : [ 50 ],
+  "mailId" : 4
+}, {
+  "id" : 1206,
+  "type" : 0,
+  "rewardType" : [ 5 ],
+  "rewardId" : [ 1 ],
+  "rewardNum" : [ 100000 ],
+  "mailId" : 4
+}, {
+  "id" : 1207,
+  "type" : 0,
+  "rewardType" : [ 5 ],
+  "rewardId" : [ 1 ],
+  "rewardNum" : [ 90000 ],
+  "mailId" : 4
+}, {
+  "id" : 1208,
+  "type" : 0,
+  "rewardType" : [ 5 ],
+  "rewardId" : [ 1 ],
+  "rewardNum" : [ 80000 ],
+  "mailId" : 4
+}, {
+  "id" : 1209,
+  "type" : 0,
+  "rewardType" : [ 5 ],
+  "rewardId" : [ 1 ],
+  "rewardNum" : [ 70000 ],
+  "mailId" : 4
+}, {
+  "id" : 1210,
+  "type" : 0,
+  "rewardType" : [ 5 ],
+  "rewardId" : [ 1 ],
+  "rewardNum" : [ 60000 ],
+  "mailId" : 4
+} ]

@@ -1,0 +1,277 @@
+/**
+ * 好友管理
+*/
+class FriendManager
+{
+    /**
+     * 好友信息列表
+    */
+    public static friendList: Array<FriendInfo>;
+    /**
+     * 好友请求列表
+    */
+    public static requestFriendList: Array<BaseFriendInfo>;
+    /**
+     * 礼物列表
+    */
+    public static giftList: Array<BaseFriendInfo>;
+    /**
+     * 查询列表
+    */
+    public static searchList: Array<BaseFriendInfo>;
+    /**
+     * 打开好友详请面板样式的标记
+    */
+    public static userInfoPanelStyle: number;
+    /**
+     * 快速领取领取的总金币数
+    */
+    public static getGoldNum: number;
+
+    /**
+	 * 发送好友列表信息获取请求
+	 */
+    public static reqFriendListInfo()
+    {
+        SocketManager.AddCommandListener(Command.Req_friendInfo_3156, FriendManager.FriendListInfoResponse);
+        SocketManager.Send(Command.Req_friendInfo_3156);
+    }
+    public static FriendListInfoResponse(result: SpRpcResult)
+    {
+        SocketManager.RemoveCommandListener(Command.Req_friendInfo_3156, FriendManager.FriendListInfoResponse);
+        if (result.data)
+        {
+            if (!FriendManager.friendList)
+            {
+                FriendManager.friendList = new Array<FriendInfo>();
+            }
+            FriendManager.friendList = result.data["friendList"];
+        }
+        FriendManager.onGetFriendListEvent.dispatch();
+    }
+    /**
+     * 发送赠送好友金币请求
+    */
+    public static reqGiveFriendGold(id: number)
+    {
+        SocketManager.AddCommandListener(Command.Req_GiveFriendGold_3151, FriendManager.GiveFriendGoldResponse);
+        SocketManager.Send(Command.Req_GiveFriendGold_3151, { roleId: id });
+    }
+    public static GiveFriendGoldResponse(result: SpRpcResult)
+    {
+        SocketManager.RemoveCommandListener(Command.Req_GiveFriendGold_3151, FriendManager.GiveFriendGoldResponse);
+        FriendManager.onGiveFriendGoldEvent.dispatch();
+    }
+    /**
+     * 发送领取好友赠送的金币请求
+    */
+    public static reqReceiveGift(id: number)
+    {
+        let callback: Function = function (result: SpRpcResult)
+        {
+            SocketManager.RemoveCommandListener(Command.Req_ReceiveGift_3150, callback);
+            if (id == 0)
+            {
+                FriendManager.getGoldNum = ProjectDefined.giveOnceGoldNum * FriendManager.giftList.length;
+                FriendManager.giftList = [];
+            } else
+            {
+                for (let i: number = 0; i < FriendManager.giftList.length; i++)
+                {
+                    if (id == FriendManager.giftList[i].roleId)
+                    {
+                        FriendManager.giftList.splice(i, 1);
+                        FriendManager.getGoldNum = ProjectDefined.giveOnceGoldNum;
+                        break;
+                    }
+                }
+            }
+            FriendManager.onReceiveGiftEvent.dispatch();
+        }
+        SocketManager.AddCommandListener(Command.Req_ReceiveGift_3150, callback);
+        SocketManager.Send(Command.Req_ReceiveGift_3150, { roleId: id });
+    }
+    /**
+    * 发送获取好友请求列表的请求
+   */
+    public static reqFriendRequest()
+    {
+        SocketManager.AddCommandListener(Command.Req_FriendRequest_3157, FriendManager.FriendRequestResponse);
+        SocketManager.Send(Command.Req_FriendRequest_3157);
+    }
+    public static FriendRequestResponse(result: SpRpcResult)
+    {
+        SocketManager.RemoveCommandListener(Command.Req_FriendRequest_3157, FriendManager.FriendRequestResponse);
+        if (result.data)
+        {
+            if (!FriendManager.requestFriendList)
+            {
+                FriendManager.requestFriendList = new Array<BaseFriendInfo>();
+            }
+            FriendManager.requestFriendList = result.data;
+        }
+        FriendManager.onFriendRequestEvent.dispatch();
+    }
+    /**
+     * 发送接受或拒绝好友请求的请求
+    */
+    public static reqReceiveFriendRequest(id: number, isReceive: number)
+    {
+        let callback: Function = function (result: SpRpcResult)
+        {
+            SocketManager.RemoveCommandListener(Command.Req_ReceiveFriend_3154, callback);
+            if (isReceive)
+            {
+                AlertManager.showSingleAlertByString("您已成功添加此好友。");
+            } else
+            {
+                AlertManager.showSingleAlertByString("您已拒绝此条好友申请。");
+            }
+            for (let i: number = 0; i < FriendManager.requestFriendList.length; i++)
+            {
+                if (FriendManager.requestFriendList[i].roleId == id)
+                {
+                    FriendManager.requestFriendList.splice(i, 1);
+                    break;
+                }
+            }
+            FriendManager.onReceiveFriendRequestEvent.dispatch();
+        }
+        SocketManager.AddCommandListener(Command.Req_ReceiveFriend_3154, callback);
+        SocketManager.Send(Command.Req_ReceiveFriend_3154, { roleId: id, isAccept: isReceive });
+    }
+    /**
+     * 发送查询好友的请求
+    */
+    public static reqSearchPlayer(text: string)
+    {
+        SocketManager.AddCommandListener(Command.Req_SearchPlayer_3153, FriendManager.SearchPlayerResponse);
+        SocketManager.Send(Command.Req_SearchPlayer_3153, { Val: text });
+    }
+    public static SearchPlayerResponse(result: SpRpcResult)
+    {
+        SocketManager.RemoveCommandListener(Command.Req_SearchPlayer_3153, FriendManager.SearchPlayerResponse);
+        if (result.data)
+        {
+            if (!FriendManager.searchList)
+            {
+                FriendManager.searchList = new Array<BaseFriendInfo>();
+            }
+            FriendManager.searchList = result.data;
+            FriendManager.onSearchPlayerEvent.dispatch();
+        }
+    }
+    /**
+     * 发送添加好友的请求
+    */
+    public static reqAddPlayer(id: number)
+    {
+        SocketManager.AddCommandListener(Command.Req_AddPlayer_3152, FriendManager.AddPlayerResponse);
+        SocketManager.Send(Command.Req_AddPlayer_3152, { roleId: id });
+    }
+    public static AddPlayerResponse(result: SpRpcResult)
+    {
+        SocketManager.RemoveCommandListener(Command.Req_AddPlayer_3152, FriendManager.AddPlayerResponse);
+        FriendManager.onAddPlayerEvent.dispatch();
+    }
+    /**
+     * 发送删除好友的请求
+    */
+    public static reqRemovePlayer(id: number)
+    {
+        let callback: Function = function (result: SpRpcResult)
+        {
+            SocketManager.RemoveCommandListener(Command.Req_AddPlayer_3155, callback);
+            for (let i: number = 0; i < FriendManager.friendList.length; i++)
+            {
+                if (id == FriendManager.friendList[i].roleId)
+                {
+                    FriendManager.friendList.splice(i, 1);
+                    break;
+                }
+            }
+            FriendManager.onRemovePlayerEvent.dispatch();
+        };
+        SocketManager.AddCommandListener(Command.Req_AddPlayer_3155, callback);
+        SocketManager.Send(Command.Req_AddPlayer_3155, { roleId: id });
+    }
+
+    /**
+	 * 请求房间列表成功广播
+	 */
+    public static onGetFriendListEvent: ActionDispatcher = new ActionDispatcher();
+    /**
+     * 赠送好友金币成功广播
+    */
+    public static onGiveFriendGoldEvent: ActionDispatcher = new ActionDispatcher();
+    /**
+     * 领取好友赠送的礼物成功广播
+    */
+    public static onReceiveGiftEvent: ActionDispatcher = new ActionDispatcher();
+    /**
+     * 获取好友请求列表成功广播
+    */
+    public static onFriendRequestEvent: ActionDispatcher = new ActionDispatcher();
+    /**
+     * 接受或拒绝好友请求成功广播
+    */
+    public static onReceiveFriendRequestEvent: ActionDispatcher = new ActionDispatcher();
+    /**
+     * 查询好友请求成功广播
+    */
+    public static onSearchPlayerEvent: ActionDispatcher = new ActionDispatcher();
+    /**
+     * 添加好友请求成功广播
+    */
+    public static onAddPlayerEvent: ActionDispatcher = new ActionDispatcher();
+    /**
+     * 删除好友请求成功广播
+    */
+    public static onRemovePlayerEvent: ActionDispatcher = new ActionDispatcher();
+}
+class BaseFriendInfo
+{
+    /**
+     * ID
+    */
+    public roleId: number;
+    /**
+     * 头像
+    */
+    public head: string;
+    /**
+     * 名字
+    */
+    public name: string;
+    /**
+     * 用户等级
+    */
+    public level: number;
+    /**
+     * 性别
+    */
+    public sex: number;
+    /**
+     * vip等级
+    */
+    public vipLevel: number;
+}
+class FriendInfo extends BaseFriendInfo 
+{
+    /**
+     * 金币数量
+    */
+    public gold: number;
+    /**
+     * 是否在线  不在线发送最后离线时间 在线为null
+    */
+    public offlineTime: number;
+    /**
+     * 是否已经赠送过金币  0未赠送  1已赠送
+    */
+    public giveGold: number;
+    /**
+     * 是否可以领取金币  0不可领取  1可领取   2已领取
+    */
+    public getGold: number;
+}

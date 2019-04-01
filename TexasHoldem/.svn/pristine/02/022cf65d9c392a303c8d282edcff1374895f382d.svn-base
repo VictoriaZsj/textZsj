@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="DiamondListItemrenderer" width="150" height="197.33" xmlns:e="http://ns.egret.com/eui" xmlns:ns1="*"
+        xmlns:w="http://ns.egret.com/wing">
+	<ns1:GameButtonGroup>
+		<e:Group id="btnGroup" width="150" height="200" anchorOffsetY="0">
+			<e:Image width="150" height="200" horizontalCenter="0" verticalCenter="0" source="bg_page21_png"
+			          scale9Grid="24,23,33,34"/>
+			<e:Button id="diamondBtn" label="Button" skinName="buttonSkin47" scaleX="0.4" scaleY="0.4" anchorOffsetX="0" width="150.67" horizontalCenter="0" verticalCenter="67"/>
+			<e:Image id="diamondImg" horizontalCenter="0" verticalCenter="-50" scale9Grid="9,8,25,7" source="fangka_png" scaleX="0.5" scaleY="0.5"/>
+			<e:Label id="diamondNum" text="6钻石" fontFamily="SimHei" x="44.87" y="90.15" scaleX="0.7" scaleY="0.7" textColor="0xea9f48" size="31"/>
+		</e:Group>
+	</ns1:GameButtonGroup>
+</e:Skin>

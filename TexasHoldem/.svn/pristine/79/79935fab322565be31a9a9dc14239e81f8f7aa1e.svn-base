@@ -1,0 +1,26 @@
+/**
+ * 卡牌工具
+ */
+class CardShowUtil
+{
+	/**
+	 * 设置偏移
+	 */
+	public static setTilt(tiltH: number, tiltV: number, target: eui.UIComponent)
+	{
+		let titltH: number = 0;
+		let titltV: number = 0;
+		if (tiltH && tiltH % 90 != 0)
+		{
+			titltH = Math.tan((tiltH) * Math.PI / 180);
+		}
+		if (tiltV && tiltV % 90 != 0)
+		{
+			titltV = Math.tan((tiltV) * Math.PI / 180);
+		}
+		if (titltH != 0 || titltV != 0)
+		{
+			target.matrix = target.matrix.append(1, titltV, titltH, 1, 0, 0);
+		}
+	}
+}

@@ -1,0 +1,133 @@
+/**
+ * 我的奖品面板
+ */
+class MyPrizePanel extends BasePanel
+{
+    //标签按键
+    public notTakeToggle:eui.RadioButton;
+    public haveTakenToggle:eui.RadioButton;
+    public prizeInfoToggle:eui.RadioButton;
+	public radioButtonGroup:eui.RadioButtonGroup;//单选组
+    //标签组
+    public notTakeGroup:eui.Group;
+	public HavetakenGroup:eui.Group
+    public prizeInfoGroup:eui.Group;
+
+	//奖品列表
+    public notTakeList:eui.List;
+	public notTakeScroller:eui.Scroller;
+    public haveTakenList:eui.List;
+	public haveTakenScroller:eui.Scroller;
+
+    //无礼品
+    public noPrizeGroup:eui.Group;
+    public noPrizeBtn:eui.Button;
+    public noPrizeLabel:eui.Label;
+
+    //领奖信息
+    public recipients:eui.EditableText;
+    public phoneNum:eui.EditableText;
+    public qqNum:eui.EditableText;
+    public eMail:eui.EditableText;
+    public address:eui.EditableText;
+    //确认
+    public confirmBtn:eui.Button;
+
+	public constructor()
+	{
+		super();
+		this.setGrayMask(false);
+		this.skinName = UISkinName.MyPrizePanel;
+	}
+
+    protected onAwake(event: eui.UIEvent)
+	{
+		super.onAwake(event);
+		this.radioButtonGroup = new eui.RadioButtonGroup();
+	}
+	public init(appendData: any)
+	{
+		super.init(appendData);
+
+		this.notTakeToggle.group = this.radioButtonGroup;
+		this.haveTakenToggle.group = this.radioButtonGroup;
+		this.prizeInfoToggle.group = this.radioButtonGroup;
+		this.notTakeToggle.selected = true;
+		//限制输入类型
+		this.phoneNum.inputType = egret.TextFieldInputType.TEL;
+		this.qqNum.inputType = egret.TextFieldInputType.TEL;
+		this.qqNum.restrict = "0-9";
+	}
+	protected onRender(event: egret.Event)
+	{
+		super.onRender(event);
+		this.refreshAddressInfo();
+	}
+	protected onEnable(event: eui.UIEvent): void
+	{
+		super.onEnable(event);
+		this.radioButtonGroup.addEventListener(egret.Event.CHANGE,this.changeActive,this);
+		this.addEventListener(egret.TouchEvent.TOUCH_TAP,this.clickHandler,this);
+	}
+	protected onDisable(event: eui.UIEvent): void
+	{
+		super.onDisable(event);
+		this.radioButtonGroup.removeEventListener(egret.Event.CHANGE,this.changeActive,this);
+		this.removeEventListener(egret.TouchEvent.TOUCH_TAP,this.clickHandler,this);
+	}
+
+	/**
+	 * 改变选项卡按钮状态
+	*/
+	private changeActive(event: eui.UIEvent)
+	{
+		switch (event.target)
+		{
+			case this.notTakeToggle:
+				this.notTakeGroup.visible = true;
+				this.HavetakenGroup.visible = false;
+				this.prizeInfoGroup.visible = false;
+				break;
+			case this.haveTakenToggle:
+				this.notTakeGroup.visible = false;
+				this.HavetakenGroup.visible = true;
+				this.prizeInfoGroup.visible = false;
+				break;
+			case this.prizeInfoToggle:
+				this.notTakeGroup.visible = false;
+				this.HavetakenGroup.visible = false;
+				this.prizeInfoGroup.visible = true;
+				break;
+		}
+	}
+	
+	/**
+	 * 点击面板按钮事件处理
+	*/
+	private clickHandler(event: egret.TouchEvent)
+	{
+		SoundManager.playButtonEffect(event.target);
+		switch(event.target)
+		{
+			case this.noPrizeBtn:
+
+			break;
+			case this.confirmBtn:
+				UserManager.userAddressInfo.name = this.recipients.text;
+				UserManager.userAddressInfo.phoneNum = this.phoneNum.text;
+				UserManager.userAddressInfo.qqNum = this.qqNum.text;
+				UserManager.userAddressInfo.eMail = this.eMail.text;
+				UserManager.userAddressInfo.address = this.address.text;
+			break;
+		}
+	}
+
+	private refreshAddressInfo()
+	{
+		this.recipients.text = UserManager.userAddressInfo.name;
+		this.phoneNum.text = UserManager.userAddressInfo.phoneNum;
+		this.qqNum.text = UserManager.userAddressInfo.qqNum;
+		this.eMail.text = UserManager.userAddressInfo.eMail;
+		this.address.text = UserManager.userAddressInfo.address;
+	}
+}

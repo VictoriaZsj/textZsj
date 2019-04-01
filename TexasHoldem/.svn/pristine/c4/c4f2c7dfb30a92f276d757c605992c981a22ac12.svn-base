@@ -1,0 +1,141 @@
+/**
+ * 牌局面板
+ */
+class GamblingPanel extends BasePanel
+{
+	//-----------功能信息----------------
+	public funcGroup: eui.Group;
+	public chargeBtn: eui.Button;
+	public safeBtn: eui.Button;
+	public mailBtn: eui.Button;
+	public luckyBoxBtn: eui.Button;
+	public activityBtn: eui.Button;
+	public helpBtn: eui.Button;
+	//----------------------------------
+
+	//-----------牌局桌面信息------------
+	public gameGroup: eui.Group;
+	public buttonPosFlagImg: eui.Image;
+	public optionsBtn: eui.Button;
+	public buyBtn: eui.Button;
+	public onlineAwardBtn: eui.Button;
+	public guessCardBtn: eui.Button;
+	public achieveBtn: eui.Button;
+	public chatBtn: eui.Button;
+
+	public roomIdLabel: eui.Label;
+	public roundTypeLabel: eui.Label;
+	public roundNumLabel: eui.Label;
+
+	public pit1: GamblingHeadComponent;
+	public pit2: GamblingHeadComponent;
+	public pit3: GamblingHeadComponent;
+	public pit4: GamblingHeadComponent;
+	public pit5: GamblingHeadComponent;
+	public pit6: GamblingHeadComponent;
+	public pit7: GamblingHeadComponent;
+	public pit8: GamblingHeadComponent;
+	public pit9: GamblingHeadComponent;
+
+	public actionGroup: GamblingActionComponent;
+	//----------------------------------
+
+	public pitList: Array<GamblingPitInfo>;
+
+	/**
+	 * 坑位操作信息
+	 */
+	private _pitDataSupport: GamblingPanelPitDataSupport;
+	private _supportList: Array<BaseGamblingPanelSupport>;
+
+	public constructor()
+	{
+		super();
+		this.skinName = UIModuleName.GamblingPanel;
+	}
+	protected onAwake(event: eui.UIEvent)
+	{
+		super.onAwake(event);
+		this.pitList = new Array<GamblingPitInfo>();
+		this.pitList.push(null);
+		let pitInfo: GamblingPitInfo;
+		for (let i: number = GamblingPanelSetting.MinPitIndex; i <= GamblingPanelSetting.MaxPitIndex; i++)
+		{
+			pitInfo = new GamblingPitInfo();
+			pitInfo.index = i;
+			pitInfo.headComponent = this["pit" + i.toString()];
+			this.pitList.push(pitInfo);
+		}
+
+		this._supportList = new Array<BaseGamblingPanelSupport>();
+		this._pitDataSupport = new GamblingPanelPitDataSupport(this);
+		this._supportList.push(this._pitDataSupport);
+	}
+	public init(appendData: any)
+	{
+		super.init(appendData);
+	}
+	protected onRender(event: egret.Event)
+	{
+		super.onRender(event);
+	}
+	protected onEnable(event: eui.UIEvent): void
+	{
+		super.onEnable(event);
+		for (let support of this._supportList)
+		{
+			support.onEnable();
+		}
+	}
+	protected onDisable(event: eui.UIEvent): void
+	{
+		super.onDisable(event);
+		for (let support of this._supportList)
+		{
+			support.onDisable();
+		}
+	}
+	/**
+	 * 获取当前坑位的playerpos
+	 */
+	public getPlayerPos(pit: GamblingPitInfo): number
+	{
+		return this._pitDataSupport.getPlayerPos(pit);
+	}
+	/**
+	 * 根据玩家位置获取坑位信息
+	 */
+	public getPitInfo(playerPos: number): GamblingPitInfo
+	{
+		return this._pitDataSupport.getPitInfo(playerPos);
+	}
+	/**
+	 * 获取头像组件，根据玩家位置
+	 */
+	public getHeadComponent(playerPos: number): GamblingHeadComponent
+	{
+		return this._pitDataSupport.getHeadComponent(playerPos);
+	}
+	/**
+	 * 获取下一个有玩家的坑位信息 如果都没有则返回null
+	 */
+	public getNextPlayerPitInfo(pit: GamblingPitInfo): GamblingPitInfo
+	{
+		return this._pitDataSupport.getNextPlayerPitInfo(pit);
+	}
+	/**
+	 * 获取下一个位置的玩家信息
+	 */
+	public getNextPlayerInfo(playerPos: number): PlayerInfo
+	{
+		return this._pitDataSupport.getNextPlayerInfo(playerPos);
+
+	}
+	/**
+	 * 根据玩家信息获取坑位信息
+	 */
+	public getPitInfoByPlayerInfo(playerInfo: PlayerInfo): GamblingPitInfo
+	{
+		return this._pitDataSupport.getPitInfoByPlayerInfo(playerInfo);
+	}
+}

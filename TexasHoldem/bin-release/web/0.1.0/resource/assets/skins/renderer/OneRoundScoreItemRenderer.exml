@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="itemRenderer5" width="270" height="35" xmlns:e="http://ns.egret.com/eui"
+        xmlns:w="http://ns.egret.com/wing">
+    <e:Label id="roundLabel" text="第1局" x="16" y="5" size="24"  fontFamily="SimHei" textColor="0x4f5d60"/>
+	<e:Group id="scoreLabel" width="108" height="28" x="157" y="5" anchorOffsetY="0">
+		<e:layout>
+			<e:HorizontalLayout gap="1" horizontalAlign="center"/>
+		</e:layout>
+	</e:Group>
+</e:Skin>

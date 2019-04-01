@@ -1,0 +1,130 @@
+/**
+ * 充值面板
+ */
+class PayPanel extends BasePanel
+{
+	public scroller: eui.Scroller;
+	public list: eui.List;
+	private _dp: eui.ArrayCollection;
+	private _ly: eui.TileLayout;
+
+	private roomCardInfoLabel: eui.Label;
+	private serverLabel: eui.Label;
+
+	public constructor()
+	{
+		super();
+		this.skinName = UISkinName.PayPanel;
+	}
+	protected onAwake(event: eui.UIEvent)
+	{
+		this._ly = UIUtil.getHTileLayout(30, 1, egret.HorizontalAlign.LEFT);
+		this.list.layout = this._ly;
+		UIUtil.listRenderer(this.list, this.scroller, PayPanelItemRenderer, ScrollViewDirection.Horizontal_L_R);
+		this.scroller.scrollPolicyV = eui.ScrollPolicy.OFF;
+		let def: TextDefinition = TextDefined.GetInstance().getDefinition(TextId.RoomCard, TextDefined.GetInstance().textList);
+		if (def)
+		{
+			this.roomCardInfoLabel.text = def.text;
+		}
+		else
+		{
+			this.roomCardInfoLabel.text = StringConstant.empty;
+		}
+		def = TextDefined.GetInstance().getDefinition(TextId.Info, TextDefined.GetInstance().textList);
+		if (def)
+		{
+			this.serverLabel.text = def.text;
+		}
+		else
+		{
+			this.serverLabel.text = StringConstant.empty;
+		}
+		super.onAwake(event);
+	}
+	public init(appendData: any)
+	{
+		super.init(appendData);
+		if (!this._dp)
+		{
+			this._dp = new eui.ArrayCollection();
+		}
+		this.list.visible = false;
+		this.refreshUI();
+	}
+	protected onEnable(event: eui.UIEvent): void
+	{
+		super.onEnable(event);
+		PayManager.buyOverAction.addListener(this.refreshUI, this);
+		this.list.addEventListener(eui.ItemTapEvent.ITEM_TAP, this.onPayClickHandler, this);
+
+		UIUtil.hideScrollerBar(this.scroller);
+	}
+	protected onDisable(event: eui.UIEvent): void
+	{
+		super.onDisable(event);
+		PayManager.buyOverAction.removeListener(this.refreshUI);
+		this.list.removeEventListener(eui.ItemTapEvent.ITEM_TAP, this.onPayClickHandler, this);
+	}
+
+	private onPayClickHandler(event: eui.ItemTapEvent)
+	{
+		SoundManager.playEffect(Sex.Male, MusicAction.buttonClick);
+		if (this.list.selectedItem)
+		{
+			if (this.list.selectedItem.definition.get)
+			{
+
+				if (this.list.selectedItem.dayCount >= this.list.selectedItem.definition.limit)
+				{
+					UIManager.showFloatTips("今日购买次数已达上限！");
+					return;
+				}
+				AlertManager.showAlertObj({ message: StringUtil.format("是否花费{0}元，购买{1}张房卡？", this.list.selectedItem.definition.price, this.list.selectedItem.definition.get), OnConfirm: this.tryPay, confirmParam: this.list.selectedItem, isSingle: false });
+			}
+			else
+			{
+				AlertManager.showAlertObj({ message: StringUtil.format("是否花费{0}元，开通会员？", this.list.selectedItem.definition.price), OnConfirm: this.tryPay, confirmParam: this.list.selectedItem, isSingle: false })
+			}
+		}
+	}
+	private tryPay(obj: any)
+	{
+		if (obj)
+		{
+			ChannelManager.PaySend(obj.definition.price);
+		}
+	}
+	private refreshUI(price?: number)
+	{
+
+		let info: PayInfo = PayManager.getPayInfoByPrice(price);
+		if (info)
+		{
+			if (info.id == VipCard.WeekVip || info.id == VipCard.MonthVip)
+			{
+				let time: number = VipManager.GetVipTime();
+				let date: Date = new Date(time * 1000);
+				AlertManager.showAlertObj({
+					message: StringUtil.format("您购买{0}成功，限期至{1}，您将享受创建房间免房卡等多种福利。", info.definition.name, DateTimeUtil.formatDate(date, DateTimeUtil.Format_China_NoSecond)),
+					subTitle: "购买成功", OnConfirm: this.GotoWaelthPanel,
+					confirmParam: this.list.selectedItem,
+					isSingle: false
+				})
+			}
+			else
+			{
+				let str: string = StringUtil.format("你花费了{0}元，购买了{1}张房卡！", price, info.definition.get);
+				UIManager.showFloatTips(str);
+			}
+		}
+		this._dp = new eui.ArrayCollection(PayManager.payList);
+		this.list.dataProvider = this._dp;
+		this.list.visible = true;
+	}
+
+	private GotoWaelthPanel()
+	{
+		UIManager.showPanel(UIModuleName.VipPanel);
+	}
+}

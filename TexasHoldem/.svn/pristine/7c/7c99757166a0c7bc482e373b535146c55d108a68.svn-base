@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="GetItemTipsSkin" width="720" height="1280" xmlns:e="http://ns.egret.com/eui"
+        xmlns:w="http://ns.egret.com/wing" xmlns:ns1="*" xmlns:tween="egret.tween.*">
+        <e:Group id="tweenGroup" width="720" height="1280" verticalCenter="0" horizontalCenter="0">
+                <e:Label id="textLabel" text="恭喜您获得" width="720" size="50" horizontalCenter="0" textAlign="center"
+                         fontFamily="SimHei"  height="50" y="400" bold="true" textColor="0xffffff"/>
+					<e:Group width="720" height="400" x="0" y="500">
+						<e:List id="getItemList" width="680" height="400" x="20" verticalCenter="0">
+							<e:layout>
+								<e:TileLayout orientation="rows" horizontalGap="20" horizontalAlign="center" verticalAlign="top"/>
+							</e:layout>
+						</e:List>
+						<e:Scroller id="getItemScroller" width="720" height="400" x="0" y="0">
+						</e:Scroller>
+					</e:Group>
+        </e:Group>
+</e:Skin>

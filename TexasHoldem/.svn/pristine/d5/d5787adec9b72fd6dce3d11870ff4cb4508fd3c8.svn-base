@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="GamblingActionComponentSkin" width="720" height="300" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing">
+	<e:Button id="brightCardBtn" label="结束时\n亮牌" horizontalCenter="0.5" verticalCenter="-106"/>
+	<e:Group id="preActionGroup" horizontalCenter="0" verticalCenter="0">
+		<e:Button id="passOrDropBtn" label="过或弃" x="337.00000000000006" y="22" scaleX="1" scaleY="1"/>
+		<e:Button id="callAnyBtn" label="一律跟" x="84.60000000000001" y="106" scaleX="1" scaleY="1"/>
+		<e:layout>
+			<e:HorizontalLayout gap="213"/>
+		</e:layout>
+	</e:Group>
+	<e:Group id="raiseGroup" horizontalCenter="0" verticalCenter="-79">
+		<e:Button id="oneOfThreeBtn" label="1/3\n底池" x="-551.58" y="-163.73000000000002" scaleX="1" scaleY="1" anchorOffsetX="0" width="110"/>
+		<e:Button id="oneOfTwoBtn" label="1/2\n底池" x="-311.28" y="-163.73000000000002" scaleX="1" scaleY="1" anchorOffsetX="0" width="110"/>
+		<e:Button id="twoOfThreeBtn" label="2/3\n底池" x="-263.4" y="-23.430000000000035" scaleX="1" scaleY="1" anchorOffsetX="0" width="110"/>
+		<e:Button id="oneBtn" label="X1\n底池" x="-480.4" y="241.29999999999998" scaleX="1" scaleY="1" anchorOffsetX="0" width="110"/>
+		<e:layout>
+			<e:HorizontalLayout gap="75"/>
+		</e:layout>
+	</e:Group>
+	<e:Group id="actionGroup" horizontalCenter="0" verticalCenter="0" width="100%" height="100%">
+		<e:Button id="raiseBtn" label="加注" scaleX="1" scaleY="1" horizontalCenter="0" verticalCenter="-108"/>
+		<e:Button id="foldBtn" label="弃牌" x="28" y="150" scaleX="1" scaleY="1"/>
+		<e:Button id="callBtn" label="111\n跟注" x="476" y="150" scaleX="1" scaleY="1"/>
+	</e:Group>
+</e:Skin>

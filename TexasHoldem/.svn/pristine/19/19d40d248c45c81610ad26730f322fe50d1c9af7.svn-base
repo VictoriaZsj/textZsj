@@ -1,0 +1,46 @@
+/*血条*/
+class HpBar extends egret.DisplayObjectContainer
+{
+	private _bg: egret.Shape;
+	private _bar: egret.Shape;
+	private _mask: egret.Shape;
+
+	public constructor()
+	{
+		super();
+		this._bg = new egret.Shape();
+		this._bg.graphics.beginFill(0x2e2615);//2e2615 0x34dc40
+		this._bg.graphics.drawRect(0, 0, 100, 20);
+		this._bg.graphics.endFill();
+		this._bg.cacheAsBitmap = true;
+		this.addChild(this._bg);
+
+		this._bar = new egret.Shape();
+		this._bar.graphics.beginFill(0x34dc40);
+		this._bar.graphics.drawRect(1, 1, 98, 18);
+		this._bar.graphics.endFill();
+		this._bar.cacheAsBitmap = true;
+		this.addChild(this._bar);
+
+		this._mask = new egret.Shape();
+		this._mask.graphics.beginFill(0x34dc40);
+		this._mask.graphics.drawRect(1, 1, 98, 18);
+		this._mask.graphics.endFill();
+		this.addChild(this._mask);
+
+		this._bar.mask = this._mask;
+	}
+	public updateHp(hpRatio: number)
+	{
+		if (hpRatio > 1)
+		{
+			hpRatio = 1;
+		}
+		if (hpRatio < 0)
+		{
+			hpRatio = 0;
+		}
+		this._mask.scaleX = hpRatio;
+	}
+}
+

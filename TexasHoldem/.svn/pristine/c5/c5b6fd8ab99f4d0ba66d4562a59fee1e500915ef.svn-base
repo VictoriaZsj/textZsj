@@ -1,0 +1,1192 @@
+/**
+ * 房间管理
+ */
+class RoomManager 
+{
+	public static roomInfo: RoomInfo;
+	/**
+	 * 是否在房间中
+	 */
+	public static isInRoom: boolean;
+	/**
+	 * 是否请求退出房间中
+	 */
+	private static isReqExitRoomIng: boolean;
+	/**
+	 * 请求退出房间发起者的角色ID
+	 */
+	private static _reqExitRoleId: number;
+	/**
+	 * 几人模式
+	 */
+	public static mod: number;
+
+	public static setMod()
+	{
+		if (RoomManager.roomInfo && RoomManager.roomInfo.playerList)  //todo
+		{
+			RoomManager.mod = RoomManager.roomInfo.playerList.length;
+		}
+	}
+
+	public static get isMineHost()
+	{
+		let mineInfo: PlayerInfo = RoomManager.mineInfo;
+		if (mineInfo)
+		{
+			return RoomManager.isHost(mineInfo.roleId);
+		}
+		return false;
+	}
+	public static isHost(roleId: number)
+	{
+		if (RoomManager.roomInfo && roleId == RoomManager.roomInfo.hostRoleId)
+		{
+			return true;
+		}
+		return false;
+	}
+
+	public static clear()
+	{
+		RoomManager.isInRoom = false;
+		RoomManager.roomInfo = null;
+		RoomManager.isReqExitRoomIng = false;
+	}
+	/**
+	 * 重新登录
+	 */
+	public static reLogin()
+	{
+		if (RoomManager.roomInfo)
+		{
+			ArrayUtil.Clear(RoomManager.roomInfo.playerList);
+		}
+		RoomManager.clear();
+	}
+	public static clearMaster()
+	{
+		if (RoomManager.roomInfo && RoomManager.roomInfo.playerList)
+		{
+			for (let info of RoomManager.roomInfo.playerList)
+			{
+				info.isMaster = false;
+				info.hosted = false;
+			}
+		}
+	}
+	/**
+	 * 下一局的处理
+	 */
+	public static nextRoundOper()
+	{
+		if (RoomManager.roomInfo)
+		{
+			for (let info of RoomManager.roomInfo.playerList)
+			{
+				info.isTing = false;
+				info.hosted = false;
+				info.isReady = false;
+				ArrayUtil.Clear(info.outCard);
+				ArrayUtil.Clear(info.groupList);
+			}
+		}
+	}
+	public static roundNumOper()
+	{
+		if (RoomManager.roomInfo)
+		{
+			RoomManager.roomInfo.roundNum++;
+			if (RoomManager.roomInfo.roundNum > RoomManager.roomInfo.round)
+			{
+				RoomManager.roomInfo.roundNum = RoomManager.roomInfo.round;
+			}
+		}
+	}
+	public static reqJoinRoom(roomId: number, session: number)
+	{
+		SocketManager.AddCommandListener(Command.Req_JoinInRoom_3004, RoomManager.initialize);
+		SocketManager.Send(Command.Req_JoinInRoom_3004, { "roomId": roomId, "session": session })
+	}
+	public static initialize(result: SpRpcResult)
+	{
+		GoCardProcessManager.initialize();
+		SocketManager.RemoveCommandListener(Command.Req_JoinInRoom_3004, RoomManager.initialize);
+		RoomManager.clear();
+		if (result.data && result.data["roomId"])
+		{
+			RoomManager.isInRoom = true;
+
+			RoomManager.roomInfo = new RoomInfo(result.data);
+			if (RoomManager.mineInfo) //自己的手牌处理
+			{
+				RoomManager.shouPaiOper();
+			}
+			if (RoomManager.roomInfo.play == RoomState.WAIT && RoomManager.roomInfo.boomCard != undefined) //房间为等待状态 处理补杠断线的情况
+			{
+				let jiaGangPinfo: PlayerInfo = RoomManager.getPlayerInfoByPos(RoomManager.roomInfo.boomPos);
+				if (jiaGangPinfo)
+				{
+					if (RoomManager.roomInfo.boomPos == RoomManager.mineInfo.pos) //补杠的位置和自己位置相同
+					{
+						RoomManager.roomInfo.myLastCard = undefined; //等待状态不存在最后一张牌 最后一张牌为boomCard
+						ArrayUtil.RemoveItem(RoomManager.roomInfo.boomCard, RoomManager.roomInfo.shouPai);
+					}
+					let groupCardInfo: GroupCardInfo = RoomManager.getGroupCard(RoomManager.roomInfo.boomCard, jiaGangPinfo.groupList);
+					if (groupCardInfo)
+					{
+						groupCardInfo.action = ActionType.BuGang;
+					}
+				}
+			}
+			if (RoomManager.roomInfo && RoomManager.roomInfo.playerList) //手牌数量处理
+			{
+				let pInfo: PlayerInfo;
+				for (let i: number = 0; i < RoomManager.roomInfo.playerList.length; i++)
+				{
+					pInfo = RoomManager.roomInfo.playerList[i];
+					RoomManager.playerNameOper(pInfo);
+					if (RoomManager.roomInfo.play == RoomState.NIL)
+					{
+						pInfo.isTing = false; //如果房间状态为nil
+					}
+
+					if (pInfo.roleId != UserManager.userInfo.roleId && pInfo.groupList)
+					{
+						pInfo.groupList.sort(SortUtil.sortGroupCard); //对成卡的先后顺序做一个排序
+					}
+					if (pInfo.isMaster)
+					{
+						GoCardProcessManager.lastMastPos = pInfo.pos;
+					}
+				}
+			}
+			if (RoomManager.roomInfo.play == RoomState.NIL && RoomManager.roomInfo.roundNum < 1) //检测同ip
+			{
+				RoomManager.checkSameIp(); //检测同ip
+			}
+			RoomManager.dispatchGetRoomInfoEvent();
+		}
+		SocketManager.AddCommandListener(Command.Rec_PushOtherPlayerJoin_2001, RoomManager.onPushOtherPlayerEnter);
+		SocketManager.AddCommandListener(Command.Rec_PushReqExitRoom_2002, RoomManager.onPushPlayerExitReq);
+		SocketManager.AddCommandListener(Command.Rec_PushExitVoteResult_2003, RoomManager.onPushExitVoteResult);
+		SocketManager.AddCommandListener(Command.Rec_PushRoomDisbanded_2015, RoomManager.onPushRoomDisbaned);
+		SocketManager.AddCommandListener(Command.Rec_PushPlayerExitRoom_2023, RoomManager.onPushOtherPlayerExit)
+
+		RoomManager.dispatchReqJoinRoomEvent();
+	}
+	private static onPushOtherPlayerEnter(result: SpRpcResult)
+	{
+		if (result.data)
+		{
+			if (!RoomManager.roomInfo) //还没进入房间，收到其他玩家进入房间的推送则不处理
+			{
+				return;
+			}
+			let roleId: number = result.data["roleId"];
+			let roomPlayerInfo: PlayerInfo = RoomManager.getPlayerInfoByRoleId(roleId);
+			if (!roomPlayerInfo)
+			{
+				roomPlayerInfo = new PlayerInfo(result.data);
+				RoomManager.playerNameOper(roomPlayerInfo);
+				RoomManager.roomInfo.playerList.push(roomPlayerInfo);
+			}
+			else
+			{
+				roomPlayerInfo.copyValueFrom(result.data);
+			}
+			RoomManager.checkSameIp();
+			RoomManager.setMod();
+			RoomManager.dispatchOtherPlayerJoinEvent(roomPlayerInfo);
+		}
+	}
+	/**
+	 * 检测同ip
+	 */
+	private static checkSameIp()
+	{
+		let checkP: PlayerInfo;
+		let nameStr: string;
+		let sameInfo: PlayerInfo;
+		let len = RoomManager.roomInfo.playerList.length;
+		for (let i: number = 0; i < len; i++)
+		{
+			checkP = RoomManager.roomInfo.playerList[i];
+			if (checkP.roleId != UserManager.userInfo.roleId) //不检测自己的同ip
+			{
+				nameStr = StringConstant.empty;
+				for (let j: number = 0; j < len; j++)
+				{
+					sameInfo = RoomManager.roomInfo.playerList[j];
+					if (sameInfo.roleId != UserManager.userInfo.roleId && sameInfo.roleId != checkP.roleId && sameInfo.ip == checkP.ip) //
+					{
+						nameStr += sameInfo.name + "、";
+					}
+				}
+				if (nameStr)
+				{
+					nameStr += checkP.name;
+					AlertManager.showSingleAlertByString(StringUtil.format("请注意，房间中{0}处于同一IP！", nameStr));
+				}
+			}
+		}
+	}
+	public static playerNameOper(pInfo: Object, propertyName: string = "name", propertyId: string = "roleId")
+	{
+		if (pInfo && pInfo.hasOwnProperty(propertyId))
+		{
+			let tmpObj: any = pInfo;
+			let pre: string = StringConstant.empty;
+			if (ChannelManager.loginType == ChannelLoginType.Guest && tmpObj[propertyName] != "游客")
+			{
+				pre = "游客";
+			}
+			if (!tmpObj[propertyName])
+			{
+				tmpObj[propertyName] = pre + tmpObj[propertyId].toString();
+			}
+			else
+			{
+				tmpObj[propertyName] = pre + tmpObj[propertyName] + tmpObj[propertyId].toString();
+			}
+		}
+	}
+	private static onPushPlayerExitReq(result: SpRpcResult)
+	{
+		if (result.data)
+		{
+			RoomManager._reqExitRoleId = result.data["roleId"];
+			let pInfo: PlayerInfo = RoomManager.getPlayerInfoByRoleId(RoomManager._reqExitRoleId);
+			if (pInfo)
+			{
+				pInfo.quit = RoomQuitState.ReqQuit;
+			}
+			RoomManager.roomInfo.quitTime = TimeManager.GetServerUtcTimestamp();
+			if (RoomManager.roomInfo && RoomManager.roomInfo.playerList && RoomManager.roomInfo.playerList.length == 1)
+			{
+				pInfo = RoomManager.roomInfo.playerList[0];
+				if (pInfo.roleId == UserManager.userInfo.roleId && pInfo.quit == RoomQuitState.ReqQuit)
+				{
+					RoomManager.roomInfo.quitTime = undefined;
+					console.log("房间里面只有一个人 接受退出房间结果，直接解散！");
+					RoomManager.exitRoom();
+				}
+				return;
+			}
+			if (RoomManager._reqExitRoleId != UserManager.userInfo.roleId) //非自己的请求才处理
+			{
+				UIManager.showPanel(UIModuleName.RoomDisbandOperPanel);
+			}
+		}
+	}
+	public static reqIsAgreeExitRoom(state: boolean)
+	{
+		SocketManager.AddCommandListener(Command.Req_IsAgreeExit_3006, RoomManager.onIsAgreeExitRoomResult);
+		SocketManager.Send(Command.Req_IsAgreeExit_3006, { "isAgree": state });
+	}
+	private static onIsAgreeExitRoomResult(result: SpRpcResult)
+	{
+		SocketManager.RemoveCommandListener(Command.Req_IsAgreeExit_3006, RoomManager.onIsAgreeExitRoomResult);
+		RoomManager.dispatchVoteSuccessEvent();
+	}
+	private static onPushExitVoteResult(result: SpRpcResult)
+	{
+		if (result.data)
+		{
+			let roleId: number = result.data["roleId"];
+			let isAgree: boolean = result.data["isAgree"];
+			let pInfo: PlayerInfo = RoomManager.getPlayerInfoByRoleId(roleId);
+			if (isAgree && pInfo)
+			{
+				pInfo.quit = RoomQuitState.Argree;
+			}
+			else if (pInfo)
+			{
+				pInfo.quit = RoomQuitState.Refuse;
+			}
+			if (RoomManager.mineInfo && RoomManager.mineInfo.quit == RoomQuitState.ReqQuit)
+			{
+				let panel: RoomDisbandInfoPanel = UIManager.getPanel(UIModuleName.RoomDisbandInfoPanel) as RoomDisbandInfoPanel;
+				if (panel)
+				{
+					panel.refreshPanel();
+				}
+				else
+				{
+					UIManager.showPanel(UIModuleName.RoomDisbandInfoPanel);
+				}
+			}
+			if (RoomManager.roomInfo)
+			{
+				let argreeLen: number = 0;
+				let refuseLen: number = 0;
+				let plaerLen: number = RoomManager.roomInfo.playerList.length - 1;
+
+				for (let i: number = 0; i < plaerLen + 1; i++)
+				{
+					pInfo = RoomManager.roomInfo.playerList[i];
+					if (pInfo.quit == RoomQuitState.Argree)
+					{
+						argreeLen++;
+					}
+					else if (pInfo.quit == RoomQuitState.Refuse)
+					{
+						refuseLen++;
+					}
+				}
+				let str: string = StringConstant.empty;
+				if (argreeLen >= plaerLen)
+				{
+					for (let i: number = 0; i < plaerLen + 1; i++)
+					{
+						pInfo = RoomManager.roomInfo.playerList[i];
+						if (pInfo.quit == RoomQuitState.Argree)
+						{
+							str += " " + pInfo.name + " ";
+						}
+					}
+					//清理游戏场景
+					console.log("解散退出房间！");
+					RoomManager.exitRoom();
+					AlertManager.showSingleAlert("经" + str + "同意，房间已解散。");
+				}
+				else if (refuseLen + argreeLen >= RoomManager.roomInfo.playerList.length - 1)
+				{
+					for (let i: number = 0; i < plaerLen + 1; i++)
+					{
+						pInfo = RoomManager.roomInfo.playerList[i];
+						if (pInfo.quit == RoomQuitState.Refuse)
+						{
+							str += " " + pInfo.name + " ";
+						}
+					}
+					let reqExitInfo: PlayerInfo = RoomManager.getPlayerInfoByRoleId(RoomManager._reqExitRoleId);
+					if (reqExitInfo)
+					{
+						AlertManager.showSingleAlert(str + "拒绝解散房间，" + reqExitInfo.name + "房间解散申请失败。");
+					}
+					else
+					{
+						AlertManager.showSingleAlert(str + "拒绝解散房间，解散房间失败。");
+					}
+					RoomManager.clearExitRoomRecord();
+				}
+			}
+			RoomManager.dispatchPushVoteEvent();
+		}
+	}
+	/**
+	 * 清理退出状态
+	 */
+	private static clearExitRoomRecord()
+	{
+		for (let pInfo of RoomManager.roomInfo.playerList)
+		{
+			pInfo.quit = RoomQuitState.Wait;
+		}
+		UIManager.closePanel(UIModuleName.RoomDisbandInfoPanel);
+		UIManager.closePanel(UIModuleName.RoomDisbandOperPanel);
+		RoomManager.isReqExitRoomIng = false;
+	}
+	/**
+	 * 接收房间解散
+	 */
+	public static onPushRoomDisbaned(result: SpRpcResult)
+	{
+		if (result.data)
+		{
+			let type: DisbandRomType = result.data["type"];
+			switch (type)
+			{
+				case DisbandRomType.TimeOut:
+					if (RoomManager.roomInfo && RoomManager.roomInfo.playerList) 
+					{
+						let min: number = Math.ceil(ProjectDefined.GetInstance().getValue(ProjectDefined.waitReadyTime) / 60);
+
+						let playerInfo: PlayerInfo;
+						for (let i: number = 0; i < RoomManager.roomInfo.playerList.length; i++)
+						{
+							playerInfo = RoomManager.roomInfo.playerList[i];
+							if (!playerInfo.isReady)
+							{
+								break;
+							}
+						}
+						if (playerInfo)
+						{
+							AlertManager.showSingleAlertByString(playerInfo.name + " " + min.toString() + "分钟未准备，房间已解散！");
+						}
+						else
+						{
+							AlertManager.showSingleAlertByString("有人" + min + "分钟未准备，房间已解散！");
+						}
+					}
+					break;
+				case DisbandRomType.HostDisband:
+					if (RoomManager.roomInfo) 
+					{
+						if (RoomManager.isMineHost)
+						{
+							AlertManager.showSingleAlertByString("房间已解散！");
+						}
+						else
+						{
+							AlertManager.showSingleAlertByString("房主已解散房间，请选择其他房间！ ");
+						}
+					}
+					break;
+			}
+			console.log("推送房间解散退出房间！");
+			RoomManager.exitRoom();
+		}
+	}
+	public static exitRoom()
+	{
+		if (RoomManager.roomInfo)
+		{
+			RoomManager.clearExitRoomRecord();
+			ArrayUtil.RemoveItem(RoomManager.mineInfo, RoomManager.roomInfo.playerList);
+			GoCardProcessManager.clear();
+			RoomManager.roomInfo = null;
+			RoomManager.dispatchReqExitRoomEvent();
+			SceneManager.goToHall();
+			RoomManager.clear();
+		}
+	}
+	/**
+	 * 某一个玩家退出房间
+	 */
+	public static onPushOtherPlayerExit(result: SpRpcResult)
+	{
+		if (result.data)
+		{
+			let roleId: number = result.data["roleId"];
+
+			RoomManager.dispatchPlayerExitRoomEvent(roleId); //先抛送事件，在删除玩家
+
+			if (roleId != UserManager.userInfo.roleId && RoomManager.roomInfo && RoomManager.roomInfo.playerList)
+			{
+				let len: number = RoomManager.roomInfo.playerList.length;
+				let playerInfo: PlayerInfo;
+				for (let i: number = 0; i < len; i++)
+				{
+					playerInfo = RoomManager.roomInfo.playerList[i];
+					if (playerInfo.roleId == roleId)
+					{
+						ArrayUtil.RemoveItem(playerInfo, RoomManager.roomInfo.playerList);
+						break;
+					}
+				}
+			}
+		}
+	}
+	/**
+	 * 请求创建房间
+	 */
+	public static reqCreateRoom(round: number, playWay: number, ante: number)
+	{
+		//todo
+		let obj: any = {};
+		obj.round = round;
+		obj.type = playWay;
+		obj.ante = ante;
+		let callBack: Function = function (result: SpRpcResult)
+		{
+			RoomManager.roomInfo = new RoomInfo(result.data);
+			RoomManager.roomInfo.round = obj.round;
+			RoomManager.roomInfo.ante = obj.ante;
+			RoomManager.roomInfo.type = obj.type;
+
+			RoomManager.roomInfo.roundNum = 0;
+			RoomManager.roomInfo.head = 0;
+			RoomManager.roomInfo.tail = 0;
+			RoomManager.roomInfo.shouPai = new Array<number>();
+			RoomManager.roomInfo.play = RoomState.NIL;
+			/**
+			 * 创建房间成功把自己加入到房间玩家列表里面去
+			 */
+			let selfInfo: PlayerInfo = new PlayerInfo();
+			selfInfo.roleId = UserManager.userInfo.roleId;
+			if (ChannelManager.loginType == ChannelLoginType.Guest)
+			{
+				//游客处理
+				selfInfo.name = "游客";
+			}
+			else
+			{
+				selfInfo.name = UserManager.userInfo.name;
+				selfInfo.head = UserManager.userInfo.head;
+				selfInfo.sex = UserManager.userInfo.sex;
+				selfInfo.ip = UserManager.userInfo.ip;
+			}
+			selfInfo.isMaster = true;
+			GoCardProcessManager.lastMastPos = 1;
+			selfInfo.pos = 1;
+			selfInfo.isTing = false;
+			selfInfo.groupList = new Array<GroupCardInfo>();
+			RoomManager.playerNameOper(selfInfo);
+			RoomManager.roomInfo.playerList = new Array<PlayerInfo>();
+			RoomManager.roomInfo.playerList.push(selfInfo);
+			RoomManager.roomInfo.pos = 1;
+			RoomManager.roomInfo.hostRoleId = UserManager.userInfo.roleId;
+
+			RoomManager.dispatchCreateRoomEvent();
+			SocketManager.RemoveCommandListener(Command.Req_CreateRoom_3003, callBack);
+
+			RoomManager.isInRoom = true;
+			RoomManager.setMod();
+		}
+		SocketManager.AddCommandListener(Command.Req_CreateRoom_3003, callBack);
+		SocketManager.Send(Command.Req_CreateRoom_3003, { "round": round, "type": playWay, "ante": ante });
+	}
+	/**
+	 * 请求退出房间
+	 */
+	public static reqExitRoom(isLast?: boolean)
+	{
+		if (RoomManager.isReqExitRoomIng)
+		{
+			UIManager.showFloatTips("请求已发出，请等待其他玩家投票结果！");
+			return;
+		}
+		let isL: boolean = isLast;
+		let callBack: Function = function (result: SpRpcResult)
+		{
+			SocketManager.RemoveCommandListener(Command.Req_ExitRoom_3005, callBack);
+			if (isL) //最后一次直接退出房间
+			{
+				console.log("最后一次直接退出房间！");
+				RoomManager.exitRoom();
+			}
+			else
+			{
+				UIManager.closePanel(UIModuleName.SettingPanel);
+				UIManager.showPanel(UIModuleName.RoomDisbandInfoPanel); //显示退出状态
+				if (RoomManager.mineInfo)
+				{
+					RoomManager.mineInfo.quit = RoomQuitState.ReqQuit;
+				}
+			}
+		};
+		SocketManager.AddCommandListener(Command.Req_ExitRoom_3005, callBack);
+		SocketManager.Send(Command.Req_ExitRoom_3005);
+		RoomManager.isReqExitRoomIng = true;
+	}
+	/**
+	 * 根据我的位置，查找指定座位类型的玩家信息
+	 */
+	public static findPlayerInfo(myPos: number, type: PosType): PlayerInfo
+	{
+		if (RoomManager.roomInfo)
+		{
+			let targetPos: number = RoomManager.getPos(myPos, type);
+			return RoomManager.getPlayerInfoByPos(targetPos);
+		}
+		return null;
+	}
+	/**
+	 * 查找相对于主角的座位类型的玩家信息
+	 */
+	public static getPlayerInfoByPosType(type: PosType): PlayerInfo
+	{
+		if (RoomManager.mineInfo)
+		{
+			return RoomManager.findPlayerInfo(RoomManager.mineInfo.pos, type);
+		}
+		return null;
+	}
+	/**
+	 * 如果是补杠则，不用作牌处理
+	 */
+	public static getGroupCard(card: number, list: Array<GroupCardInfo>): GroupCardInfo
+	{
+		for (let info of list)
+		{
+			if (info.card == card)
+			{
+				return info;
+			}
+		}
+		return null;
+	}
+	/**
+	 * 基于指定位置，查找座位类型的位置信息
+	 */
+	public static getPos(myPos: number, type: PosType): number
+	{
+		if (myPos > 0)
+		{
+			let targetPos: number = (myPos + this.getPosTypeIndex(type));
+			if (targetPos > 4)
+			{
+				targetPos -= 4;
+			}
+			return targetPos;
+		}
+		return -1;
+	}
+	/**
+	 * 根据主角的位置获取对应座位类型的位置
+	 */
+	public static getPosByPosTypeForMine(type: PosType)
+	{
+		if (RoomManager.mineInfo)
+		{
+			return RoomManager.getPos(RoomManager.mineInfo.pos, type);
+		}
+		return -1;
+	}
+	public static getPosTypeIndex(type: PosType): number
+	{
+		switch (type)
+		{
+			case PosType.BenJia:
+				return 0;
+			case PosType.XiaJia:
+				return 1;
+			case PosType.DuiJia:
+				return 2;
+			case PosType.ShangJia:
+				return 3;
+		}
+		return -1;
+	}
+	/**
+	 * 根据我的位置，获取指定位置的位置类型
+	 */
+	public static getPosType(myPos: number, targetPos: number): PosType
+	{
+		if (targetPos < myPos)
+		{
+			targetPos += RoomManager.mod - myPos;
+		}
+		else if (targetPos >= myPos)
+		{
+			targetPos -= myPos;
+		}
+		return (targetPos + 1) as PosType;
+	}
+	/**
+	 * 根据本家获取指定位置的座位类型
+	 */
+	public static getPosTypeForMine(targetPos: number): PosType
+	{
+		if (RoomManager.mineInfo)
+		{
+			return RoomManager.getPosType(RoomManager.mineInfo.pos, targetPos);
+		}
+		return 0;
+	}
+	public static get mineInfo(): PlayerInfo
+	{
+		// return RoomManager.roomInfo.playerList[0]; //local
+		if (RoomManager.roomInfo)
+		{
+			for (let info of RoomManager.roomInfo.playerList)
+			{
+				if (info.roleId == UserManager.userInfo.roleId)
+				{
+					return info;
+				}
+			}
+		}
+		// return RoomManager.roomInfo.playerList[0]; //local
+		return null;
+	}
+	/**
+	 * 根据位置获取房间玩家信息
+	 */
+	public static getPlayerInfoByPos(pos: number): PlayerInfo
+	{
+		if (RoomManager.roomInfo)
+		{
+			for (let info of RoomManager.roomInfo.playerList)
+			{
+				if (info.pos == pos)
+				{
+					return info;
+				}
+			}
+		}
+		// return RoomManager.roomInfo.playerList[0]; //local		
+		return null;
+	}
+	/**
+	 * 根据roleId获取房间玩家信息
+	 */
+	public static getPlayerInfoByRoleId(roleId: number): PlayerInfo
+	{
+		if (RoomManager.roomInfo)
+		{
+			for (let info of RoomManager.roomInfo.playerList)
+			{
+				if (info.roleId == roleId)
+				{
+					return info;
+				}
+			}
+		}
+		return null;
+	}
+	/**
+	 * 庄家信息
+	 */
+	public static get masterInfo(): PlayerInfo
+	{
+		if (RoomManager.roomInfo)
+		{
+			for (let info of RoomManager.roomInfo.playerList)
+			{
+				if (info.isMaster)
+				{
+					return info;
+				}
+			}
+		}
+		return null;
+	}
+	public static shouPaiOper()
+	{
+		// 	let pInfo: PlayerInfo = RoomManager.mineInfo;
+		// 	if (pInfo && RoomManager.roomInfo && RoomManager.roomInfo.shouPai)
+		// 	{
+		// 		let totalNum: number = 0;
+		// 		if (pInfo.peng)
+		// 		{
+		// 			for (let i: number = 0; i < pInfo.peng.length; i++)
+		// 			{
+		// 				ArrayUtil.RemoveItem(pInfo.peng[i], RoomManager.roomInfo.shouPai, 3)
+		// 			}
+		// 		}
+		// 		if (pInfo.anGang)
+		// 		{
+		// 			for (let i: number = 0; i < pInfo.anGang.length; i++)
+		// 			{
+		// 				ArrayUtil.RemoveItem(pInfo.anGang[i], RoomManager.roomInfo.shouPai, 4)
+		// 			}
+		// 		}
+		// 		if (pInfo.mingGang)
+		// 		{
+		// 			for (let i: number = 0; i < pInfo.mingGang.length; i++)
+		// 			{
+		// 				ArrayUtil.RemoveItem(pInfo.mingGang[i], RoomManager.roomInfo.shouPai, 4)
+		// 			}
+		// 		}
+	}
+	public static getShouPaiNum(posType: PosType)
+	{
+		if (RoomManager.mineInfo)
+		{
+			let pos: number = RoomManager.getPosByPosTypeForMine(posType);
+			let pInfo: PlayerInfo = RoomManager.getPlayerInfoByPos(pos);
+			if (pInfo)
+			{
+				return pInfo.shouPaiNum;
+			}
+		}
+		return 0;
+	}
+	public static get isSelfAction(): boolean
+	{
+		if (RoomManager.mineInfo && RoomManager.roomInfo)
+		{
+			if (RoomManager.roomInfo.play == RoomState.PUT && RoomManager.mineInfo.pos == RoomManager.roomInfo.pos)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	/**
+	 * 仅自己
+	 */
+	public static getPosTypeByRoleId(roleId: number)
+	{
+		let pInfo: PlayerInfo = RoomManager.getPlayerInfoByRoleId(roleId);
+		if (pInfo)
+		{
+			return RoomManager.getPosTypeForMine(pInfo.pos);
+		}
+		return PosType.BenJia;
+	}
+	public static updateHead(num: number)
+	{
+		if (num && RoomManager.roomInfo.playerList)
+		{
+			RoomManager.roomInfo.head += num;
+			RoomManager.dispatchHeadChangeEvent();
+		}
+	}
+	/**
+	 * 获取等待剩余时间
+	 */
+	public static get waitReadyTime(): number
+	{
+		if (RoomManager.roomInfo)
+		{
+			let total: number = ProjectDefined.GetInstance().getValue(ProjectDefined.waitReadyTime);
+			let passTime: number = TimeManager.GetServerUtcTimestamp() - RoomManager.roomInfo.roundEndTime;
+			return total - passTime;
+		}
+		return undefined;
+	}
+	/**
+	 * 获取剩余时间字符串
+	 */
+	public static get remainTimeStr(): string
+	{
+		if (RoomManager.roomInfo)
+		{
+			let passedTime: number = TimeManager.GetServerUtcTimestamp() - RoomManager.roomInfo.quitTime;
+			let waitTime: number = ProjectDefined.GetInstance().getValue(ProjectDefined.waitDisbandTime);
+			let remainTime: number = waitTime - passedTime;
+			if (remainTime >= 0)
+			{
+				let min: number = Math.floor(remainTime / 60);
+				let str: string = DateTimeUtil.formatCountdown(min);
+				let secs: number = Math.round(remainTime - min * 60);
+				str += ":" + DateTimeUtil.formatCountdown(secs);
+				return str;
+			}
+			else
+			{
+				return StringConstant.empty;
+			}
+		}
+		return StringConstant.empty;
+	}
+
+	// }
+	//----------------------------------------------------
+	// event
+	//----------------------------------------------------
+	/**
+	 * 创建房间成功
+	 */
+	public static createRoomEA: ActionDispatcher = new ActionDispatcher();
+	private static dispatchCreateRoomEvent()
+	{
+		RoomManager.createRoomEA.dispatch();
+	}
+	/**
+	 * 拉取房间信息
+	 */
+	public static getRoomInfoEA: ActionDispatcher = new ActionDispatcher();
+	private static dispatchGetRoomInfoEvent()
+	{
+		RoomManager.getRoomInfoEA.dispatch();
+	}
+	/**
+	 * 其他玩家进入房间
+	 */
+	public static otherPlayerJoinEA: ActionDispatcher = new ActionDispatcher();
+	private static dispatchOtherPlayerJoinEvent(roomPlayerInfo: PlayerInfo)
+	{
+		RoomManager.otherPlayerJoinEA.dispatch(roomPlayerInfo);
+	}
+	/**
+	 * 请求加入房间结果
+	 */
+	public static reqJoinRoomEA: ActionDispatcher = new ActionDispatcher();
+	private static dispatchReqJoinRoomEvent()
+	{
+		RoomManager.reqJoinRoomEA.dispatch();
+	}
+	/**
+	 * 请求退出房间结果
+	 */
+	public static reqExitRoomEA: ActionDispatcher = new ActionDispatcher();
+	private static dispatchReqExitRoomEvent()
+	{
+		RoomManager.reqExitRoomEA.dispatch();
+	}
+	/**
+	 * 剩余张数数量变化
+	 */
+	public static headChangeEa: ActionDispatcher = new ActionDispatcher();
+	private static dispatchHeadChangeEvent()
+	{
+		RoomManager.headChangeEa.dispatch();
+	}
+	/**
+	 * 执行玩家的位置变化
+	 */
+	public static posChangeEa: ActionDispatcher = new ActionDispatcher();
+	public static dispatchPosChangeEvent()
+	{
+		RoomManager.posChangeEa.dispatch();
+	}
+	/**
+	 * 推送玩家退出房间
+	 */
+	public static playerExitRoomEa: ActionDispatcher = new ActionDispatcher();
+	public static dispatchPlayerExitRoomEvent(roleId: number)
+	{
+		RoomManager.playerExitRoomEa.dispatch(roleId);
+	}
+	/**
+	 * 投票结果成功
+	 */
+	public static voteSuccessEa: ActionDispatcher = new ActionDispatcher();
+	private static dispatchVoteSuccessEvent()
+	{
+		RoomManager.voteSuccessEa.dispatch();
+	}
+	/**
+	 * 投票推送事件
+	 */
+	public static pushVoteResultEa: ActionDispatcher = new ActionDispatcher();
+	private static dispatchPushVoteEvent()
+	{
+		RoomManager.pushVoteResultEa.dispatch();
+	}
+}
+/**
+ * 房间信息
+ */
+class RoomInfo extends BaseServerValueInfo
+{
+	/**
+	 * 房间号
+	 */
+	public roomId: number;
+	/**
+	 * 局数
+	 */
+	public round: number;
+	/**
+	 * 玩法
+	 */
+	public type: number;
+	/**
+	 * 底分
+	 */
+	public ante: number;
+	/**
+	 * 房间的玩家列表
+	 */
+	public playerList: Array<PlayerInfo>;
+	/**
+	 * 第几局
+	 */
+	public roundNum: number;
+	/**
+	 * 从开始摸了几张牌
+	 */
+	public head: number;
+	/**
+	 * 从末尾摸了几张牌
+	 */
+	public tail: number;
+	/**
+	 * 手牌列表
+	 */
+	public shouPai: Array<number>;
+	/**
+	 * 出牌玩家的位置
+	 */
+	private _pos: number;
+	public set pos(value: number)
+	{
+		this._pos = value;
+		RoomManager.dispatchPosChangeEvent();
+	}
+	public get pos(): number
+	{
+		return this._pos;
+	}
+	/**
+	 * 房间状态
+	 */
+	public play: RoomState;
+	/**
+	 * 骰子数1
+	 */
+	public num1: number;
+	/**
+	 * 骰子数2
+	 */
+	public num2: number;
+	/**
+	 * 最后摸到的一张牌，未打出去，如果打出去，则此牌为未定义
+	 */
+	public myLastCard: number;
+	/**
+	 * 房主的角色ID
+	 */
+	public hostRoleId: number;
+	/**
+	 * 上一局的结束时间
+	 */
+	public roundEndTime: number;
+	/**
+	 * 请求解散房间时间戳
+	 */
+	public quitTime: number;
+	/**
+	 * 点炮的牌 or 自摸胡的牌 
+	 */
+	public boomCard: number;
+	/**
+	 * 点炮人的位置 or 胡牌人的位置
+	 */
+	public boomPos: number;
+	/**
+	 * 最后出的一张牌，为了碰牌的时候断线用
+	 */
+	public lastCard: number;
+	/**
+	 * 骰子总数
+	 */
+	public get touziTotalNum(): number
+	{
+		return this.num2 + this.num1;
+	}
+	/**
+	 * 最小骰子
+	 */
+	public get minTouziNum(): number
+	{
+		return Math.min(this.num1, this.num2);
+	}
+
+	public reset()
+	{
+		this.myLastCard = undefined;
+	}
+}
+/**
+ * 房间玩家信息
+ */
+class PlayerInfo extends BaseServerValueInfo
+{
+	/**
+	 * 角色ID
+	 */
+	public roleId: number;
+	/**
+	 * 昵称
+	 */
+	public name: string;
+	/**
+	 * 头像
+	 */
+	public head: string;
+	/**
+ 	* 性别
+ 	*/
+	public sex: number;
+	/**
+	 * ip地址
+	 */
+	public ip: string;
+	/**
+	 * 是否是庄家
+	 */
+	public isMaster: boolean;
+	/**
+	 * 位置
+	 */
+	public pos: number;
+	/**
+	 * 碰杠牌列表
+	 */
+	public groupList: Array<GroupCardInfo>;
+	/**
+	 * 打出去的牌
+	 */
+	public outCard: Array<number>;
+	/**
+	 * 听牌状态
+	 */
+	public isTing: boolean;
+	/**
+	 * 是否已经准备
+	 */
+	public isReady: boolean;
+	/**
+	 * 是否这家出牌
+	 */
+	public isOutOfCard: boolean;
+	/**
+	 * 总积分
+	 */
+	public score: number;
+	/**
+	 * 是否是最后摸牌的玩家
+	 */
+	public isLastMoPai: boolean;
+	/**
+	 * 手牌数量
+	 */
+	public shouPaiNum: number;
+	/**
+	 * 当局积分
+	 */
+	public currScore: number;
+	/**
+	 * 是否托管中
+	 */
+	public hosted: boolean;
+	/**
+	 * 离线状态
+	 */
+	public offline: boolean;
+	/**
+	 * 解散房间投票结果 0.等待选择 1.已拒绝 2.已同意 3.请求人标记
+	 */
+	public quit: RoomQuitState;
+	public reset()
+	{
+		this.score = 0;
+		this.pos = 0;
+		this.isTing = false;
+		this.isReady = false;
+		this.hosted = false;
+		this.isOutOfCard = false;
+		this.currScore = 0;
+		this.quit = RoomQuitState.Wait;
+	}
+	public clear()
+	{
+		this.isTing = false;
+		this.hosted = false;
+		this.isReady = false;
+	}
+}
+/**
+ * 碰杠牌信息
+ */
+class GroupCardInfo
+{
+	/**
+	 * 牌ID
+	 */
+	public card: number;
+	/**
+	 * 顺序索引
+	 */
+	public index: number;
+	/**
+	 * 1.碰 2.明杠 3.暗杠 4.补杠
+	 */
+	public action: number;
+	/**
+	 * 碰杠那家的位置
+	 */
+	public pos: number;
+}
+/**
+ * 房间解散类型
+ */
+enum DisbandRomType
+{
+	/**
+	 * 为超时解散
+	 */
+	TimeOut = 1,
+	/**
+	 * 为未开局房主解散
+	 */
+	HostDisband = 2,
+}

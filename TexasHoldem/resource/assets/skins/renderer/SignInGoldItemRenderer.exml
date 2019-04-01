@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="SignInGoldListItemRendererSkin" width="555" height="66" xmlns:e="http://ns.egret.com/eui"
+        xmlns:w="http://ns.egret.com/wing" xmlns:ns1="*">
+        <ns1:GameButtonGroup width="553" anchorOffsetX="0">
+    <e:Image width="554" height="67" x="0" y="0" anchorOffsetY="0" fillMode="scale" anchorOffsetX="0"
+              source="bg_page27_png" scale9Grid="344,138,8,9"/>
+					<e:Image id="signInCheck" width="554" height="67" x="0" y="0" source="Bg3_png"/>
+	<e:Image x="150" y="18.5" anchorOffsetX="0" width="41" anchorOffsetY="0" height="30" source="chips_04_png"/>	
+    <e:Label id="signInDayLabel" text="第1天" x="26" y="22.25" fontFamily="SimHei"  size="20" anchorOffsetX="0" width="64" anchorOffsetY="0" height="23" textColor="0x000205"/>
+
+    <e:Label id="signInGoldLabel" text="金币x1800" x="221" y="16.5" fontFamily="SimHei"  size="18" verticalAlign="middle" anchorOffsetY="0" height="33" anchorOffsetX="0" width="228" textColor="0x000102"/>
+
+
+    </ns1:GameButtonGroup>
+</e:Skin>

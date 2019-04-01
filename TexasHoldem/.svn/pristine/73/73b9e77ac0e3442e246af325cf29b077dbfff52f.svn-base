@@ -1,0 +1,371 @@
+/**
+ * 活动管理
+ */
+class ActivityManager
+{
+    /**
+     * 活动列表
+     */
+    public static list: Array<ActivityInfo> = new Array<ActivityInfo>();
+    /**
+     * 显示的活动列表
+     */
+    public static showList: Array<ActivityInfo> = new Array<ActivityInfo>();
+
+    public static Initialize(result: SpRpcResult)
+    {
+        TimeManager.resetTime0Event.removeListener(ActivityManager.onTimeReset);
+        ActivityManager.InitActivityList();
+        TimeManager.resetTime0Event.addListener(ActivityManager.onTimeReset, this);
+        for (let info of ActivityManager.list)
+        {
+            ActivityManager.setStartTime(info);
+            ActivityManager.setEndTime(info);
+        }
+        if (result.data)
+        {
+            for (let i: number = 0; i < result.data.length; i++)
+            {
+                ActivityManager.list[i].id = result.data[i]["Id"];
+                ActivityManager.list[i].step = result.data[i]["Step"];
+                ActivityManager.list[i].severStartTime = result.data[i]["StartTime"];
+                ActivityManager.list[i].severEndTime = result.data[i]["EndTime"];
+                for (let id of JSON.parse(result.data[i]["Json"]))
+                {
+                    ActivityManager.list[i].getAwardList.push(id);
+                }
+            }
+        }
+
+        ActivityManager.checkCompleteHide();
+    }
+    /**
+     * 根据活动类型显示面板
+     */
+    public static showActivityPanelByType(activityInfo: ActivityInfo)
+    {
+        switch (activityInfo.definition.type)
+        {
+            case ActivityType.img:
+                UIManager.showPanel(UIModuleName.SimplePicturePanel, activityInfo);
+                break;
+            case ActivityType.des:
+                UIManager.showPanel(UIModuleName.NormalActivityPanel, activityInfo);
+                break;
+            default:
+                if (activityInfo.definition.panelName)
+                {
+                    UIManager.showPanel(activityInfo.definition.panelName, activityInfo);
+                }
+                break;
+        }
+    }
+    /**
+     * 获取活动信息
+     */
+    public static getActivityInfo(id: number): ActivityInfo
+    {
+        for (let info of ActivityManager.list)
+        {
+            if (info.id == id)
+            {
+                return info;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 获取活动状态
+     */
+    public static getActivityOpenState(info: ActivityInfo)
+    {
+        if (!info || info.definition)
+        {
+            return ActivityOpenState.None;
+        }
+        let dt: Date = TimeManager.GetServerLocalDateTime();
+        if (info.definition.isByServerTime && (info.severStartTime != TimeManager.Utc1970 || info.severEndTime != TimeManager.Utc1970))
+        {
+            if (dt >= info.severStartTime && dt <= info.severEndTime)
+            {
+                return ActivityOpenState.Opened;
+            }
+            return ActivityOpenState.NotOpen;
+        }
+        if (info.startTime != TimeManager.Utc1970)
+        {
+            if (dt < info.startTime)
+            {
+                return ActivityOpenState.NotOpen;
+            }
+        }
+        if (info.endTime != TimeManager.Utc1970)
+        {
+            if (dt > info.endTime)
+            {
+                return ActivityOpenState.Finish;
+            }
+        }
+        return ActivityOpenState.Opened;
+    }
+
+    private static InitActivityList()
+    {
+        ArrayUtil.Clear(ActivityManager.list);
+        for (let info of ActivityListDefined.GetInstance().dataList)
+        {
+            let activityInfo: ActivityInfo = new ActivityInfo();
+            activityInfo.id = info.id;
+            ActivityManager.list.push(activityInfo);
+        }
+    }
+
+    public static checkCompleteHide()
+    {
+        ArrayUtil.Clear(ActivityManager.showList);
+        for (let info of ActivityManager.list)
+        {
+            let isHide: boolean = info.definition.showFinish == false || info.definition.unInShowPanel == true;
+            if (ActivityManager.getActivityOpenState(info) != ActivityOpenState.Opened || isHide)
+            {
+                continue;
+            }
+            ActivityManager.showList.push(info);
+        }
+    }
+    /**
+     * 设置开始时间
+     */
+    private static setStartTime(info: ActivityInfo)
+    {
+        info.severStartTime = DateTimeUtil.stringToDate(info.definition.startTime);
+        info.startTime = DateTimeUtil.stringToDate(info.definition.startTime);
+        if (ActivityManager.IsOpenServerActivity(info.definition))
+        {
+            if (info.definition.openServerTimeStart > 0)
+            {
+                info.severStartTime = new Date((UserManager.userInfo.openServerTime + info.definition.openServerTimeStart) * 1000);
+                if (info.severStartTime > info.startTime)
+                {
+                    info.startTime = info.severStartTime;
+                }
+            }
+            else
+            {
+                info.severStartTime = new Date(UserManager.userInfo.openServerTime * 1000);
+            }
+        }
+        if (ActivityManager.IsCreateRoleActivity(info.definition))
+        {
+            if (info.definition.keepDayStart > 0)
+            {
+                info.severStartTime = new Date((UserManager.userInfo.createdTime + info.definition.keepDayStart) * 1000);
+                if (info.severStartTime > info.startTime)
+                {
+                    info.startTime = info.severStartTime;
+                }
+            }
+            else
+            {
+                info.severStartTime = new Date(UserManager.userInfo.createdTime * 1000);
+            }
+        }
+    }
+    /**
+     * 设置结束时间
+     */
+    private static setEndTime(info: ActivityInfo)
+    {
+        info.severEndTime = DateTimeUtil.stringToDate(info.definition.endTime);
+        info.endTime = DateTimeUtil.stringToDate(info.definition.endTime);
+        if (ActivityManager.IsOpenServerActivity(info.definition))
+        {
+            if (info.definition.openServerTimeEnd > 0)
+            {
+                info.severEndTime = new Date((UserManager.userInfo.openServerTime + info.definition.openServerTimeEnd) * 1000);
+                if (info.severEndTime < info.endTime || info.endTime == TimeManager.Utc1970)
+                {
+                    info.endTime = info.severEndTime;
+                }
+            }
+        }
+        if (ActivityManager.IsCreateRoleActivity(info.definition))
+        {
+            if (info.definition.keepDayEnd > 0)
+            {
+                info.severEndTime = new Date((UserManager.userInfo.createdTime + info.definition.keepDayEnd) * 1000);
+                if (info.severEndTime < info.endTime || info.endTime == TimeManager.Utc1970)
+                {
+                    info.endTime = info.severEndTime;
+                }
+            }
+        }
+    }
+    /**
+    * 是否是开服型活动，开服型活动完成统一不消失
+    */
+    public static IsOpenServerActivity(def: ActivityListDefintion): boolean
+    {
+        if (def)
+        {
+            return def.openServerTimeStart > 0 || def.openServerTimeEnd > 0;
+        }
+        return false;
+    }
+    /**
+     * 活动是否是创号型活动
+     */
+    public static IsCreateRoleActivity(def: ActivityListDefintion): boolean
+    {
+        if (def != null)
+        {
+            return def.keepDayStart > 0 || def.keepDayEnd > 0;
+        }
+        return false;
+    }
+    /**
+     * 0点重置
+     */
+    private static onTimeReset()
+    {
+        SocketManager.Send(Command.Req_GetActivityList_3233, null, ActivityManager.Initialize, null, this);
+    }
+
+    /**
+     * 请求领取活动奖励
+     */
+    public static ReqGetActivityAward(activityId: number, subId: number)
+    {
+        let callback: Function = function (sp: SpRpcResult)
+        {
+            PropertyManager.ShowItemList();
+            ActivityManager.getAwardResult(activityId, subId);
+        };
+        PropertyManager.OpenGet();
+        SocketManager.Send(Command.Req_Activity_Got_3202, { "Id": activityId, "SubId": subId }, callback, null, this);
+    }
+
+    public static getAwardResult(activityId: number, subId: number)
+    {
+        let def: ActivityListDefintion = ActivityListDefined.GetInstance().getDefinition(activityId);
+        let info: ActivityInfo = ActivityManager.getActivityInfo(activityId);
+        if (def && info)
+        {
+            switch (def.type)
+            {
+                case ActivityType.des:
+                    ActivityManager.onGetAwardResult(info, subId);
+                    break;
+            }
+        }
+    }
+
+    public static onGetAwardResult(info: ActivityInfo, subId: number)
+    {
+        if (info.getAwardList.indexOf(subId) == -1)
+        {
+            info.getAwardList.push(subId);
+        }
+    }
+}
+
+/**
+ * 客户端活动开启状态
+ */
+enum ActivityOpenState
+{
+    /**
+     * 空
+     */
+    None = 0,
+    /**
+     * 未开启
+     */
+    NotOpen = 1,
+    /**
+     * 已开启
+     */
+    Opened = 2,
+    /**
+     * 已结束
+     */
+    Finish = 3,
+}
+
+class ActivityType
+{
+    /**
+     * 纯图片活动
+     */
+    public static img: string = "img";
+    /**
+     * 图片+文字获得
+     */
+    public static des: string = "des";
+}
+
+class ActivityInfo extends BaseServerValueInfo
+{
+    public reset()
+    {
+
+    }
+    private _id: number;
+    public get id(): number
+    {
+        return this._id;
+    }
+    public set id(value: number)
+    {
+        this._id = value;
+        this._definition = ActivityListDefined.GetInstance().getDefinition(this._id);
+    }
+
+    private _definition: ActivityListDefintion;
+    public get definition(): ActivityListDefintion
+    {
+        return this._definition;
+    }
+    /**
+     * 活动的完成状态
+     */
+    public completeState: boolean = false;
+    /**
+     * 记录玩家累计活动的数据
+     */
+    public actionNum: number = 0;
+    /**
+     * 活动是否已经过期
+     */
+    public IsOutOfTime: boolean = false;
+    /**
+     * 活动参与开始的时间(服务器提供)
+     */
+    public severStartTime: Date = TimeManager.Utc1970;
+    /**
+     * 活动参与的结束时间(服务器提供)
+     */
+    public severEndTime: Date = TimeManager.Utc1970;
+    /**
+     * 活动参与开始的时间
+     */
+    public startTime: Date = TimeManager.Utc1970;
+    /**
+     * 活动参与的结束时间
+     */
+    public endTime: Date = TimeManager.Utc1970;
+    /**
+     * 活动提示时间
+     */
+    public notifyTime: Date = TimeManager.Utc1970;
+    public notifyIsOpen: boolean;
+    /**
+     * 已领取奖励的子项列表
+     */
+    public getAwardList: Array<number> = new Array<number>();
+    /**
+     * 活动状态的一个描述，可以为登录的天数|签到的天数|迎财神的档次|充值的金额-- --
+     */
+    public step: number;
+}

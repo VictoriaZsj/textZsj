@@ -1,0 +1,155 @@
+/**
+ * 锦标赛最近赛况项面板
+*/
+class OutsItemRenderer extends BaseItemRenderer<OutsInfo>
+{
+    /**
+     * 头像
+    */
+    private headImg: eui.Image;
+    /**
+     * 昵称
+    */
+    private nameLabel: eui.Label;
+    /**
+     * 日期
+    */
+    private dateLabel: eui.Label;
+    /**
+     * 时间
+    */
+    private timeLabel: eui.Label;
+    /**
+     * 名次
+    */
+    private rankLabel: eui.Label;
+    /**
+     * 用户昵称
+    */
+    private userNameLabel: eui.Label;
+    /**
+     * 获得的奖励
+    */
+    private awardLabel: eui.Label;
+    /**
+     * 更多按钮
+    */
+    private dirBtn: eui.ToggleSwitch;
+    /**
+     * 子列表
+    */
+    public list = new eui.List();
+
+    public constructor()
+    {
+        super();
+        this.skinName = UIRendererSkinName.OutsItemRenderer;
+    }
+    protected createChildren()
+    {
+        this.dataChanged();
+    }
+    protected dataChanged()
+    {
+        super.dataChanged();
+        if (this.bindData)
+        {
+            this.dirBtn.touchEnabled = false;
+            this.headImg.source = this.bindData.rankList[0].head;
+            let date: Date = new Date(this.bindData.time * 1000);
+            if (this.bindData.time - TimeManager.GetServerUtcTimestamp() > 3600 * 24)  //大于一天
+            {
+                this.dateLabel.text = (date.getMonth() + 1) + "-" + date.getDate();
+            } else  // 少于一天
+            {
+                this.dateLabel.text = "今天";
+            }
+            this.nameLabel.text = this.bindData.name;
+            this.rankLabel.text = "冠军";
+            this.userNameLabel.text = this.bindData.rankList[0].name;
+            this.awardLabel.text = this.bindData.rankList[0].award;
+            this.addEventListener(egret.Event.REMOVED_FROM_STAGE, this.onDisable, this);
+            this.addEventListener(egret.TouchEvent.TOUCH_TAP, this.setOutsRankInfo, this);
+        }
+    }
+    private onDisable(event: egret.Event)
+    {
+        this.removeEventListener(egret.Event.REMOVED_FROM_STAGE, this.onDisable, this);
+        this.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.setOutsRankInfo, this);
+    }
+
+    /**
+     * 设置最近赛况点击触发的操作事件
+    */
+    private setOutsRankInfo(event: TouchEvent)
+    {
+        SoundManager.playEffect(Sex.Male, MusicAction.buttonClick);
+        if (ChampionshipManager.spreadItem)
+        {
+            if (ChampionshipManager.spreadItem == this.dirBtn)
+            {
+                this.dirBtn.selected = !this.dirBtn.selected;
+            } else
+            {
+                if (ChampionshipManager.childlist)
+                {
+                    ChampionshipManager.childlist.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.cancelBubble, this);
+                    ChampionshipManager.spreadItem.parent.removeChild(ChampionshipManager.childlist);
+                    ChampionshipManager.spreadItem.parent.height = ChampionshipManager.spreadItem.parent.height - ChampionshipManager.childlist.height;
+                    ChampionshipManager.childlist = null;
+                }
+                ChampionshipManager.spreadItem.selected = false;
+                ChampionshipManager.spreadItem = this.dirBtn;
+                this.dirBtn.selected = true;
+            }
+        } else
+        {
+            ChampionshipManager.spreadItem = this.dirBtn;
+            this.dirBtn.selected = true;
+        }
+        if (this.dirBtn.selected == true)
+        {
+            this.createChild();
+        } else
+        {
+            this.delChild();
+        }
+    }
+    /**
+     * 创建折叠项
+    */
+    private createChild()
+    {
+        UIUtil.bindRender(this.list, OutsChildItemRenderer);
+        this.list.useVirtualLayout = true;
+        this.list.width = 720;
+        let layout: eui.VerticalLayout = new eui.VerticalLayout();
+        layout.gap = 1;
+        this.list.layout = layout;
+        this.list.dataProvider = new eui.ArrayCollection(this.bindData.rankList);
+        this.list.y = this.height;
+        this.list.height = 60 * this.bindData.rankList.length;
+        this.list.bottom = 1;
+        this.list.addEventListener(egret.TouchEvent.TOUCH_TAP, this.cancelBubble, this);
+        ChampionshipManager.childlist = this.list;
+        this.addChild(this.list);
+        this.height = this.list.height + this.height;
+    }
+    /**
+     * 删除折叠项
+    */
+    private delChild()
+    {
+        this.list.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.cancelBubble, this);
+        ChampionshipManager.childlist = null;
+        this.height = this.height - this.list.height;
+        this.list.parent.removeChild(this.list);
+    }
+    /**
+     * 取消冒泡
+    */
+    private cancelBubble(event: egret.TouchEvent)
+    {
+        event.stopImmediatePropagation();
+    }
+}

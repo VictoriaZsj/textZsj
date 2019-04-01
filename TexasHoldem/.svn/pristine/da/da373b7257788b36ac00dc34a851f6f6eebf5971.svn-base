@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="outsChildItemRenderer" width="720" height="60" xmlns:e="http://ns.egret.com/eui" xmlns:ns1="*"
+        xmlns:w="http://ns.egret.com/wing">
+    <e:Image id="bgImage" width="695" height="60" anchorOffsetX="0" anchorOffsetY="0" scale9Grid="2,2,8,8"
+             source="bg_page19_3_png" y="2" horizontalCenter="-2.5" />
+    <e:Image id="headImg" scale9Grid="9,8,25,7" source="fangka_png" scaleX="0.2" scaleY="0.2" x="98.66" y="24" />
+    <e:Label id="rankLabel" text="冠军" x="26" y="22" size="24" />
+    <e:Label id="userNameLabel" text="用户名称" x="126" y="22" size="24" />
+    <e:Label id="awardLabel" text="获得10元话费" x="264" y="20" size="24" />
+</e:Skin>

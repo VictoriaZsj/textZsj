@@ -1,0 +1,453 @@
+[ {
+  "id" : 1,
+  "posType" : 1,
+  "pos" : 1,
+  "x" : 124,
+  "y" : 577,
+  "scale" : 0.86
+}, {
+  "id" : 2,
+  "posType" : 1,
+  "pos" : 2,
+  "x" : 203,
+  "y" : 577,
+  "scale" : 0.86
+}, {
+  "id" : 3,
+  "posType" : 1,
+  "pos" : 3,
+  "x" : 282,
+  "y" : 577,
+  "scale" : 0.86
+}, {
+  "id" : 4,
+  "posType" : 1,
+  "pos" : 4,
+  "x" : 361,
+  "y" : 577,
+  "scale" : 0.86
+}, {
+  "id" : 5,
+  "posType" : 1,
+  "pos" : 5,
+  "x" : 440,
+  "y" : 577,
+  "scale" : 0.86
+}, {
+  "id" : 6,
+  "posType" : 1,
+  "pos" : 6,
+  "x" : 519,
+  "y" : 577,
+  "scale" : 0.86
+}, {
+  "id" : 7,
+  "posType" : 1,
+  "pos" : 7,
+  "x" : 598,
+  "y" : 577,
+  "scale" : 0.86
+}, {
+  "id" : 8,
+  "posType" : 1,
+  "pos" : 8,
+  "x" : 677,
+  "y" : 577,
+  "scale" : 0.86
+}, {
+  "id" : 9,
+  "posType" : 1,
+  "pos" : 9,
+  "x" : 756,
+  "y" : 577,
+  "scale" : 0.86
+}, {
+  "id" : 10,
+  "posType" : 1,
+  "pos" : 10,
+  "x" : 835,
+  "y" : 577,
+  "scale" : 0.86
+}, {
+  "id" : 11,
+  "posType" : 1,
+  "pos" : 11,
+  "x" : 914,
+  "y" : 577,
+  "scale" : 0.86
+}, {
+  "id" : 12,
+  "posType" : 1,
+  "pos" : 12,
+  "x" : 993,
+  "y" : 577,
+  "scale" : 0.86
+}, {
+  "id" : 13,
+  "posType" : 1,
+  "pos" : 13,
+  "x" : 1072,
+  "y" : 577,
+  "scale" : 0.86
+}, {
+  "id" : 14,
+  "posType" : 1,
+  "pos" : 14,
+  "x" : 1162,
+  "y" : 577,
+  "scale" : 0.86,
+  "isLast" : 1
+}, {
+  "id" : 15,
+  "posType" : 2,
+  "pos" : 1,
+  "x" : 1095,
+  "y" : 451,
+  "scale" : 0.47,
+  "layer" : 14,
+  "tiltV" : -8
+}, {
+  "id" : 16,
+  "posType" : 2,
+  "pos" : 2,
+  "x" : 1086,
+  "y" : 425,
+  "scale" : 0.465,
+  "layer" : 13,
+  "tiltV" : -8
+}, {
+  "id" : 17,
+  "posType" : 2,
+  "pos" : 3,
+  "x" : 1077,
+  "y" : 399,
+  "scale" : 0.46,
+  "layer" : 12,
+  "tiltV" : -8
+}, {
+  "id" : 18,
+  "posType" : 2,
+  "pos" : 4,
+  "x" : 1068,
+  "y" : 373,
+  "scale" : 0.455,
+  "layer" : 11,
+  "tiltV" : -8
+}, {
+  "id" : 19,
+  "posType" : 2,
+  "pos" : 5,
+  "x" : 1059,
+  "y" : 347,
+  "scale" : 0.45,
+  "layer" : 10,
+  "tiltV" : -8
+}, {
+  "id" : 20,
+  "posType" : 2,
+  "pos" : 6,
+  "x" : 1050,
+  "y" : 321,
+  "scale" : 0.445,
+  "layer" : 9,
+  "tiltV" : -8
+}, {
+  "id" : 21,
+  "posType" : 2,
+  "pos" : 7,
+  "x" : 1041,
+  "y" : 295,
+  "scale" : 0.44,
+  "layer" : 8,
+  "tiltV" : -8
+}, {
+  "id" : 22,
+  "posType" : 2,
+  "pos" : 8,
+  "x" : 1032,
+  "y" : 269,
+  "scale" : 0.435,
+  "layer" : 7,
+  "tiltV" : -8
+}, {
+  "id" : 23,
+  "posType" : 2,
+  "pos" : 9,
+  "x" : 1023,
+  "y" : 243,
+  "scale" : 0.43,
+  "layer" : 6,
+  "tiltV" : -8
+}, {
+  "id" : 24,
+  "posType" : 2,
+  "pos" : 10,
+  "x" : 1014,
+  "y" : 217,
+  "scale" : 0.425,
+  "layer" : 5,
+  "tiltV" : -8
+}, {
+  "id" : 25,
+  "posType" : 2,
+  "pos" : 11,
+  "x" : 1005,
+  "y" : 191,
+  "scale" : 0.42,
+  "layer" : 4,
+  "tiltV" : -8
+}, {
+  "id" : 26,
+  "posType" : 2,
+  "pos" : 12,
+  "x" : 996,
+  "y" : 165,
+  "scale" : 0.415,
+  "layer" : 3,
+  "tiltV" : -8
+}, {
+  "id" : 27,
+  "posType" : 2,
+  "pos" : 13,
+  "x" : 987,
+  "y" : 139,
+  "scale" : 0.41,
+  "layer" : 2,
+  "tiltV" : -8
+}, {
+  "id" : 28,
+  "posType" : 2,
+  "pos" : 14,
+  "x" : 974,
+  "y" : 97,
+  "scale" : 0.405,
+  "layer" : 1,
+  "isLast" : 1,
+  "tiltV" : -8
+}, {
+  "id" : 29,
+  "posType" : 3,
+  "pos" : 1,
+  "x" : 875,
+  "y" : 41,
+  "scale" : 0.365
+}, {
+  "id" : 30,
+  "posType" : 3,
+  "pos" : 2,
+  "x" : 837,
+  "y" : 41,
+  "scale" : 0.365
+}, {
+  "id" : 31,
+  "posType" : 3,
+  "pos" : 3,
+  "x" : 799,
+  "y" : 41,
+  "scale" : 0.365
+}, {
+  "id" : 32,
+  "posType" : 3,
+  "pos" : 4,
+  "x" : 761,
+  "y" : 41,
+  "scale" : 0.365
+}, {
+  "id" : 33,
+  "posType" : 3,
+  "pos" : 5,
+  "x" : 723,
+  "y" : 41,
+  "scale" : 0.365
+}, {
+  "id" : 34,
+  "posType" : 3,
+  "pos" : 6,
+  "x" : 685,
+  "y" : 41,
+  "scale" : 0.365
+}, {
+  "id" : 35,
+  "posType" : 3,
+  "pos" : 7,
+  "x" : 647,
+  "y" : 41,
+  "scale" : 0.365
+}, {
+  "id" : 36,
+  "posType" : 3,
+  "pos" : 8,
+  "x" : 609,
+  "y" : 41,
+  "scale" : 0.365
+}, {
+  "id" : 37,
+  "posType" : 3,
+  "pos" : 9,
+  "x" : 571,
+  "y" : 41,
+  "scale" : 0.365
+}, {
+  "id" : 38,
+  "posType" : 3,
+  "pos" : 10,
+  "x" : 533,
+  "y" : 41,
+  "scale" : 0.365
+}, {
+  "id" : 39,
+  "posType" : 3,
+  "pos" : 11,
+  "x" : 495,
+  "y" : 41,
+  "scale" : 0.365
+}, {
+  "id" : 40,
+  "posType" : 3,
+  "pos" : 12,
+  "x" : 457,
+  "y" : 41,
+  "scale" : 0.365
+}, {
+  "id" : 41,
+  "posType" : 3,
+  "pos" : 13,
+  "x" : 419,
+  "y" : 41,
+  "scale" : 0.365
+}, {
+  "id" : 42,
+  "posType" : 3,
+  "pos" : 14,
+  "x" : 366,
+  "y" : 41,
+  "scale" : 0.365,
+  "isLast" : 1
+}, {
+  "id" : 43,
+  "posType" : 4,
+  "pos" : 1,
+  "x" : 235,
+  "y" : 101,
+  "scale" : 0.405,
+  "layer" : 14,
+  "tiltV" : 8
+}, {
+  "id" : 44,
+  "posType" : 4,
+  "pos" : 2,
+  "x" : 226,
+  "y" : 126,
+  "scale" : 0.41,
+  "layer" : 13,
+  "tiltV" : 8
+}, {
+  "id" : 45,
+  "posType" : 4,
+  "pos" : 3,
+  "x" : 217,
+  "y" : 151,
+  "scale" : 0.415,
+  "layer" : 12,
+  "tiltV" : 8
+}, {
+  "id" : 46,
+  "posType" : 4,
+  "pos" : 4,
+  "x" : 208,
+  "y" : 175,
+  "scale" : 0.42,
+  "layer" : 11,
+  "tiltV" : 8
+}, {
+  "id" : 47,
+  "posType" : 4,
+  "pos" : 5,
+  "x" : 199,
+  "y" : 201,
+  "scale" : 0.425,
+  "layer" : 10,
+  "tiltV" : 8
+}, {
+  "id" : 48,
+  "posType" : 4,
+  "pos" : 6,
+  "x" : 190,
+  "y" : 227,
+  "scale" : 0.43,
+  "layer" : 9,
+  "tiltV" : 8
+}, {
+  "id" : 49,
+  "posType" : 4,
+  "pos" : 7,
+  "x" : 181,
+  "y" : 253,
+  "scale" : 0.435,
+  "layer" : 8,
+  "tiltV" : 8
+}, {
+  "id" : 50,
+  "posType" : 4,
+  "pos" : 8,
+  "x" : 172,
+  "y" : 279,
+  "scale" : 0.44,
+  "layer" : 7,
+  "tiltV" : 8
+}, {
+  "id" : 51,
+  "posType" : 4,
+  "pos" : 9,
+  "x" : 163,
+  "y" : 305,
+  "scale" : 0.445,
+  "layer" : 6,
+  "tiltV" : 8
+}, {
+  "id" : 52,
+  "posType" : 4,
+  "pos" : 10,
+  "x" : 154,
+  "y" : 331,
+  "scale" : 0.45,
+  "layer" : 5,
+  "tiltV" : 8
+}, {
+  "id" : 53,
+  "posType" : 4,
+  "pos" : 11,
+  "x" : 145,
+  "y" : 357,
+  "scale" : 0.455,
+  "layer" : 4,
+  "tiltV" : 8
+}, {
+  "id" : 54,
+  "posType" : 4,
+  "pos" : 12,
+  "x" : 136,
+  "y" : 383,
+  "scale" : 0.46,
+  "layer" : 3,
+  "tiltV" : 8
+}, {
+  "id" : 55,
+  "posType" : 4,
+  "pos" : 13,
+  "x" : 127,
+  "y" : 409,
+  "scale" : 0.465,
+  "layer" : 2,
+  "tiltV" : 8
+}, {
+  "id" : 56,
+  "posType" : 4,
+  "pos" : 14,
+  "x" : 111,
+  "y" : 453,
+  "scale" : 0.47,
+  "layer" : 1,
+  "isLast" : 1,
+  "tiltV" : 8
+} ]

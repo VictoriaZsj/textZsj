@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="buttonSkin22" width="64" height="59" xmlns:e="http://ns.egret.com/eui">
+	<e:Image  id="btnImg" x="0" y="0" source="sendNotice_png" scaleX="1" scaleY="1"/>
+</e:Skin>

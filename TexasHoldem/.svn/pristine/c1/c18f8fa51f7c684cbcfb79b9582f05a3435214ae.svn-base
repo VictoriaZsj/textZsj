@@ -1,0 +1,89 @@
+/**
+ * 充值选项的定义
+ * */
+class AchieveDefined extends BaseDefined
+{
+	private static readonly achieveConfig: string = "achieve";
+	private static _instance: AchieveDefined;
+	public static GetInstance(): AchieveDefined
+	{
+		if (!AchieveDefined._instance)
+		{
+			AchieveDefined._instance = new AchieveDefined();
+		}
+		if (DefinedManager.IsParsed(AchieveDefined.achieveConfig) == false)
+		{
+			AchieveDefined._instance.initialize();
+		}
+		return AchieveDefined._instance;
+	}
+	public AchieveDefintionList: Array<AchieveDefintion>;
+
+	public initialize()
+	{
+		let obj: Object = DefinedManager.GetData(AchieveDefined.achieveConfig);
+		this.AchieveDefintionList = ShortNameDefined.GetInstance().convertEnter(obj) as Array<AchieveDefintion>;
+	}
+	/**
+	 * 获取道具定义
+	 */
+	public getAchieveDefintion(id: number): AchieveDefintion
+	{
+		for (let def of AchieveDefined.GetInstance().AchieveDefintionList)
+		{
+			if (def.id == id)
+			{
+				return def;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * 获取某一兑换ID前置ID列表是否空
+	 */
+	public getPrevIdIsNull(id: number): boolean
+	{
+		let def: AchieveDefintion = this.getAchieveDefintion(id);
+		return def.preId == null;
+	}
+
+}
+/**
+ * 道具的定义
+ * */
+class AchieveDefintion implements IBaseDefintion
+{
+    /**
+     * 成就id
+     */
+	public id: number;
+    /**
+     * 成就名称
+     */
+    public name:string;
+    /**
+     * 成就说明
+     */
+	public description:string;
+    /**
+     * 前置id
+     */
+    public preId:number;
+    /**
+     * 成就类型
+     */
+    public type:number;
+    /**
+     * 目标数值
+     */
+    public para1:number;
+    /**
+     * 奖励id
+     */
+    public awardId:number
+    /**
+     * 成就icon
+     */
+    public icon:string;
+}

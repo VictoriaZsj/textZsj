@@ -1,0 +1,150 @@
+/**
+ * 邮件管理
+ */
+class MailManager
+{
+    public static mailList: Array<MailInfo> = new Array<MailInfo>();
+
+    /**
+     * 未读邮件数量
+     */
+    public static unReadCount: number = 0;
+
+    /**
+     * 列表是否变更
+     */
+    public static isMailListChange: boolean;
+
+    /**
+     * 重置数据
+     */
+    public static Reset()
+    {
+        MailManager.unReadCount = 0;
+        ArrayUtil.Clear(MailManager.mailList);
+        //GetUnReadCount();
+        MailManager.isMailListChange = true;
+        SocketManager.AddCommandListener(Command.Rec_Mail_New_Notify_2024, MailManager.OnMailNewNofityFromServer);
+    }
+
+    public static clearList()
+    {
+        ArrayUtil.Clear(MailManager.mailList);
+    }
+
+    /**
+     * 新邮件的通知协议
+     */
+    private static OnMailNewNofityFromServer(result: SpRpcResult)
+    {
+        MailManager.unReadCount++;
+        MailManager.isMailListChange = true;
+        MailManager.haveNewMailEvent.dispatch();
+    }
+
+    public static initialize(result: SpRpcResult)
+    {
+        if (result.data["MailList"])
+        {
+            for (let def of result.data["MailList"])
+            {
+                let mail: MailInfo = new MailInfo();
+                mail.copyValueFrom(def);
+                if (mail.SubType)
+                {
+                    let def: MailDefintion = MailDefined.GetInstance().getDefinition(mail.SubType);
+                    if (def)
+                    {
+                        mail.Title = def.title;
+                        let content: string = def.content;
+                        let paramStr: Array<string> = mail.Content.split('|');
+                        for (let i: number = 0; i < paramStr.length; i++)
+                        {
+                            content = content.replace("{" + i + "}", paramStr[i]);
+                        }
+                        mail.Content = content;
+                    }
+                }
+                for (let atta of JSON.parse(mail.attaJson))
+                {
+                    let award: AwardInfoDefinition = new AwardInfoDefinition();
+                    award.id = atta["Id"];
+                    award.type = atta["Type"];
+                    award.count = atta["Count"];
+                    mail.attaList = new Array<AwardInfoDefinition>();
+                    mail.attaList.push(award);
+                }
+                MailManager.mailList.push(mail);
+            }
+        }
+    }
+
+    /**
+     * 请求邮件列表
+     */
+    public static RequestMailList(startId: number, count: number)
+    {
+        SocketManager.AddCommandListener(Command.Req_Mail_3097, this.onGetMailList, this);
+        SocketManager.Send(Command.Req_Mail_3097, { "StartId": startId, "Count": count });
+    }
+    private static onGetMailList(result: SpRpcResult)
+    {
+        SocketManager.RemoveCommandListener(Command.Req_Mail_3097, this.onGetMailList);
+        MailManager.initialize(result);
+        MailManager.isMailListChange = false;
+        MailManager.getMailListEvent.dispatch();
+    }
+
+    /**
+     *  获取列表中最大邮件id
+     */
+    public static getMaxMailId(): number
+    {
+        if (MailManager.mailList)
+        {
+            let maxId: number = 0;
+            for (let i: number = 0; i < MailManager.mailList.length; i++)
+            {
+                if (MailManager.mailList[i].Id > maxId)
+                {
+                    maxId = MailManager.mailList[i].Id;
+                }
+            }
+            return maxId;
+        }
+        return undefined;
+    }
+
+    /**
+     * 根据类型获取列表
+     */
+    public static getListByType(type: number): Array<MailInfo> 
+    {
+        if (MailManager.mailList)
+        {
+            let list: Array<MailInfo> = new Array<MailInfo>();
+            for (let mailInfo of MailManager.mailList)
+            {
+                if (mailInfo.Type == type)
+                {
+                    list.push(mailInfo);
+                }
+            }
+            return list;
+        }
+        return null;
+    }
+
+    /**
+	 * 拉取邮件事件
+	 */
+    public static getMailListEvent: ActionDispatcher = new ActionDispatcher();
+    /**
+     * 领取邮件附件事件
+     */
+    public static getMailPrizeEvent: ActionDispatcher = new ActionDispatcher();
+    /**
+     * 有新邮件的事件
+     */
+    public static haveNewMailEvent: ActionDispatcher = new ActionDispatcher();
+}

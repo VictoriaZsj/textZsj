@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="personalRoomItemRenderer" width="140" height="190" xmlns:e="http://ns.egret.com/eui" xmlns:ns1="*"
+        xmlns:w="http://ns.egret.com/wing">
+	<e:Image id="bgImage" width="140" height="190" anchorOffsetX="0" anchorOffsetY="0" scale9Grid="2,2,8,8"
+	         source="bg_page19_3_png" y="2" horizontalCenter="-2.5" />
+	<e:Label id="bBuyLabel" text="2万" y="16" horizontalCenter="0"/>
+	<e:Label id="blindLabel" text="75/150" y="60" size="24" horizontalCenter="0"/>
+	<e:Label text="最小买入" y="113" size="24" bold="true" horizontalCenter="0"/>
+	<e:Label id="sBuyLabel" text="2000" y="144" size="24" bold="true" horizontalCenter="0"/>
+	<e:Image id="flagImg" width="20" height="20" x="112" y="16" source="fangka_png"/>
+
+
+
+
+
+
+
+
+</e:Skin>

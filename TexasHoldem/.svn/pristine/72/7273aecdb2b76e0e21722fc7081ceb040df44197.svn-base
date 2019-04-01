@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="ChampionshipInfoPanelSkin" width="640" height="1080" xmlns:e="http://ns.egret.com/eui"
+        xmlns:w="http://ns.egret.com/wing" xmlns:ns1="*" xmlns:tween="egret.tween.*">
+    <w:Config id="15c813d330f" />
+    <e:Group id="tweenGroup" width="640" height="1080" x="0" anchorOffsetY="0">
+        <e:Image width="640" height="1080" x="1" y="4.03" source="bg_page2_png" scale9Grid="21,20,106,107"
+                 anchorOffsetY="0" />
+        <e:Label id="nameLabel" text="免费-10元话费赛" y="218.5" horizontalCenter="0" />
+        <ns1:TabComponent id="matchInfoTab" width="640" height="980" y="100" anchorOffsetX="0" anchorOffsetY="0" />
+        <e:Group id="baseInfoGroup" width="640" height="880" y="200" anchorOffsetX="0" anchorOffsetY="0" name="概述">
+            <e:Label text="报名费：" x="55" y="74" size="24" />
+            <e:Label id="applicationFeeLabel" text="999999" x="173" y="74" size="24" width="371" multiline="true"
+                     lineSpacing="5" />
+            <e:Label text="比赛时间：" x="55" y="166.98" size="24" />
+            <e:Label id="timeLabel" text="6-14 15:30（延迟报名5分钟）" x="173" y="166.98" size="24" multiline="false" />
+            <e:Label text="参赛人数：" x="55" y="216.25" size="24" />
+            <e:Label id="joinNumLabel" text="35-600人" x="173" y="216.25" size="24" />
+            <e:Label text="初始筹码：" x="55" y="265.23" size="24" />
+            <e:Label id="initChipLabel" text="3000" x="173" y="265.23" size="24" />
+            <e:Group id="rebuyGroup" x="56" y="318.01">
+                <e:Label text="Rebuy：" x="37.790000000000035" y="5.684341886080802e-14" size="24" />
+                <e:Label id="rebuyDesLabel" text="重购描述重购描述重购描述重购描述重购描述重购描述重购描述" x="125.31" y="1.5200000000001523"
+                         size="24" anchorOffsetX="0" width="371.67" multiline="true" lineSpacing="5" />
+                <e:Image width="20" height="20" x="0" y="2.160000000000082" source="fangka_png" />
+            </e:Group>
+            <e:Group id="addonGroup" x="56" y="416.03">
+                <e:Label text="Addon：" x="37.790000000000035" y="5.684341886080802e-14" size="24" />
+                <e:Label id="addonDesLabel" text="增购描述增购描述增购描述增购描述增购描述增购描述" x="125.31" y="1.5200000000001523" size="24"
+                         anchorOffsetX="0" width="371.67" multiline="true" lineSpacing="5" />
+                <e:Image width="20" height="20" x="0" y="2.160000000000082" source="fangka_png" />
+            </e:Group>
+            <e:Button id="applicationBtn" label="报名" y="583" horizontalCenter="0" />
+            <e:Button id="withdrawBtn" label="退赛" y="583" horizontalCenter="0" />
+        </e:Group>
+        <e:Group id="outsGroup" width="640" height="880" y="200" anchorOffsetX="0" anchorOffsetY="0" name="赛况">
+            <e:Label text="排名" x="93.38" y="74" size="24" />
+            <e:Label id="rankLabel" text="0" x="92.38" y="106" size="24" width="50" textAlign="center" />
+            <e:Label text="参赛人数" y="74" size="24" multiline="true" lineSpacing="5" x="272" />
+            <e:Label id="joinLabel" text="88" y="106" size="24" multiline="true" lineSpacing="5" width="150"
+                     textAlign="center" x="245" />
+            <e:Label text="比赛进行" x="456" y="74" size="24" />
+            <e:Label id="forTimeLabel" text="00:00:00" x="444" y="106" size="24" multiline="false" width="120"
+                     textAlign="center" />
+            <e:Group id="surplusTimeGroup" y="171" anchorOffsetX="0" width="584" anchorOffsetY="0" horizontalCenter="0"
+                     height="88">
+                <e:Label text="涨盲剩余时间" y="14.63" size="30" textAlign="center" horizontalCenter="0" />
+                <e:Label id="surplusTimeLabel" text="00:00" y="49.67" size="24" width="120" textAlign="center"
+                         horizontalCenter="0" />
+            </e:Group>
+            <e:Group id="notStartGroup" y="171" anchorOffsetX="0" width="584" anchorOffsetY="0" horizontalCenter="0"
+                     height="88">
+                <e:Label text="比赛暂未开始" y="30.63" size="30" textAlign="center" horizontalCenter="0" />
+            </e:Group>
+            <e:Label text="当前盲注" x="138" y="318" size="24" />
+            <e:Label id="nowBlindLabel" text="100/200" x="86" y="350.73" size="24" width="200" textAlign="center" />
+            <e:Label text="下级盲注" x="138" y="453" size="24" />
+            <e:Label id="nextBlindLabel" text="200/400" x="86" y="484" size="24" width="200" textAlign="center" />
+            <e:Label text="前注" x="405" y="320.56" size="24" />
+            <e:Label id="nowAnteLabel" text="0" x="379" y="354.8" size="24" width="100" textAlign="center" />
+            <e:Label text="前注" x="405" y="453" size="24" />
+            <e:Label id="nextAnteLabel" text="0" x="379" y="484" size="24" width="100" textAlign="center" />
+        </e:Group>
+        <e:Group id="rankGroup" width="640" height="880" y="200" anchorOffsetX="0" anchorOffsetY="0" name="排名">
+            <e:Label text="排名" x="44.07" y="64.69" size="24" />
+            <e:Label text="昵称" y="64.69" size="24" multiline="true" lineSpacing="5" x="338.68" />
+            <e:Label text="头像" y="64.69" size="24" multiline="true" lineSpacing="5" textAlign="center" x="175.69" />
+            <e:Label text="拥有筹码" x="496" y="64.69" size="24" />
+            <e:Group id="hasJoinGroup" x="0" y="100">
+                <e:Scroller id="rankScroller" width="640" height="780" y="0" x="0">
+                    <e:Group/>
+                </e:Scroller>
+                <e:List id="rankList" width="640" height="780" y="0" anchorOffsetY="0" x="0">
+                    <e:layout>
+                        <e:VerticalLayout gap="1" horizontalAlign="center" />
+                    </e:layout>
+                </e:List>
+            </e:Group>
+            <e:Group id="noJoinGroup" y="100" width="640" height="780">
+                <e:Label text="暂无用户报名" size="24" scaleX="1" scaleY="1" verticalCenter="0" horizontalCenter="0"
+                         textAlign="center" />
+            </e:Group>
+        </e:Group>
+        <e:Group id="blindGroup" width="640" height="880" y="200" anchorOffsetX="0" anchorOffsetY="0" name="盲注">
+            <e:Label text="级别" x="44.07" y="64.69" size="24" />
+            <e:Label text="盲注" y="64.69" size="24" multiline="true" lineSpacing="5" x="382.66" />
+            <e:Label text="前注" y="64.69" size="24" multiline="true" lineSpacing="5" textAlign="center" x="199.95" />
+            <e:Label text="升盲时间" x="496" y="64.69" size="24" />
+            <e:Scroller id="blindScroller" width="640" height="780" y="100" x="0">
+                <e:Group/>
+            </e:Scroller>
+            <e:List id="blindList" width="640" height="780" y="100" anchorOffsetY="0" x="0">
+                <e:layout>
+                    <e:VerticalLayout gap="1" horizontalAlign="center" />
+                </e:layout>
+            </e:List>
+        </e:Group>
+			<e:Group id="awardGroup" width="640" height="880" y="200" anchorOffsetX="0" anchorOffsetY="0" name="奖励">
+				<e:Label text="名次" x="92.56" y="64.69" size="24"/>
+				<e:Label text="奖励" y="64.69" size="24" multiline="true" lineSpacing="5" x="382.66"/>
+				<e:Scroller id="awardScroller" width="640" height="780" y="100" x="0">
+				<e:Group/>
+				</e:Scroller>
+				<e:List id="awardList" width="640" height="780" y="100" anchorOffsetY="0" x="0">
+				<e:layout>
+					<e:VerticalLayout gap="1" horizontalAlign="center"/>
+				</e:layout>
+				</e:List>
+			</e:Group>
+        <e:Label text="赛事信息" x="20.52" y="31.15" size="50" bold="true" textColor="0xfcd232" />
+        <e:Button id="closeButton" label="返回" x="580.31" y="64" skinName="buttonSkin2" width="150" scaleX="0.5"
+                  height="80" scaleY="0.9" anchorOffsetX="75" anchorOffsetY="40" />
+    </e:Group>
+</e:Skin>

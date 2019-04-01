@@ -1,0 +1,25 @@
+/**
+ * 物品信息
+ */
+class ItemInfo
+{
+    /**
+     * 道具id
+     */
+    private _itemId: number;
+	public get itemId(): number
+	{
+		return this._itemId;
+	}
+    public set itemId(value: number)
+	{
+		this._itemId = value;
+        this._definition = ItemDefined.GetInstance().getItemDefinition(this._itemId);
+	}
+
+    private _definition:ItemDefinition;
+    public get definition():ItemDefinition
+    {
+        return this._definition;
+    }
+}

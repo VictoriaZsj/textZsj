@@ -1,0 +1,85 @@
+/**
+ * 基础动画面板，有入场动画的
+ */
+class BaseAnmiatePanel extends BasePanel
+{
+	public anmGroup: eui.Group;
+	public anmGroup1: eui.Group;
+	protected isEnterOver: boolean;
+
+	public constructor()
+	{
+		super();
+		this.isTween = false;
+		this.maskAlpha = 1;
+	}
+	protected rendererStart(event: egret.Event)
+	{
+		super.rendererStart(event);
+		this.isEnterOver = false;
+		egret.Tween.removeTweens(this.anmGroup);
+		egret.Tween.removeTweens(this.anmGroup1);
+		if (this.grayMask)
+		{
+			egret.Tween.removeTweens(this.grayMask);
+		}
+
+		let enter: egret.Tween = egret.Tween.get(this.anmGroup);
+		this.anmGroup.y = -113;
+		this.anmGroup.alpha = 1;
+		enter.to({ y: 0, alpha: 1 }, 260, egret.Ease.backOut);
+
+		enter = egret.Tween.get(this.anmGroup1);
+		this.anmGroup1.y = 310;
+		this.anmGroup.alpha = 0;
+		enter.to({ y: 90, alpha: 1 }, 260, egret.Ease.backOut).wait(50).call(this.onEnterAnmComplete.bind(this));
+
+		if (this.grayMask)
+		{
+			enter = egret.Tween.get(this.grayMask);
+			this.grayMask.alpha = 0;
+			enter.to({ alpha: 1 }, 260, egret.Ease.backOut);
+		}
+	}
+	protected onEnable(event: eui.UIEvent): void
+	{
+		super.onEnable(event);
+	}
+	protected onDisable(event: eui.UIEvent): void
+	{
+		super.onDisable(event);
+		this.isEnterOver = false;
+	}
+	protected onEnterAnmComplete()
+	{
+		this.isEnterOver = true;
+	}
+	protected onCloseBtnClickHandler(event: egret.TouchEvent): void
+	{
+		if (event)
+		{
+			SoundManager.playButtonEffect(event.target);
+		}
+
+		let enter: egret.Tween = egret.Tween.get(this.anmGroup);
+		this.anmGroup.y = 0;
+		this.anmGroup.alpha = 1;
+		enter.to({ y: -113, alpha: 1 }, 500, egret.Ease.backOut);
+
+		if (this.grayMask)
+		{
+			enter = egret.Tween.get(this.grayMask);
+			this.grayMask.alpha = 0.7;
+			enter.to({ alpha: 0.1 }, 400, egret.Ease.backOut);
+		}
+
+		enter = egret.Tween.get(this.anmGroup1);
+		this.anmGroup1.y = 90;
+		this.anmGroup.alpha = 1;
+		enter.to({ y: 310, alpha: 0 }, 500, egret.Ease.backOut).call(this.onCloseAnmComplete.bind(this));
+	}
+	protected onCloseAnmComplete()
+	{
+		UIManager.closePanel(this);
+	}
+}

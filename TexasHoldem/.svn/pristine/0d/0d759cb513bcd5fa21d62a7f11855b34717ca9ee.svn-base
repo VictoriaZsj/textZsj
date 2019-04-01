@@ -1,0 +1,67 @@
+/**
+ * 带有选项组件
+ */
+class BaseTabComponent extends BaseComponent<Array<eui.Group>>
+{
+    /**
+     * 选项卡数量
+     */
+    public TabNum: number;
+    public tabBar: eui.TabBar;
+    public viewStack: eui.ViewStack;
+    private disableTabIndex:number;
+    public disableTabDes:string;
+    public constructor()
+    {
+        super();
+        this.disableTabIndex = -1;
+        this.disableTabDes = "";
+    }
+
+    protected onAwake(event: eui.UIEvent)
+    {
+        super.onAwake(event);
+        this.viewStack = new eui.ViewStack();
+        this.tabBar = new eui.TabBar();
+    }
+
+    protected rendererStart(event: egret.Event)
+	{
+        super.rendererStart(event);
+
+        for (let i = 0; i < this.TabNum; i++)
+        {
+            this.viewStack.addChild(this.bindData[i]);
+        }
+        this.tabBar.dataProvider = this.viewStack;
+        this.tabBar.itemRendererSkinName = UIComponentSkinName.ButtonSkin2;
+        this.addChild(this.viewStack);
+        this.addChild(this.tabBar);
+	}
+
+    protected onEnable(event: eui.UIEvent): void
+	{
+        super.onEnable(event);
+        this.tabBar.addEventListener(egret.Event.CHANGING,this.disableChanging,this);
+    }
+
+    protected onDisable(event: eui.UIEvent): void
+	{
+        super.onDisable(event);
+        this.tabBar.removeEventListener(egret.Event.CHANGING,this.disableChanging,this);
+    }
+
+    public setDisableTabIndex(index:number)
+    {
+        this.disableTabIndex = index;
+    }
+
+    public disableChanging(event:egret.Event)
+    {
+        if(this.tabBar.selectedIndex == this.disableTabIndex)
+        {
+            event.preventDefault();
+            AlertManager.showSingleAlertByString(this.disableTabDes);
+        }
+    }
+}

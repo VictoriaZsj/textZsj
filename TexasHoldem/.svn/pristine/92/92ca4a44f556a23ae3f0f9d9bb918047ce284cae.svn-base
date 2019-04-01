@@ -1,0 +1,304 @@
+/**
+ * 锦标赛面板
+ */
+class ChampionshipPanel extends BackHomeAnimePanel
+{
+	public matchTab: TabComponent;
+	/**
+	 * 帮助按钮
+	*/
+	private helpBtn: eui.Button;
+	/**
+	 * 赛事列表信息
+	*/
+	public matchGroup: eui.Group;
+	public hasMatchGroup: eui.Group;
+	public noMatchGroup: eui.Group;
+	public matchList: eui.List;
+	public matchScroller: eui.Scroller;
+	/**
+	 * 已报名信息
+	*/
+	public signedUpGroup: eui.Group;
+	public hasSignedUpGroup: eui.Group;
+	public noSignedUpGroup: eui.Group;
+	public signedUpList: eui.List;
+	public signedUpScroller: eui.Scroller;
+	/**
+	 * 我的门票信息
+	*/
+	public ticketsGroup: eui.Group;
+	public hasTicketGroup: eui.Group;
+	public noTicketGroup: eui.Group;
+	public ticketList: eui.List;
+	public ticketScroller: eui.Scroller;
+	/**
+	 * 最近赛况信息
+	*/
+	public resultsGroup: eui.Group;
+	public hasResultGroup: eui.Group;
+	public noResultGroup: eui.Group;
+	public resultList: eui.List;
+	public resultScroller: eui.Scroller;
+
+	public constructor()
+	{
+		super();
+		this.skinName = UISkinName.ChampionshipPanel;
+	}
+	protected onAwake(event: eui.UIEvent)
+	{
+		super.onAwake(event);
+		UIUtil.listRenderer(this.matchList, this.matchScroller, ChampionshipItemRenderer, ScrollViewDirection.Vertical_T_D, eui.ScrollPolicy.ON, null, true);
+		UIUtil.listRenderer(this.signedUpList, this.signedUpScroller, ChampionshipItemRenderer, ScrollViewDirection.Vertical_T_D, eui.ScrollPolicy.ON, null, true);
+		UIUtil.listRenderer(this.ticketList, this.ticketScroller, MyTicketItemRenderer, ScrollViewDirection.Vertical_T_D, eui.ScrollPolicy.ON, null, true);
+		UIUtil.listRenderer(this.resultList, this.resultScroller, OutsItemRenderer, ScrollViewDirection.Vertical_T_D, eui.ScrollPolicy.ON, null, true);
+		this.matchScroller.scrollPolicyH = this.signedUpScroller.scrollPolicyH = this.ticketScroller.scrollPolicyH = this.resultScroller.scrollPolicyH = eui.ScrollPolicy.OFF;
+		this.hasMatchGroup.visible = this.noMatchGroup.visible = this.hasSignedUpGroup.visible = this.noSignedUpGroup.visible = this.hasTicketGroup.visible = this.noTicketGroup.visible = this.hasResultGroup.visible = this.noResultGroup.visible = false;
+		let array: Array<eui.Group> = new Array<eui.Group>();
+		array.push(this.matchGroup);
+		array.push(this.signedUpGroup);
+		array.push(this.ticketsGroup);
+		array.push(this.resultsGroup);
+		this.matchTab.init(array);
+	}
+	protected onRender(event: egret.Event)
+	{
+		super.onRender(event);
+		ChampionshipManager.getMatchListInfo();
+	}
+	protected onEnable(event: eui.UIEvent): void
+	{
+		super.onEnable(event);
+		this.matchTab.tabBar.addEventListener(eui.ItemTapEvent.ITEM_TAP, this.onTabClickHandler, this);
+		this.matchList.addEventListener(eui.ItemTapEvent.ITEM_TAP, this.getMatchDetail, this);
+		ChampionshipManager.onGetMatchListEvent.addListener(this.setMatchListInfo, this);
+		ChampionshipManager.onGetRecentActionInfoEvent.addListener(this.setRecentActionListInfo, this);
+		ChampionshipManager.onRefreshUIEvent.addListener(this.refreshUI, this);
+		this.helpBtn.addEventListener(egret.TouchEvent.TOUCH_TAP, this.showHelpPanel, this);
+		ChampionshipManager.OnJoinNumPushEvent.addListener(this.refreshApplication, this);
+	}
+	protected onDisable(event: eui.UIEvent): void
+	{
+		super.onDisable(event);
+		this.matchTab.tabBar.removeEventListener(eui.ItemTapEvent.ITEM_TAP, this.onTabClickHandler, this);
+		this.matchList.removeEventListener(eui.ItemTapEvent.ITEM_TAP, this.getMatchDetail, this);
+		ChampionshipManager.onGetMatchListEvent.removeListener(this.setMatchListInfo, this);
+		ChampionshipManager.onGetRecentActionInfoEvent.removeListener(this.setRecentActionListInfo, this);
+		ChampionshipManager.onRefreshUIEvent.removeListener(this.refreshUI, this);
+		this.helpBtn.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.showHelpPanel, this);
+		ChampionshipManager.OnJoinNumPushEvent.removeListener(this.refreshApplication, this);
+	}
+	/**
+	 * 更新已报名列表报名人数数据
+	*/
+	private refreshApplication()
+	{
+		if (ChampionshipManager.joinNumList && ChampionshipManager.joinNumList.length > 0)
+		{
+			for (let def of ChampionshipManager.joinNumList)
+			{
+				if (ChampionshipManager.applicationList && ChampionshipManager.applicationList.length > 0)
+				{
+					for (let applicationInfo of ChampionshipManager.applicationList)
+					{
+						if (def.id == applicationInfo.id)
+						{
+							applicationInfo.applyNum = def.num;
+						}
+					}
+				}
+			}
+		}
+	}
+	/**
+	 * 刷新UI
+	*/
+	private refreshUI(id: number)
+	{
+		if (ChampionshipManager.matchList && ChampionshipManager.matchList.length > 0)
+		{
+			for (let i: number = 0; i < ChampionshipManager.matchList.length; i++)
+			{
+				if (ChampionshipManager.matchList[i].id == id)
+				{
+					ChampionshipManager.matchList.splice(i, 1);
+					break;
+				}
+			}
+			this.setMatchListInfo();
+		}
+		if (ChampionshipManager.applicationList)
+		{
+			for (let i: number = 0; i < ChampionshipManager.applicationList.length; i++)
+			{
+				if (ChampionshipManager.applicationList[i].id == id)
+				{
+					ChampionshipManager.applicationList.splice(i, 1);
+					break;
+				}
+			}
+		}
+	}
+	/**
+	 * 点击赛事列表获取赛事详细信息
+	*/
+	private getMatchDetail(event: egret.TouchEvent)
+	{
+		SoundManager.playEffect(Sex.Male, MusicAction.buttonClick);
+		if (this.matchList.selectedItem)
+		{
+			UIManager.showPanel(UIModuleName.ChampionshipInfoPanel, { championshipInfo: this.matchList.selectedItem });
+		}
+	}
+	/**
+	 * 设置最近赛况列表信息
+	*/
+	private setRecentActionListInfo()
+	{
+		//  todo 测试代码
+		ArrayUtil.Clear(ChampionshipManager.outsList);
+		if (!ChampionshipManager.outsList)
+		{
+			ChampionshipManager.outsList = new Array<OutsInfo>();
+		}
+		let rank1: ChampionshipRankInfo = new ChampionshipRankInfo;
+		rank1.award = "获得10元话费";
+		rank1.head = ImageSource.TestImg;
+		rank1.name = "张";
+		rank1.rank = 1;
+		let rank2: ChampionshipRankInfo = new ChampionshipRankInfo;
+		rank2.award = "获得10元话费";
+		rank2.head = ImageSource.TestImg;
+		rank2.name = "张";
+		rank2.rank = 2;
+		let arr1: OutsInfo = new OutsInfo;
+		arr1.id = 1;
+		arr1.name = "10元话费赛";
+		arr1.time = 1502692427;
+		let arr2: OutsInfo = new OutsInfo;
+		arr2.id = 1;
+		arr2.name = "10元话费赛";
+		arr2.time = 1502692427;
+		let arr3: OutsInfo = new OutsInfo;
+		arr3.id = 1;
+		arr3.name = "10元话费赛";
+		arr3.time = 1502692427;
+		if (!arr1.rankList)
+		{
+			arr1.rankList = new Array<ChampionshipRankInfo>();
+		}
+		if (!arr2.rankList)
+		{
+			arr2.rankList = new Array<ChampionshipRankInfo>();
+		}
+		if (!arr3.rankList)
+		{
+			arr3.rankList = new Array<ChampionshipRankInfo>();
+		}
+		arr1.rankList.push(rank1);
+		arr1.rankList.push(rank2);
+		arr2.rankList.push(rank1);
+		arr3.rankList.push(rank1);
+		ChampionshipManager.outsList.push(arr1);
+		ChampionshipManager.outsList.push(arr2);
+		ChampionshipManager.outsList.push(arr3);
+		//
+		if (ChampionshipManager.outsList && ChampionshipManager.outsList.length > 0)
+		{
+			this.hasResultGroup.visible = true;
+			this.noResultGroup.visible = false;
+			this.resultList.dataProvider = new eui.ArrayCollection(ChampionshipManager.outsList);
+		} else
+		{
+			this.noResultGroup.visible = true;
+			this.hasResultGroup.visible = false;
+		}
+	}
+	/**
+	 * 设置赛事列表信息
+	*/
+	private setMatchListInfo()
+	{
+		if (ChampionshipManager.matchList && ChampionshipManager.matchList.length > 0)
+		{
+			this.hasMatchGroup.visible = true;
+			this.noMatchGroup.visible = false;
+			this.matchList.dataProvider = new eui.ArrayCollection(ChampionshipManager.matchList);
+		} else
+		{
+			this.noMatchGroup.visible = true;
+			this.hasMatchGroup.visible = false;
+		}
+	}
+	/**
+	 * 设置已报名赛事列表信息
+	*/
+	private setSignedUpListInfo()
+	{
+		if (ChampionshipManager.applicationList && ChampionshipManager.applicationList.length > 0)
+		{
+			this.hasSignedUpGroup.visible = true;
+			this.noSignedUpGroup.visible = false;
+			this.signedUpList.dataProvider = new eui.ArrayCollection(ChampionshipManager.applicationList);
+		} else
+		{
+			this.noSignedUpGroup.visible = true;
+			this.hasSignedUpGroup.visible = false;
+		}
+	}
+	/**
+	 * 设置我的门票列表信息
+	*/
+	private setMyTicketListInfo()
+	{
+		ArrayUtil.Clear(ChampionshipManager.myTicketList);
+		if (ItemManager.itemList && ItemManager.itemList.length > 0)
+		{
+			this.hasTicketGroup.visible = true;
+			this.noTicketGroup.visible = false;
+			for (let def of ItemManager.itemList)
+			{
+				if (def.id == EntranceTicketType.TenTelephoneCharge || def.id == EntranceTicketType.MillionGold || def.id == EntranceTicketType.HundredDiamond)
+				{
+					let info: ItemInfo = new ItemInfo();
+					info.id = def.id;
+					ChampionshipManager.myTicketList.push(info);
+				}
+			}
+			this.ticketList.dataProvider = new eui.ArrayCollection(ChampionshipManager.myTicketList);
+		} else
+		{
+			this.hasTicketGroup.visible = false;
+			this.noTicketGroup.visible = true;
+		}
+	}
+	/**
+     * 选项卡按钮点击事件
+    */
+	private onTabClickHandler(e: eui.ItemTapEvent): void
+	{
+		if (e.itemIndex == 0)
+		{
+			ChampionshipManager.getMatchListInfo();
+		} else if (e.itemIndex == 1)
+		{
+			this.setSignedUpListInfo();
+		} else if (e.itemIndex == 2)
+		{
+			this.setMyTicketListInfo();
+		} else if (e.itemIndex == 3)
+		{
+			// ChampionshipManager.reqGetRecentActionInfo();
+			this.setRecentActionListInfo();  //todo 测试代码
+		}
+	}
+	/**
+	 * ?按钮点击事件
+	*/
+	private showHelpPanel()
+	{
+		SoundManager.playEffect(Sex.Male, MusicAction.buttonClick);
+		UIManager.showPanel(UIModuleName.TextInfoPanel, TextId.PlayWay);
+	}
+}

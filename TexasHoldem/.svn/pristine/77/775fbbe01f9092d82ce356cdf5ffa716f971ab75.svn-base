@@ -1,0 +1,47 @@
+/**
+ *盲注信息
+*/
+class BlindDefined extends BaseDefined
+{
+    public static readonly forbiddenConfig: string = "blind";
+    private static _instance: BlindDefined;
+    public static GetInstance(): BlindDefined
+    {
+        if (!BlindDefined._instance)
+        {
+            BlindDefined._instance = new BlindDefined();
+        }
+        if (DefinedManager.IsParsed(BlindDefined.forbiddenConfig) == false)
+        {
+            BlindDefined._instance.initialize();
+        }
+        return BlindDefined._instance;
+    }
+    public blindList: Array<BlindDefinition>;
+    public initialize()
+    {
+        let obj: Object = DefinedManager.GetData(BlindDefined.forbiddenConfig);
+        this.blindList = ShortNameDefined.GetInstance().convertEnter(obj) as Array<BlindDefinition>;
+    }
+    public getBlindInfoBysBlind(sBlind: number): BlindDefinition
+    {
+        for(let def of this.blindList){
+            if(def.sBlind == sBlind){
+                return def;
+            }
+        }
+    }
+}
+/**
+* 盲注信息定义
+*/
+class BlindDefinition implements IBaseDefintion
+{
+    public id: number;
+    public type: number;
+    public sBlind: number;
+    public bBlind: number;
+    public sBuyin: number;
+    public bBuyin: number;
+    public tax: number;
+}

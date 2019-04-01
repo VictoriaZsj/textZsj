@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="panelSkin4" width="1280" height="720" xmlns:e="http://ns.egret.com/eui" xmlns:ns1="*" xmlns:w="http://ns.egret.com/wing">
+	<e:Group id="tweenGroup" width="700" height="350" verticalCenter="0" horizontalCenter="0">
+		<e:Image width="720" height="451" source="bg_page2_png" horizontalCenter="0" verticalCenter="10" scale9Grid="23,24,99,99"/>
+
+
+		<e:Image width="665" height="256.78" anchorOffsetX="0" anchorOffsetY="0" y="36.28" scaleX="1" scaleY="1" scale9Grid="19,18,23,23" source="bg_page19_png" horizontalCenter="0.5"/>
+		<e:Image width="593.99" height="61.33" y="192.17" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" horizontalCenter="-2" anchorOffsetY="0"/>
+		<e:Image id="diamondImg" horizontalCenter="86" verticalCenter="45" scale9Grid="9,8,25,7" source="fangka_png" scaleX="0.4" scaleY="0.4" x="50" y="24"/>
+		<e:Label id="roomId" text="9999" x="225.63" y="209" textColor="0xA05129"/>
+		<e:Label id="infoTxt" text="房间号：" anchorOffsetX="0" width="138.33" anchorOffsetY="0" height="48.67" verticalAlign="middle" textAlign="center" size="30" horizontalCenter="-196" verticalCenter="49.5" fontFamily="SimHei" textColor="0xa05129"/>
+		<e:Label id="inviteMsgLable" text="你的好友好友名字六字现在邀请您一起游戏！" x="180.73" y="73.67" anchorOffsetX="0" width="365.33" textColor="0x0a0309"/>
+		<e:Label id="roomDef" text="20万买入" x="456" y="207.84" textColor="0xa05129"/>
+		<ns1:GameButton id="joinBtn" label="Button" anchorOffsetX="0" skinName="buttonSkin24" x="415.66" y="318" scaleX="0.8" scaleY="0.8"/>
+		<ns1:GameButton id="cancelBtn" label="Button" anchorOffsetX="0" skinName="buttonSkin3" x="102.33" y="318" scaleX="0.8" scaleY="0.8"/>
+		<e:Image id="headImg" width="75.33" height="68" y="69.67" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" horizontalCenter="-264.5"/>
+		<e:Label text="游戏邀请" x="34.33" y="-15"/>
+
+
+
+	</e:Group>
+
+
+</e:Skin>

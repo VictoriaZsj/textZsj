@@ -1,0 +1,28 @@
+[ {
+  "id" : 1,
+  "type" : "img",
+  "name" : "微信公众号",
+  "startTime" : "2017,1,1,0,0,0",
+  "icon" : "icon_1",
+  "imgId" : "activity_1",
+  "des" : "关注微信公众号，获得更多游戏资讯。",
+  "tran" : 2
+}, {
+  "id" : 2,
+  "type" : "des",
+  "name" : "玩家福利",
+  "startTime" : "2017,1,1,0,0,0",
+  "icon" : "icon_1",
+  "imgId" : "activity_2",
+  "des" : "玩家游戏福利",
+  "des2" : "进行游戏，可获得超多游戏福利"
+}, {
+  "id" : 3,
+  "type" : "signin",
+  "name" : "签到奖励",
+  "clearType" : 2,
+  "clearType2" : 2,
+  "startTime" : "2017,1,1,0,0,0",
+  "panelName" : "SignInPanel",
+  "unInShowPanel" : 1
+} ]

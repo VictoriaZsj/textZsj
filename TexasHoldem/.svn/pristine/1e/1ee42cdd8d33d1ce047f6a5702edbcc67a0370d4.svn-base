@@ -1,0 +1,89 @@
+/**
+ * 桌面上的卡牌
+ */
+class OutCard extends BaseComponent<number>
+{
+	protected _outCardDef: OutCardDefinition;
+	public maskImg: eui.Image;
+	public face: eui.Image;
+
+	private _isUnByHorse: boolean;
+	public get outCardDef(): OutCardDefinition
+	{
+		return this._outCardDef;
+	}
+	public get card(): number
+	{
+		return this.bindData;
+	}
+
+	/**
+	 * 位置索引，用来移动位置
+	 */
+	public posIndex: number;
+
+	public constructor(data: OutCardDefinition, card: number, isUnByHorse: boolean)
+	{
+		super();
+		if (data)
+		{
+			this._outCardDef = data;
+			this._isUnByHorse = isUnByHorse;
+			this.posIndex = data.pos;
+			this.x = data.x;
+			this.y = data.y;
+			if (data.scale)
+			{
+				this.scaleX = this.scaleY = data.scale;
+			}
+			this.init(card);
+			switch (data.posType)
+			{
+				case PosType.BenJia:
+					this.skinName = OutCardSkinName.BenJiaOutCard;
+					break;
+				case PosType.XiaJia:
+					this.skinName = OutCardSkinName.XiaJiaOutCard;
+					break;
+				case PosType.DuiJia:
+					this.skinName = OutCardSkinName.DuiJiaOutCard;
+					break;
+				case PosType.ShangJia:
+					this.skinName = OutCardSkinName.ShangJiaOutCard;
+					break;
+			}
+		}
+	}
+	private _matrix: egret.Matrix;
+	protected rendererStart(event: egret.Event)
+	{
+		super.rendererStart(event);
+		if (this.bindData && this.face)
+		{
+			let paiDef: PaiDefinition = PaiDefined.GetInstance().getDefinition(this.bindData, PaiDefined.GetInstance().paiList);
+			this.face.source = paiDef.img + ResSuffixName.PNGSuffix;
+			this.maskImg.visible = !this._isUnByHorse;
+			if (!this._matrix)
+			{
+				this._matrix = this.face.matrix;
+			}
+			this.face.matrix = this._matrix;
+			CardShowUtil.setTilt(this._outCardDef.tiltH, this._outCardDef.tiltV, this.face);
+		}
+	}
+	public init(card: number)
+	{
+		this.bindData = card;
+		if (this.face)
+		{
+			this.rendererStart(null);
+		}
+	}
+	private setScale(scale: number)
+	{
+		if (scale)
+		{
+			this.scaleX = this.scaleY = scale;
+		}
+	}
+}

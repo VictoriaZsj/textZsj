@@ -1,0 +1,302 @@
+/**
+ * 锦标赛赛事列表项面板
+*/
+class ChampionshipItemRenderer extends BaseItemRenderer<MatchRoomInfo>
+{
+    /**
+     * 比赛时间还未开始group
+    */
+    private notStartGroup: eui.Group;
+    /**
+     * 赛事icon
+    */
+    private iconImg: eui.Image;
+    /**
+     * 金币icon
+    */
+    private goldImg: eui.Image;
+    /**
+     * 重购图标
+    */
+    private rebuyImg: eui.Image;
+    /**
+     * 增购图标
+    */
+    private addonImg: eui.Image;
+    /**
+     * 名称
+    */
+    private nameLabel: eui.Label;
+    /**
+     * 报名费
+    */
+    private priceLabel: eui.Label;
+    /**
+     * 人数信息
+    */
+    private numLabel: eui.Label;
+    /**
+     * 还未开始的比赛时间信息描述
+    */
+    private timeDesLabel: eui.Label;
+    /**
+     * 还未开始的比赛时间
+    */
+    private timeLabel: eui.Label;
+    /**
+     * 正在进行中
+    */
+    private underwayLabel: eui.Label;
+    /**
+     * 等待开始
+    */
+    private waitLabel: eui.Label;
+    /**
+     * 立即进入按钮
+    */
+    private enterBtn: eui.Button;
+    /**
+     * 立即报名按钮
+    */
+    private applyBtn: eui.Button;
+
+    private countDownNum: number;
+
+    public constructor()
+    {
+        super();
+        this.skinName = UIRendererSkinName.ChampionshipItemRenderer;
+    }
+    protected createChildren()
+    {
+        this.dataChanged();
+    }
+    protected dataChanged()
+    {
+        super.dataChanged();
+        if (this.bindData)
+        {
+            this.rebuyImg.visible = false;
+            this.addonImg.visible = false;
+            this.goldImg.visible = false;
+            this.notStartGroup.visible = false;
+            this.underwayLabel.visible = false;
+            this.enterBtn.visible = false;
+            this.applyBtn.visible = false;
+            this.waitLabel.visible = false;
+            // this.iconImg.source = this.bindData.icon;
+            this.iconImg.source = ImageSource.TestImg;  //todo 测试代码
+            this.nameLabel.text = this.bindData.definition.name;
+            this.numLabel.text = this.bindData.applyNum + "/" + this.bindData.definition.bNum;
+            if (this.bindData.isApply == 1)
+            {
+                this.waitLabel.visible = true;
+            } else
+            {
+                this.applyBtn.visible = true;
+            }
+            let flag: boolean = false;
+            if (ItemManager.itemList && ItemManager.itemList.length > 0)
+            {
+                for (let def of ItemManager.itemList)
+                {
+                    if (this.bindData.definition.ticketId == def.id)
+                    {
+                        flag = true;
+                        break;
+                    }
+                }
+            }
+            if (flag)
+            {
+                this.priceLabel.text = this.bindData.definition.name + "门票";
+                this.priceLabel.x = 0;
+            } else
+            {
+                this.goldImg.visible = true;
+                this.priceLabel.text = this.bindData.definition.signCost + "+" + this.bindData.definition.serveCost;
+            }
+            if (this.bindData.definition.addon)
+            {
+                this.addonImg.visible = true;
+            }
+            if (this.bindData.definition.rebuy)
+            {
+                this.rebuyImg.visible = true;
+            }
+            if (TimeManager.GetServerUtcTimestamp() >= this.bindData.startTime)  //比赛进行中
+            {
+                this.countDownOver();
+            } else if ((this.bindData.startTime - TimeManager.GetServerUtcTimestamp()) <= 300)  //比赛开始前5分钟
+            {
+                this.notStartGroup.visible = true;
+                this.timeDesLabel.text = "即将开始";
+                this.countDownNum = Math.floor(this.bindData.startTime - TimeManager.GetServerUtcTimestamp());
+                Tick.getInstance().AddSecondsInvoke(this.countDown, this);
+                if ((this.bindData.startTime - TimeManager.GetServerUtcTimestamp()) < 60)  //比赛前一分钟
+                {
+                    if (this.bindData.isApply == 1)
+                    {
+                        this.waitLabel.visible = false;
+                        this.enterBtn.visible = true;
+                    }
+                }
+            } else
+            {
+                this.notStartGroup.visible = true;
+                let date: Date = new Date(this.bindData.startTime * 1000);
+                if (this.bindData.startTime - TimeManager.GetServerUtcTimestamp() > 3600 * 24)  //大于一天
+                {
+                    this.timeDesLabel.text = (date.getMonth() + 1) + "-" + date.getDate();
+                } else  // 少于一天
+                {
+                    this.timeDesLabel.text = "今日";
+                }
+                this.timeLabel.text = DateTimeUtil.formatDate(date, DateTimeUtil.Format_Standard_NoSecond).split(" ")[1];
+            }
+            this.addEventListener(egret.Event.REMOVED_FROM_STAGE, this.onDisable, this);
+            this.applyBtn.addEventListener(egret.TouchEvent.TOUCH_TAP, this.onaApplyBtnClick, this);
+            this.applyBtn.addEventListener(egret.TouchEvent.TOUCH_END, this.cancelBubble, this);
+            this.enterBtn.addEventListener(egret.TouchEvent.TOUCH_TAP, this.onEnterBtnClick, this);
+            this.enterBtn.addEventListener(egret.TouchEvent.TOUCH_END, this.cancelBubble, this);
+            ChampionshipManager.onRequestJoinEvent.addListener(this.requestJoinSuccess, this);
+        }
+    }
+    private onDisable(event: egret.Event)
+    {
+        this.removeEventListener(egret.Event.REMOVED_FROM_STAGE, this.onDisable, this);
+        this.applyBtn.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.onaApplyBtnClick, this);
+        this.applyBtn.removeEventListener(egret.TouchEvent.TOUCH_END, this.cancelBubble, this);
+        this.enterBtn.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.onEnterBtnClick, this);
+        this.enterBtn.removeEventListener(egret.TouchEvent.TOUCH_END, this.cancelBubble, this);
+        ChampionshipManager.onRequestJoinEvent.removeListener(this.requestJoinSuccess);
+        Tick.getInstance().RemoveSecondsInvoke(this.countDown);
+    }
+    /**
+     * 立即报名成功
+    */
+    private requestJoinSuccess(joinWay: JoinChampionshipWay)
+    {
+        this.applyBtn.visible = false;
+        this.bindData.isApply = 1;
+        this.bindData.applyNum++;
+        this.bindData.joinWay = joinWay;
+        this.numLabel.text = this.bindData.applyNum + "/" + this.bindData.definition.bNum;
+        let time: number = this.bindData.startTime - TimeManager.GetServerUtcTimestamp();
+        if (time <= 60)
+        {
+            if (time < 0)
+            {
+                UIManager.showFloatTips('直接进入比赛房间');  // todo 测试代码
+            } else
+            {
+                this.enterBtn.visible = true;
+            }
+        } else
+        {
+            this.waitLabel.visible = true;
+        }
+    }
+    /**
+     * 立即报名点击事件
+    */
+    private onaApplyBtnClick(event: TouchEvent)
+    {
+        SoundManager.playButtonEffect(event.target);
+        let flag: boolean = ItemManager.isHaveTicket(this.bindData.definition.ticketId);
+        if (flag)   //此处发送协议传递给后台的参数待协商
+        {
+            // ChampionshipManager.reqRequestJoin(this.bindData.id, JoinChampionshipWay.Ticket);
+        } else
+        {
+            if (UserManager.userInfo.gold >= this.bindData.definition.signCost + this.bindData.definition.serveCost)
+            {
+                // ChampionshipManager.reqRequestJoin(this.bindData.id, JoinChampionshipWay.Gold);                
+            } else
+            {
+                AlertManager.showDoubleAlert("提示：金币不足，是否花费648购买1200万金币？", this.openShoppingPanel);
+            }
+        }
+        UIManager.showFloatTips('立即报名');  //todo 测试代码
+    }
+    /**
+     * 打开商城面板
+    */
+    private openShoppingPanel()
+    {
+        UIManager.showPanel(UIModuleName.ShoppingPanel, { tab: ShoppingGpIndex.Gold });
+        UIManager.closePanel(UIModuleName.ChampionshipPanel);
+    }
+    /**
+     * 立即进入
+    */
+    private onEnterBtnClick(event: TouchEvent)
+    {
+        SoundManager.playButtonEffect(event.target);
+        UIManager.showFloatTips("立即进入待添加");
+    }
+    /**
+     * 取消冒泡
+    */
+    private cancelBubble(event: egret.TouchEvent)
+    {
+        event.stopImmediatePropagation();
+    }
+    /**
+     * 显示比赛进行中
+    */
+    private showUnderway()
+    {
+        this.underwayLabel.visible = true;
+        this.notStartGroup.visible = false;
+        this.enterBtn.visible = false;
+        this.applyBtn.visible = false;
+        this.waitLabel.visible = false;
+        this.underwayLabel.text = "比赛进行中";
+        ChampionshipManager.onRefreshUIEvent.dispatch(this.bindData.id);
+    }
+    /**
+     * 倒计时
+    */
+    private countDown()
+    {
+        this.countDownNum--;
+        this.timeLabel.text = ChampionshipManager.countDownFormat(this.countDownNum, false);
+        if (this.countDownNum < 60 && this.bindData.isApply == 1)
+        {
+            this.waitLabel.visible = false;
+            this.enterBtn.visible = true;
+        }
+        if (this.countDownNum <= 0)
+        {
+            this.countDownOver();
+        }
+    }
+    /**
+     * 倒计时结束操作(延迟时间内操作)
+    */
+    private countDownOver()
+    {
+        if (this.bindData.definition.delaySign)
+        {
+            if (TimeManager.GetServerUtcTimestamp() >= this.bindData.startTime + this.bindData.definition.delaySign)
+            {
+                this.showUnderway();
+            } else
+            {
+                this.notStartGroup.visible = true;
+                this.timeDesLabel.text = "延迟报名";
+                if (this.bindData.isApply == 1)
+                {
+                    this.waitLabel.visible = false;
+                    this.enterBtn.visible = true;
+                }
+                this.countDownNum = Math.floor(this.bindData.startTime + this.bindData.definition.delaySign - TimeManager.GetServerUtcTimestamp());
+                Tick.getInstance().AddSecondsInvoke(this.countDown, this);
+            }
+        } else
+        {
+            this.showUnderway();
+        }
+    }
+}

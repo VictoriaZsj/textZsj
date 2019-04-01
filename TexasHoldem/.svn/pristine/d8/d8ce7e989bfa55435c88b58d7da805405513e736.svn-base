@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="LoginBarPanelSkin" width="694" height="465" xmlns:e="http://ns.egret.com/eui"
+        xmlns:w="http://ns.egret.com/wing" xmlns:ns1="*">
+    <e:Group id="tweenGroup" horizontalCenter="0" verticalCenter="0">
+        <e:Image width="642" height="389" source="bg_page2_png" horizontalCenter="0" verticalCenter="0"
+                 scale9Grid="44,46,90,80" />
+        <e:Image source="bg_page24_png" scaleX="0.4" scaleY="0.4"  horizontalCenter="-270" verticalCenter="150"/>
+        <e:Image source="bg_page24_png" scaleX="-0.4" scaleY="0.4"  horizontalCenter="270" verticalCenter="150"/>
+			<e:Image source="bg_page5_png" scaleX="0.8" scaleY="0.8" horizontalCenter="0" verticalCenter="-179.5"/>
+			<e:Image id="friendCircleShareBtn" source="shareFriendGround_png" anchorOffsetY="0" anchorOffsetX="0" horizontalCenter="120" verticalCenter="-18.5"/>
+			<e:Image anchorOffsetY="0" anchorOffsetX="0" horizontalCenter="120" verticalCenter="91" source="bg_page13_png" width="209" height="46"/>
+			<e:Image anchorOffsetY="0" anchorOffsetX="0" horizontalCenter="-120" verticalCenter="91" source="bg_page13_png" width="209" height="46"/>
+			<e:Image id="weixinShareBtn" anchorOffsetY="0" anchorOffsetX="0" scaleX="1" scaleY="1" horizontalCenter="-120" verticalCenter="-18.5" source="shareFriend_png"/>
+        <e:Image source="bg_page24_png" scaleX="-0.4" scaleY="-0.4"  horizontalCenter="270" verticalCenter="-150"/>
+        <e:Image source="bg_page24_png" scaleX="0.4" scaleY="-0.4"  horizontalCenter="-270" verticalCenter="-150"/>
+        <ns1:GameButton id="closeButton" label="button" scaleX="0.8" scaleY="0.8" x="595.8" y="7.2"  skinName="buttonSkin4"/>
+			<e:Label text="分  享" horizontalCenter="0" verticalCenter="-179.5" fontFamily="SimHei"/>
+			<e:Label text="朋友圈" fontFamily="SimHei" textColor="0x4a5f67" horizontalCenter="120.5" verticalCenter="88" size="28"/>
+			<e:Label text="微信" fontFamily="SimHei" textColor="0x4A5F67" horizontalCenter="-120" verticalCenter="88" size="28"/>
+    </e:Group>
+</e:Skin>

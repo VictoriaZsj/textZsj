@@ -1,0 +1,5 @@
+class ActionFunction
+{
+	public thisObject: any;
+	public func: Function;
+}

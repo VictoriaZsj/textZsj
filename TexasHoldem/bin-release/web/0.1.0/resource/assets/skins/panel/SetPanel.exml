@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="SetPanelSkin" width="720" height="1280" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing"
+        xmlns:ns1="*" xmlns:tween="egret.tween.*">
+	<w:Config id="15c813d330f" />
+	<e:Group id="anmGroup" width="720" height="100" x="0" y="0">
+		<e:Image id="bg" width="720" height="100" x="0" y="0" source="bg_page4_png"/>
+		<e:Image id="titleImg" width="300" height="80" y="10" source="bg_page3_2_png" x="210" scaleX="1" scaleY="1"/>
+		<e:Button id="closeButton" label="返回" x="50" y="50" skinName="buttonSkin2" width="150" scaleX="0.5" height="80" scaleY="0.9" anchorOffsetX="75" anchorOffsetY="40"/>
+	</e:Group>
+	<e:Group id="anmGroup1" width="720" height="1180" x="0" y="100" anchorOffsetY="0">
+		<e:Image width="720" height="1180" x="0" y="3.03" source="bg_page2_png" scale9Grid="21,20,106,107" anchorOffsetY="0" />
+		<e:Label text="设置" x="318" y="75" size="50" bold="true"  textColor="0x2e1cdb"/>
+        <e:Image width="635" height="53" y="221.5" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" horizontalCenter="0.5"/>
+        <e:Image width="635" height="53" y="417.5" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" horizontalCenter="0.5"/>
+        <e:Image width="635" height="53" y="364.5" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" horizontalCenter="1.5"/>
+        <e:Image width="635" height="53" y="311.5" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" horizontalCenter="0.5"/>
+        <e:Image width="635" height="53" y="533" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" horizontalCenter="0.5"/>
+        <e:Image width="635" height="53" y="639" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" horizontalCenter="0.5"/> 
+        <e:Image width="635" height="53" y="586" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" horizontalCenter="1.5"/>
+		<e:Group id="setGroup" width="700" height="700" y="183" anchorOffsetX="0" anchorOffsetY="0" x="11">
+
+			<e:ToggleSwitch id="bgSoundTog" label="ToggleButton" skinName="toggleSwitchSkin1" scaleX="0.5" scaleY="0.5" x="571" y="141"/>
+			<e:ToggleSwitch id="soundEffectTog" label="ToggleButton" skinName="toggleSwitchSkin1" scaleX="0.5" scaleY="0.5" x="571" y="196"/>
+			<e:ToggleSwitch id="shakeTog" label="ToggleButton" skinName="toggleSwitchSkin1" scaleX="0.5" scaleY="0.5" x="571" y="246.75"/>
+			<e:Label text="账号设置" x="49" y="13.5" size="25"/>
+			<e:Label text="游戏选项" x="49" y="103.5" size="25"/>
+			<e:Label text="音乐" x="52" y="141" size="23"/>
+			<e:Label text="音效" x="49" y="196" size="23"/>
+			<e:Label text="震动" x="49" y="246" size="23"/>
+			<e:Label text="游戏反馈" x="44" y="303" size="25"/>
+			<e:Label text="论坛" x="59" y="360" size="23"/>
+			<e:Label text="QQ群" x="57" y="418" size="23"/>
+			<e:Label text="客服电话" x="53" y="467" size="23"/>
+			<e:Label text="用户名称：" x="52" y="50" size="23"/>
+			<ns1:GameButton id="reLoginBtn" label="Button" horizontalCenter="259" verticalCenter="-285" skinName="buttonSkin43" scaleX="0.5" scaleY="0.5"/>		
+
+			<e:Label id="QQ" text="Label" x="176" y="421" size="20"/>
+			<e:Label id="forum" text="Label" x="174.5" y="363" size="20"/>
+			<e:Label id="customerService" text="Label" x="199" y="468.5" size="20"/>	
+		</e:Group>
+	</e:Group>
+</e:Skin>

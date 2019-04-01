@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="VipPanelSkin" width="640" height="800" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing" xmlns:ns1="*">
+	<e:Group id="tweenGroup" width="640" height="800" anchorOffsetX="0" anchorOffsetY="0" y="0" x="0">
+		<e:Image id="bg" source="bg_page11_png" scale9Grid="17,17,13,10" width="640" height="800" horizontalCenter="0" y="0" anchorOffsetY="0" x="0" scaleX="1" scaleY="1"/>
+		<e:Label id="title" text="VIP" x="20" y="20" textColor="0x000000" scaleX="1" scaleY="1" size="35" fontFamily="Arial"/>
+		<e:Button id="closeButton" label="Button" x="585" y="35" skinName="buttonSkin2" width="150" height="85" scaleY="0.5" anchorOffsetY="40" anchorOffsetX="75" scaleX="0.5"/>
+		<ns1:TabComponent id="tab" width="600" height="700" x="20" y="75" skinName="TabComponentSkin" scaleX="1" scaleY="1"/>
+		<e:Group id="myVipGroup" width="600" height="600" x="0" y="100" scaleX="1" scaleY="1" name="我的VIP">
+			<e:Group width="600" height="150" x="0" y="0" scaleX="1" scaleY="1">
+				<e:Image id="userImg" width="150" height="150" x="0" y="0" scaleX="1" scaleY="1"/>
+				<e:Image id="yearVipImg" width="200" height="50" x="180" y="10" scaleX="1" scaleY="1" source="bg_page4_2_png"/>
+				<e:Label id="userNameLabel" text="用户名字六字" x="180" y="70" size="35" textColor="0x000000" scaleX="1" scaleY="1"/>
+				<e:Label text="等级：" x="180" y="118" size="32" textColor="0x000000" scaleX="1" scaleY="1"/>
+				<e:Label id="vipLevelLabel" text="VIP0" x="276" y="118" size="32" textColor="0x000000" scaleX="1" scaleY="1"/>
+				<e:Button id="buyVipButton" label="Button" x="450" y="50" scaleX="1" scaleY="0.8" skinName="buttonSkin2" width="150" height="85"/>
+			</e:Group>
+			<e:Group width="600" height="100" x="0" y="150" scaleX="1" scaleY="1">
+				<e:Label text="VIP1 VIP2           VIP3                     VIP4                             VIP5" x="15" y="20" size="20" scaleX="1" scaleY="1" textAlign="left" textColor="0x000000" anchorOffsetX="0" width="570"/>
+				<e:Label text="        (600)          (1800)                  (3600)                          (6000)" x="15" y="40" size="20" scaleX="1" scaleY="1" textAlign="left" textColor="0x000000" anchorOffsetX="0" width="570"/>
+				<e:Image width="1100" height="40" y="70" source="loading_bg_png" scale9Grid="19,18,33,5" scaleY="0.5" x="25" scaleX="0.5"/>
+				<e:Image id="vipProgressImg" width="648" height="40" x="30" y="70" scaleY="0.5" source="loading_line_png" anchorOffsetX="0" anchorOffsetY="0" scaleX="0.5" scale9Grid="11,10,50,21"/>
+			</e:Group>
+			<e:Label text="我的会员成长值：" x="25" y="260" scaleX="1" scaleY="1" textColor="0x000000" size="25"/>
+			<e:Group width="600" height="250" x="0" y="300" scaleX="1" scaleY="1">
+				<e:Image width="560" height="200" x="20" y="0" source="bg_page1_png" anchorOffsetX="0" anchorOffsetY="0" scale9Grid="20,20,40,40"/>
+				<e:Label text="总计：" x="40" y="40" scaleX="1" scaleY="1" textColor="0x000000"/>
+				<e:Label text="目前等级：" x="40" y="70" scaleX="1" scaleY="1" textColor="0x000000"/>
+				<e:Label text="成长速度：" x="40" y="100" scaleX="1" scaleY="1" textColor="0x000000"/>
+				<e:Label id="vipExpLabel" text="0点" x="125" y="40" scaleX="1" scaleY="1" textColor="0x000000"/>
+				<e:Label id="currentVipLevel" text="0" x="190" y="70" scaleX="1" scaleY="1" textColor="0x000000"/>
+				<e:Label id="vipSpeedLabel" text="0点" x="190" y="100" scaleX="1" scaleY="1" textColor="0x000000"/>
+				<e:Label text="开通年费，每日15点&gt;&gt;" x="312" y="149" scaleX="1" scaleY="1" textColor="0x0002c4" size="25"/>
+				<e:Label id="buyYearVipLabel" text="__________________" x="312" y="149" scaleX="1" scaleY="1" textColor="0x0002C4" size="25"/>
+			</e:Group>
+		</e:Group>
+		<e:Group id="vipIntroduceGroup" width="600" height="600" x="0" y="100" scaleX="1" scaleY="1" name="VIP介绍">
+			<e:Image width="600" height="600" x="0" y="0" source="bg_page1_png" scale9Grid="29,27,32,26"/>
+		</e:Group>
+	</e:Group>
+</e:Skin>

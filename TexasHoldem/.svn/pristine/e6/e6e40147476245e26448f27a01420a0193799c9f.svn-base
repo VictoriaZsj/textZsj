@@ -1,0 +1,188 @@
+/**
+ * 创建私人房密码面板
+*/
+class CreateRoomPwdPanel extends EnterRoomPwdPanel
+{
+    /**
+     * 创建房间按钮
+    */
+    private createBtn: eui.Button;
+    /**
+     * 最大携带list
+    */
+    public maxCarryList: eui.List;
+    /**
+     * 最大携带scroller
+    */
+    public maxCarryScroller: eui.Scroller;
+    /**
+     * 密码框
+    */
+    public labelGroup: eui.Group;
+    /**
+     * 前注
+    */
+    public anteaLabel: eui.Label;
+    public antebLabel: eui.Label;
+    public antecLabel: eui.Label;
+    public antedLabel: eui.Label;
+
+    public ante: number;
+
+    public constructor()
+    {
+        super(true);
+        this.skinName = UISkinName.CreateRoomPwdPanel;
+    }
+    protected onAwake(event: eui.UIEvent)
+    {
+        super.onAwake(event);
+        UIUtil.listRenderer(this.maxCarryList, this.maxCarryScroller, PersonalRoomItemRenderer, ScrollViewDirection.Vertical_T_D, eui.ScrollPolicy.ON);
+        this.setGrayMask(true);
+        this.anteaLabel.touchEnabled = this.antebLabel.touchEnabled = this.antecLabel.touchEnabled = this.antedLabel.touchEnabled = true;
+        this.openPanelName = UIModuleName.CreateRoomPwdPanel;
+    }
+    protected onRender(event: egret.Event)
+    {
+        super.onRender(event);
+        this.getMaxCarrayInfo();
+    }
+    protected onEnable(event: eui.UIEvent): void
+    {
+        super.onEnable(event);
+        this.createBtn.addEventListener(egret.TouchEvent.TOUCH_TAP, this.createRoom, this);
+        this.labelGroup.addEventListener(egret.TouchEvent.TOUCH_TAP, this.changeIndex, this);
+        this.addEventListener(egret.TouchEvent.TOUCH_TAP, this.onClickHandler, this);
+    }
+    protected onDisable(event: eui.UIEvent): void
+    {
+        super.onDisable(event);
+        this.createBtn.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.createRoom, this);
+        this.labelGroup.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.changeIndex, this);
+        this.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.onClickHandler, this);
+        UIManager.getPanel(UIModuleName.CreateRoomPwdPanel).y = 0;
+    }
+    protected enterPwd(type: number, num?: string)
+    {
+        if (num)
+        {
+            let label: NumComponent = this.getUnWriteLabel();
+            if (label)
+            {
+                label.refresh(parseInt(num));
+            }
+        }
+        //键盘删除键按下
+        if (type == 2)
+        {
+            let delLabel: NumComponent = this.getWirteLabel();
+            if (delLabel)
+            {
+                delLabel.refresh();
+            }
+        } else if (type == 3)  //键盘清除键按下
+        {
+            this.resetLabel();
+        }
+    }
+    /**
+     * 点击事件处理
+    */
+    private onClickHandler(event: egret.TouchEvent)
+    {
+        SoundManager.playEffect(Sex.Male, MusicAction.buttonClick);
+        switch (event.target)
+        {
+            case this.anteaLabel:
+                this.ante = this.changeToNum(this.anteaLabel.text);
+                break;
+            case this.antebLabel:
+                this.ante = this.changeToNum(this.antebLabel.text);
+                break;
+            case this.antecLabel:
+                this.ante = this.changeToNum(this.antecLabel.text);
+                break;
+            case this.antedLabel:
+                this.ante = this.changeToNum(this.antedLabel.text);
+                break;
+        }
+    }
+    /**
+     * 去掉万  亿
+    */
+    private changeToNum(str: string): number
+    {
+        let w: number = str.indexOf("万");
+        let y: number = str.indexOf("亿");
+        if (w == -1 && y == -1)
+        {
+            return parseInt(str);
+        } else
+        {
+            if (w != -1)
+            {
+                return parseInt(str) * 10000;
+            }
+            if (y != -1)
+            {
+                return parseInt(str) * 100000000;
+            }
+            return null;
+        }
+    }
+    /**
+     * 交换层级
+    */
+    private changeIndex()
+    {
+        UIManager.closePanel(UIModuleName.KeyBoardPanel);
+        UIManager.showPanel(UIModuleName.KeyBoardPanel, { callback: this.callback, target: this, isbgNotCanClick: false });
+        UIManager.getPanel(UIModuleName.CreateRoomPwdPanel).y = -50;
+    }
+    /**
+     * 获取最大携带数数据
+    */
+    private getMaxCarrayInfo()
+    {
+        let infoList: Array<RoomDefinition> = RoomDefined.GetInstance().getInfoByType(11);
+        if (infoList)
+        {
+            PlayingFieldManager.maxCarryList = infoList;
+        }
+        this.maxCarryList.dataProvider = new eui.ArrayCollection(PlayingFieldManager.maxCarryList);
+    }
+    /**
+     * 创建私人房
+    */
+    private createRoom(event: egret.TouchEvent)
+    {
+        SoundManager.playButtonEffect(event.target);
+        let str: string = this.getRoomPwd();
+        let roompwd: number = parseInt(str);
+        if (roompwd > 0 && roompwd.toString().length < 6)
+        {
+            AlertManager.showSingleAlert("请先输入6位数的密码再创建房间！");
+            return;
+        } else if (PlayingFieldManager.selectedId)
+        {
+            let roomInfo: RoomDefinition = RoomDefined.GetInstance().getDefinition(PlayingFieldManager.selectedId);
+            if (roomInfo)
+            {
+                if (UserManager.userInfo.gold < roomInfo.sBuyin)
+                {
+                    AlertManager.showSingleAlert("您的金币不足" + MathUtil.formatNum(roomInfo.sBuyin) + ",请补充金币或者选择低场次进入。");
+                    return;
+                }
+            }
+            if (!this.ante)
+            {
+                this.ante = 0;
+            }
+            // PlayingFieldManager.reqCreatePersonalRoom(PlayingFieldManager.selectedId, roompwd, this.ante);
+            UIManager.showFloatTips("发送创建房间请求");
+        } else
+        {
+            AlertManager.showSingleAlert("请选择最大携带！");
+        }
+    }
+}

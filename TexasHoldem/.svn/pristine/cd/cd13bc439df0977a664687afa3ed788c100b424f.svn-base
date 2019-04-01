@@ -1,0 +1,34 @@
+/**
+ * 操作处理器
+ */
+class GamblingActionHandler implements IGamblingHandler
+{
+	/**
+	 * 结束时亮牌
+	 */
+	public isBrightCard: boolean = false;
+	/**
+	 * 是否过或弃
+	 */
+	public isPassOrFold: boolean = false;
+	/**
+	 * 是否跟任何
+	 */
+	public isCallAny: boolean = false;
+
+	public roundStart()
+	{
+
+	}
+	public roundOver()
+	{
+		this.isBrightCard = false;
+		this.isPassOrFold = false;
+		this.isCallAny = false;
+	}
+	public loopOver()
+	{
+		this.isPassOrFold = false;
+		this.isCallAny = false;
+	}
+}

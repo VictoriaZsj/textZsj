@@ -1,0 +1,110 @@
+/**
+ * 房间解散操作面板
+ */
+class RoomDisbandOperPanel extends BasePanel
+{
+	public cancelBtn: eui.Button;
+	public agreeBtn: eui.Button;
+	public timeLabel: eui.Label;
+	public infoLabel: eui.Label;
+
+	public agreeImg: eui.Image;
+	public refuseImg: eui.Image;
+
+	public constructor()
+	{
+		super();
+		this.layer = UILayerType.Tips;
+		this.skinName = UISkinName.RoomDisbandOperPanel;
+	}
+	protected onAwake(event: eui.UIEvent)
+	{
+		super.onAwake(event);
+	}
+	public init(appendData: any)
+	{
+		super.init(appendData);
+		this.agreeImg.visible = false;
+		this.refuseImg.visible = false;
+		this.cancelBtn.visible = this.agreeBtn.visible = true;
+		this.onAgreeResult();
+	}
+	protected onRender(event: egret.Event)
+	{
+		super.onRender(event);
+
+		let str: string = StringConstant.empty;
+		let reqStr: string;
+		if (RoomManager.roomInfo && RoomManager.roomInfo.playerList)
+		{
+			let pInfo: PlayerInfo;
+			for (let i: number = 0; i < RoomManager.roomInfo.playerList.length; i++)
+			{
+				pInfo = RoomManager.roomInfo.playerList[i];
+				if (pInfo.quit == RoomQuitState.ReqQuit)
+				{
+					reqStr = pInfo.name;
+					break;
+				}
+			}
+		}
+		let waitTime: number = ProjectDefined.GetInstance().getValue(ProjectDefined.waitDisbandTime);
+		let min: number = Math.ceil(waitTime / 60);
+		this.infoLabel.text = "玩家" + reqStr + "申请解散房间，请选择是否同意(超过" + min + "分钟未做选择，则默认同意)";
+		this.showTime();
+	}
+	private showTime()
+	{
+		let str: string = RoomManager.remainTimeStr;
+		this.timeLabel.text = str;
+		if (!str)
+		{
+			this.onCloseBtnClickHandler(null); //倒计时结束关闭界面
+		}
+	}
+	protected onEnable(event: eui.UIEvent): void
+	{
+		super.onEnable(event);
+		Tick.getInstance().AddSecondsInvoke(this.showTime, this);
+		this.addEventListener(egret.TouchEvent.TOUCH_TAP, this.onPanelClick, this);
+		RoomManager.pushVoteResultEa.addListener(this.onAgreeResult, this);
+	}
+	protected onDisable(event: eui.UIEvent): void
+	{
+		super.onDisable(event);
+		this.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.onPanelClick, this);
+		Tick.getInstance().RemoveSecondsInvoke(this.showTime);
+		RoomManager.pushVoteResultEa.removeListener(this.onAgreeResult);
+	}
+	private onPanelClick(event: egret.TouchEvent)
+	{
+		switch (event.target)
+		{
+			case this.cancelBtn:
+				RoomManager.reqIsAgreeExitRoom(false);
+				break;
+			case this.agreeBtn:
+				RoomManager.reqIsAgreeExitRoom(true);
+				break;
+		}
+	}
+	private onAgreeResult()
+	{
+		this.agreeImg.visible = false;
+		this.refuseImg.visible = false;
+		if (RoomManager.mineInfo && RoomManager.mineInfo.quit == RoomQuitState.Refuse)
+		{
+			this.refuseImg.visible = true;
+			this.cancelBtn.visible = this.agreeBtn.visible = false;
+		}
+		else if (RoomManager.mineInfo && RoomManager.mineInfo.quit == RoomQuitState.Argree)
+		{
+			this.agreeImg.visible = true;
+			this.cancelBtn.visible = this.agreeBtn.visible = false;
+		}
+	}
+	protected onCloseBtnClickHandler(event: egret.TouchEvent): void
+	{
+		super.onCloseBtnClickHandler(event);
+	}
+}

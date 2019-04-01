@@ -1,0 +1,71 @@
+[ {
+  "id" : 1,
+  "name" : "金币",
+  "type" : 1,
+  "typeDes" : "数值道具",
+  "des" : "游戏中必备货币",
+  "icon" : 1
+}, {
+  "id" : 2,
+  "name" : "钻石",
+  "type" : 1,
+  "typeDes" : "数值道具",
+  "des" : "钻石",
+  "icon" : 2
+}, {
+  "id" : 3,
+  "name" : "vip经验",
+  "type" : 1,
+  "typeDes" : "数值道具",
+  "des" : "vip经验",
+  "icon" : 3
+}, {
+  "id" : 4,
+  "name" : "等级经验",
+  "type" : 1,
+  "typeDes" : "数值道具",
+  "des" : "等级经验",
+  "icon" : 4
+}, {
+  "id" : 101,
+  "name" : "10元话费赛门票",
+  "type" : 2,
+  "typeDes" : "门票",
+  "effectType" : 1,
+  "des" : "使用可免费参与10元话费赛",
+  "icon" : 101
+}, {
+  "id" : 102,
+  "name" : "100钻石赛门票",
+  "type" : 2,
+  "typeDes" : "门票",
+  "effectType" : 1,
+  "des" : "使用可免费参与100钻石赛",
+  "icon" : 102
+}, {
+  "id" : 103,
+  "name" : "100万金币欢乐赛门票",
+  "type" : 2,
+  "typeDes" : "门票",
+  "effectType" : 1,
+  "des" : "使用可免费参与100万金币欢乐赛",
+  "icon" : 103
+}, {
+  "id" : 201,
+  "name" : "iPhone7兑换券",
+  "type" : 3,
+  "typeDes" : "兑奖券",
+  "effectType" : 2,
+  "des" : "可兑换iPhone7一台！",
+  "icon" : 201,
+  "extern" : "iPhone7锦标赛冠军奖励"
+}, {
+  "id" : 301,
+  "name" : "10元话费兑奖券",
+  "type" : 3,
+  "typeDes" : "兑奖券",
+  "effectType" : 3,
+  "des" : "可兑换10元话费",
+  "icon" : 301,
+  "extern" : "10元话费赛冠军奖励"
+} ]

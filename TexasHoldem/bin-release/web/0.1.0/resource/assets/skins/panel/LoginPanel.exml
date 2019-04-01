@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="panelSkin1" width="720" height="1280" xmlns:ns1="*" xmlns:e="http://ns.egret.com/eui"
+        xmlns:w="http://ns.egret.com/wing">
+	<e:Group id="tweenGroup" width="720" height="1280">
+		<e:Image id="bg" width="100%" height="100%" x="0" y="0" source="Bg2_png" />
+		<e:Image id="logo" width="705" height="265" x="640" y="85" source="Logo_png" anchorOffsetX="352.5" />
+		<ns1:GameButton id="userBtn" label="用户协议" x="1069" y="592" skinName="buttonSkin29" scaleX="0.9" scaleY="0.9" />
+		<e:CheckBox id="agreeCheckBox" label="已阅读并同意用户协议" y="473" skinName="CheckBoxSkin1" anchorOffsetX="0"
+		            width="326" anchorOffsetY="0" height="55"  horizontalCenter="0"/>
+		<e:Image width="720" height="100" x="0" y="1180" source="bg_page4_png" anchorOffsetX="0"
+		         anchorOffsetY="0"  scale9Grid="10,10,126,126"/>
+		<e:Label text="抵制不良游戏 拒绝盗版游戏 注意自我保护 谨防受骗上当 适度游戏益脑 沉迷游戏伤身 合理安排时间 享受健康生活" x="0" y="1180" size="28" textAlign="center"
+		         width="720" anchorOffsetX="0" bold="true"  anchorOffsetY="0" height="100" verticalAlign="middle"/>
+		<e:Group height="73" x="245" y="385" anchorOffsetX="0" anchorOffsetY="0" horizontalCenter="0">
+			<e:layout>
+				<e:HorizontalLayout horizontalAlign="center" gap="50" />
+			</e:layout>
+			<ns1:GameButton id="guestLoginBtn" label="游客登录" skinName="buttonSkin27" scaleX="1" scaleY="1" visible="false"
+			                includeInLayout="false" />
+			<ns1:GameButton id="weixinLoginBtn" label="微信登录" skinName="buttonSkin1" scaleX="1" scaleY="1" visible="false"
+			                includeInLayout="false" />
+			<ns1:GameButton id="accountBtn" label="外网登录" skinName="buttonSkin55" scaleX="1" scaleY="1" visible="false"
+			                includeInLayout="false" />
+		</e:Group>
+		<e:Group height="73" x="479" y="301" horizontalCenter="0">
+			<e:layout>
+				<e:HorizontalLayout horizontalAlign="center" gap="50" />
+			</e:layout>
+			<ns1:GameButton id="intranetGuestBtn" label="内网游客" skinName="buttonSkin56" scaleX="1" scaleY="1" visible="false"
+			                includeInLayout="false" />
+			<ns1:GameButton id="intranetAccountBtn" label="内网登录" skinName="buttonSkin28" scaleX="1" scaleY="1" visible="false"
+			                includeInLayout="false" />
+		</e:Group>
+	</e:Group>
+</e:Skin>

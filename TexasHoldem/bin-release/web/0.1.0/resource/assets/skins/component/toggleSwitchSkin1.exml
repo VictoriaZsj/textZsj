@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="toggleSwitchSkin1" states="up,down,disabled,upAndSelected,downAndSelected,disabledAndSelected" xmlns:e="http://ns.egret.com/eui">
+    <e:Image source="on_png"
+             source.up="off_png"
+             source.down="off_png"
+             source.disabled="off_png"/>
+</e:Skin>

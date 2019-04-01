@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="gangpaiSkin" width="333" height="151" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing">
+	<e:Image width="333" height="151" anchorOffsetY="0" anchorOffsetX="0" horizontalCenter="0" verticalCenter="0" source="bg_page10_png" scale9Grid="9,7,14,16"/>
+	<e:Image width="149" height="188"  source="mj_bg_png" scaleX="0.5" scaleY="0.5" horizontalCenter="-106" verticalCenter="0.5"/>
+	<e:Image id="face1" width="48" height="64"  scaleX="1.2" scaleY="1.2" source="" horizontalCenter="-105.5" verticalCenter="0"/>
+	<e:Image width="149" height="188"  source="mj_bg_png" scaleX="0.5" scaleY="0.5" horizontalCenter="-35" verticalCenter="0.5"/>
+	<e:Image id="face2" width="48" height="64"  scaleX="1.2" scaleY="1.2" source="" horizontalCenter="-35.5" verticalCenter="0"/>
+	<e:Image width="149" height="188"  source="mj_bg_png" scaleX="0.5" scaleY="0.5" horizontalCenter="36" verticalCenter="0.5"/>
+	<e:Image id="face3" width="48" height="64"  scaleX="1.2" scaleY="1.2" source="" horizontalCenter="35.5" verticalCenter="0"/>
+	<e:Image width="149" height="188"  source="mj_bg_png" scaleX="0.5" scaleY="0.5" horizontalCenter="105.5" verticalCenter="0.5"/>
+	<e:Image id="face4" width="48" height="64"  scaleX="1.2" scaleY="1.2" source="" horizontalCenter="106.5" verticalCenter="0"/>
+</e:Skin>

@@ -1,0 +1,192 @@
+class Command
+{
+    /**
+    * 登录
+    */
+    public static Login_login: string = "login";
+    public static Login_exchange: string = "exchange";
+    public static Login_auth: string = "auth";
+    /**
+     * 心跳
+     */
+    public static System_Heartbeat_3016: string = "c3016";
+    /**
+     * 断线重连
+     */
+    public static Req_OfflineReconnect_3004: string = "c3004";
+    /**
+     * 抢占登录
+     */
+    public static System_Response_Login_2013: string = "c2013";
+    /**
+     * 用户协议
+     */
+    public static Role_Get_3000: string = "c3000";
+    /**
+     * 请求购买房卡（测试专用）
+     */
+    public static Req_BuyCard_3001: string = "c3001";
+    /**
+     * 资产变更推送
+     */
+    public static Rec_PushPropertyChange_2000: string = "c2000";
+    /**
+     * 推送成就更新
+     */
+    public static Rec_AchievementChange_2023: string = "c2023";
+    /**
+     * 推送玩家托管状态
+     */
+    public static Rec_PushPlayerHosted_2024: string = "c2024";
+    /**
+     * 请求托管
+     */
+    public static Req_Hosted_3022: string = "c3022";
+    /**
+     * 聊天消息推送
+     */
+    public static Rec_Message_2014: string = "c2014";
+    /**
+     * 会员时间戳变更推送
+     */
+    public static Rec_GetVipTime_2001: string = "c2001";
+    /**
+     * 推送玩家离线
+     */
+    public static Rec_Push_Offline_2026: string = "c2026";
+    /**
+     * 拉取分享好友列表
+     */
+    public static Req_BindFriendList_3027: string = "c3027";
+    /**
+     * 请求上传聊天信息
+     */
+    public static Req_Send_ChatMessage_3019: string = "c3019";
+    /**
+     * 请求上传签名
+     */
+    public static Req_Chat_Record_Sgin_3018: string = "c3018";
+    /**
+     * 设置角色基础信息
+     */
+    public static Req_SetUserInfo_3609: string = "c3609";
+    /**
+     * 用户经验变更推送
+     */
+    public static Rec_ExpChange_2028: string = "c2028";
+    /**
+     * 请求游戏场房间列表信息
+     */
+    public static Req_RoomInfo_3002: string = "c3002";
+    /**
+     * 请求好友列表信息
+    */
+    public static Req_friendInfo_3156: string = "c3156";
+    /**
+     * 请求赠送好友金币
+    */
+    public static Req_GiveFriendGold_3151: string = "c3151";
+    /**
+     * 请求获取好友详细信息
+     */
+    public static Req_GetUserInfo_3023: string = "c3023";
+    /**
+     * 请求领取好友赠送的金币
+     */
+    public static Req_ReceiveGift_3150: string = "c3150";
+    /**
+     * 请求好友请求列表
+     */
+    public static Req_FriendRequest_3157: string = "c3157";
+    /**
+     * 发送是否接受好友请求的请求
+     */
+    public static Req_ReceiveFriend_3154: string = "c3154";
+    /**
+     * 发送搜索用户的请求
+     */
+    public static Req_SearchPlayer_3153: string = "c3153";
+    /**
+     * 发送删除好友的请求
+     */
+    public static Req_AddPlayer_3155: string = "c3155";
+    /**
+     * 发送添加用户为好友的请求
+     */
+    public static Req_AddPlayer_3152: string = "c3152";
+    /**
+     * 发送创建角色的请求
+     */
+    public static Req_CreateRole_3012: string = "c3012";
+    /**
+     * 发送存取金币的请求
+     */
+    public static Req_saveORwithdraw_3014: string = "c3014";
+    /**
+     * 发送保险箱密码请求
+    */
+    public static Req_safePwd_3017: string = "c3017";
+    /**
+     * 拉取邮件列表的请求
+     */
+    public static Req_Mail_3097: string = "c3097";
+    /**
+     * 请求领取邮件附件
+     */
+    public static Req_TakeMailPrize_3098: string = "c3098";
+    /**
+     * 新邮件通知推送
+     */
+    public static Rec_Mail_New_Notify_2024 = "c2024";
+    /**
+     * 兑换奖励
+     */
+    public static Exchange_3113 = "c3113";
+    /**
+     * 好友添加成功的通知推送
+     */
+    public static Rec_AddFriendSuccess_2036 = "c2036";
+    /**
+     *被好友删除的通知推送
+     */
+    public static Rec_DelFriendSuccess_2035 = "c2035";
+    /**
+     * 好友在线通知推送
+     */
+    public static Rec_OnlineState_2064 = "c2064";
+    /**
+     * 好友赠送金币通知推送
+     */
+    public static Rec_GiveGold_2037 = "c2037";
+    /**
+     * 添加好友请求通知推送
+     */
+    public static Rec_RequestFriend_2038 = "c2038";
+    /**
+     * 拉取兑换信息
+     */
+    public static Req_AwardInfo_3112 = "c3112";
+    /**
+     * 拉取成就列表
+     */
+    public static Req_GetAchievementList_3090 = "c3090";
+    /**
+     * 领取成就奖励
+     */
+    public static Req_GetAchievementPrize_3088 = "c3088";
+    /**
+     * 发送好友邀请
+    */
+    public static Req_SendGameInvite_3608 = "c3608";
+    //--------------------------------------------------------------
+    // 行牌流程
+    //--------------------------------------------------------------
+    /**
+     * 获取牌局信息
+     */
+    public static Req_GetRoomInfo_3600 = "c3600";
+    //--------------------------------------------------------------
+    // 行牌流程 end
+    //--------------------------------------------------------------
+}
+

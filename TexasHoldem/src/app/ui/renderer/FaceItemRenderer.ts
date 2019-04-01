@@ -1,0 +1,28 @@
+/**
+ * 表情项面板
+*/
+class FaceItemRenderer extends BaseItemRenderer<any>
+{
+    /**
+     * 表情图片
+    */
+    public faceImg: eui.Image;
+
+    public constructor()
+    {
+        super();
+        this.skinName = UIRendererSkinName.FaceItemRenderer;
+    }
+    protected createChildren()
+    {
+        this.dataChanged();
+    }
+    protected dataChanged()
+    {
+        super.dataChanged();
+        if (this.bindData)
+        {
+            this.faceImg.source = ImageSource.TestImg;
+        }
+    }
+}

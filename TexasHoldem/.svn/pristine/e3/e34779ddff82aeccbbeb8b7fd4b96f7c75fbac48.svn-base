@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="panelSkin5" width="1280" height="720" xmlns:e="http://ns.egret.com/eui"
+        xmlns:w="http://ns.egret.com/wing" xmlns:ns1="*" xmlns:tween="egret.tween.*">
+	<w:Config id="15caf743bf8" />
+	<w:Declarations>
+		<tween:TweenGroup id="playing">
+			<tween:TweenItem target="{createRoomBtn}">
+				<tween:Set>
+					<tween:props>
+						<e:Object scaleX="{1}" scaleY="{1}" />
+					</tween:props>
+				</tween:Set>
+				<tween:To duration="500">
+					<tween:props>
+						<e:Object scaleY="{1.1}" scaleX="{1.1}" />
+					</tween:props>
+				</tween:To>
+				<tween:To duration="500">
+					<tween:props>
+						<e:Object scaleX="{1}" scaleY="{1}" />
+					</tween:props>
+				</tween:To>
+				<tween:props>
+					<e:Object loop="{true}" />
+				</tween:props>
+			</tween:TweenItem>
+		</tween:TweenGroup>
+	</w:Declarations>
+	<e:Image width="1280" height="720" x="-11" y="1" source="Bg2_png" />
+	<ns1:GameButton id="settingBtn" label="设置" x="1170" y="30" skinName="buttonSkin14" />
+	<ns1:GameButton id="shareBtn" label="分享" x="1088" y="30" scaleX="1" scaleY="1" skinName="buttonSkin53" />
+	<ns1:GameButton id="bringRoomCardBtn" label="领房卡" x="548.16" scaleX="1" scaleY="1" skinName="buttonSkin54"  verticalCenter="-300"/>
+	<e:Group touchEnabled="false" touchChildren="true" width="1280" height="720" x="0" y="0">
+		<e:Image id="logoImg0" touchEnabled="false" anchorOffsetX="352.5" source="background_2_png" scaleX="1" scaleY="1" left="36" bottom="-1"/>
+		<e:Image id="logoImg" width="815" height="306.35" source="Logo_png" anchorOffsetX="407.5" scaleX="0.4" scaleY="0.4" x="202.4" y="574.66" anchorOffsetY="0"/>
+		<ns1:GameButton id="createRoomBtn" label="创建房间" skinName="buttonSkin9" anchorOffsetX="204" anchorOffsetY="74.5" x="809" y="387.1"/>
+		<ns1:GameButton id="addInRoomBtn" label="加入房间" x="739" skinName="buttonSkin10" y="132"/>
+	</e:Group>
+	<e:Group id="group" touchChildren="true" width="350" height="138" anchorOffsetY="0" verticalCenter="-300" horizontalCenter="-476" touchEnabled="true">
+		<e:Image source="bg_page3_2_png" verticalCenter="0.5" x="71.7"/>
+		<e:Label text="ID:" x="110.2" y="69.9" size="20" bold="true" fontFamily="SimHei" anchorOffsetX="0" width="25.7" anchorOffsetY="0" height="16.4" textColor="0xffc871"/>
+		<e:Label id="idLabel" text="999999" x="157.24" y="69.9" size="20" bold="true" fontFamily="SimHei" anchorOffsetX="0" width="67.25" anchorOffsetY="0" height="21.46" textColor="0xffc871"/>
+		<e:Image id="girlImg" width="40" height="40" x="84.33" y="85.67" source="girl_png" visible="false"/>
+		<e:Label id="userNameLabel" text="用户名称六字" x="110.2" y="49.03" size="20" bold="true" fontFamily="Microsoft JhengHei" anchorOffsetX="0" width="106.45" anchorOffsetY="0" height="17.39" textColor="0xffc871"/>
+		<e:Image id="borderImg" height="70" anchorOffsetX="55.5" anchorOffsetY="55.5" scaleX="1" scaleY="1" horizontalCenter="-105.5" verticalCenter="0.5" source="bg_head_png" width="70"/>
+		<e:Image id="borderImg0" height="60" anchorOffsetX="55.5" anchorOffsetY="55.5" scaleX="1" scaleY="1" horizontalCenter="-105.5" verticalCenter="0.5" source="1001_png" width="60"/>
+		<e:Image id="boyImg" width="27.33" height="27.33" x="79.35" y="80.72" source="boy_png" anchorOffsetX="0" anchorOffsetY="0"/>
+	</e:Group>
+	<e:Group id="group0" touchChildren="true" width="257" height="65" anchorOffsetY="0" anchorOffsetX="0" verticalCenter="-299.5" horizontalCenter="-220.5">
+		<e:Image anchorOffsetX="0" anchorOffsetY="0" source="bg_page3_2_png"  verticalCenter="0" x="27"/>
+		<e:Image id="cardImg" anchorOffsetX="0" anchorOffsetY="0" source="button_8_png" scaleX="1" scaleY="1"
+		         touchEnabled="true" verticalCenter="-2"  x="18.32"/>
+		<e:Label id="roomCardNumLabel" text="999999" size="30" textAlign="left" fontFamily="SimHei" scaleX="1" scaleY="1"
+		         horizontalCenter="4.5" touchEnabled="false" verticalCenter="0.5"  textColor="0xffc871"/>
+		<ns1:GameButton id="addRoomCardBtn" label="Button" skinName="buttonSkin8" scaleX="1" scaleY="1" anchorOffsetX="0"
+		                x="181.5"  y="-2"/>
+	</e:Group>
+	<e:Group id="group1" width="699.45" height="119.7" x="559.04" y="612.01" anchorOffsetY="0" anchorOffsetX="0">
+		<ns1:GameButton id="payBtn" label="充值" x="11" y="-48" skinName="buttonSkin15" scaleX="1" scaleY="1"/>
+		<ns1:GameButton id="recordBtn" label="战绩" x="184" y="-48" skinName="buttonSkin11" scaleX="1" scaleY="1"/>
+		<ns1:GameButton id="infoBtn" label="信息" x="351.65" y="-48" skinName="buttonSkin13" scaleX="1" scaleY="1"/>
+		<ns1:GameButton id="playBtn" label="玩法" x="522" y="-48" skinName="buttonSkin12" scaleX="1" scaleY="1"/>
+	</e:Group>
+	<e:Group id="piaoHua" width="598.48" height="719.7" x="-1.66" y="1" anchorOffsetX="0" anchorOffsetY="0" touchEnabled="false">
+		<e:Image id="piaoHua0" x="331.66" y="748" source="hua1_png" scaleX="1" scaleY="1"/>
+		<e:Image id="piaoHua1" x="222.66000000000003" y="751.0000000000001" source="hua3_png" scaleX="1" scaleY="1"/>
+		<e:Image id="piaoHua2" x="486.6600000000001" y="745" source="hua2_png" scaleX="1" scaleY="1"/>
+		<e:Image id="piaoHua3" x="142.66" y="750" scaleX="1" scaleY="1" source="hua4_png"/>
+	</e:Group>
+</e:Skin>

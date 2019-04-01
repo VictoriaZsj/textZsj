@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="buttonSkin55" width="256" height="73" xmlns:e="http://ns.egret.com/eui">
+	<e:Image  id="btnImg" x="0" y="0" source="button_youke_2_png"/>
+</e:Skin>

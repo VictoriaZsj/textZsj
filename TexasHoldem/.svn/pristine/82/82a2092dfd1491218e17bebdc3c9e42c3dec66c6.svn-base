@@ -1,0 +1,28 @@
+/**
+ * 手牌渲染项
+ */
+class ShouPaiItemRenderer extends BaseItemRenderer<number>
+{
+	public contentImg: eui.Image;
+	public constructor()
+	{
+		super();
+		this.skinName = UIRendererSkinName.ShouPaiItemRenderer;
+	}
+	protected createChildren()
+	{
+		this.dataChanged();
+	}
+	protected dataChanged(): void
+	{
+		super.dataChanged();
+		if (this.bindData && this.contentImg)
+		{
+			let paiDef: PaiDefinition = PaiDefined.GetInstance().getDefinition(this.bindData, PaiDefined.GetInstance().paiList);
+			if (paiDef)
+			{
+				this.contentImg.source = paiDef.img + ResSuffixName.PNGSuffix;
+			}
+		}
+	}
+}

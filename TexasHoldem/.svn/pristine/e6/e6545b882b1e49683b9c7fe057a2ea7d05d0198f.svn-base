@@ -1,0 +1,16 @@
+class ActionFunction
+{
+	public func: Function;
+	public thisObject: any;
+
+	public constructor(func: Function, thisObject: any)
+	{
+		this.func = func;
+		this.thisObject = thisObject;
+	}
+
+	public invoke(params?: any)
+	{
+		FuncUtil.invoke(this.func, this.thisObject, params);
+	}
+}

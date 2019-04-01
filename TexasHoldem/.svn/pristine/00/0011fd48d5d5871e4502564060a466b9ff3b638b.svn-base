@@ -1,0 +1,17 @@
+/**
+ * 邀请好友管理
+*/
+class InviteFriendManager
+{ 
+    /**
+     * 好友信息列表
+    */
+    public static friendList: Array<FriendInfo>;
+    /**
+     * 请求好友信息
+    */
+    public static reqFriendInfo(){
+        SocketManager.AddCommandListener(Command.Req_FriendRequest_3157, FriendManager.FriendRequestResponse);
+        SocketManager.Send(Command.Req_FriendRequest_3157);
+    }
+}

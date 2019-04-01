@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="VipWealthSkin" width="780" height="540" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing">
+	<e:Group id="tweenGroup" width="780" height="486" anchorOffsetX="0" anchorOffsetY="0" horizontalCenter="0" verticalCenter="26">
+		<e:Image source="bg_page11_png" scale9Grid="17,17,13,10" width="780" height="481.82" horizontalCenter="0" y="2.9200000000000017" anchorOffsetY="0" x="0" scaleX="1" scaleY="1"/>
+		<e:Image y="-54.11" source="bg_page5_png" horizontalCenter="0" x="196" scaleX="1" scaleY="1"/>
+		<e:Label text="会员福利" x="328.85" y="-7.939999999999998" scaleX="1" scaleY="1"/>
+		<e:Image width="674.52" height="135" x="55.92" y="117.25" source="bg_page1_png" anchorOffsetX="0" scale9Grid="21,28,53,27" scaleX="1" scaleY="1"/>
+		<e:Image width="674.52" height="135" x="55.92" y="314.28" source="bg_page1_png" anchorOffsetX="0" scale9Grid="21,28,53,27" scaleX="1" scaleY="1"/>
+		<e:Label text="会员特权" x="55.92" y="71.04" textColor="0x000000" scaleX="1" scaleY="1"/>
+		<e:Label text="会员功能权限" x="55.92" y="267.25" textColor="0x000000" scaleX="1" scaleY="1"/>
+	</e:Group>
+</e:Skin>

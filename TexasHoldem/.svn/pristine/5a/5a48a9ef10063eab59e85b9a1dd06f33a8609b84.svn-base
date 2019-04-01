@@ -1,0 +1,60 @@
+/**
+ * 我的奖品面板
+ */
+class MyPrizePanel extends BasePanel
+{
+    //标签按键
+    public notTakenToggle:eui.ToggleButton;
+    public haveTakenToggle:eui.ToggleButton;
+    public prizeInfoToggle:eui.ToggleButton;
+    //标签组
+    public TakenGroup:eui.Group;
+    public prizeInfoGroup:eui.Group;
+
+    public notTakenList:eui.List;
+    public haveTakenList:eui.List;
+
+    public scroller:eui.Scroller;
+
+    //无礼品
+    public noPrizeGroup:eui.Group;
+    public noPrizeBtn:eui.Button;
+    public noPrizeLabel:eui.Label;
+
+    //领奖信息
+    public recipients:eui.TextInput;
+    public phoneNum:eui.TextInput;
+    public qqNum:eui.TextInput;
+    public eMail:eui.TextInput;
+    public address:eui.TextInput;
+    //确认
+    public confirmBtn:eui.Button;
+
+	public constructor()
+	{
+		super();
+		this.setGrayMask(false);
+		this.skinName = UISkinName.TextTipsPanel;
+	}
+
+    protected onAwake(event: eui.UIEvent)
+	{
+		super.onAwake(event);
+	}
+	public init(appendData: any)
+	{
+		super.init(appendData);
+	}
+	protected rendererStart(event: egret.Event)
+	{
+		super.rendererStart(event);
+	}
+	protected onEnable(event: eui.UIEvent): void
+	{
+		super.onEnable(event);
+	}
+	protected onDisable(event: eui.UIEvent): void
+	{
+		super.onDisable(event);
+	}
+}

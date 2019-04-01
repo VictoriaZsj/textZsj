@@ -1,0 +1,39 @@
+class BindFriendItemRenderer extends BaseItemRenderer<BindFriendInfo>{
+    public timeLabel: eui.Label;
+    public nameLabel: eui.Label;
+    public isGotRoundLabel: eui.Label;
+    public bgImage: eui.Image;
+    public constructor()
+    {
+        super();
+        this.skinName = UIRendererSkinName.BindFriendItemRenderer;
+    }
+    protected createChildren()
+    {
+        this.dataChanged();
+    }
+    protected dataChanged(): void
+    {
+        super.dataChanged();
+        if (this.data)
+        {
+            let date: Date = new Date(this.bindData.time * 1000);
+            this.timeLabel.text = DateTimeUtil.formatDate(date);
+            this.nameLabel.text = this.bindData.name;
+            if (this.bindData.isRound)
+            {
+                this.isGotRoundLabel.text = "已完成";
+                this.isGotRoundLabel.textColor = 0x419b30;
+            } else
+            {
+                this.isGotRoundLabel.text = "未完成";
+                this.isGotRoundLabel.textColor = 0xffffff;
+            }
+            if (BringCardManager.index % 2)
+            {
+                FilterUtil.setGray(this.bgImage);
+            }
+            BringCardManager.index += 1;
+        }
+    }
+}

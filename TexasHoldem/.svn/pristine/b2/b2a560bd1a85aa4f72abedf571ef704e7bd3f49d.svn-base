@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="cardfaceSkin6" width="113" height="138" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing">
+	<e:Image width="138" height="150" x="-12" y="0" scaleY="1" source="down_chu_png" scaleX="1"/>
+	<e:Image id="maskImg" width="106" height="103" x="4" y="-3" source="bg_page2_png" scale9Grid="11,15,32,13"/>
+    <e:Image id="face" x="58" y="42" scaleX="2.2" scaleY="1.4" anchorOffsetX="24" anchorOffsetY="32" source="w_9_png"/>
+</e:Skin>

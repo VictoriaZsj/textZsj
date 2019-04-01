@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="CommonIconSkin" width="120" height="120" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing">
+	<e:Group width="120" height="120" x="0" y="0">
+		<e:Image id="border" width="120" height="120" x="0" y="0" source="bg_head_png"/>
+		<e:Image id="icon" width="100" height="100" x="10" y="10"/>
+	</e:Group>
+</e:Skin>

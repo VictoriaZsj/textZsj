@@ -1,0 +1,231 @@
+/**
+ * 打牌的玩家头像状态信息
+ */
+class RoomUserHeadInfoComponent extends BaseComponent<PlayerInfo>
+{
+	public headImg: eui.Image;
+	public sexImg: eui.Image;
+	public nameLabel: eui.Label;
+	public scoreLabel: eui.Group;
+	public zhuangImg: eui.Image;
+	public tingpaiImg: eui.Image;
+	public fangZhu: eui.Image;
+
+	public grayBg: eui.Image;
+	private _readyImg: eui.Image;
+	/**
+	 * 托管图片
+	 */
+	private _hostedImg: eui.Component;
+
+	public offlineImg: eui.Image;
+
+	public playRecordImage0: eui.Image;
+	public playRecordImage1: eui.Image;
+	public playRecordImage2: eui.Image;
+	public play: egret.tween.TweenGroup;
+
+	public constructor()
+	{
+		super();
+		this.touchChildren = false;
+		this.skinName = UIComponentSkinName.RoomUserHeadInfoComponent;
+	}
+	private clear()
+	{
+		if (this.bindData)
+		{
+			this.headImg.source = StringConstant.empty;
+			this.nameLabel.text = StringConstant.empty;
+			UIUtil.ShowScoreImg(0, this.scoreLabel, 0.6, 0.6, false);
+			this.sexImg.source = StringConstant.empty;
+			this.zhuangImg.visible = false;
+			this.tingpaiImg.visible = false;
+			this.showReadyImg(false);
+			this.grayBg.height = 58;
+		}
+	}
+	protected createChildren()
+	{
+		super.createChildren();
+	}
+	public init(data: PlayerInfo)
+	{
+		this.clear();
+		this.bindData = data;
+		this.rendererStart(null);
+	}
+	protected rendererStart(event: egret.Event)
+	{
+		super.rendererStart(event);
+		if (event)
+		{
+			this.showPlayRecordState(false);
+		}
+		if (this.bindData)
+		{
+			UIUtil.ShowHead(this.headImg, this.bindData.head);
+			if (this.bindData.name)
+			{
+				this.nameLabel.text = this.bindData.name;
+			}
+			else
+			{
+				this.nameLabel.text = this.bindData.roleId.toString();
+			}
+			if (this.bindData.score < 0)
+			{
+				UIUtil.ShowScoreImg(this.bindData.score, this.scoreLabel, 0.6, 0.6, true);
+			}
+			else
+			{
+				UIUtil.ShowScoreImg(this.bindData.score, this.scoreLabel, 0.6, 0.6, false);
+			}
+			// this.fangZhu.visible = RoomManager.isHost(this.bindData.roleId);
+			this.sexImg.source = UIUtil.getSexImgSource(this.bindData.sex);
+			this.tingpaiImg.visible = this.bindData.isTing;
+			if (this.tingpaiImg.visible)
+			{
+				this.grayBg.height = 90;
+			}
+			else
+			{
+				this.grayBg.height = 58;
+			}
+			this.refreshReadyState();
+			this.refreshZhuang();
+			this.refreshHostedState();
+			this.refreshOfflineState();
+		}
+		else
+		{
+			this.grayBg.height = 58;
+			this.showReadyImg(false);
+			this.showHostedImg(false);
+			this.showOfflineImg(false)
+			this.zhuangImg.visible = false;
+			this.headImg.texture = null;
+			this.sexImg.texture = null;
+			this.nameLabel.text = StringConstant.empty;
+			UIUtil.ShowScoreImg(0, this.scoreLabel, 0.6, 0.6, false);
+			this.tingpaiImg.visible = false;
+			this.fangZhu.visible = false;
+		}
+	}
+	/**
+	 * 刷新准备状态显示
+	 */
+	private refreshReadyState()
+	{
+		if (this._readyImg)
+		{
+			this.showReadyImg(false);
+			// if (GoCardProcessManager.state != GameSceneState.Processing)
+			// {
+			// 	this.showReadyImg(this.bindData.isReady);
+			// }
+		}
+	}
+	/**
+	 * 刷新准备状态显示
+	 */
+	private refreshHostedState()
+	{
+		if (this._hostedImg)
+		{
+			this.showHostedImg(false);
+			// if (GoCardProcessManager.state == GameSceneState.Processing)
+			// {
+			// 	this.showHostedImg(this.bindData.hosted);
+			// }
+		}
+	}
+	private refreshOfflineState()
+	{
+		if (this.offlineImg)
+		{
+			this.offlineImg.visible = this.bindData.offline;
+		}
+	}
+	private showReadyImg(state: boolean)
+	{
+		this._readyImg.visible = state;
+	}
+	private showHostedImg(state: boolean)
+	{
+		this._hostedImg.visible = state;
+	}
+	private showOfflineImg(state: boolean)
+	{
+		if (this.offlineImg)
+		{
+			this.offlineImg.visible = state;
+		}
+	}
+	/**
+	 * 显示播放录音状态 
+	 */
+	public showPlayRecordState(state: boolean)
+	{
+		for (let i: number = 0; i <= 2; i++)
+		{
+			this["playRecordImage" + i.toString()].visible = state;
+			if (state)
+			{
+				this.play.play();
+			}
+			else
+			{
+				this.play.pause();
+			}
+		}
+	}
+	/**
+	 * 刷新庄家标记显示
+	 */
+	public refreshZhuang()
+	{
+		this.zhuangImg.visible = this.bindData.isMaster;
+	}
+	public updateTing()
+	{
+		if (this.bindData && this.tingpaiImg)
+		{
+			this.tingpaiImg.visible = this.bindData.isTing;
+		}
+	}
+	public tingMove(x: number, y: number)
+	{
+		this.move(this.tingpaiImg, x, y);
+	}
+	public setReadyImg(img: eui.Image)
+	{
+		this._readyImg = img;
+	}
+	public setHostedImg(img: eui.UIComponent)
+	{
+		this._hostedImg = img as eui.Component;
+	}
+	private move(target: eui.UIComponent, x: number, y: number)
+	{
+		if (target)
+		{
+			target.x = x;
+			target.y = y;
+		}
+	}
+	public updateScore(score: number)
+	{
+		if (this.bindData && this.scoreLabel)
+		{
+			if (score < 0)
+			{
+				UIUtil.ShowScoreImg(score, this.scoreLabel, 0.6, 0.6, true);
+			}
+			else
+			{
+				UIUtil.ShowScoreImg(score, this.scoreLabel, 0.6, 0.6, false);
+			}
+		}
+	}
+}

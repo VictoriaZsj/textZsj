@@ -1,0 +1,48 @@
+/**
+ * 我的礼物渲染项
+ */
+class MyPrizePanelItemRenderer extends BaseItemRenderer<PrizeInfo>
+{
+    public itemImg:eui.Image//物品图片
+    public itemTitleLabel:eui.Label//物品标题
+    public itemDesLabel//物品描述
+    public takePrizeBtn:eui.Button//领取奖品
+    public takeDesLabel:eui.Label//奖品状态
+
+    public constructor()
+	{
+		super();
+		this.skinName = UIRendererSkinName.MyPrizePanelItemRenderer;
+	}
+    protected createChildren()
+	{
+		this.dataChanged();
+	}
+    protected dataChanged(): void
+	{
+        super.dataChanged();
+        if(this.bindData)
+        {
+            this.itemImg.source = this.bindData.definition.img;
+            this.itemTitleLabel.text = this.bindData.definition.name;
+            this.itemDesLabel.text = this.bindData.definition.des;
+            this.takePrizeBtn.addEventListener(egret.TouchEvent.TOUCH_TAP,this.onTakePrize,this);
+            this.addEventListener(egret.Event.REMOVED_FROM_STAGE,this.onDisable,this);
+            this.takeDesLabel.text = this.bindData.prizeStatus;
+        }
+    }
+
+    //领取礼物
+    private onTakePrize()
+    {
+
+    }
+    private onDisable(event: egret.Event)
+    {
+        this.removeEventListener(egret.Event.REMOVED_FROM_STAGE, this.onDisable, this);
+		if (this.takePrizeBtn)
+		{
+			this.takePrizeBtn.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.onTakePrize, this);
+		}
+    }
+}

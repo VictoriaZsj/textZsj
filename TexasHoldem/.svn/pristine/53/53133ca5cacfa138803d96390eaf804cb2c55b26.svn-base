@@ -1,0 +1,77 @@
+/**
+ * 战绩信息面板
+ */
+class RoundInfoPanel extends BaseAnmiatePanel    
+{
+	public noneGroup: eui.Group;
+	public listGroup: eui.List;
+	public listScroller: eui.Scroller;
+	private _ly: eui.TileLayout;
+	public constructor()
+	{
+		super();
+		this.skinName = UISkinName.RoundInfoPanel;
+	}
+	protected onAwake(event: eui.UIEvent)
+	{
+		this._ly = UIUtil.getVTileLayout(5);
+		this.listGroup.layout = this._ly;
+		this.noneGroup.visible = false;
+		UIUtil.listRenderer(this.listGroup, this.listScroller, RoundUserListItemRenderer, ScrollViewDirection.Vertical_T_D, eui.ScrollPolicy.ON, null, true);
+		super.onAwake(event);
+	}
+	public init(appendData: any)
+	{
+		super.init(appendData);
+		this.listScroller.stopAnimation();
+	}
+	protected onRender(event: egret.Event)
+	{
+		UIManager.showPanel(UIModuleName.LoadingPanel);
+		this.listScroller.visible = false;
+		if (this.isEnterOver)
+		{
+			this.refreshUI();
+		}
+		super.onRender(event);
+	}
+	protected onEnterAnmComplete()
+	{
+		if (this.isLoadComplete)
+		{
+			this.refreshUI();
+		}
+		super.onEnterAnmComplete();
+	}
+	protected onEnable(event: eui.UIEvent): void
+	{
+		super.onEnable(event);
+		UIUtil.hideScrollerBar(this.listScroller);
+	}
+	protected onDisable(event: eui.UIEvent): void
+	{
+		super.onDisable(event);
+		if (this.listScroller)
+		{
+			this.listScroller.stopAnimation();
+		}
+	}
+	private refreshUI()
+	{
+		// this.listScroller.visible = true;
+		// let list: Array<RoundSplitInfo> = UserManager.roundInfoList;
+		// if (list)
+		// {
+		// 	this.noneGroup.visible = list.length <= 0;
+		// }
+		// this.listGroup.dataProvider = new eui.ArrayCollection(list);
+		// this.listGroup.visible = this.listScroller.visible = !this.noneGroup.visible;
+		// this.listScroller.viewport.scrollV = 0;
+
+		UIManager.closePanel(UIModuleName.LoadingPanel);
+	}
+	private showRoundDetials()
+	{
+		UIManager.showPanel(UIModuleName.RoundDetialsPanel);
+	}
+}

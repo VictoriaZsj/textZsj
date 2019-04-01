@@ -1,0 +1,117 @@
+class UnixTime{
+      /**
+     *
+     * @param date
+     * @param format
+     * @param tpl
+     * @returns {string}
+     */
+    private static baseDateFormat(date:Date, format:string, tpl:Object):string
+    {
+        if (/(y+)/i.test(format))
+        {
+            format = format.replace(RegExp.$1, (date.getFullYear() + '').substr(4 - RegExp.$1.length));
+        }
+        for (let k in tpl)
+        {
+            if (new RegExp("(" + k + ")").test(format))
+            {
+                format = format.replace(RegExp.$1, RegExp.$1.length === 1 ? tpl[k] : ("00" + tpl[k]).substr(("" + tpl[k]).length));
+            }
+        }
+        return format;
+    }
+     /**
+     * 把Date对象格式化为yyyy-MM-dd h:m:s格式的日期时间
+     * @param date
+     * @param format
+     * @returns {string}
+     */
+    public static formatDate(date:Date, format:string):string
+    {
+        if(!date)
+        {
+            date = new Date();
+        }
+        if(!format)
+        {
+            format = 'yyyy-MM-dd hh:mm:ss';
+        }
+        let tpl:Object= {
+            'M+': date.getMonth() + 1,
+            'd+': date.getDate(),
+            'h+': date.getHours(),
+            'm+': date.getMinutes(),
+            's+': date.getSeconds(),
+            'q+': Math.floor((date.getMonth() + 3) / 3),
+            'S+': date.getMilliseconds()
+        };
+        return this.baseDateFormat(date, format, tpl);
+    };
+    
+     /**
+     * 返回前后指定日开始的日期时间，默认今天
+     * @param day
+     * @returns {string}
+     */
+    public static toDayStart (day:number):string
+    {
+        if(!day)
+        {
+            day = 0;
+        }
+        let date:Date= new Date();
+        date.setDate(date.getDate() + day);
+        let format :string= 'yyyy-MM-dd 00:00:00';
+        let tpl:Object= {
+            'M+': date.getMonth() + 1, 'd+': date.getDate(), 'q+': Math.floor((date.getMonth() + 3) / 3)};
+        return this.baseDateFormat(date, format, tpl);
+    };
+    /**
+     * 返回前后指定日结束的日期时间，默认今天
+     * @param day
+     * @returns {string}
+     */
+    public static toDayEnd (day:number):string
+    {
+        if(!day)
+        {
+            day = 0;
+        }
+        let date :Date= new Date();
+        date.setDate(date.getDate() + day);
+        let format:string = 'yyyy-MM-dd 23:59:59';
+        let tpl:Object = {'M+': date.getMonth() + 1, 'd+': date.getDate(), 'q+': Math.floor((date.getMonth() + 3) / 3)};
+        return this. baseDateFormat(date, format, tpl);
+    };
+    /**
+     * 把时间戳（秒）格式化为yyyy-MM-dd h:m:s格式的日期时间
+     * @param timestamp
+     * @param format
+     * @returns {string}
+     */
+    public static formatTimestamp (timestamp:number, format:string):string
+    {
+        let date:Date = new Date();
+        date.setTime(timestamp * 1000);
+        return this.formatDate(date, format);
+    };
+    /**
+     * 把yyyy-MM-dd h:m:s格式的日期时间转为时间戳(秒)
+     * @param unixTime
+     * @returns {number}
+     */
+    public static toTimestamp (unixTime):number
+    {
+        if(typeof unixTime === 'string')
+        {
+            let date:Date = new Date(unixTime);
+            let dateString:string=String(date);
+            return parseInt(String(Date.parse(dateString)/1000));
+        }
+        else
+        {
+            return parseInt(String(Date.now()/1000));
+        }
+    }; 
+}

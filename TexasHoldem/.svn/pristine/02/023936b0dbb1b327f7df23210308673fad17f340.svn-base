@@ -1,0 +1,151 @@
+/**
+ * 排行榜管理
+ */
+class RankManager
+{
+    /**
+     * 上次排行榜列表
+     */
+    public static lastRankList: Array<RankInfo> = new Array<RankInfo>();
+    /**
+     * 本次排行榜列表
+     */
+    public static currentRankList: Array<RankInfo> = new Array<RankInfo>();
+    /**
+    * 重置数据
+    */
+    public static reset()
+    {
+        ArrayUtil.Clear(RankManager.lastRankList);
+        ArrayUtil.Clear(RankManager.currentRankList);
+    }
+
+    /**
+     * 拉取排行榜列表
+     */
+    public static reqRankList(type: number, isGetMyRank: number = 1)
+    {
+        SocketManager.Send(Command.Req_RankList_3110, { "type": type }, RankManager.onGetRankList, null, this);
+    }
+
+    public static onGetRankList(result: SpRpcResult)
+    {
+        RankManager.initialize(result);
+        RankManager.getRankListEvent.dispatch();
+    }
+
+    public static initialize(result: SpRpcResult)
+    {
+        RankManager.lastRankList = RankManager.currentRankList;
+        RankManager.currentRankList = new Array<RankInfo>();
+        if (result.data["rankList"])
+        {
+            for (let def of result.data["rankList"])
+            {
+                let rank: RankInfo = new RankInfo();
+                rank.copyValueFrom(def);
+                RankManager.currentRankList.push(rank);
+            }
+        }
+        if (RankManager.lastRankList && RankManager.lastRankList.length > 0)
+        {
+            for (let rank of RankManager.currentRankList)
+            {
+                rank.lastRank = RankManager.getRankOfLastRank(rank);
+            }
+        }
+    }
+
+    /**
+     * 获取上次的排名（未上榜则返回 0）
+     */
+    public static getRankOfLastRank(rank: RankInfo): number
+    {
+        for (let lastRank of RankManager.lastRankList)
+        {
+            if (rank.roleId == lastRank.roleId)
+            {
+                return lastRank.rank;
+            }
+        }
+        return 0;
+    }
+    /**
+     * 获取排名描述
+     */
+    public static getRankDes(rank: number, suffix?: boolean): string
+    {
+        let result: string = StringConstant.empty;
+        switch (rank)
+        {
+            case 1:
+                result += "冠";
+                break;
+            case 2:
+                result += "亚";
+                break;
+            case 3:
+                result += "季";
+                break;
+            default:
+                return rank.toString();
+        }
+        if (suffix)
+        {
+            result += "军";
+        }
+        return result;
+    }
+    /**
+     * 拉取排行榜事件
+     */
+    public static getRankListEvent: ActionDispatcher = new ActionDispatcher();
+}
+
+class RankInfo extends BaseServerValueInfo
+{
+    public reset()
+    {
+
+    }
+    /**
+     * id
+     */
+    public roleId: number;
+    /**
+     * 昵称
+     */
+    public name: string;
+    /**
+    * 排行榜数值
+    */
+    public score: number;
+    /**
+     * 排行
+     */
+    public rank: number;
+    /**
+     * 上次排行
+     */
+    public lastRank: number;
+    /**
+    * 头像地址
+    */
+    public head: string;
+}
+
+enum RankName
+{
+    /**
+     * 冠军
+     */
+    Champion = 1,
+    /**
+     * 亚军
+     */
+    Runnerup = 2,
+    /**
+     * 季军
+     */
+    Third = 3
+}

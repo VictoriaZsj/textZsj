@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="ChampionshipRankItemRendererSkin" width="600" height="90" xmlns:ns1="*"
+        xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing">
+    <e:Image id="bgImg" width="600" height="90" anchorOffsetX="0" anchorOffsetY="0" source="bg_page19_3_png" y="0"
+             scale9Grid="10,9,276,25" />
+    <e:Image id="headImg" width="80" height="80" x="80" y="5" source="fangka_png" />
+    <e:Label id="rankLabel" text="冠" x="13" y="30" height="30" width="50" size="24"  textAlign="center" verticalAlign="middle"/>
+    <e:Label id="nameLabel" text="用户名字" x="170" y="30" height="30" width="200" size="24" textAlign="center"  verticalAlign="middle"/>
+    <e:Label id="numLabel" text="999999" x="370" y="30" height="30" width="200" size="24" textAlign="center"  verticalAlign="middle"/>
+</e:Skin>

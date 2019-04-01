@@ -1,0 +1,82 @@
+/**
+ * 房间解散信息面板
+ */
+class RoomDisbandInfoPanel extends BasePanel
+{
+	public timeLabel: eui.Label;
+	public infoLabel: eui.Label;
+	public headLabel: eui.Label;
+
+	public constructor()
+	{
+		super();
+		this.layer = UILayerType.Tips;
+		this.skinName = UISkinName.RoomDisbandInfoPanel;
+	}
+	protected onAwake(event: eui.UIEvent)
+	{
+		super.onAwake(event);
+	}
+	public init(appendData: any)
+	{
+		super.init(appendData);
+	}
+	public refreshPanel()
+	{
+		this.rendererStart(null);
+	}
+	protected rendererStart(event: egret.Event)
+	{
+		super.rendererStart(event);
+
+		let str: string = StringConstant.empty;
+		let reqStr: string;
+		if (RoomManager.roomInfo && RoomManager.roomInfo.playerList)
+		{
+			let pInfo: PlayerInfo;
+			for (let i: number = 0; i < RoomManager.roomInfo.playerList.length; i++)
+			{
+				pInfo = RoomManager.roomInfo.playerList[i];
+				switch (pInfo.quit)
+				{
+					case RoomQuitState.Wait:
+						str += pInfo.name + "等待选择\n";
+						break;
+					case RoomQuitState.ReqQuit:
+						reqStr = pInfo.name;
+						break;
+					case RoomQuitState.Refuse:
+						str += pInfo.name + "已拒绝\n";
+						break;
+					case RoomQuitState.Argree:
+						str += pInfo.name + "已同意\n";
+						break;
+				}
+			}
+		}
+		let waitTime: number = ProjectDefined.GetInstance().getValue(ProjectDefined.waitDisbandTime);
+		let min: number = Math.ceil(waitTime / 60);
+		this.headLabel.text = "玩家" + reqStr + "申请解散房间，请等待其他玩家选择(超过" + min + "分钟未做选择，则默认同意)";
+		this.infoLabel.text = str;
+		this.showTime();
+	}
+	private showTime()
+	{
+		let str: string = RoomManager.remainTimeStr;
+		this.timeLabel.text = str;
+		if (!str)
+		{
+			this.onCloseBtnClickHandler(null); //倒计时结束关闭界面
+		}
+	}
+	protected onEnable(event: eui.UIEvent): void
+	{
+		super.onEnable(event);
+		Tick.getInstance().AddSecondsInvoke(this.showTime, this);
+	}
+	protected onDisable(event: eui.UIEvent): void
+	{
+		super.onDisable(event);
+		Tick.getInstance().RemoveSecondsInvoke(this.showTime);
+	}
+}

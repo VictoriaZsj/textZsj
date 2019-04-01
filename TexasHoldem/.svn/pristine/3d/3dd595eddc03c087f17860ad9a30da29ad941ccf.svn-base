@@ -1,0 +1,115 @@
+/**
+ *商城管理
+ */
+class ShoppingManager
+{
+    public static shoppingList:Array<ShoppingInfo> = new Array<ShoppingInfo>();
+	public static goldList:Array<ShoppingInfo> = new Array<ShoppingInfo>();
+	public static diamondList:Array<ShoppingInfo> = new Array<ShoppingInfo>();
+	public static vipList:Array<ShoppingInfo>=new Array<ShoppingInfo>();
+	public static buyOverAction: ActionDispatcher = new ActionDispatcher();
+
+	public static initialize()
+	{
+		ArrayUtil.Clear(ShoppingManager.shoppingList);
+		let def: ShoppingInfo;
+		for (let i: number = 0; i < ShoppingDefined.GetInstance().shoppingList.length; i++)
+		{		
+			def=new ShoppingInfo();	 
+			def.id = ShoppingDefined.GetInstance().shoppingList[i].id;
+			if (def.definition.type==itemType.gold){
+				ShoppingManager.goldList.push(def); 
+			}
+			else if(def.definition.type==itemType.diamond)
+			{
+				ShoppingManager.diamondList.push(def);
+			}
+			else if(def.definition.type==itemType.vip)
+			{
+				ShoppingManager.vipList.push(def);
+			}	
+		}
+	}
+	/**
+	 * 向服务器抛送订单
+	*/
+	public static reqShopping(awardId:number)
+	{
+		let callBack:Function=function (result: SpRpcResult)
+		{
+			SocketManager.RemoveCommandListener(Command.Exchange_3113, callBack);
+			ShoppingManager.buyOverAction.dispatch();//协议发送后抛出买完事件
+			UIManager.showFloatTips("购买成功了,订单已发送");
+
+			let goSavePanel:Function=function()
+			{
+				UIManager.showPanel(UIModuleName.SavePanel);
+			}
+			if(awardId>100&&awardId<104)//如果购买的是VIP
+			{
+				if(!UserManager.userInfo.isSafePwd)
+				{
+				AlertManager.showSingleAlert("您开通了VIP，保险箱以为您免费开放，请尽快设定您的保险箱密码!",goSavePanel)
+				}
+			}
+
+		}
+		//todo
+		SocketManager.AddCommandListener(Command.Exchange_3113, callBack);
+		SocketManager.Send(Command.Exchange_3113, { "Id": awardId });
+	}
+	/**
+	 * 情况列表
+	*/
+    public static clearList()
+    {
+        ArrayUtil.Clear(ShoppingManager.diamondList);
+		ArrayUtil.Clear(ShoppingManager.goldList);
+		ArrayUtil.Clear(ShoppingManager.vipList);
+    }
+}
+
+class ShoppingInfo 
+{
+	private _id: number = 0;
+	public get id(): number
+	{
+		return this._id;
+	}
+	public set id(value: number)
+	{
+		this._id = value;
+		this._definition = ShoppingDefined.GetInstance().getDefinition(value, ShoppingDefined.GetInstance().shoppingList);
+	}		
+	private _definition: ShoppingDefinition
+	public get definition(): ShoppingDefinition
+	{
+		return this._definition;
+	}
+	public set definition(value: ShoppingDefinition)
+	{
+		this._definition = value;
+	}
+}
+class ShoppingVipInfo
+{
+	private _id: number = 0;
+	public get id(): number
+	{
+		return this._id;
+	}
+	public set id(value: number)
+	{
+		this._id = value;
+		this._definition = AwardDefined.GetInstance().getAwardDefinition(this._id);
+	}	
+	private _definition: AwardDefinition
+	public get definition(): AwardDefinition
+	{
+		return this._definition;
+	}
+	public set definition(value: AwardDefinition)
+	{
+		this._definition = value;
+	}	
+}

@@ -1,0 +1,43 @@
+/**
+ * 委托
+ */
+class Delegate
+{
+	public method: Function;
+	public target: any;
+
+	public constructor(method: Function, target: any)
+	{
+		this.method = method;
+		this.target = target;
+	}
+	/**
+	 * 是否相等
+	 */
+	public equals(obj:Delegate)
+	{
+		if(obj != null)
+		{
+			if(this.method == obj.method && this.target == obj.target)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	/**
+	 * 是否相等
+	 */
+	public equals2(method: Function, target: any)
+	{
+		if(this.method == method && this.target == target)
+		{
+			return true;
+		}
+		return false;
+	}
+	public invoke(params?: any)
+	{
+		FuncUtil.invoke(this.method, this.target, params);
+	}
+}

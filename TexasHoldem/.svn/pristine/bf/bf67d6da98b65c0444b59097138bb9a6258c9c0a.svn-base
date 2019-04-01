@@ -1,0 +1,168 @@
+/**
+ * 聊天面板
+*/
+class MyAwardPanel extends BasePanel
+{
+    private nameLabel: eui.Label;
+    private telLabel: eui.Label;
+    private qqLabel: eui.Label;
+    private emailLabel: eui.Label;
+    private addressLabel: eui.Label;
+    private notReceiveGroup: eui.Group;
+    private hasReceiveGroup: eui.Group;
+    private receiveAwardInfoGroup: eui.Group;
+    private enAwardGroup: eui.Group;
+    private enHasReceiveGroup: eui.Group;
+    private disAwardGroup: eui.Group;
+    private disHasReceiveGroup: eui.Group;
+    private notReceiveList: eui.List;
+    private hasReceiveList: eui.List;
+    private notReceiveScroller: eui.Scroller;
+    private hasReceiveScroller: eui.Scroller;
+    private tabComponent: TabComponent;
+    /**
+     * 参加锦标赛按钮
+    */
+    private joinChampionshipsBtn: eui.Button;
+    /**
+     * 保存按钮
+    */
+    private saveBtn: eui.Button;
+
+    public constructor()
+    {
+        super();
+        this.skinName = UISkinName.MyAwardPanel;
+    }
+    protected onAwake(event: eui.UIEvent)
+    {
+        super.onAwake(event);
+        UIUtil.listRenderer(this.notReceiveList, this.notReceiveScroller, MyAwardPanelItemRenderer, ScrollViewDirection.Vertical_T_D, eui.ScrollPolicy.ON, null, true);
+        UIUtil.listRenderer(this.hasReceiveList, this.hasReceiveScroller, MyAwardPanelItemRenderer, ScrollViewDirection.Vertical_T_D, eui.ScrollPolicy.ON, null, true);
+        this.notReceiveScroller.scrollPolicyH = this.hasReceiveScroller.scrollPolicyH = eui.ScrollPolicy.OFF;
+        this.disAwardGroup.visible = this.enAwardGroup.visible = this.disHasReceiveGroup.visible = false;
+        this.nameLabel.type = this.telLabel.type = this.qqLabel.type = this.emailLabel.type = this.addressLabel.type = egret.TextFieldType.INPUT;
+        let array: Array<eui.Group> = new Array<eui.Group>();
+        array.push(this.notReceiveGroup);
+        array.push(this.hasReceiveGroup);
+        array.push(this.receiveAwardInfoGroup);
+        this.tabComponent.init(array);
+    }
+    protected onRender(event: egret.Event)
+    {
+        super.onRender(event);
+        //发送获得我的奖品列表信息的请求
+        // MyAwardManager.reqGetAwardList();
+        this.setAwardListInfo();  //todo 测试代码
+    }
+    protected onEnable(event: eui.UIEvent): void
+    {
+        super.onEnable(event);
+        MyAwardManager.onGetAwardListEvent.addListener(this.setAwardListInfo, this);
+        this.tabComponent.tabBar.addEventListener(eui.ItemTapEvent.ITEM_TAP, this.onTabClickHandler, this);
+        this.saveBtn.addEventListener(egret.TouchEvent.TOUCH_TAP, this.onSaveBtnClick, this);
+    }
+    protected onDisable(event: eui.UIEvent): void
+    {
+        super.onDisable(event);
+        MyAwardManager.onGetAwardListEvent.removeListener(this.setAwardListInfo);
+        this.tabComponent.tabBar.removeEventListener(eui.ItemTapEvent.ITEM_TAP, this.onTabClickHandler, this);
+        this.saveBtn.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.onSaveBtnClick, this);
+    }
+    /**
+     * 选项卡按钮点击事件
+    */
+    private onTabClickHandler(e: eui.ItemTapEvent): void
+    {
+        if (e.itemIndex == 0)
+        {
+            //发送请求更新未领取奖品列表
+            // MyAwardManager.reqGetAwardList();
+            this.setAwardListInfo();  //todo 测试代码
+        } else if (e.itemIndex == 1)
+        {
+            if (MyAwardManager.hasReceiveList.length > 0)
+            {
+                MyAwardManager.renderFlag = 2;
+                this.hasReceiveList.dataProvider = new eui.ArrayCollection(MyAwardManager.hasReceiveList);
+                this.enHasReceiveGroup.visible = true;
+                this.disHasReceiveGroup.visible = false;
+            } else
+            {
+                this.enHasReceiveGroup.visible = false;
+                this.disHasReceiveGroup.visible = true;
+            }
+        } else if (e.itemIndex == 2)
+        {
+            this.nameLabel.text = UserManager.userInfo.addressName;
+            this.telLabel.text = UserManager.userInfo.phoneNum;
+            this.qqLabel.text = UserManager.userInfo.qqNum;
+            this.emailLabel.text = UserManager.userInfo.address;
+        }
+    }
+    /**
+     * 领奖信息保存
+    */
+    private onSaveBtnClick(event: egret.TouchEvent)
+    {
+        SoundManager.playButtonEffect(event);
+        if (this.nameLabel.text || this.telLabel.text || this.qqLabel.text || this.emailLabel.text)
+        {
+            if (this.nameLabel.text.trim() == UserManager.userInfo.addressName && this.telLabel.text.trim() == UserManager.userInfo.phoneNum && this.qqLabel.text.trim() == UserManager.userInfo.qqNum && this.emailLabel.text.trim() == UserManager.userInfo.address)
+            {
+                return;
+            } else
+            {
+                //发送保存请求  
+                MyAwardManager.reqSaveInfo(this.nameLabel.text.trim(), parseInt(this.telLabel.text.trim()), parseInt(this.qqLabel.text.trim()), this.emailLabel.text.trim(), this.addressLabel.text.trim());
+            }
+        } else
+        {
+            UIManager.showFloatTips("领奖信息必须填写完整！");
+        }
+    }
+    /**
+     * 设置未领取奖品列表信息
+    */
+    private setAwardListInfo()
+    {
+        //todo 测试代码
+        if (!MyAwardManager.notReceiveList)
+        {
+            MyAwardManager.notReceiveList = new Array<AwardInfo>();
+        }
+        if (!MyAwardManager.hasReceiveList)
+        {
+            MyAwardManager.hasReceiveList = new Array<AwardInfo>();
+        }
+        MyAwardManager.hasReceiveList = [];
+        MyAwardManager.notReceiveList = [];
+        let arr1: AwardInfo = new AwardInfo();
+        arr1.id = 1;
+        arr1.name = "100元话费";
+        arr1.state = MyAwardState.NotReceive;
+        let arr2: AwardInfo = new AwardInfo();
+        arr2.id = 2;
+        arr2.name = "100元话费";
+        arr2.state = MyAwardState.NotReceive;
+        let arr3: AwardInfo = new AwardInfo();
+        arr3.id = 3;
+        arr3.name = "10元话费";
+        arr3.des = "可兑换10元话费";
+        arr3.effectType = 3;
+        arr3.state = MyAwardState.Underway;
+        MyAwardManager.notReceiveList.push(arr1);
+        MyAwardManager.notReceiveList.push(arr2);
+        MyAwardManager.hasReceiveList.push(arr3);
+        //
+        if (MyAwardManager.notReceiveList.length > 0)
+        {
+            MyAwardManager.renderFlag = 1;
+            this.enAwardGroup.visible = true;
+            this.notReceiveList.dataProvider = new eui.ArrayCollection(MyAwardManager.notReceiveList);
+        } else
+        {
+            this.disAwardGroup.visible = true;
+        }
+    }
+}

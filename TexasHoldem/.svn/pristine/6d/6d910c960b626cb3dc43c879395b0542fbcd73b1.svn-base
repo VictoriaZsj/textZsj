@@ -1,0 +1,29 @@
+/**
+ * 委托
+ */
+class Delegate
+{
+	public func: Function;
+	public thisObject: any;
+
+	public constructor(func: Function, thisObject: any)
+	{
+		this.func = func;
+		this.thisObject = thisObject;
+	}
+	public equals(obj:Delegate)
+	{
+		if(obj != null)
+		{
+			if(this.func == obj.func && this.thisObject == obj.thisObject)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	public invoke(params?: any)
+	{
+		FuncUtil.invoke(this.func, this.thisObject, params);
+	}
+}

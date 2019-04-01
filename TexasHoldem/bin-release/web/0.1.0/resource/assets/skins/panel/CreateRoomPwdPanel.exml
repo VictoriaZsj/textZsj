@@ -1,0 +1,17 @@
+<e:Skin class="panelSkin13" width="720" height="336" xmlns:e="http://ns.egret.com/eui"
+        xmlns:w="http://ns.egret.com/wing" xmlns:ns1="*">
+	<e:Group id="tweenGroup" width="720" height="341" anchorOffsetY="0" x="0" y="0">
+		<e:Group id="privateRoomGroup" width="616" height="319" anchorOffsetX="0" anchorOffsetY="0" x="52" y="9">
+			<e:Image width="593" height="308" source="bg_page17_png" scale9Grid="22,16,140,46" x="11.5" y="9" anchorOffsetY="0"/>
+			<e:Label text="创建私人房间" x="24" y="26"/>
+			<ns1:GameButton id="closeButton" label="Button" skinName="buttonSkin4" x="533.5" y="10"/>
+			<e:Label text="请输入私人房密码" x="138" y="68" anchorOffsetX="0" width="364" anchorOffsetY="0" height="52" verticalAlign="middle" textAlign="center"/>
+			<e:Group id="labelGroup" anchorOffsetX="0" width="531" anchorOffsetY="0" height="67" horizontalCenter="0.5" verticalCenter="39">
+			<e:layout>
+				<e:HorizontalLayout gap="22"/>
+			</e:layout>
+			</e:Group>
+			<e:Button id="createBtn" label="Button" x="192" y="245" scaleX="0.8" scaleY="0.8"/>
+		</e:Group>
+	</e:Group>
+</e:Skin>

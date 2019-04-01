@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="GamblingHeadComponentSkin" width="98" height="178" xmlns:e="http://ns.egret.com/eui" xmlns:ns1="*" xmlns:w="http://ns.egret.com/wing">
+    <e:Image width="100%" height="100%" anchorOffsetY="0"
+              scale9Grid="10,10,122,123" horizontalCenter="0" verticalCenter="0" anchorOffsetX="0" source="bg_page4_2_png"/>
+    <ns1:CommonIcon id="headIcon" width="120.21" height="117.39" skinName="CommonIconSkin" scaleX="0.71"
+                    scaleY="0.71"  anchorOffsetX="0" anchorOffsetY="0" horizontalCenter="0" verticalCenter="0"/>
+	<e:Scroller id="holdCardScroller" width="86.25" height="34" horizontalCenter="0" verticalCenter="27" anchorOffsetY="0" anchorOffsetX="0">
+		<e:Group anchorOffsetY="0" x="-1.75" y="0" anchorOffsetX="0">
+		<e:Image id="leftCard1" source="pai_bg2_png" anchorOffsetY="0" anchorOffsetX="0" scaleY="0.3" scaleX="0.3" y="12" x="-0.4"/>
+		<e:Image id="leftCard2" source="pai_bg2_png" anchorOffsetY="0" anchorOffsetX="0" scaleY="0.3" scaleX="0.3" x="3.6" y="17"/>
+		<e:Image id="rightCard1" source="pai_bg2_png" anchorOffsetY="0" anchorOffsetX="0" scaleY="0.3" scaleX="0.3" x="59.5" y="12"/>
+		<e:Image id="rightCard2" source="pai_bg2_png" anchorOffsetY="0" anchorOffsetX="0" scaleY="0.3" scaleX="0.3" x="55.2" y="17"/>
+		</e:Group>
+	</e:Scroller>
+	<e:Group id="vipGroup" horizontalCenter="0" verticalCenter="-32" anchorOffsetY="0" height="21.33">
+		<e:Image width="40.67" height="20" horizontalCenter="24" verticalCenter="0" source="bg_page17_png" anchorOffsetX="0"/>
+		<e:Label id="vipLabel" text="1111" size="20" textAlign="center" fontFamily="SimHei" textColor="0xff4c00" scaleX="1" scaleY="1" horizontalCenter="21" verticalCenter="0"/>
+	</e:Group>
+    <e:Label id="infoLabel" text="hello" size="20" textAlign="center" fontFamily="SimHei"
+             horizontalCenter="0" verticalCenter="-57"  textColor="0xffca00"/>
+	<e:Label id="chipsLabel" text="11111" size="20" textAlign="center" fontFamily="SimHei" horizontalCenter="0" verticalCenter="58" textColor="0xffca00"/>
+	<e:Label id="chipsAnimLabel" text="1111" size="20" textAlign="center" fontFamily="SimHei" horizontalCenter="-2.5" verticalCenter="-80" textColor="0xffca00"/>
+	<e:Image id="winEffectImg" width="84" height="140" anchorOffsetY="0" scale9Grid="10,10,122,123" horizontalCenter="0" verticalCenter="0" anchorOffsetX="0" source="Effect_1_png"/>
+	<ns1:CardFaceComponent id="cardFace1" skinName="CardFaceComponentSkin" horizontalCenter="-13" verticalCenter="0" scaleX="0.8" scaleY="0.8" locked="true"/>
+	<ns1:CardFaceComponent id="cardFace2" skinName="CardFaceComponentSkin" horizontalCenter="12" verticalCenter="0" scaleX="0.8" scaleY="0.8" locked="true"/>
+	<e:Image id="maskImg" width="100%" height="100%" anchorOffsetY="0" horizontalCenter="0" verticalCenter="-10" anchorOffsetX="0" source="pai_bg1_png" scale9Grid="10,8,69,101"/>
+	<e:Image id="cdImg" width="100%" height="100%" horizontalCenter="0" verticalCenter="0" source="pai_bg_png" scale9Grid="10,8,68,96"/>
+	<e:Image id="foldBackCard" source="pai_bg2_png" anchorOffsetY="0" anchorOffsetX="0" scaleY="0.5" scaleX="0.5" horizontalCenter="0" verticalCenter="0" locked="true"/>
+	<ns1:GamblingCdComponent id="cdComponent" skinName="ActionCdComponentSkin" anchorOffsetY="0" anchorOffsetX="0" scaleY="0.5" scaleX="0.5" horizontalCenter="0" verticalCenter="0" width="100%" height="100%"/>
+	<e:Image id="sitDown" anchorOffsetY="0" anchorOffsetX="0" scaleY="0.5" scaleX="0.5" horizontalCenter="0" verticalCenter="0" width="100%" height="100%" source="bg_page28_png"/>
+</e:Skin>

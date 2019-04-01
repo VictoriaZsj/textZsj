@@ -1,0 +1,82 @@
+/**
+ * 用户信息
+ */
+class UserInfo extends BaseServerValueInfo
+{
+	public reset()
+	{
+		this._card = 0;
+		this.cardLogList = new Array<CardLogInfo>();
+		this._weiXinInfo = new WeiXinInfo();
+	}
+	private _weiXinInfo: WeiXinInfo = new WeiXinInfo();
+	public get weiXinInfo(): WeiXinInfo
+	{
+		return this._weiXinInfo;
+	}
+	private _card: number;
+	public set card(value: number)
+	{
+		this._card = value;
+	}
+	public get card(): number
+	{
+		return this._card
+	}
+	public cardLogList: Array<CardLogInfo>;
+	/**
+	 * 服务器时间戳
+	 */
+	public timestamp: number;
+	/**
+	 * 时区
+	 */
+	public timezone: number;
+	/**
+	 * 角色ID
+	 */
+	public roleId: number;
+	/**
+	 * 昵称
+	 */
+	public name: string;
+	/**
+	 * 头像
+	 */
+	public head: string;
+	/**
+	 * 性别
+	 */
+	public sex: number;
+	/**
+	 * 等级
+	 */
+	public level: number;
+	/**
+	 * 总经验值
+	 */
+	public exp: number;
+	/**
+	 * ip
+	 */
+	public ip: string;
+}
+/**
+ * 微信登录信息
+ */
+class WeiXinInfo
+{
+	public headImg: string;
+	public name: string;
+	public id: number;
+	public ipAdress: string;
+	public sex: number;
+}
+/**
+ * 购买卡牌信息
+ */
+class CardLogInfo
+{
+	public price: number;
+	public count: number;
+}

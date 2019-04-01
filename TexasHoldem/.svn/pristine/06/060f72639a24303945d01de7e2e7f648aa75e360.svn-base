@@ -1,0 +1,16 @@
+<e:Skin class="panelSkin13" width="720" height="1280" xmlns:e="http://ns.egret.com/eui"
+        xmlns:w="http://ns.egret.com/wing" xmlns:ns1="*">
+	<e:Group id="tweenGroup" width="720" height="1280" anchorOffsetY="0" x="0" y="0">
+		<e:Group id="privateRoomGroup" width="640" height="732" anchorOffsetX="0" anchorOffsetY="0" y="40" horizontalCenter="0">
+			<e:Image width="640" height="733.33" source="bg_page17_png" scale9Grid="22,16,140,46" anchorOffsetY="0"/>
+			<e:Label text="每日签到" x="24" y="26"/>
+			<ns1:GameButton id="closeButton" label="Button" skinName="buttonSkin4" x="569" y="0"/>
+			<e:Label text="每周累计签到到达指定天数，即可获得相应奖励" y="64" anchorOffsetX="0" width="476" anchorOffsetY="0" height="40" verticalAlign="middle" textAlign="center" horizontalCenter="0" size="18" textColor="0xffcf70"/>
+			<e:List id="maxCarryList" width="605" height="537" y="145" anchorOffsetX="0" anchorOffsetY="0" horizontalCenter="0.5">
+				<e:layout>
+					<e:VerticalLayout verticalAlign="top" horizontalAlign="center" gap="10"/>
+				</e:layout>
+			</e:List>
+		</e:Group>
+	</e:Group>
+</e:Skin>

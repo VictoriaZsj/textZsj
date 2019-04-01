@@ -1,0 +1,114 @@
+/**
+ * 时间管理
+ */
+class TimeManager
+{
+	private static _serverTimestamp: number = 0;//utc时间，当前服务器时间
+	private static _loginTimestamp: number = 0;//utc时间，登录的服务器时间
+	private static _timeZone: number;//服务器的时区差值(秒)
+	private static _serverSyncDateTime: Date;//utc时间，客户端同步服务器记录时间
+	/**
+	 * 零点重置事件
+	 */
+	public static resetTime0Event: DelegateDispatcher = new DelegateDispatcher();
+	/**
+	 * 1970UTC
+	 */
+	public static readonly Utc1970: Date = new Date(1970, 0, 1, 0, 0, 0, 0);
+	public static initialize(data: any)
+	{
+		if (data)
+		{
+			TimeManager._timeZone = 0;
+
+			if (data["timezone"])
+			{
+				TimeManager._timeZone = data["timezone"] * 1000;
+			}
+			TimeManager._loginTimestamp = 0;
+			if (data["timestamp"])
+			{
+				TimeManager._loginTimestamp = data["timestamp"];
+				TimeManager.SetServerTimestamp(data);
+			}
+		}
+		SocketManager.AddCommandListener(Command.System_Push_ResetTime0_2015, TimeManager.onResetTime, this);
+	}
+
+	private static onResetTime(result: SpRpcResult)
+	{
+		TimeManager.resetTime0Event.dispatch();
+	}
+
+	public static SetServerTimestamp(data: any)
+	{
+		TimeManager._serverTimestamp = 0;
+		if (data["timestamp"])
+		{
+			TimeManager._serverTimestamp = data["timestamp"] * 1000;
+		}
+		TimeManager._serverSyncDateTime = new Date();
+	}
+	/**
+	 *  获取当次登录后的在线时长(秒)
+	 */
+	public static GetCurrentOnlineLength(): number
+	{
+		return TimeManager.GetServerUtcTimestamp() - TimeManager._loginTimestamp;
+	}
+	/// <summary>
+	/// 获取服务器时区差值(秒)
+	/// </summary>
+	/// <returns></returns>
+	public static GetServerTimeZone(): number
+	{
+		return TimeManager._timeZone;
+	}
+	/**
+	 *  获取当前服务器UTC时间总毫秒秒数（UTC1970年到现在）
+	 */
+	public static GetServerUtcMilliTimestamp(): number
+	{
+		if (TimeManager._serverTimestamp == 0)
+		{
+			return 0;
+		}
+		return TimeManager._serverTimestamp + (Date.now() - Date.parse(TimeManager._serverSyncDateTime.toUTCString()));
+	}
+	/**
+	 *  获取当前服务器UTC时间总秒数（UTC1970年到现在）
+	 */
+	public static GetServerUtcTimestamp(): number
+	{
+		return TimeManager.GetServerUtcMilliTimestamp() / 1000;
+	}
+	/// <summary>
+	/// 获取服务器当前本地时间
+	/// </summary>
+	/// <param name="offsetHours">偏移小时</param>
+	/// <returns></returns>
+	public static GetServerLocalDateTime(offsetHours: number = 0): Date
+	{
+		let date: Date;
+		let ms: number;
+		if (offsetHours != 0)
+		{
+			ms = TimeManager.GetServerUtcMilliTimestamp() + offsetHours * 3600 * 1000;
+			date = new Date(ms);
+			return date;
+		}
+		ms = TimeManager.GetServerUtcMilliTimestamp();
+		date = new Date();
+		date.setTime(ms);
+		return date;
+	}
+	/// <summary>
+	/// 获取当日五点刷新时间点
+	/// </summary>
+	/// <returns></returns>
+	public static GetFiveRefreshLocalTime(): Date
+	{
+		let date = TimeManager.GetServerLocalDateTime();
+		return new Date(date.getFullYear(), date.getMonth(), date.getDay(), 5);
+	}
+}

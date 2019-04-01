@@ -1,0 +1,373 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>德州扑克</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="full-screen" content="true"/>
+    <meta name="screen-orientation" content="landscape"/>
+    <meta name="x5-fullscreen" content="true"/>
+    <meta name="360-fullscreen" content="true"/>
+    <style>
+        html, body {
+            -ms-touch-action: none;
+            background: #888888;
+            padding: 0;
+            border: 0;
+            margin: 0;
+            height: 100%;
+        }
+    </style>
+
+    <!--这个标签为通过egret提供的第三方库的方式生成的 javascript 文件。删除 modules_files 标签后，库文件加载列表将不会变化，请谨慎操作！-->
+    <!--modules_files_start-->
+	<script egret="lib" src="libs/modules/egret/egret.js"></script>
+	<script egret="lib" src="libs/modules/egret/egret.web.js"></script>
+	<script egret="lib" src="libs/modules/res/res.js"></script>
+	<script egret="lib" src="libs/modules/eui/eui.js"></script>
+	<script egret="lib" src="libs/modules/tween/tween.js"></script>
+	<script egret="lib" src="libs/modules/game/game.js"></script>
+	<script egret="lib" src="libs/modules/socket/socket.js"></script>
+	<script egret="lib" src="promise/promise.js"></script>
+	<script egret="lib" src="libs/bundle/bundle.js"></script>
+	<!--modules_files_end-->
+
+    <!--这个标签为不通过egret提供的第三方库的方式使用的 javascript 文件，请将这些文件放在libs下，但不要放在modules下面。-->
+    
+
+    <!--这个标签会被替换为项目中所有的 javascript 文件。删除 game_files 标签后，项目文件加载列表将不会变化，请谨慎操作！-->
+    <!--game_files_start-->
+	<script egret="lib" src="bin-debug/app/ui/base/BasePanel.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/base/BaseAnmiatePanel.js"></script>
+	<script egret="lib" src="bin-debug/libs/collections/Dictionary.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/component/gamblingHeadComponent/BaseGamblingHeadState.js"></script>
+	<script egret="lib" src="bin-debug/app/global/handler/InitAppHandler.js"></script>
+	<script egret="lib" src="bin-debug/app/global/handler/InitServerHandler.js"></script>
+	<script egret="lib" src="bin-debug/app/scenes/BaseScene.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/base/BackHomeAnimePanel.js"></script>
+	<script egret="lib" src="bin-debug/libs/net/BaseSocket.js"></script>
+	<script egret="lib" src="bin-debug/app/animation/BaseAnimation.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/component/BaseComponent.js"></script>
+	<script egret="lib" src="bin-debug/app/achievement/AchieveProcessManager.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/EnterRoomPwdPanel.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/gamblingpanel/BaseGamblingPanelSupport.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/renderer/BaseItemRenderer.js"></script>
+	<script egret="lib" src="bin-debug/core/channel/ChannelBase.js"></script>
+	<script egret="lib" src="bin-debug/core/version/UpdateHandler.js"></script>
+	<script egret="lib" src="bin-debug/defined/BaseDefined.js"></script>
+	<script egret="lib" src="bin-debug/enums/GameEnums.js"></script>
+	<script egret="lib" src="bin-debug/libs/call/ActionDispatcher.js"></script>
+	<script egret="lib" src="bin-debug/libs/call/CallDispatcher.js"></script>
+	<script egret="lib" src="bin-debug/app/gambling/core/BaseServerInfo.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/KeyBoardPanel.js"></script>
+	<script egret="lib" src="bin-debug/app/activity/ActivityManager.js"></script>
+	<script egret="lib" src="bin-debug/app/animation/AnimationEnum.js"></script>
+	<script egret="lib" src="bin-debug/app/animation/AnimationFactory.js"></script>
+	<script egret="lib" src="bin-debug/Main.js"></script>
+	<script egret="lib" src="bin-debug/app/animation/CardFaceBoardAppear.js"></script>
+	<script egret="lib" src="bin-debug/app/animation/CardFaceBright.js"></script>
+	<script egret="lib" src="bin-debug/app/animation/CardFaceMoveToPoint.js"></script>
+	<script egret="lib" src="bin-debug/app/animation/CardFaceTurnToFace.js"></script>
+	<script egret="lib" src="bin-debug/app/animation/CommonMoveToPointByNowPos.js"></script>
+	<script egret="lib" src="bin-debug/app/animation/CommonMoveToRelativelyPos.js"></script>
+	<script egret="lib" src="bin-debug/app/animation/FlopCardAnimation.js"></script>
+	<script egret="lib" src="bin-debug/app/animation/GamblingGameGroupMove.js"></script>
+	<script egret="lib" src="bin-debug/app/animation/IAnimationHandler.js"></script>
+	<script egret="lib" src="bin-debug/app/animation/SelfCard1Appear.js"></script>
+	<script egret="lib" src="bin-debug/app/animation/SelfCard2Appear.js"></script>
+	<script egret="lib" src="bin-debug/app/animation/WinChipsAnim.js"></script>
+	<script egret="lib" src="bin-debug/app/assets/LoadConfig.js"></script>
+	<script egret="lib" src="bin-debug/app/award/AwardExchangeErrorType.js"></script>
+	<script egret="lib" src="bin-debug/app/award/AwardManager.js"></script>
+	<script egret="lib" src="bin-debug/app/award/AwardTimesInfo.js"></script>
+	<script egret="lib" src="bin-debug/app/championship/ChampionshipAwardInfo.js"></script>
+	<script egret="lib" src="bin-debug/app/championship/ChampionshipManager.js"></script>
+	<script egret="lib" src="bin-debug/app/championship/ChampionshipRankInfo.js"></script>
+	<script egret="lib" src="bin-debug/app/championship/EntranceTicketType.js"></script>
+	<script egret="lib" src="bin-debug/app/championship/JoinChampionshipWay.js"></script>
+	<script egret="lib" src="bin-debug/app/championship/MatchOutsInfo.js"></script>
+	<script egret="lib" src="bin-debug/app/championship/MatchRoomInfo.js"></script>
+	<script egret="lib" src="bin-debug/app/championship/MTTJoinNumInfo.js"></script>
+	<script egret="lib" src="bin-debug/app/championship/OutsInfo.js"></script>
+	<script egret="lib" src="bin-debug/app/chat/ChatManager.js"></script>
+	<script egret="lib" src="bin-debug/app/chat/RecordAudioManager.js"></script>
+	<script egret="lib" src="bin-debug/app/friend/FriendManager.js"></script>
+	<script egret="lib" src="bin-debug/app/gambling/GamblingCardTypeMatch.js"></script>
+	<script egret="lib" src="bin-debug/app/gambling/GamblingManager.js"></script>
+	<script egret="lib" src="bin-debug/app/gambling/GamblingProcess.js"></script>
+	<script egret="lib" src="bin-debug/ThemeAdapter.js"></script>
+	<script egret="lib" src="bin-debug/app/gambling/core/IGamblingHandler.js"></script>
+	<script egret="lib" src="bin-debug/app/gambling/data/PlayerInfo.js"></script>
+	<script egret="lib" src="bin-debug/app/gambling/data/RoomInfo.js"></script>
+	<script egret="lib" src="bin-debug/app/gambling/handler/HandCardHandler.js"></script>
+	<script egret="lib" src="bin-debug/app/global/GameManager.js"></script>
+	<script egret="lib" src="bin-debug/app/global/GoCardProcessManager.js"></script>
+	<script egret="lib" src="bin-debug/app/global/PlayingFieldManager.js"></script>
+	<script egret="lib" src="bin-debug/app/global/SaveManager.js"></script>
+	<script egret="lib" src="bin-debug/app/global/SignInManager.js"></script>
+	<script egret="lib" src="bin-debug/app/achievement/AchievementManager.js"></script>
+	<script egret="lib" src="bin-debug/AssetAdapter.js"></script>
+	<script egret="lib" src="bin-debug/app/localstorage/PrefsManager.js"></script>
+	<script egret="lib" src="bin-debug/app/login/LoginInfo.js"></script>
+	<script egret="lib" src="bin-debug/app/login/LoginManager.js"></script>
+	<script egret="lib" src="bin-debug/app/login/ServerInfo.js"></script>
+	<script egret="lib" src="bin-debug/app/mail/MailInfo.js"></script>
+	<script egret="lib" src="bin-debug/app/mail/MailManager.js"></script>
+	<script egret="lib" src="bin-debug/app/pay/CostManager.js"></script>
+	<script egret="lib" src="bin-debug/app/pay/ShoppingManager.js"></script>
+	<script egret="lib" src="bin-debug/app/prize/PrizeEffectType.js"></script>
+	<script egret="lib" src="bin-debug/app/prize/PrizeInfo.js"></script>
+	<script egret="lib" src="bin-debug/app/prize/PrizeManager.js"></script>
+	<script egret="lib" src="bin-debug/app/prize/PrizeState.js"></script>
+	<script egret="lib" src="bin-debug/app/property/ItemManager.js"></script>
+	<script egret="lib" src="bin-debug/app/property/PropertyManager.js"></script>
+	<script egret="lib" src="bin-debug/app/property/data/ItemGetInfo.js"></script>
+	<script egret="lib" src="bin-debug/app/property/data/ItemInfo.js"></script>
+	<script egret="lib" src="bin-debug/app/rank/RankChange.js"></script>
+	<script egret="lib" src="bin-debug/app/rank/RankInfo.js"></script>
+	<script egret="lib" src="bin-debug/app/rank/RankManager.js"></script>
+	<script egret="lib" src="bin-debug/app/rank/RankName.js"></script>
+	<script egret="lib" src="bin-debug/app/achievement/process/FlushProcess.js"></script>
+	<script egret="lib" src="bin-debug/app/scenes/GameScene.js"></script>
+	<script egret="lib" src="bin-debug/app/scenes/HallScene.js"></script>
+	<script egret="lib" src="bin-debug/app/scenes/LoginScene.js"></script>
+	<script egret="lib" src="bin-debug/app/scenes/SceneManager.js"></script>
+	<script egret="lib" src="bin-debug/app/sound/SoundManager.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/AlertManager.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/UIManager.js"></script>
+	<script egret="lib" src="bin-debug/app/achievement/process/FourOfAKindProcess.js"></script>
+	<script egret="lib" src="bin-debug/app/achievement/process/FriendProcess.js"></script>
+	<script egret="lib" src="bin-debug/app/achievement/process/FullhouseProcess.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/component/ActionEffectComponent.js"></script>
+	<script egret="lib" src="bin-debug/app/achievement/process/GoldProcess.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/component/CardFaceComponent.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/component/ChipsShowComponent.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/component/CommonIcon.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/component/GamblingActionComponent.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/component/GamblingCdComponent.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/component/GamblingHeadComponent.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/component/GameButton.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/component/GameButtonGroup.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/component/NumComponent.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/component/TabComponent.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/component/UserInfoComponent.js"></script>
+	<script egret="lib" src="bin-debug/app/achievement/process/HighPatternProcess.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/component/gamblingHeadComponent/GamblingHeadActionedState.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/component/gamblingHeadComponent/GamblingHeadCardAnimationSupport.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/component/gamblingHeadComponent/GamblingHeadEmptyState.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/component/gamblingHeadComponent/GamblingHeadFoldState.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/component/gamblingHeadComponent/GamblingHeadOnActionState.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/component/gamblingHeadComponent/GamblingHeadRoundStartState.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/component/gamblingHeadComponent/GamblingHeadSitDownState.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/component/gamblingHeadComponent/GamblingHeadThanTheCardState.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/component/gamblingHeadComponent/GamblingHeadWaitActionState.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/component/gamblingHeadComponent/GamblingHeadWiatNextState.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/events/UIModuleEvent.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/AAModelPanel.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/AchievementItemPanel.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/AddChipsPanel.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/AlertInfoPanel.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/AssignmentPanel.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/AudioRecordingPanel.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/BuyAccessGamePanel.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/ChampionshipInfoPanel.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/ChampionshipPanel.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/ChangeUserNamePanel.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/ChatPanel.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/CreateRolePanel.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/CreateRoomPwdPanel.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/EditUserInfoPanel.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/EnterLoginPanel.js"></script>
+	<script egret="lib" src="bin-debug/app/achievement/process/LevelProcess.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/FriendMsgPanel.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/FriendPanel.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/GamblingPanel.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/GameHallPanel.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/GameRulePanel.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/GameScenePanel.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/GetCoinTipsPanel.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/InviteFriendPanel.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/InviteMsgPanel.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/JoinChampionshipSuccessPanel.js"></script>
+	<script egret="lib" src="bin-debug/LoadingUI.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/LoadingPanel.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/LoadingSwitchPanel.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/LoginBar.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/LoginLocalPanel.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/LoginPanel.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/LoginSceneBgPanel.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/MailPanel.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/MarqueePanel.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/MinuteRemindPanel.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/NetworkPanel.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/PlayingFieldPanel.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/PrizePanel.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/RankPanel.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/RegisterPanel.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/SavePanel.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/SecondRemindPanel.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/SetPanel.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/ShareGamePanel.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/ShoppingPanel.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/SignInPanel.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/TestPanel.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/TextInfoPanel.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/TextTipsPanel.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/UserAngreementPanel.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/UserInfoPanel.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/VipPanel.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/activitypanel/ActivityPanel.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/activitypanel/NormalActivityPanel.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/activitypanel/SimplePicturePanel.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/gamblingpanel/AudioRecordButton.js"></script>
+	<script egret="lib" src="bin-debug/app/achievement/process/LevelUpProcess.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/gamblingpanel/GamblingPanelActionSupport.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/gamblingpanel/GamblingPanelButtonPosSupport.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/gamblingpanel/GamblingPanelFlopCardSupport.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/gamblingpanel/GamblingPanelInfoRefreshSupport.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/gamblingpanel/GamblingPanelMoveSupport.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/gamblingpanel/GamblingPanelOneLoopOverSupport.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/gamblingpanel/GamblingPanelPitDataSupport.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/gamblingpanel/GamblingPanelPitTurnSupport.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/gamblingpanel/GamblingPanelRoundOverSupport.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/gamblingpanel/GamblingPanelSetting.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/gamblingpanel/GamblingPanelSitDownAndAddCoinSupport.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/gamblingpanel/GamblingPitInfo.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/gamblingpanel/GameEffectLogic.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/gamblingpanel/TimeShowLogic.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/panel/gamehallpanel/PiaohuaAnime.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/renderer/AchievementItemRenderer.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/renderer/ActivityAwardItemRenderer.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/renderer/ActivityItemRenderer.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/renderer/AddFriendItemRenderer.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/renderer/AssignmentItemRenderer.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/renderer/AwardItemRenderer.js"></script>
+	<script egret="lib" src="bin-debug/app/achievement/process/MiddlePatternProcess.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/renderer/BlindItemRenderer.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/renderer/ChampionshipItemRenderer.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/renderer/ChampionshipRankItemRenderer.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/renderer/ChatItemRenderer.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/renderer/ChipsShowRenderer.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/renderer/CreateRoomPanelItemRenderer.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/renderer/DiamondListItemRenderer.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/renderer/FaceItemRenderer.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/renderer/FastChatItemRenderer.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/renderer/FriendItemRenderer.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/renderer/FriendRequestItemRenderer.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/renderer/GiftItemRenderer.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/renderer/GoldListItemRenderer.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/renderer/InviteFriendListItemRenderer.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/renderer/MailItemRenderer.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/renderer/MyAwardPanelItemRenderer.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/renderer/MyTicketItemRenderer.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/renderer/OutsChildItemRenderer.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/renderer/OutsItemRenderer.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/renderer/PersonalRoomItemRenderer.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/renderer/PlayingFieldItemRenderer.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/renderer/RankItemRenderer.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/renderer/SignInGoldItemRenderer.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/renderer/TextRenderer.js"></script>
+	<script egret="lib" src="bin-debug/app/ui/renderer/VipListItemRenderer.js"></script>
+	<script egret="lib" src="bin-debug/app/user/RoundInfo.js"></script>
+	<script egret="lib" src="bin-debug/app/user/UserInfo.js"></script>
+	<script egret="lib" src="bin-debug/app/user/UserManager.js"></script>
+	<script egret="lib" src="bin-debug/app/user/UserUtil.js"></script>
+	<script egret="lib" src="bin-debug/app/utils/CallUtil.js"></script>
+	<script egret="lib" src="bin-debug/app/utils/ColorUtil.js"></script>
+	<script egret="lib" src="bin-debug/app/utils/DragUtil.js"></script>
+	<script egret="lib" src="bin-debug/app/utils/FilterUtil.js"></script>
+	<script egret="lib" src="bin-debug/app/utils/PoolUtil.js"></script>
+	<script egret="lib" src="bin-debug/app/utils/SortUtil.js"></script>
+	<script egret="lib" src="bin-debug/app/utils/UIUtil.js"></script>
+	<script egret="lib" src="bin-debug/app/vip/VipManager.js"></script>
+	<script egret="lib" src="bin-debug/app/vip/VipType.js"></script>
+	<script egret="lib" src="bin-debug/core/channel/Channel_android.js"></script>
+	<script egret="lib" src="bin-debug/core/channel/Channel_ios.js"></script>
+	<script egret="lib" src="bin-debug/core/channel/Channel_web.js"></script>
+	<script egret="lib" src="bin-debug/app/achievement/process/OnePairProcess.js"></script>
+	<script egret="lib" src="bin-debug/core/channel/ChannelManager.js"></script>
+	<script egret="lib" src="bin-debug/core/channel/ChannelUtil.js"></script>
+	<script egret="lib" src="bin-debug/core/channel/ExtFuncName.js"></script>
+	<script egret="lib" src="bin-debug/core/http/UpLoader.js"></script>
+	<script egret="lib" src="bin-debug/core/http/URLLoader.js"></script>
+	<script egret="lib" src="bin-debug/core/net/NetUtil.js"></script>
+	<script egret="lib" src="bin-debug/core/net/SocketManager.js"></script>
+	<script egret="lib" src="bin-debug/core/time/SystemTimeManager.js"></script>
+	<script egret="lib" src="bin-debug/core/time/TimeManager.js"></script>
+	<script egret="lib" src="bin-debug/app/achievement/process/PrimaryPatternProcess.js"></script>
+	<script egret="lib" src="bin-debug/core/version/VersionManager.js"></script>
+	<script egret="lib" src="bin-debug/core/version/VersionUtil.js"></script>
+	<script egret="lib" src="bin-debug/defined/AchieveDefined.js"></script>
+	<script egret="lib" src="bin-debug/defined/ActivityListDefined.js"></script>
+	<script egret="lib" src="bin-debug/defined/AwardDefined.js"></script>
+	<script egret="lib" src="bin-debug/app/achievement/process/RoyalFlushProcess.js"></script>
+	<script egret="lib" src="bin-debug/defined/CardDefined.js"></script>
+	<script egret="lib" src="bin-debug/defined/ChampionshipBlindDefined.js"></script>
+	<script egret="lib" src="bin-debug/defined/ChampionshipDefined.js"></script>
+	<script egret="lib" src="bin-debug/defined/ChampionshipPrizeDefined.js"></script>
+	<script egret="lib" src="bin-debug/defined/ChipDefined.js"></script>
+	<script egret="lib" src="bin-debug/defined/DefinedManager.js"></script>
+	<script egret="lib" src="bin-debug/defined/ErrorDefined.js"></script>
+	<script egret="lib" src="bin-debug/defined/ExpDefined.js"></script>
+	<script egret="lib" src="bin-debug/defined/FastChatDefined.js"></script>
+	<script egret="lib" src="bin-debug/defined/ForbiddenDefined.js"></script>
+	<script egret="lib" src="bin-debug/defined/ItemDefined.js"></script>
+	<script egret="lib" src="bin-debug/defined/MailDefined.js"></script>
+	<script egret="lib" src="bin-debug/defined/MusicDefined.js"></script>
+	<script egret="lib" src="bin-debug/defined/NameDefined.js"></script>
+	<script egret="lib" src="bin-debug/defined/PayDefined.js"></script>
+	<script egret="lib" src="bin-debug/defined/ProjectDefined.js"></script>
+	<script egret="lib" src="bin-debug/defined/RoomDefined.js"></script>
+	<script egret="lib" src="bin-debug/defined/ShortNameDefined.js"></script>
+	<script egret="lib" src="bin-debug/defined/SignInDefined.js"></script>
+	<script egret="lib" src="bin-debug/defined/SystemTimeDefined.js"></script>
+	<script egret="lib" src="bin-debug/defined/TextDefined.js"></script>
+	<script egret="lib" src="bin-debug/enums/Command.js"></script>
+	<script egret="lib" src="bin-debug/app/achievement/process/StraightFlushProcess.js"></script>
+	<script egret="lib" src="bin-debug/enums/GameSetting.js"></script>
+	<script egret="lib" src="bin-debug/app/achievement/process/StraightProcess.js"></script>
+	<script egret="lib" src="bin-debug/libs/call/ActionFunction.js"></script>
+	<script egret="lib" src="bin-debug/app/achievement/process/ThreeOfAKindProcess.js"></script>
+	<script egret="lib" src="bin-debug/app/achievement/process/TwoPairsProcess.js"></script>
+	<script egret="lib" src="bin-debug/app/achievement/process/WinProcess.js"></script>
+	<script egret="lib" src="bin-debug/libs/net/GameSocket.js"></script>
+	<script egret="lib" src="bin-debug/libs/net/LoginSocket.js"></script>
+	<script egret="lib" src="bin-debug/libs/net/SocketInfo.js"></script>
+	<script egret="lib" src="bin-debug/libs/net/SocketMessage.js"></script>
+	<script egret="lib" src="bin-debug/libs/net/SpRpcResult.js"></script>
+	<script egret="lib" src="bin-debug/libs/utils/ArrayUtil.js"></script>
+	<script egret="lib" src="bin-debug/libs/utils/Crypt.js"></script>
+	<script egret="lib" src="bin-debug/libs/utils/DateTimeUtil.js"></script>
+	<script egret="lib" src="bin-debug/libs/utils/MathUtil.js"></script>
+	<script egret="lib" src="bin-debug/libs/utils/StringUtil.js"></script>
+	<script egret="lib" src="bin-debug/libs/utils/Tick.js"></script>
+	<script egret="lib" src="bin-debug/libs/utils/Vecotr2D.js"></script>
+	<!--game_files_end-->
+</head>
+<body>
+
+    <div style="margin: auto;width: 100%;height: 100%;" class="egret-player"
+         data-entry-class="Main"
+         data-orientation="landscape"
+         data-scale-mode="showAll"
+         data-frame-rate="50"
+         data-content-width="1280"
+         data-content-height="720"
+         data-show-paint-rect="true"
+         data-multi-fingered="2"
+         data-show-fps="true" data-show-log="false"
+         data-show-fps-style="x:0,y:0,size:12,textColor:0xffffff,bgAlpha:0.2">
+    </div>
+    <script>
+        /**
+         * {
+         * "renderMode":, //引擎渲染模式，"canvas" 或者 "webgl"
+         * "audioType": "" //使用的音频类型，0:默认，1:qq audio，2:web audio，3:audio
+         * "antialias": //WebGL模式下是否开启抗锯齿，true:开启，false:关闭，默认为false
+         * }
+         **/
+        egret.runEgret({renderMode:"webgl", audioType:0});
+    </script>
+</body>
+</html>

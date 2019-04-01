@@ -1,0 +1,13 @@
+{
+	"search.exclude": {
+		"**/bin-debug": true,
+		"**/bin-release": true
+	}
+,
+"typescript.format.placeOpenBraceOnNewLineForFunctions": true,
+"typescript.format.placeOpenBraceOnNewLineForControlBlocks": true,
+"javascript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis": true,
+"javascript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyBrackets": true,
+"javascript.format.placeOpenBraceOnNewLineForFunctions": true,
+"javascript.format.placeOpenBraceOnNewLineForControlBlocks": true
+}

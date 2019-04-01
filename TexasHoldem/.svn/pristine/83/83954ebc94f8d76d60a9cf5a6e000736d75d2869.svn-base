@@ -1,0 +1,189 @@
+/**
+ * 筹码组件
+ */
+class ChipsShowComponent extends BaseComponent<number>
+{
+    public numLabel: eui.Label;
+    public chipBar: eui.Group;
+    /**
+     * 筹码数组图片
+    */
+    private imgArray: Array<eui.Image>;
+    /**
+     * 动画起始高度
+    */
+    private initHeight: number;
+    /**
+     * 一个筹码的高度
+    */
+    private chipSelfHeight: number;
+    /**
+     * 高度比例参数
+    */
+    private para: number;
+    private compX: number;
+    private compY: number;
+    private compHeight:number;
+    private compWidth:number;
+    public constructor()
+    {
+        super();
+        this.skinName = UIComponentSkinName.ChipsShowComponent;
+    }
+    protected onAwake(event: eui.UIEvent)
+    {
+        super.onAwake(event);
+        this.compHeight=200;
+        this.compWidth=300;
+        this.chipSelfHeight= 9;
+        this.para= 2;
+    }
+    public init(data: number)
+    {
+        super.init(data);
+        this.numLabel.text = this.bindData.toString();
+        this.creatChips(this.bindData);
+        this.rendererStart(null);
+    }
+    protected rendererStart(event: egret.Event)
+    {
+        super.rendererStart(event);
+    }
+
+    /**
+     * 筹码组件
+    */
+    public chipsShow(data: number,pos:number)
+    {
+        this.init(data);
+        this.setInitValue(this.imgArray,pos);
+    }
+    /**
+     * 创建筹码数
+     */
+    protected creatChips(chipNum: number)
+    {
+        egret.Tween.removeTweens(this.chipBar);
+        this.chipBar.alpha=1;       
+        this.clear();
+        
+        if (!this.imgArray)
+        {
+            this.imgArray = new Array<eui.Image>();
+        }
+        for (let i:number = ChipsManager.chipsList.length - 1; i > 0; i--)
+        {
+            let imgNum: number = Math.floor(chipNum / ChipsManager.chipsList[i].definition.phase);
+            for (let j:number = 0; j < imgNum; j++)
+            {
+                let img:eui.Image = new eui.Image(ChipsManager.chipsList[i].definition.img + ResSuffixName.PNGSuffix);
+                this.imgArray.push(img);
+            }
+            chipNum %= ChipsManager.chipsList[i].definition.phase;
+        }
+    }
+    /**
+     * 设置初始值
+    */
+    protected setInitValue(imgArray: Array<eui.Image>,pos:number)
+    {
+        this.initHeight = this.compHeight- imgArray.length * this.chipSelfHeight * this.para;
+        if(this.initHeight>100)
+        {
+            this.initHeight=100;
+        }
+        for (let m:number = 0; m < imgArray.length; m++)
+        {
+            imgArray[m].y = this.initHeight;
+            if(pos==ChipsPos.left)
+            {
+                imgArray[m].x = this.compWidth-50;
+            }
+            else if(pos==ChipsPos.right)
+            {
+                imgArray[m].x=0;
+            }           
+            imgArray[m].scaleX = 0.5;
+            imgArray[m].scaleY = 0.5;
+            this.addChild(imgArray[m]);
+        }
+        this.createVerticalTween();
+    }
+    /**
+     * 设置下注动画
+    */
+    protected createVerticalTween()
+    {
+        for (let m:number = 0; m < this.imgArray.length; m++)
+        {
+            egret.Tween.get(this.imgArray[m]).wait(m * 50).to({ y: 170 - m * this.chipSelfHeight }, 400, egret.Ease.sineIn);
+        }
+    }
+    /**
+     * 赢取筹码动画
+     */
+    public winChipsTween(posX: number, posY: number)
+    {
+        if(this.imgArray.length)
+        {
+            this.compX = this.x;
+            this.compY = this.y;
+            let loc: egret.Point = this.disapearLocation(posX, posY);
+            let locX:number = loc.x - this.compX;
+            let locY:number = loc.y - this.compY;
+
+            let len: number = this.imgArray.length;
+            for (let n: number = len - 1; n >= 0; n--)
+            {
+                if(n==0)
+                {
+                egret.Tween.get(this.imgArray[n]).wait((len-n) * 10).to({ x: locX, y: locY,alpha:0 }, 400, egret.Ease.sineIn).call(this.remove,this);           
+                }
+                else
+                {
+                egret.Tween.get(this.imgArray[n]).wait((len-n) * 10).to({ x: locX, y: locY,alpha:0}, 400, egret.Ease.sineIn);
+                }     
+            }
+        }
+    }
+    /**
+     * 移除下注条
+    */
+    protected remove()
+    {
+       egret.Tween.get(this.chipBar).to({alpha:0},200,egret.Ease.sineIn);
+       this.clear();
+    }
+    /**
+     * 清除图片列表和移除子项
+    */
+    private clear()
+    {
+      if(this.imgArray)
+        {
+          for (let m = 0; m < this.imgArray.length; m++)
+            {       
+                this.removeChild(this.imgArray[m]);
+            }
+             ArrayUtil.Clear(this.imgArray);
+        }
+    }
+    /**
+     * 消失位置
+     */
+    private disapearLocation(x: number, y: number): egret.Point
+    {
+        let loc: egret.Point = new egret.Point(x, y);
+        return loc;
+    }
+
+}
+
+/**
+ * 筹码位置
+*/
+enum ChipsPos
+{
+    left=1,
+    right=2
+}

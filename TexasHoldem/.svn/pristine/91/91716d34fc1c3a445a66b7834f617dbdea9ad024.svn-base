@@ -1,0 +1,171 @@
+/**
+ * 领房卡管理
+ */
+class BringCardManager
+{
+    /**
+	 * 是否已完成绑定
+	 */
+    public static isGotShare: boolean;
+    /**
+	 * 邀请码
+	 */
+    public static shareId: string;
+    /**
+	 * 绑定的好友列表
+	 */
+    public static bindFriendList: Array<BindFriendInfo>;
+    /**
+	 *绑定数据下标
+	 */
+    public static index: number;
+
+    /**
+	 * 发送绑定获取请求
+	 */
+    public static reqBindId(id: string)
+    {
+        SocketManager.AddCommandListener(Command.Req_BindId_3025, BringCardManager.bindResponse);
+        SocketManager.Send(Command.Req_BindId_3025, { "id": id });
+    }
+    /**
+	 * 绑定获取请求回调处理
+	 */
+    private static bindResponse()
+    {
+        SocketManager.RemoveCommandListener(Command.Req_BindId_3025, BringCardManager.bindResponse);
+        BringCardManager.isGotShare = true;
+        AlertManager.showSingleAlert('恭喜您绑定成功，您已获得' +
+            '<font color="#f61c1c">3</font>' +
+            '张房卡奖励！');
+        BringCardManager.dispatchbindToObtainBtnEvent();
+    }
+    /**
+	 * 发送立即领取房卡的请求
+	 */
+    public static immediatelyToReceiveBtn: eui.Button;
+    public static reqBringCard(btn: eui.Button)
+    {
+        SocketManager.AddCommandListener(Command.Req_BringCard_3026, BringCardManager.BringCardResponse);
+        SocketManager.Send(Command.Req_BringCard_3026);
+        BringCardManager.immediatelyToReceiveBtn = btn;
+    }
+    /**
+	 * 立即领取房卡请求回调处理
+	 */
+    private static BringCardResponse()
+    {
+        SocketManager.RemoveCommandListener(Command.Req_BringCard_3026, BringCardManager.BringCardResponse);
+        FilterUtil.setGray(BringCardManager.immediatelyToReceiveBtn);
+        BringCardManager.immediatelyToReceiveBtn.enabled = false;
+        AlertManager.showSingleAlertByString('领取房卡成功');
+        BringCardManager.dispatchimmediatelyToReceiveBtnEvent();
+
+    }
+    /**
+	 * 发送拉取分享好友列表请求
+	 */
+    public static reqGetBindFriendList()
+    {
+        SocketManager.AddCommandListener(Command.Req_BindFriendList_3027, BringCardManager.getBindFriendListResponse);
+        SocketManager.Send(Command.Req_BindFriendList_3027);
+    }
+    /**
+	 * 拉取分享好友列表请求回调处理
+	 */
+    private static getBindFriendListResponse(result: SpRpcResult)
+    {
+        SocketManager.RemoveCommandListener(Command.Req_BindFriendList_3027, BringCardManager.getBindFriendListResponse);
+        if (result.data)
+        {
+            BringCardManager.bindFriendList = result.data["shareList"];
+            if (BringCardManager.bindFriendList)
+            {
+                for (let obj of BringCardManager.bindFriendList)
+                {
+                    BringCardManager.playerNameOper(obj);
+                }
+            }
+        }
+        BringCardManager.dispatchGetBindFriendListEvent();
+    }
+    /**
+	 * name字段处理
+	 */
+    public static playerNameOper(pInfo: BindFriendInfo)
+    {
+        if (!pInfo.name)
+        {
+            pInfo.name = pInfo.roleId.toString();
+        }
+        else
+        {
+            pInfo.name = pInfo.name + pInfo.roleId.toString();
+        }
+    }
+    /**
+	 * 拉取取分享好友列表事件
+	 */
+    public static onGetBringCardEa: ActionDispatcher = new ActionDispatcher();
+    private static dispatchGetBindFriendListEvent()
+    {
+        BringCardManager.onGetBringCardEa.dispatch();
+    }
+    /**
+	 * 立即领取请求后事件
+	 */
+    public static onRefreshGetCardUIEa: ActionDispatcher = new ActionDispatcher();
+    private static dispatchimmediatelyToReceiveBtnEvent()
+    {
+        BringCardManager.onRefreshGetCardUIEa.dispatch();
+    }
+    /**
+	 * 绑定领取请求后事件
+	 */
+    public static onBindEa: ActionDispatcher = new ActionDispatcher();
+    private static dispatchbindToObtainBtnEvent()
+    {
+        BringCardManager.onBindEa.dispatch();
+    }
+}
+/**
+ * 绑定好友信息
+ */
+class BindFriendInfo extends BaseServerValueInfo
+{
+    /**
+	 * 绑定时间
+	 */
+    public time: number;
+    /**
+	 * 昵称
+	 */
+    public name: string;
+    /**
+	 * 是否完成一轮游戏
+	 */
+    public isRound: number;
+    /**
+	 * 是否领取过被绑定奖励
+	 */
+    public isGotShare: number;
+    /**
+	 * 是否领取过完成一轮游戏的奖励
+	 */
+    public isGotRound: number;
+    /**
+	 * 数组下标
+	 */
+    public index: number;
+    /**
+	 * 绑定的id
+	 */
+    public roleId: number;
+    /**
+	 * 重置
+	 */
+    public reset()
+    {
+        // this.time = undefined;
+    }
+}

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="panelSkin9" width="700" height="568" xmlns:e="http://ns.egret.com/eui"
+        xmlns:w="http://ns.egret.com/wing" xmlns:ns1="*" xmlns:tween="egret.tween.*">
+	<w:Config id="15c813d330f" />
+	<e:Group id="tweenGroup" width="700" height="568" x="0" y="0">
+		<e:Image width="700" height="568" x="1.52" y="-0.04" source="bg_page2_png" scale9Grid="18,18,111,111" anchorOffsetX="0" anchorOffsetY="0"/>
+		<e:Label text="创建角色" x="36.96" y="22.6" textColor="0xbf1111" size="35" bold="true"/>
+		<e:Label text="选择性别" x="79.96" y="100.6"/>
+		<e:RadioButton id="manRadioBtn" label="男" x="161.48" y="195.6" skinName="CheckBoxSkin1" anchorOffsetX="0" width="187"/>
+		<e:RadioButton id="womanRadioBtn" label="女" x="419.31" y="195.6" skinName="CheckBoxSkin1" anchorOffsetX="0" width="170"/>
+		<e:Label text="创建昵称" x="86.48" y="308.6"/>
+		<e:Label id="nickNameLable" text="昵称" x="157.96" y="392.52" anchorOffsetX="0" width="348.36" anchorOffsetY="0" height="60.3" textAlign="center" verticalAlign="middle" border="true" borderColor="0xf2e3e3"/>
+		<e:Button id="randomBtn" label="Button" x="541.31" y="379.67" skinName="touziSkin"/>
+		<e:Button id="enterBtn" label="Button" x="296.49" y="486.52" skinName="buttonSkin41" anchorOffsetX="0" width="155.3" anchorOffsetY="0" height="60.3"/>
+		
+	</e:Group>
+</e:Skin>

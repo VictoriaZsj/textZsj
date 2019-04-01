@@ -1,0 +1,245 @@
+/**
+ * 一局的计算信息项
+ */
+class OnceResultItemRenderer extends BaseItemRenderer<OnceResultInfo>
+{
+	public playerNameLabel: eui.Label;
+
+	public actionLabel: eui.Group;
+
+	public scoreLabel: eui.Group;
+	public huImg: eui.Image;
+	public paiGroup: eui.DataGroup;
+
+	private _paiComponentList: Array<OnceResultCardComponet>;
+	private _gapDistance = 5;
+	private _gapIndex: number;
+	private _paiIndex: number;
+	private _paiWidth: number = 52;
+
+	public constructor()
+	{
+		super();
+		this._paiComponentList = new Array<OnceResultCardComponet>();
+		this.skinName = UIRendererSkinName.OnceResultItemRenderer;
+	}
+	protected createChildren()
+	{
+		this.dataChanged();
+	}
+	protected dataChanged(): void
+	{
+		super.dataChanged();
+		this.destroyPai();
+		if (this.bindData && this.paiGroup)
+		{
+			this._gapIndex = 0;
+			this._paiIndex = 0;
+			this.paiGroup.removeChildren();
+			this.huImg.visible = false;
+			if (this.bindData.roleId == GoCardProcessManager.huCardInfo.roleId)
+			{
+				this.huImg.visible = true;
+			}
+			let pInfo: PlayerInfo = RoomManager.getPlayerInfoByRoleId(this.bindData.roleId);
+			if (pInfo)
+			{
+				if (pInfo.name)
+				{
+					this.playerNameLabel.text = pInfo.name;
+				}
+				else
+				{
+					this.playerNameLabel.text = pInfo.roleId.toString();
+				}
+				UIUtil.ShowScoreImg(this.bindData.currScore, this.scoreLabel);
+				let isHuRole: boolean;
+				if (this.bindData.shouPai && GoCardProcessManager.huCardInfo)
+				{
+					if (this.bindData.roleId == GoCardProcessManager.huCardInfo.roleId)
+					{
+						if (GoCardProcessManager.huCardInfo.huType == HuResultType.JiaGang) //加杠胡
+						{
+							let isSuc: boolean = ArrayUtil.RemoveItem(GoCardProcessManager.huCardInfo.card, this.bindData.shouPai);
+							if (isSuc)
+							{
+								this.bindData.shouPai.unshift(GoCardProcessManager.huCardInfo.card);
+							}
+						}
+						else if (GoCardProcessManager.huCardInfo.huType == HuResultType.Usual) //自模糊
+						{
+							let isSuc: boolean = ArrayUtil.RemoveItem(GoCardProcessManager.huCardInfo.card, this.bindData.shouPai);
+							if (isSuc)
+							{
+								this.bindData.shouPai.unshift(GoCardProcessManager.huCardInfo.card);
+
+							}
+						}
+						isHuRole = true;
+
+					}
+					let start: number;
+					if (isHuRole)
+					{
+						start = 1;
+					}
+					else
+					{
+						start = 0;
+					}
+
+					let groupCardInfo: GroupCardInfo;
+					let showNum: number = 0;
+					let anGangNum: number = 0;
+					let buGangNum: number = 0;
+					let gangNum: number = 0;
+					if (this.bindData.groupList)
+					{
+						for (let i: number = 0; i < this.bindData.groupList.length; i++)
+						{
+							groupCardInfo = this.bindData.groupList[i];
+							switch (groupCardInfo.action)
+							{
+								case ActionType.AnGang:
+									showNum = 4;
+									anGangNum++;
+									break;
+								case ActionType.BuGang:
+									showNum = 4;
+									buGangNum++;
+									break;
+								case ActionType.Gang:
+									showNum = 4;
+									gangNum++;
+									break;
+								case ActionType.Peng:
+									showNum = 3;
+									break;
+							}
+
+							for (let j: number = 0; j < showNum; j++)
+							{
+								this.createPai(groupCardInfo.card);
+								this._paiIndex++;
+							}
+							this._gapIndex++;
+						}
+					}
+					let len: number = this.bindData.shouPai.length;
+					for (let i: number = len - 1; i >= start; i--) //显示手牌
+					{
+						this.createPai(this.bindData.shouPai[i]);
+						this._paiIndex++;
+					}
+					this._gapIndex++;
+					if (isHuRole)
+					{
+						this.createPai(this.bindData.shouPai[0]);
+					}
+					UIUtil.containerImgOper(this.actionLabel);
+					let txtImg: eui.Image = UIUtil.getExistImg();
+					let chengImg: eui.Image = UIUtil.getExistImg();
+					let numImg: eui.Image = UIUtil.getExistImg();
+					if (anGangNum > 0)
+					{
+						this.ShowActionImg(anGangNum, ImageSource.AnGang);
+					}
+					if (gangNum > 0)
+					{
+						this.ShowActionImg(gangNum, ImageSource.MingGang);
+					}
+					if (buGangNum > 0)
+					{
+						this.ShowActionImg(buGangNum, ImageSource.JiaGang);
+					}
+					if (this.bindData.buyHorse > 0)
+					{
+						let horseNum: number = 0;
+						horseNum += this.getHorseNum(GoCardProcessManager.buyHorseInfo.card1);
+						horseNum += this.getHorseNum(GoCardProcessManager.buyHorseInfo.card2);
+
+						txtImg = UIUtil.getExistImg(0.5, 0.5);
+						chengImg = UIUtil.getExistImg();
+						numImg = UIUtil.getExistImg();
+
+						if (horseNum > 0)
+						{
+							txtImg.source = ImageSource.MaiMa;
+							chengImg.source = ImageSource.YellowCheng;
+							numImg.source = UIUtil.getNumImg(horseNum, NumResType.Yellow);
+
+							this.actionLabel.addChild(txtImg);
+							this.actionLabel.addChild(chengImg);
+							this.actionLabel.addChild(numImg);
+						}
+					}
+
+					this.paiGroup.width = this._paiWidth * this._paiIndex + this._gapIndex * this._gapDistance;
+					// this.paiGroup.addChild(this.scoreLabel);
+					// this.paiGroup.addChild(this.huImg);
+				}
+			}
+		}
+	}
+	private ShowActionImg(num: number, source: string)
+	{
+		let txtImg: eui.Image = UIUtil.getExistImg(0.5, 0.5);
+		let chengImg: eui.Image = UIUtil.getExistImg();
+		let numImg: eui.Image = UIUtil.getExistImg();
+		if (num > 0)
+		{
+			txtImg.source = source;
+			chengImg.source = ImageSource.YellowCheng;
+			numImg.source = UIUtil.getNumImg(num, NumResType.Yellow);
+			this.actionLabel.addChild(txtImg);
+			this.actionLabel.addChild(chengImg);
+			this.actionLabel.addChild(numImg);
+		}
+	}
+	private getHorseNum(card: number): number
+	{
+		let horseNum: number = 0;
+		if (baiDaList.indexOf(card) == -1)
+		{
+			let pai: number = HuCard.getIndex(card);
+			if (pai != -1 && GoCardProcessManager.horseList.indexOf(pai) != -1)
+			{
+				horseNum++;
+			}
+		}
+		else
+		{
+			horseNum++;
+		}
+		return horseNum;
+	}
+	private createPai(card: number)
+	{
+		let paiComponent: OnceResultCardComponet = new OnceResultCardComponet();
+		paiComponent.init(card);
+		paiComponent.x = this._paiIndex * this._paiWidth + this._gapIndex * this._gapDistance;//paiComponent.width
+		paiComponent.scaleX = paiComponent.scaleY = 0.5;
+		this.paiGroup.addChild(paiComponent);
+		this._paiComponentList.push(paiComponent);
+	}
+	private destroyPai()
+	{
+		let len: number = this._paiComponentList.length;
+		let paiComponent: OnceResultCardComponet;
+		for (let i: number = 0; i < len; i++)
+		{
+			paiComponent = this._paiComponentList[i];
+			if (paiComponent.parent)
+			{
+				paiComponent.parent.removeChild(paiComponent);
+			}
+			paiComponent.destroy();
+		}
+		ArrayUtil.Clear(this._paiComponentList);
+	}
+	public destroy()
+	{
+		super.destroy();
+		this._paiComponentList = null;
+	}
+}

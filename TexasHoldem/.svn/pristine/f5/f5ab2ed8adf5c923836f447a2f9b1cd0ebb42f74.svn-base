@@ -1,0 +1,9 @@
+/**
+ * 游戏场景等待逻辑操作
+ */
+class GameSceneWaitOper
+{
+	public constructor()
+	{
+	}
+}

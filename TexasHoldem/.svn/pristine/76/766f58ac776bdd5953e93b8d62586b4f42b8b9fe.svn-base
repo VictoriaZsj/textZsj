@@ -1,0 +1,65 @@
+/**
+ * 本家手牌
+ */
+class BenJiaShouCard extends OtherShouCard
+{
+	private _face: eui.Image;
+	private _arrow: eui.Image;
+	public isTingCard: boolean;
+
+	public constructor(data: ShouPaiDefinition, pos: number)
+	{
+		super(data, pos);
+		this._face = new eui.Image();
+		this.addChild(this._face);
+		this._arrow = new eui.Image();
+		this._arrow.x = 35;
+		this._arrow.y = -25;
+		this.addChild(this._arrow);
+	}
+	public init()
+	{
+		this.isTingCard = false;
+		super.init();
+	}
+	public refreshFace(card: number)
+	{
+		super.refreshFace(card);
+		this._card = card;
+
+		if (this._card)
+		{
+			let paiDef: PaiDefinition = PaiDefined.GetInstance().getDefinition(this.cardNum, PaiDefined.GetInstance().paiList);
+			if (paiDef)
+			{
+				this._face.source = paiDef.img + ResSuffixName.PNGSuffix;
+				this._face.width = 72;
+				this._face.height = 96;
+
+				this._face.x = 10;
+				this._face.y = 10;
+			}
+		}
+	}
+	public setScale(scale: number)
+	{
+		if (scale)
+		{
+			super.setScale(scale);
+			this._face.scaleX = this._face.scaleY = scale;
+		}
+	}
+	public setArrow(state: boolean)
+	{
+		if (!this._arrow.source)
+		{
+			this._arrow.source = ImageSource.ListenerArrow;
+		}
+		this._arrow.visible = state;
+		this.isTingCard = state;
+	}
+	public clear()
+	{
+		this.setArrow(false);
+	}
+}

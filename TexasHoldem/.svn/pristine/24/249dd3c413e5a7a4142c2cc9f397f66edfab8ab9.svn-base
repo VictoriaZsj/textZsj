@@ -1,0 +1,287 @@
+/**
+ * 锦标赛赛事列表项面板
+*/
+class ChampionshipItemRenderer extends BaseItemRenderer<MatchRoomInfo>
+{
+    /**
+     * 比赛时间还未开始group
+    */
+    private notStartGroup: eui.Group;
+    /**
+     * 赛事icon
+    */
+    private iconImg: eui.Image;
+    /**
+     * 金币icon
+    */
+    private goldImg: eui.Image;
+    /**
+     * 重购图标
+    */
+    private rebuyImg: eui.Image;
+    /**
+     * 增购图标
+    */
+    private addonImg: eui.Image;
+    /**
+     * 名称
+    */
+    private nameLabel: eui.Label;
+    /**
+     * 报名费
+    */
+    private priceLabel: eui.Label;
+    /**
+     * 人数信息
+    */
+    private numLabel: eui.Label;
+    /**
+     * 还未开始的比赛时间信息描述
+    */
+    private timeDesLabel: eui.Label;
+    /**
+     * 还未开始的比赛时间
+    */
+    private timeLabel: eui.Label;
+    /**
+     * 正在进行中
+    */
+    private underwayLabel: eui.Label;
+    /**
+     * 等待开始
+    */
+    private waitLabel: eui.Label;
+    /**
+     * 立即进入按钮
+    */
+    private enterBtn: eui.Button;
+    /**
+     * 立即报名按钮
+    */
+    private applyBtn: eui.Button;
+
+    private countDownNum: number;
+    private flag: boolean = false;
+
+    public constructor()
+    {
+        super();
+        this.skinName = UIRendererSkinName.ChampionshipItemRenderer;
+    }
+    protected createChildren()
+    {
+        this.dataChanged();
+    }
+    protected dataChanged()
+    {
+        super.dataChanged();
+        if (this.bindData)
+        {
+            this.rebuyImg.visible = false;
+            this.addonImg.visible = false;
+            this.goldImg.visible = false;
+            this.notStartGroup.visible = false;
+            this.underwayLabel.visible = false;
+            this.enterBtn.visible = false;
+            this.applyBtn.visible = false;
+            this.waitLabel.visible = false;
+            this.iconImg.source = this.bindData.icon;
+            this.nameLabel.text = this.bindData.name;
+            this.numLabel.text = this.bindData.applyNum + "/" + this.bindData.allNum;
+            this.showApplyOrWait();
+            //判断该用户的道具中是否有参加赛事对应的门票    应该要读表判断 
+            if (1)  // todo 测试代码
+            {
+                this.priceLabel.text = this.bindData.name + "门票";
+                this.priceLabel.x = 0;
+            } else
+            {
+                this.goldImg.visible = true;
+                this.priceLabel.text = this.bindData.price + "+" + this.bindData.tax;
+            }
+            if (this.bindData.isAddon)
+            {
+                this.addonImg.visible = true;
+            }
+            if (this.bindData.isRebuy)
+            {
+                this.rebuyImg.visible = true;
+            }
+            if (TimeManager.GetServerUtcTimestamp() >= this.bindData.startTime)  //比赛进行中
+            {
+                if (this.bindData.delayTime)
+                {
+                    if (TimeManager.GetServerUtcTimestamp() >= this.bindData.startTime + this.bindData.delayTime)
+                    {
+                        this.showUnderway();
+                    } else
+                    {
+                        this.notStartGroup.visible = true;
+                        this.timeDesLabel.text = "延迟报名";
+                        if (this.flag)
+                        {
+                            this.waitLabel.visible = false;
+                            this.enterBtn.visible = true;
+                        }
+                        this.countDownNum = Math.floor(this.bindData.startTime + this.bindData.delayTime - TimeManager.GetServerUtcTimestamp());
+                        Tick.getInstance().AddSecondsInvoke(this.countDown, this);
+                    }
+                } else
+                {
+                    this.showUnderway();
+                }
+            } else if ((this.bindData.startTime - TimeManager.GetServerUtcTimestamp()) <= 300)  //比赛开始前5分钟
+            {
+                this.notStartGroup.visible = true;
+                this.timeDesLabel.text = "即将开始";
+                this.countDownNum = Math.floor(this.bindData.startTime - TimeManager.GetServerUtcTimestamp());
+                Tick.getInstance().AddSecondsInvoke(this.countDown, this);
+                if ((this.bindData.startTime - TimeManager.GetServerUtcTimestamp()) < 60)  //比赛前一分钟
+                {
+                    if (this.flag)
+                    {
+                        this.waitLabel.visible = false;
+                        this.enterBtn.visible = true;
+                    }
+                }
+            } else
+            {
+                this.notStartGroup.visible = true;
+                let date: Date = new Date(this.bindData.startTime * 1000);
+                if (this.bindData.startTime - TimeManager.GetServerUtcTimestamp() > 3600 * 24)  //大于一天
+                {
+                    this.timeDesLabel.text = (date.getMonth() + 1) + "-" + date.getDate();
+                } else  // 少于一天
+                {
+                    this.timeDesLabel.text = "今日";
+                }
+                this.timeLabel.text = DateTimeUtil.formatDate(date, DateTimeUtil.Format_Standard_NoSecond).split(" ")[1];
+            }
+            this.addEventListener(egret.Event.REMOVED_FROM_STAGE, this.onDisable, this);
+            this.applyBtn.addEventListener(egret.TouchEvent.TOUCH_TAP, this.onaApplyBtnClick, this)
+            this.applyBtn.addEventListener(egret.TouchEvent.TOUCH_END, this.cancelBubble, this)
+            this.enterBtn.addEventListener(egret.TouchEvent.TOUCH_TAP, this.onEnterBtnClick, this)
+            this.enterBtn.addEventListener(egret.TouchEvent.TOUCH_END, this.cancelBubble, this)
+        }
+    }
+    private onDisable(event: egret.Event)
+    {
+        this.removeEventListener(egret.Event.REMOVED_FROM_STAGE, this.onDisable, this);
+        this.applyBtn.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.onaApplyBtnClick, this)
+        this.applyBtn.removeEventListener(egret.TouchEvent.TOUCH_END, this.cancelBubble, this)
+        this.enterBtn.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.onEnterBtnClick, this)
+        this.enterBtn.removeEventListener(egret.TouchEvent.TOUCH_END, this.cancelBubble, this)
+        Tick.getInstance().RemoveSecondsInvoke(this.countDown);
+    }
+    /**
+     * 立即报名点击事件
+    */
+    private onaApplyBtnClick(event: TouchEvent)
+    {
+        SoundManager.playButtonEffect(event);
+        //判断该用户的道具中是否有参加赛事对应的门票    应该要读表判断 
+        if (1)  // todo 测试代码
+        {
+            // 发送报名申请的请求  还应该在我的门票列表中删除对应门票的数据 更新列表
+        } else
+        {
+            //发送报名申请的请求  扣除对应的金币
+        }
+        UIManager.showFloatTips("立即报名待添加");
+    }
+    /**
+     * 立即进入
+    */
+    private onEnterBtnClick(event: TouchEvent)
+    {
+        SoundManager.playButtonEffect(event);
+        UIManager.showFloatTips("立即进入待添加");
+    }
+    /**
+     * 取消冒泡
+    */
+    private cancelBubble(event: egret.TouchEvent)
+    {
+        event.stopImmediatePropagation();
+    }
+    /**
+     * 显示比赛进行中
+    */
+    private showUnderway()
+    {
+        this.underwayLabel.visible = true;
+        this.notStartGroup.visible = false;
+        this.enterBtn.visible = false;
+        this.applyBtn.visible = false;
+        this.waitLabel.visible = false;
+        this.underwayLabel.text = "比赛进行中";
+    }
+    /**
+     * 报名 等待 显示判断
+    */
+    private showApplyOrWait()
+    {
+        for (let adef of ChampionshipManager.applicationList)
+        {
+            for (let mdef of ChampionshipManager.matchList)
+            {
+                if (mdef.id == adef.id)
+                {
+                    this.flag = true;
+                }
+            }
+        }
+        if (this.flag)
+        {
+            this.waitLabel.visible = true;
+        } else
+        {
+            this.applyBtn.visible = true;
+        }
+    }
+    /**
+     * 倒计时
+    */
+    private countDown()
+    {
+        this.countDownNum--;
+        console.log(this.countDownNum);
+        this.timeLabel.text = this.countDownFormat(this.countDownNum.toString());
+        if (this.countDownNum <= 1)
+        {
+            Tick.getInstance().RemoveSecondsInvoke(this.countDown);
+            if (this.bindData.delayTime)
+            {
+                if (TimeManager.GetServerUtcTimestamp() >= this.bindData.startTime + this.bindData.delayTime)
+                {
+                    this.showUnderway();
+                } else
+                {
+                    this.notStartGroup.visible = true;
+                    this.timeDesLabel.text = "延迟报名";
+                    if (this.flag)
+                    {
+                        this.waitLabel.visible = false;
+                        this.enterBtn.visible = true;
+                    }
+                    this.countDownNum = Math.floor(this.bindData.startTime + this.bindData.delayTime - TimeManager.GetServerUtcTimestamp());
+                    Tick.getInstance().AddSecondsInvoke(this.countDown, this);
+                }
+            } else
+            {
+                this.showUnderway();
+            }
+        }
+    }
+    /**
+     * 倒计时格式化
+    */
+    private countDownFormat(number)
+    {
+        let m: string;
+        let s: string;
+        m = DateTimeUtil.formatCountdown(Math.floor(number / 60));
+        s = DateTimeUtil.formatCountdown(number % 60);
+        return m + ":" + s;
+    }
+}

@@ -1,0 +1,125 @@
+/**
+ * 锦标赛赛事列表项面板
+*/
+class ChampionshipItemRenderer extends BaseItemRenderer<MatchRoomInfo>
+{
+    /**
+     * 比赛时间还未开始group
+    */
+    private notStartGroup: eui.Group;
+    /**
+     * 赛事icon
+    */
+    private iconImg: eui.Image;
+    /**
+     * 金币icon
+    */
+    private goldImg: eui.Image;
+    /**
+     * 重购图标
+    */
+    private rebuyImg: eui.Image;
+    /**
+     * 增购图标
+    */
+    private addonImg: eui.Image;
+    /**
+     * 名称
+    */
+    private nameLabel: eui.Label;
+    /**
+     * 报名费
+    */
+    private priceLabel: eui.Label;
+    /**
+     * 人数信息
+    */
+    private numLabel: eui.Label;
+    /**
+     * 还未开始的比赛时间信息描述
+    */
+    private timeDesLabel: eui.Label;
+    /**
+     * 还未开始的比赛时间
+    */
+    private timeLabel: eui.Label;
+    /**
+     * 正在进行中
+    */
+    private underwayLabel: eui.Label;
+    /**
+     * 等待开始
+    */
+    private waitLabel: eui.Label;
+    /**
+     * 立即进入按钮
+    */
+    private enterBtn: eui.Button;
+    /**
+     * 立即报名按钮
+    */
+    private applyBtn: eui.Button;
+
+    public constructor()
+    {
+        super();
+        this.skinName = UIRendererSkinName.ChampionshipItemRenderer;
+    }
+    protected createChildren()
+    {
+        this.dataChanged();
+    }
+    protected dataChanged()
+    {
+        super.dataChanged();
+        if (this.bindData)
+        {
+            this.rebuyImg.visible = false;
+            this.addonImg.visible = false;
+            this.notStartGroup.visible = false;
+            this.underwayLabel.visible = false;
+            this.enterBtn.visible = false;
+            this.applyBtn.visible = false;
+            this.waitLabel.visible = false;
+            this.iconImg.source = this.bindData.icon;
+            this.nameLabel.text = this.bindData.name;
+            this.numLabel.text = this.bindData.applyNum + "/" + this.bindData.allNum;
+            //判断该用户的道具中是否有参加赛事对应的门票    应该要读表判断 
+            if (1)  // todo 测试代码
+            {
+                this.priceLabel.text = this.bindData.name + "门票";
+            } else
+            {
+                this.priceLabel.text = this.bindData.price + "+" + this.bindData.tax;
+            }
+            if (this.bindData.isAddon)
+            {
+                this.addonImg.visible = true;
+            }
+            if (this.bindData.isRebuy)
+            {
+                this.rebuyImg.visible = true;
+            }
+            if(TimeManager.GetServerUtcTimestamp() < this.bindData.startTime)  //比赛进行中
+            {
+                this.underwayLabel.visible = true;
+                this.underwayLabel.text = "比赛进行中";
+            }else if((TimeManager.GetServerUtcTimestamp() - this.bindData.startTime) < 60)  //比赛开始前一分钟
+            {
+
+            }else if((TimeManager.GetServerUtcTimestamp() - this.bindData.startTime) >= 60 && (TimeManager.GetServerUtcTimestamp() - this.bindData.startTime) <= 300)  //比赛开始前5分钟
+            {
+
+            }
+            this.addEventListener(egret.Event.REMOVED_FROM_STAGE, this.onDisable, this);
+        }
+    }
+    private onDisable(event: egret.Event)
+    {
+        this.removeEventListener(egret.Event.REMOVED_FROM_STAGE, this.onDisable, this);
+    }
+    private cancelBubble(event: egret.TouchEvent)
+    {
+        event.stopImmediatePropagation();
+    }
+}

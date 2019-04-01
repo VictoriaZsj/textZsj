@@ -1,0 +1,38 @@
+{
+  "global": {
+    "globalBindingDataTestObj": [],
+    "globalAutoLayerMarkEnable": false
+  },
+  "15b61253d5b": {
+    "bindingDataTestObj": []
+  },
+  "15c3023a6dd": {
+    "bindingDataTestObj": []
+  },
+  "15d3f2e0a30": {
+    "backgroundX": 0,
+    "backgroundY": 0,
+    "backgroundWidth": -1,
+    "backgroundHeight": -1,
+    "useBgImage": true,
+    "useBgColor": true,
+    "backgroundAlpha": 100,
+    "bindingDataTestObj": [],
+    "guideLinesEnabled": true
+  },
+  "15caf743bf8": {
+    "bindingDataTestObj": []
+  },
+  "15e08f14095": {
+    "guideLines": [
+      {
+        "type": "v",
+        "pos": 750
+      },
+      {
+        "type": "v",
+        "pos": 617
+      }
+    ]
+  }
+}

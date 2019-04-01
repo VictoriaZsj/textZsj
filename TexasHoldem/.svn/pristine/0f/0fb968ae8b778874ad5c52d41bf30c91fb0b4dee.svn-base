@@ -1,0 +1,68 @@
+/**
+ * 游戏结束面板
+ */
+class GameOverPanel extends BasePanel
+{
+	public shareBtn: eui.Button;
+	public exitBtn: eui.Button;
+	public infoGroup: eui.DataGroup;
+
+	private timeLabel: eui.Label;
+	private roomInfoLabel: eui.Label;
+
+	public constructor()
+	{
+		super();
+		this.skinName = UISkinName.GameOverPanel;
+	}
+	protected onAwake(event: eui.UIEvent)
+	{
+		this.infoGroup.layout = UIUtil.getHTileLayout(-18, 1, egret.HorizontalAlign.LEFT);
+		VersionManager.setComponentVisibleBySafe(this.shareBtn);
+		if (!this.shareBtn.visible)
+		{
+			this.exitBtn.horizontalCenter = "0";
+		} else
+		{
+			this.exitBtn.horizontalCenter = "121.5";
+		}
+		super.onAwake(event);
+	}
+	public init(appendData: any)
+	{
+		super.init(appendData);
+		UIUtil.bindRender(this.infoGroup, GameOverItemRenderer, GoCardProcessManager.gameOverList);
+	}
+	protected rendererStart(event: egret.Event)
+	{
+		super.rendererStart(event);
+		let date: Date = TimeManager.GetServerLocalDateTime();
+		this.timeLabel.text = DateTimeUtil.formatDate(date);
+		if (RoomManager.roomInfo)
+		{
+			this.roomInfoLabel.text = "房间号:" + RoomManager.roomInfo.roomId + "局数" + " " + RoomManager.roomInfo.roundNum + "/" + RoomManager.roomInfo.round;
+		}
+	}
+	protected onEnable(event: eui.UIEvent): void
+	{
+		super.onEnable(event);
+		this.shareBtn.addEventListener(egret.TouchEvent.TOUCH_TAP, this.onShareHandler, this);
+		this.exitBtn.addEventListener(egret.TouchEvent.TOUCH_TAP, this.onExitHandler, this);
+	}
+	protected onDisable(event: eui.UIEvent): void
+	{
+		super.onDisable(event);
+		this.shareBtn.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.onShareHandler, this);
+		this.exitBtn.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.onExitHandler, this);
+	}
+	private onShareHandler(event: egret.TouchEvent)
+	{
+		UIManager.showFloatTips("正在开发中!");
+		SoundManager.playButtonEffect(event.target);
+	}
+	private onExitHandler(event: egret.TouchEvent)
+	{
+		RoomManager.reqExitRoom(true);
+		SoundManager.playButtonEffect(event.target);
+	}
+}

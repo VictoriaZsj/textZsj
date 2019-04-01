@@ -1,0 +1,100 @@
+/**
+ * 游戏场景
+ */
+class GameScene extends BaseScene
+{
+	// public gameProcesser: GameProcesser;
+	private _isNeedReady: boolean;
+
+	public constructor()
+	{
+		super();
+	}
+	public clear()
+	{
+		this.onDisable();
+		// GoCardProcessManager.clear();
+	}
+	private onEnable()
+	{
+		// UIManager.addEventListener(UIModuleName.GameScenePanel, UIModuleEvent.COMPLETE, GoCardProcessManager.ready, this);
+	}
+	private onDisable()
+	{
+		// if (this.gameProcesser)
+		// {
+		// 	this.gameProcesser.onDisable();
+		// }
+		// UIManager.removeEventListener(UIModuleName.GameScenePanel, UIModuleEvent.COMPLETE, GoCardProcessManager.ready);
+	}
+	public initialize(resGpName?: string, isNeedReady?: boolean)
+	{
+		this._isNeedReady = isNeedReady;
+		super.initialize(resGpName, isNeedReady);
+	}
+	protected onResourceLoadComplete()
+	{
+		// super.onResourceLoadComplete();
+		// let minInfo: PlayerInfo = RoomManager.mineInfo;
+		// if (!minInfo)
+		// {
+		// 	return;
+		// }
+		// if (RoomManager.roomInfo.shouPai && RoomManager.roomInfo.shouPai.length > 0 && RoomManager.roomInfo.play != RoomState.NIL)
+		// {
+		// 	GoCardProcessManager.state = GameSceneState.Processing;
+		// }
+		// else if (minInfo.isReady && RoomManager.roomInfo.play == RoomState.NIL)
+		// {
+		// 	GoCardProcessManager.state = GameSceneState.WaitStart;
+		// }
+		// else if (!minInfo.isReady && RoomManager.roomInfo.play == RoomState.NIL && RoomManager.roomInfo.roundNum > 0)
+		// {
+		// 	GoCardProcessManager.state = GameSceneState.OneRoundOver;
+		// }
+		// else
+		// {
+		// 	console.log("房间状态未知!");
+		// }
+		// this.onEnable();
+		// UIManager.showPanel(UIModuleName.GameScenePanel, this._isNeedReady);
+		// if (!this.gameProcesser)
+		// {
+		// 	let panel: GameScenePanel = UIManager.getPanel(UIModuleName.GameScenePanel) as GameScenePanel;
+		// 	this.gameProcesser = new GameProcesser(panel)
+		// }
+		// this.gameProcesser.onEnable();
+		// if (GoCardProcessManager.state == GameSceneState.Processing && !this._isNeedReady) //从大厅中切换至游戏画面，如果游戏已经开始，则直接显示牌墙信息
+		// {
+		// 	SceneManager.gameScene.gameProcesser.gameScenePanel.showWaitGroup(false); //将等待组隐藏 
+		// 	if (RoomManager.roomInfo && RoomManager.roomInfo.shouPai && RoomManager.roomInfo.shouPai.length > 0) //如果进来已经发过牌了 则head+上53
+		// 	{
+		// 		RoomManager.roomInfo.head += 53;
+		// 	}
+		// 	this.gameProcesser.showCardWall();
+		// }
+	}
+}
+/**
+ * 游戏场景状态
+ */
+enum GameSceneState
+{
+	None = 0,
+	/**
+	 * 进入房间等待开始
+	 */
+	WaitStart = 1,
+	/**
+	 * 进行中
+	 */
+	Processing = 2,
+	/**
+	 * 一局结束
+	 */
+	OneRoundOver = 3,
+	/**
+	 * 发牌中
+	 */
+	RunFapai = 4,
+}

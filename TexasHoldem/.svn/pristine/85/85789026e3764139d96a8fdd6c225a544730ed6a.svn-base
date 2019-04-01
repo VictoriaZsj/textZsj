@@ -1,0 +1,33 @@
+/**
+ * 签到金币列表
+*/
+class SignInGoldItemRenderer extends BaseItemRenderer<SignInInfo>{
+     public signInDayLabel:eui.Label;//签到天数
+     public signInGoldLabel:eui.Label;//签到领取金币数
+     public signInCheck:eui.Image;
+    
+    public constructor(){
+        super();
+		this.skinName=UIRendererSkinName.SignInGoldItemRenderer;
+    }
+     protected createChildren()
+	{
+		this.dataChanged();
+	}
+	protected dataChanged(): void
+	{
+		super.dataChanged();
+        if(this.bindData)
+        {
+            let awardDef=AwardDefined.GetInstance().getAwardDefinition(this.bindData.definition.awardId);
+            if(awardDef)
+            {
+                for(let def of awardDef.rewardList)
+                {
+                    this.signInGoldLabel.text="金币x"+def.count.toString();
+                }
+            }
+            this.signInDayLabel.text="第"+this.bindData.definition.day.toString()+"天";
+        }
+	}
+}

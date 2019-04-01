@@ -1,0 +1,140 @@
+/**
+ * 游戏配置
+ * */
+class GameSetting
+{
+	/**
+	 * 舞台宽高
+	 * */
+	public static StageWidth: number = 720;
+	public static StageHeight: number = 1280;
+	/**
+	 * 是否同意了用户协议
+	 */
+	public static IsAgreeUserAgreement: boolean = false;
+	/**
+	 * 是否登录了
+	 */
+	public static IsLogined: boolean = false;
+	
+	public static htmlParser:egret.HtmlTextParser = new egret.HtmlTextParser();
+	/**
+	 * 登陆协议文件
+	 */
+	public static LoginBin: ArrayBuffer = null;
+	/**
+	 * 游戏协议文件c2s
+	 */
+	public static Gamec2sBin: ArrayBuffer = null;
+	/**
+	 * 游戏协议文件s2c
+	 */
+	public static Games2cBin: ArrayBuffer = null;
+	/**
+	 * 牌的总数
+	 */
+	public static CardTotalNum: number = 112;
+	/**
+	 * 最大牌的索引红中
+	 */
+	public static MaxCardIndex: number = 28;
+	/**
+	 * 闲家手牌最大张数
+	 */
+	public static MaxShouPaiNum: number = 13;
+	/**
+	 * 庄家手牌最大张数
+	 */
+	public static ZhuangJiaShouPaiNum: number = 14;
+	/**
+	 * 一张牌的最大张数
+	 */
+	public static OneTypeTotalNum: number = 4;
+	/**
+	 * 4张4张发牌，总共发12张
+	 */
+	public static FaFourCardModel: number = 12;
+	/**
+	 * 一秒的毫秒数
+	 */
+	public static OneSecondMS: number = 1000;
+
+	/**
+	 * 对家组层级
+	 */
+	public static DuiJiaGrouplayer: number = 0;
+	/**
+	 * 对家手牌层级
+	 */
+	public static DuiJiaShouPaiLayer: number = 5;
+	/**
+	 * 上家碰杠牌层级
+	 */
+	public static ShangJiaGroupLayer: number = 10;
+	/**
+	 * 上家手牌层级
+	 */
+	public static ShangJiaShouPaiLayer: number = 15;
+	/**
+	 * 下家碰杠牌层级
+	 */
+	public static XiaJiaGroupLayer: number = 20;
+	/**
+	 * 下家手牌层级
+	 */
+	public static XiaJiaShouPaiLayer: number = 25;
+	/**
+	 * 牌墙层级其他家
+	 */
+	public static CardWallOther: number = 35;
+	/**
+ * 出牌层级 本家
+ */
+	public static OutBenJiaLayer: number = 36;
+	/**
+	 * 出牌层级 对家
+	 */
+	public static OutDuiJiaLayer: number = 37;
+	/**
+	 * 出牌层级 下家
+	 */
+	public static OutXiaJiaLayer: number = 38;
+	/**
+	 * 出牌层级 上家
+	 */
+	public static OutShangJiaLayer: number = 39;
+	/**
+	 * 本家组牌层级
+	 */
+	public static BenJiaGroupLayer: number = 40;
+	/**
+	 * 牌墙层级本家
+	 */
+	public static CardWallLayerBenJia: number = 45;
+	/**
+	 * 本家手牌层级
+	 */
+	public static BenJiaShouPaiLayer: number = 50;
+	/**
+	 * 最大邮件数量
+	 */
+	public static MaxMailNum:number = 30;
+	/**
+	 * 是否开启震动
+	 */
+	public  static _shakeEnabled:boolean;
+    public static get shakeEnabled(): boolean
+	{
+		if (GameSetting._shakeEnabled != undefined)
+		{
+			return GameSetting._shakeEnabled;
+		}
+		return PrefsManager.getBoolean(PrefsManager.Shake_Enable);
+	}
+
+	public static set shakeEnabled(value: boolean)
+	{
+		GameSetting.shakeEnabled = value;
+		PrefsManager.setBoolean(PrefsManager.Shake_Enable, value);
+	}
+}

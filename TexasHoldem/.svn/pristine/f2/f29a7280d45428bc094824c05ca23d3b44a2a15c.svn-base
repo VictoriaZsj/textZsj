@@ -1,0 +1,140 @@
+/**
+ * 操作CD组件
+ */
+class GamblingCdComponent extends BaseComponent<number>
+{
+	public cdImg: eui.Image;
+	private _shape: egret.Shape;
+	private _colorMatrix: Array<number>;
+	private _colorFilter: egret.ColorMatrixFilter;
+	private _filterList: Array<egret.ColorMatrixFilter>;
+	private _angle: number = 0;
+	private _phase: number = 0;
+	private _maxPhase: number = 0;
+	private _index: number = 1;
+	private _cdTime: number;
+	private _angleStep: number;
+	private _timePhase1: number;
+	private _timePhase2: number;
+
+	public constructor()
+	{
+		super();
+		this.skinName = UIComponentSkinName.GamblingCdComponent;
+	}
+	protected onAwake(event: eui.UIEvent)
+	{
+		this._shape = new egret.Shape();
+		this.addChild(this._shape);
+		this._shape.x = this.cdImg.width / 2;
+		this._shape.y = this.cdImg.height / 2;
+		this.cdImg.mask = this._shape;
+		if (!this._filterList)
+		{
+			this._filterList = [];
+		}
+	}
+	protected onEnable(event: eui.UIEvent): void
+	{
+		super.onEnable(event);
+	}
+	/**
+	 * 如果没有必要，面板的所有事件移除需写在此方法内
+	 */
+	protected onDisable(event: eui.UIEvent): void
+	{
+		super.onDisable(event);
+		Tick.getInstance().removeFrameInvoke(this.tick, this);
+	}
+	public init(data: number)
+	{
+		if (data != undefined)
+		{
+			this._cdTime = data;
+		}
+		else
+		{
+			this._cdTime = 15;
+		}
+	}
+	public start(startTime: number)
+	{
+		if (!startTime)
+		{
+			startTime = TimeManager.GetServerUtcTimestamp();
+		}
+		this._colorMatrix = [
+			0, 0, 0, 0, 0,
+			0, 1, 0, 0, 0,
+			0, 0, 0, 0, 0,
+			0, 0, 0, 1, 0
+		];
+		if (!this._colorFilter)
+		{
+			this._colorFilter = new egret.ColorMatrixFilter(this._colorMatrix);
+		}
+		this.cdImg.filters = null;
+		this._index = 1;
+
+		let remainTime: number = TimeManager.GetServerUtcTimestamp() - startTime;
+		this._phase = remainTime * this.stage.frameRate;
+
+		this._shape.rotation = -90;
+		this._maxPhase = this.stage.frameRate * this._cdTime;
+		this._angleStep = 360 / this._maxPhase;
+		this._angle = this._angleStep * this._phase;
+		this._timePhase1 = this._maxPhase / 3;
+		this._timePhase2 = this._timePhase1 * 2;
+		Tick.getInstance().addFrameInvoke(this.tick, this);
+	}
+	protected rendererStart(event: egret.Event)
+	{
+		super.rendererStart(event);
+	}
+	private tick()
+	{
+		this.mgraphics(this._angle);
+		this._angle += this._angleStep;
+		if (this._angle >= 360)
+		{
+			this._angle = this._angle % 360;
+			this._index *= -1;
+		}
+		if (this._phase >= this._timePhase1 && this._phase < this._timePhase2)
+		{
+			this._colorMatrix[1] += 0.015;
+			this._colorMatrix[6] -= 0.0008;
+		}
+		else if (this._phase >= this._timePhase2)
+		{
+			this._colorMatrix[6] -= 0.0014;
+		}
+		if (this._colorMatrix[1] > 1)
+		{
+			this._colorMatrix[1] = 1;
+		}
+		if (this._colorMatrix[6] <= 0)
+		{
+			this._colorMatrix[6] = 0;
+		}
+		this._colorFilter.matrix = this._colorMatrix;
+		this._filterList[0] = this._colorFilter;
+		this.cdImg.filters = this._filterList;
+		this._phase += 1;
+		if (this._phase >= this._maxPhase)
+		{
+			//超时操作
+		}
+		console.log(this._phase);
+	}
+	private mgraphics(_angle: number): void
+	{
+		this._shape.graphics.clear();
+		this._shape.graphics.beginFill(0xffffff, 1);
+		this._shape.graphics.moveTo(0, 0);
+		this._shape.graphics.lineTo(50, 0);
+		this._shape.graphics.drawArc(0, 0, 50, 0, _angle * Math.PI / 180, this._index == -1);
+		this._shape.graphics.lineTo(0, 0);
+		this._shape.graphics.endFill();
+	}
+}

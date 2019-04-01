@@ -1,0 +1,37 @@
+/**
+ * 函数调用工具
+ */
+class CallUtil
+{
+	/**
+	 * 调用函数
+	 */
+	public static invokeFunc(callBack: Function, thisObj: any, params?: any)
+	{
+		if (callBack)
+		{
+			if (thisObj)
+			{
+				if (params === undefined)
+				{
+					callBack.call(thisObj);
+				}
+				else
+				{
+					callBack.call(thisObj, params);
+				}
+			}
+			else
+			{
+				if (params === undefined)
+				{
+					callBack();
+				}
+				else
+				{
+					callBack(params);
+				}
+			}
+		}
+	}
+}

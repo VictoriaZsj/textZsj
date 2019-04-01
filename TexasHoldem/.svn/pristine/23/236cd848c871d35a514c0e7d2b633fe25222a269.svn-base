@@ -1,0 +1,60 @@
+/**
+ * 消息发送
+ */
+class SocketInfo
+{
+	/**
+	 * 内容
+	 */
+	public args: any;
+	/**
+	 * 会话
+	 */
+	public session: number;
+	public cmdId: string;
+	/**
+	 * 是否断线重发
+	 */
+	public isDiscRetry: boolean;
+	/**
+	 * 是否独占
+	 */
+	public isSole: boolean;
+	public onResult: Function;
+	public onError: Function;
+	public thisObject: any;
+	/**
+	 * 调用成功回调
+	 */
+	public callResult(result: SpRpcResult)
+	{
+		if (this.onResult)
+		{
+			if (this.thisObject)
+			{
+				this.onResult.call(this.thisObject, result);
+			}
+			else
+			{
+				this.onResult(result);
+			}
+		}
+	}
+	/**
+	 * 调用错误回调
+	 */
+	public callError(result: SpRpcResult)
+	{
+		if (this.onError)
+		{
+			if (this.thisObject)
+			{
+				this.onError.call(this.thisObject, result);
+			}
+			else
+			{
+				this.onError(result);
+			}
+		}
+	}
+}

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="panelSkin11" width="990" height="620" xmlns:e="http://ns.egret.com/eui" xmlns:ns1="*" xmlns:w="http://ns.egret.com/wing">
+	<e:Group id="tweenGroup" horizontalCenter="0" verticalCenter="0">
+		<e:Image width="962" height="565" source="bg_page2_png"  horizontalCenter="0" verticalCenter="5.5" scale9Grid="44,41,88,89"/>
+		<e:Image horizontalCenter="0" verticalCenter="-260.5" source="bg_page5_png" scale9Grid="124,0,38,79" width="399" scaleX="0.8" scaleY="0.8"/>
+		<e:Image horizontalCenter="0" verticalCenter="-258.5" scaleX="1" scaleY="1" source="h_shezhi_png"/>
+		<ns1:GameButton id="closeButton" label="Button"  skinName="buttonSkin4" horizontalCenter="446.5" verticalCenter="-252"/>
+		<ns1:GameButton id="reLoginBtn" label="Button" horizontalCenter="0" verticalCenter="189" skinName="buttonSkin43"/>
+		<ns1:GameButton id="disbandBtn" label="Button" verticalCenter="191" skinName="buttonSkin44" scaleX="1" scaleY="1" horizontalCenter="0"/>
+		<e:HSlider id="bgSoundHs" width="400" height="40" skinName="HSliderSkin1"  horizontalCenter="-20" verticalCenter="-90.5"/>
+		<e:HSlider id="soundEffectHs" width="400" height="40" skinName="HSliderSkin1"  horizontalCenter="-20" verticalCenter="21.5"/>
+		<e:Label text="背景音乐" size="40"  fontFamily="SimHei" textColor="0x485d65" horizontalCenter="-317" verticalCenter="-90.5"/>
+		<e:Label text="游戏音效" size="40"  fontFamily="SimHei" horizontalCenter="-317" verticalCenter="21.5" textColor="0x485d65"/>
+		<e:ToggleSwitch id="bgSoundTog" label="ToggleButton" skinName="toggleSwitchSkin1" horizontalCenter="285.5" verticalCenter="-90.5" scaleX="1.1" scaleY="1.1"/>
+		<e:ToggleSwitch id="soundEffectTog" label="ToggleButton" skinName="toggleSwitchSkin1" horizontalCenter="285.5" verticalCenter="21.5" scaleX="1.1" scaleY="1.1"/>
+		<e:Image horizontalCenter="0" verticalCenter="98.5" source="bg_page20_png" width="703" height="5"/>
+	</e:Group>
+</e:Skin>

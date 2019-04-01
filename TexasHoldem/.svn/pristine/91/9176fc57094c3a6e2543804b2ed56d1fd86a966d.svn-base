@@ -1,0 +1,62 @@
+/**
+ * 游戏结束项
+ */
+class GameOverItemRenderer extends BaseItemRenderer<GameOverInfo>
+{
+	public headImg: eui.Image;
+	public hostImg: eui.Image;
+	public idLabel: eui.Label;
+	public nameLabel: eui.Label;
+	public scoreLabel1: eui.Group;
+	public scroller: eui.Scroller;
+	public maxWinerFlag: eui.Image;
+	public scoreGroup: eui.DataGroup;
+
+	private _scoreDp: eui.ArrayCollection;
+
+
+	public constructor()
+	{
+		super();
+		this.skinName = UIRendererSkinName.GameOverItemRenderer;
+	}
+	protected createChildren()
+	{
+		this.hostImg.visible = false;
+		this.scroller.viewport = this.scoreGroup;
+		UIUtil.hideScrollerBar(this.scroller, true, true);
+		this.scoreGroup.layout = UIUtil.getVTileLayout(-1, 1, egret.VerticalAlign.TOP);
+		this.dataChanged();
+	}
+	protected dataChanged(): void
+	{
+		super.dataChanged();
+		if (this.bindData && this.idLabel)
+		{
+			let pInfo: PlayerInfo = RoomManager.getPlayerInfoByRoleId(this.bindData.roleId);
+			if (pInfo)
+			{
+				UIUtil.ShowHead(this.headImg, pInfo.head);
+			}
+			this.maxWinerFlag.visible = this.bindData.isMaxWin;
+			this.scroller.viewport.scrollH = 0;
+			this.idLabel.text = this.bindData.roleId.toString();
+			let info: GameOverInfo;
+			this.hostImg.visible = false;
+			for (let i: number = 0; i < GoCardProcessManager.gameOverList.length; i++)
+			{
+				info = GoCardProcessManager.gameOverList[i];
+				if (info.roleId == this.bindData.roleId)
+				{
+					UIUtil.ShowScoreImg(info.totalScore, this.scoreLabel1, 0.8, 0.8);
+				}
+			}
+			if (RoomManager.isHost(this.bindData.roleId))
+			{
+				this.hostImg.visible = true;
+			}
+			this.nameLabel.text = this.bindData.playerInfo.name;
+			UIUtil.bindRender(this.scoreGroup, OneRoundScoreItemRenderer, this.bindData.scoreInfoList);
+		}
+	}
+}

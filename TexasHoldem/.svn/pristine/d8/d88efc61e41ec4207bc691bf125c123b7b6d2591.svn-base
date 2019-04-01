@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="RoundUserListItemRendererSkin" width="600" height="133" xmlns:e="http://ns.egret.com/eui"
+        xmlns:w="http://ns.egret.com/wing" xmlns:ns1="*">
+        <ns1:GameButtonGroup width="600">
+    <e:Image width="600" height="130" x="0" y="0" anchorOffsetY="0" fillMode="scale" anchorOffsetX="0"
+              source="bg_page27_png" scale9Grid="344,138,8,9"/>
+	<e:Image id="vipImg" x="55" y="47" source="jushu_png"/>	
+    <e:Label id="monthVip" text="一个月VIP" x="166" y="34" fontFamily="SimHei"  size="26" textColor="0x656c72"/>
+	<e:Label id="roundIndexLabel" text="1" x="64.5" y="60" bold="true" fontFamily="SimHei" size="26" textColor="0xffffff" width="34" textAlign="center"/>
+    <e:Label id="desVip" text="购买后立即获得专属标识、专属客服、等级加速、创建私人房、免费使用保险箱等特权" x="166" y="73" fontFamily="SimHei"  size="15" textColor="0x656c72" verticalAlign="middle" anchorOffsetY="0" height="47" anchorOffsetX="0" width="294"/>
+	<e:Button id="vipCountBtn" label="6元" x="501.25" y="47" scaleX="0.5" scaleY="0.5" skinName="buttonSkin2"/>
+    </ns1:GameButtonGroup>
+</e:Skin>

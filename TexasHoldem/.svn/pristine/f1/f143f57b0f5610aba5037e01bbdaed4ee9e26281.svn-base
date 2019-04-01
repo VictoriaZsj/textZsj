@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="panelSkin9" width="1280" height="720" xmlns:e="http://ns.egret.com/eui"
+        xmlns:w="http://ns.egret.com/wing" xmlns:ns1="*" xmlns:tween="egret.tween.*">
+	<w:Config id="15c813d330f" />
+	<e:Group id="tweenGroup" width="1280" height="720" x="0" y="0">
+		<e:Group id="anmGroup1" width="1280" height="630" x="0" y="90">
+			<e:Group id="bgImageGroup" width="1280" height="720" x="0" y="-45.9">
+				<e:Image width="1212" height="662" y="-7" scaleX="1" scaleY="1"
+				          source="bg_page2_png" scale9Grid="21,20,106,107" anchorOffsetX="0" anchorOffsetY="0" horizontalCenter="0"/>
+				<e:Image y="-32.2" source="bg_page5_png" horizontalCenter="0"/>
+				<e:Image x="30.66" y="-11.44" source="bg_page24_3_png"/>
+				<e:Image x="1227.58" y="614.69" source="bg_page24_2_png"/>
+				<e:Image y="-16.84" source="h_lfk_png" horizontalCenter="0.5"/>
+			</e:Group>
+			<e:Group x="17.12" y="-1.5">
+				<e:ToggleSwitch id="shareID" label="分享ID" skinName="shareIDToggleSwitchSkin" x="45.13" y="57.76" />
+				<e:ToggleSwitch id="getCard" label="可领取" skinName="getCardToggleSwitchSkin" x="45.13" y="141.32" />
+			</e:Group>
+			<e:Group id="shareIDGroup" y="-60">
+				<e:Image width="936" height="465" anchorOffsetX="0" anchorOffsetY="0" x="276.96" y="116.01" scaleX="1" scaleY="1" scale9Grid="19,18,23,23" source="bg_page19_png"/>
+				<ns1:GameButton id="friendBtn" label="好友群" x="619.66" skinName="buttonSkin48" verticalCenter="194.5"/>
+				<ns1:GameButton id="friendCircleBtn" label="朋友圈" x="875.94" skinName="buttonSkin51"  verticalCenter="194.5"/>
+				<e:Image anchorOffsetX="0" anchorOffsetY="0" source="bg_page28_png" scale9Grid="18,103,110,18" width="228.61"
+				         height="301.94" x="316.7" y="149.33" />
+				<e:Image anchorOffsetX="0" anchorOffsetY="0" source="bg_page28_png" scale9Grid="18,103,110,18" width="281.65"
+				         height="301.94" x="579.16" y="149.33" />
+				<e:Image anchorOffsetX="0" anchorOffsetY="0" x="614" y="288" source="nvtou_png" />
+				<e:Image anchorOffsetX="0" anchorOffsetY="0" x="741.83" y="288.5" source="nantou_png" />
+				<e:Image anchorOffsetX="0" anchorOffsetY="0" source="bg_page28_png" scale9Grid="18,103,110,18" width="281.65"
+				         height="301.94" x="896.72" y="149.33" />
+				<e:Label text="推荐好友" x="381.01" y="165.35" fontFamily="SimHei" textColor="0xedceb4" size="25" />
+				<e:Label text="立即分享领房卡：" x="317.51" fontFamily="SimHei" size="30" anchorOffsetX="0" width="260"
+				         anchorOffsetY="0" height="35.67"  textColor="0xa0522b" bold="true" verticalCenter="192.5"/>
+				<e:Label text="您的专属邀请码：" fontFamily="SimHei" size="35" anchorOffsetX="0" width="281.33"
+				         anchorOffsetY="0" height="35.67"  horizontalCenter="48" textColor="0xea9f48" verticalCenter="302"/>
+				<e:Label id="shareIdNum" text="1723" x="805.02" fontFamily="SimHei" size="35" anchorOffsetX="0" width="281.33"
+				         anchorOffsetY="0" height="35.67"  verticalCenter="302" textColor="0xea9f48"/>
+				<e:Label text="下载游戏" x="381.45" y="202.35" fontFamily="SimHei" textColor="0xf0ad67" size="25" />
+				<e:Label text="好友绑定您的ID号码" x="603.48" y="165.35" fontFamily="SimHei" textColor="0xEDCEB4" size="25"
+				         anchorOffsetX="0" width="233" />
+				<e:Label text="您和好友获得房卡奖励" x="594.98" y="202.35" fontFamily="SimHei" textColor="0xF0AD67" size="25" />
+				<e:Label text="好友" x="628.76" y="254.35" fontFamily="SimHei" size="25" textColor="0x424242" />
+				<e:Label id="friendBindCardGetNum" text="0张房卡" x="613.5" y="397.35" fontFamily="SimHei" size="25" textColor="0xba5d38" />
+				<e:Label id="yourBindCardGetNum" text="0张房卡" x="738.33" y="397.35" fontFamily="SimHei" textColor="0xBA5D38" size="25" />
+				<e:Label text="您" x="768.76" y="254.35" fontFamily="SimHei" textColor="0x424242" size="25" />
+				<e:Image anchorOffsetX="0" anchorOffsetY="0" x="936.3" y="288" source="nvtou_png" />
+				<e:Image anchorOffsetX="0" anchorOffsetY="0" x="1051.33" y="288.5" source="nantou_png" />
+				<e:Label text="好友" x="956.95" y="254.35" fontFamily="SimHei" textColor="0x424242" size="25" />
+				<e:Label id="playFriendGetNum" text="0张房卡" x="923" y="397.35" fontFamily="SimHei" textColor="0xBA5D38" size="25" />
+				<e:Label id="playYourGetNum" text="0张房卡" x="1047.83" y="397.35" fontFamily="SimHei" textColor="0xBA5D38" size="25" />
+				<e:Label text="您" x="1078.26" y="254.35" fontFamily="SimHei" textColor="0x424242" size="25" />
+				<e:Label text="好友完成一轮游戏" x="936.3" y="165.35" fontFamily="SimHei" textColor="0xEDCEB4" size="25" anchorOffsetX="0"
+				         width="202.5" />
+				<e:Label text="您和好友获得房卡奖励" x="912.54" y="202.35" fontFamily="SimHei" textColor="0xF0AD67" size="25" />
+				<e:Group id="bindedGroup" y="52.68" width="532" height="57" horizontalCenter="39.5">
+					<e:Image anchorOffsetX="0" anchorOffsetY="0" width="532" height="49" scaleX="1" scaleY="1" source="bg_page13_png"
+					          scale9Grid="208,0,13,46" y="4"/>
+					<e:Label text="您已完成绑定" fontFamily="SimHei"  horizontalCenter="0" y="13.12" textColor="0xa0522b"/>
+				</e:Group>
+				<e:Image anchorOffsetX="0" anchorOffsetY="0" x="385" y="296.3" source="icon_png" />
+				<e:Group id="bindGroup" width="902" height="114.67" horizontalCenter="63.5" verticalCenter="-224.5" anchorOffsetY="0"
+				         anchorOffsetX="0" visible="false">
+					<ns1:GameButton id="bindToObtainBtn" label="绑定获取" x="681.28" scaleX="0.7"
+					                scaleY="0.7"  verticalCenter="-12.335" skinName="buttonSkin_61"/>
+					<e:Image anchorOffsetX="0" anchorOffsetY="0" width="607.39" height="48.42" x="59.31"
+					         scaleX="1" scaleY="1"  source="bg_page17_png" scale9Grid="15,14,149,53" verticalCenter="-16.335"/>
+					<e:EditableText id="shareIdEditableText" prompt="请输入好友的邀请码" text="" x="212.64" y="27.35" fontFamily="SimHei" size="30" anchorOffsetX="0" width="334.24"
+					         anchorOffsetY="0" height="35.67" scaleX="1" scaleY="1"  textColor="0xffffff"/>
+				</e:Group>
+			</e:Group>
+			<e:Group id="getCardGroup" width="1280" horizontalCenter="0" y="35" visible="false">
+				<e:Image width="936" height="146" anchorOffsetX="0" anchorOffsetY="0" y="21.18" scaleX="1" scaleY="1" scale9Grid="19,18,23,23" source="bg_page19_png" horizontalCenter="105"/>
+				<e:Image width="936" height="376" anchorOffsetX="0" anchorOffsetY="0" y="181.76" scaleX="1" scaleY="1" scale9Grid="19,18,23,23" source="bg_page19_png" horizontalCenter="105"/>
+				<ns1:GameButton id="immediatelyToReceiveBtn" label="立即领取" scaleX="0.8" scaleY="0.8"
+				                skinName="buttonSkin52"  x="1028.94" y="65.82"/>
+				<e:Image x="558.98" y="53.78" anchorOffsetX="0" anchorOffsetY="0" source="fangka_png" width="100" height="100"  scaleX="0.8" scaleY="0.8"/>
+				<e:Label text="您已累计领取房卡：" x="302.8" fontFamily="SimHei"  textColor="0xa0522b" verticalCenter="-183.5"/>
+				<e:Label text="还能领取" x="757.05" fontFamily="SimHei" size="30"  textColor="0xa0522b" verticalCenter="-183.5"/>
+				<e:Label id="notBringCardNum" text="5" fontFamily="SimHei" size="30" verticalCenter="-183.5" textColor="0xf61c1c"  x="878.79" width="30" textAlign="center"/>
+				<e:Label text="张房卡" fontFamily="SimHei" size="30" verticalCenter="-183.5" textColor="0xa0522b"  x="909.39"/>
+				<e:Label id="hasBringCardNum" text="0张" x="641.42" fontFamily="SimHei"  textColor="0xa0522b" verticalCenter="-183.5"/>
+				<e:Group id="inviteFriendInfoGroup" width="937.87" height="357.58" x="280.76" y="190.06" anchorOffsetX="0" anchorOffsetY="0">
+					<e:Label text="我邀请的好友" y="14.699999999999989" fontFamily="SimHei" textColor="0xa0522b" horizontalCenter="-1.9350000000000023" x="376.24" scaleX="1" scaleY="1"/>
+					<e:Label id="getShareCardMaxNum" text="提示：您最多可累计获得50张房卡奖励" y="57.370000000000005" fontFamily="SimHei" textColor="0xa0522b" size="28" horizontalCenter="-2.9350000000000023" x="228.24" scaleX="1" scaleY="1"/>
+					<e:Label text="绑定日期" x="128.39" y="115.11000000000001" fontFamily="SimHei" size="30" textColor="0xa0522b" scaleX="1" scaleY="1"/>
+					<e:Label text="好友昵称" x="407.55000000000007" y="115.11000000000001" fontFamily="SimHei" size="30" textColor="0xa0522b" scaleX="1" scaleY="1"/>
+					<e:Label text="完成一轮游戏" x="653.55" y="115.79999999999995" fontFamily="SimHei" size="30" textColor="0xa0522b" scaleX="1" scaleY="1"/>
+					<e:List id="list" width="870.34" x="34.45" y="157.64" scaleX="1" scaleY="1"/>
+				</e:Group>
+				<e:Scroller id="scroller" width="1002.73" height="361.59" x="277.27" y="186.4" anchorOffsetX="0" anchorOffsetY="0" scaleX="1" scaleY="1"/>
+			</e:Group>
+		</e:Group>
+		<ns1:GameButton id="closeButton" label="Button" skinName="buttonSkin4" x="1206" y="11"/>
+	</e:Group>
+</e:Skin>

@@ -1,0 +1,9 @@
+/**
+ * 牌局管理器
+ */
+class GamblingManager
+{
+	public constructor()
+	{
+	}
+}

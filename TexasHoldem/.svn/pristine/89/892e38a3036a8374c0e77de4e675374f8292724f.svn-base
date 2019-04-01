@@ -1,0 +1,38 @@
+/**
+ * 牌的定义
+ * */
+class CardDefined extends BaseDefined<CardDefinition>
+{
+	private static readonly cardConfig: string = "card";
+	private static _instance: CardDefined;
+	public static GetInstance(): CardDefined
+	{
+		if (!CardDefined._instance)
+		{
+			CardDefined._instance = new CardDefined();
+		}
+		if (DefinedManager.IsParsed(CardDefined.cardConfig) == false)
+		{
+			CardDefined._instance.initialize();
+		}
+		return CardDefined._instance;
+	}
+
+	public initialize()
+	{
+		let obj: Object = DefinedManager.GetData(CardDefined.cardConfig);
+		this.dataList = ShortNameDefined.GetInstance().convertEnter(obj) as Array<CardDefinition>;
+	}
+}
+/**
+ * 牌的定义
+ * */
+class CardDefinition implements IBaseDefintion
+{
+	/*牌的ID*/
+	public id: number;
+	/*牌的资源名*/
+	public img: string;
+	/*牌名*/
+	public name: string;
+}

@@ -1,0 +1,147 @@
+/**
+ * 用户信息面板
+ */
+class UserInfoPanel extends BasePanel
+{
+	public userInfo: UserInfoComponent;
+	public cardGroup: eui.Group;
+	public vipLeftGroup: eui.Group;
+
+	public roomCardNumLabel: eui.Label;
+	public addRoomCardBtn: GameButton;
+
+	public ipLabel: eui.Label;
+	public levelLabel: eui.Label;
+	public titleLabel: eui.Label;
+	public expFill: eui.Image;
+	public vipWealButton: GameButton;
+	public vipLeftLabel: eui.Label;
+	public openVipNowLabel: eui.Label;
+	public vipImg: eui.Image;
+	public noVipLabel:eui.Label;
+
+	public constructor()
+	{
+		super();
+		this.isMaskClickClose = true;
+		this.skinName = UISkinName.UserInfoPanel;
+	}
+	protected onAwake(event: eui.UIEvent)
+	{
+		super.onAwake(event);
+	}
+	public init(appendData: any)
+	{
+		super.init(appendData);
+	}
+	protected rendererStart(event: egret.Event)
+	{
+		let otherUserInfo: OtherUserInfo = UserManager.otherUserInfo;
+		if (otherUserInfo.roleId == UserManager.userInfo.roleId)
+		{
+			this.cardGroup.visible = true;
+			this.vipLeftGroup.visible = true;
+			this.roomCardNumLabel.text = UserManager.userInfo.card.toString();
+		}
+		else
+		{
+			this.cardGroup.visible = false;
+			this.vipLeftGroup.visible = false;
+		}
+
+		this.ipLabel.text = otherUserInfo.ip;
+		let playerInfo: PlayerInfo = new PlayerInfo();
+		playerInfo.head = otherUserInfo.head;
+		playerInfo.name = otherUserInfo.name;
+		playerInfo.roleId = otherUserInfo.roleId;
+		playerInfo.sex = otherUserInfo.sex;
+		playerInfo.ip = otherUserInfo.ip;
+		this.userInfo.init(playerInfo);
+		this.levelLabel.text = otherUserInfo.level.toString();
+		this.titleLabel.text = UserUtil.getTitle(otherUserInfo.level);
+		this.expFill.width = 400;
+		this.expFill.width *= UserUtil.getPercentage(otherUserInfo.level, otherUserInfo.exp);
+		this.RefreshVipInfo();
+
+		super.rendererStart(event);
+	}
+
+	private RefreshVipInfo()
+	{
+		//vip图标
+		switch (VipManager.vipType)
+		{
+			case VipType.MonthVip:
+				this.vipImg.visible = true;
+				this.noVipLabel.visible = false;
+				this.vipImg.source = "yuehuiyuan_png";
+				break;
+			case VipType.WeekVip:
+				this.vipImg.visible = true;
+				this.noVipLabel.visible = false;
+				this.vipImg.source = "zhouhuiyuan_png";
+				break;
+			case VipType.NoVip:
+				this.vipImg.visible = false;
+				this.noVipLabel.visible = true;
+				break;
+		}
+		if (VipManager.vipType == VipType.NoVip)
+		{
+			this.vipLeftLabel.visible = false;
+		}
+		else
+		{
+			this.vipLeftLabel.visible = true;
+			let lefttime: number = VipManager.GetLeftTime() - TimeManager.GetServerUtcTimestamp();
+			this.vipLeftLabel.text = this.GetVipLefttimeText(lefttime);
+		}
+	}
+
+	private GetVipLefttimeText(time: number): string
+	{
+		let result: string = "会员剩余时间：";
+		let tempTime: number = time;
+		result += StringUtil.format("{0}天", Math.floor(tempTime / 86400));
+		tempTime %= 86400;
+		result += StringUtil.format("{0}小时", Math.floor(tempTime / 3600));
+		return result;
+	}
+
+
+
+	protected onEnable(event: eui.UIEvent): void
+	{
+		super.onEnable(event);
+		this.addRoomCardBtn.addEventListener(egret.TouchEvent.TOUCH_TAP, this.onAddRoomCard, this);
+		this.openVipNowLabel.addEventListener(egret.TouchEvent.TOUCH_TAP, this.onOpenVipNow, this);
+		this.vipWealButton.addEventListener(egret.TouchEvent.TOUCH_TAP, this.onGotoVipWealPanel, this);
+		VipManager.vipUpgrade.addListener(this.RefreshVipInfo, this);
+	}
+	protected onDisable(event: eui.UIEvent): void
+	{
+		super.onDisable(event);
+		this.addRoomCardBtn.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.onAddRoomCard, this);
+		this.openVipNowLabel.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.onOpenVipNow, this);
+		this.vipWealButton.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.onGotoVipWealPanel, this);
+		VipManager.vipUpgrade.removeListener(this.RefreshVipInfo);
+	}
+
+	private onAddRoomCard()
+	{
+		SoundManager.playEffect(Sex.Male, MusicAction.buttonClick);
+		UIManager.showPanel(UIModuleName.PayPanel);
+	}
+
+	private onOpenVipNow()
+	{
+		SoundManager.playEffect(Sex.Male, MusicAction.buttonClick);
+		UIManager.showPanel(UIModuleName.PayPanel);
+	}
+
+	private onGotoVipWealPanel()
+	{
+		SoundManager.playEffect(Sex.Male, MusicAction.buttonClick);
+		UIManager.showPanel(UIModuleName.VipWealthPanel);
+	}
+}

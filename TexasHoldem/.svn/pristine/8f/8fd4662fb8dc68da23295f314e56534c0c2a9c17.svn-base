@@ -1,0 +1,255 @@
+/**
+ * 商城面板
+*/
+class ShoppingPanel extends BackHomeAnimePanel
+{
+    public shoppingTab: TabComponent;
+    public goldGroup: eui.Group;
+    public goldList: eui.List;
+
+    public diamondGroup: eui.Group;
+    public diamondList: eui.List;
+
+    public vipGroup: eui.Group;
+    public vipList: eui.List;
+
+    public activeBtnFlage;
+
+    public gold_scroller: eui.Scroller;
+    public diamond_scroller: eui.Scroller;
+    public vip_scroller: eui.Scroller;
+
+    private gold_dp: eui.ArrayCollection;
+    private diamond_dp: eui.ArrayCollection;
+    private vip_dp: eui.ArrayCollection;
+
+    private diamondNumLabel: eui.Label;
+    private goldNumLabel: eui.Label;
+    
+//todo    
+    public chips:ChipsShowComponent;
+    public button1:eui.Button;
+    public button2:eui.Button;
+    public button3:eui.Button;
+    public button4:eui.Button;
+    public button5:eui.Button;
+    public button6:eui.Button;
+    public button7:eui.Button;
+    public button8:eui.Button;
+    public button9:eui.Button;
+
+    public constructor()
+    {
+        super();
+        this._isMaskClickClose = true;
+        this.skinName = UISkinName.ShoppingPanel;
+    }
+    // 只执行一次
+    protected onAwake(event: eui.UIEvent)
+    {
+        super.onAwake(event);
+        this.gold_scroller.scrollPolicyH = eui.ScrollPolicy.OFF;
+        this.diamond_scroller.scrollPolicyH = eui.ScrollPolicy.OFF;
+        if (!this.gold_dp)
+        {
+            this.gold_dp = new eui.ArrayCollection();
+        }
+        if (!this.diamond_dp)
+        {
+            this.diamond_dp = new eui.ArrayCollection();
+        };
+        if (!this.vip_dp)
+        {
+            this.vip_dp = new eui.ArrayCollection();
+        };
+        UIUtil.listRenderer(this.goldList, this.gold_scroller, GoldListItemRenderer, ScrollViewDirection.Vertical_T_D, eui.ScrollPolicy.ON, null, true);
+        UIUtil.listRenderer(this.diamondList, this.diamond_scroller, DiamondListItemRenderer, ScrollViewDirection.Vertical_T_D, eui.ScrollPolicy.ON, null, true);
+        UIUtil.listRenderer(this.vipList, this.vip_scroller, VipListItemRenderer, ScrollViewDirection.Vertical_T_D, eui.ScrollPolicy.ON, null, true);
+
+        this.diamondNumLabel.text = MathUtil.formatNum(UserManager.userInfo.diamond);
+        this.goldNumLabel.text = MathUtil.formatNum(UserManager.userInfo.gold);
+    }
+    // 每次打开都会执行
+    public init(appendData: any)
+    {
+        super.init(appendData);
+        
+        let array: Array<eui.Group> = new Array<eui.Group>();
+        array.push(this.goldGroup);
+        array.push(this.diamondGroup);
+        array.push(this.vipGroup);
+
+        if (appendData && appendData.tab != null)
+        {
+            this.shoppingTab.init(array, { enterTabindex: appendData.tab });
+        }
+        else
+        {
+            this.shoppingTab.init(array);
+        }
+    }
+    protected onEnterAnmComplete()
+    {
+        if (this.isLoadComplete)
+        {
+            this.refreshUI();
+
+        }
+        super.onEnterAnmComplete();
+    }
+    protected onEnable(event: eui.UIEvent): void
+    {
+        super.onEnable(event);
+
+        // 购买金币
+        this.goldList.addEventListener(eui.ItemTapEvent.ITEM_TAP, this.BuyClickHandler, this);
+        this.diamondList.addEventListener(eui.ItemTapEvent.ITEM_TAP, this.BuyClickHandler, this);
+        this.vipList.addEventListener(eui.ItemTapEvent.ITEM_TAP, this.BuyClickHandler, this);
+        ShoppingManager.buyOverAction.addListener(this.refreshProperty, this);// 添加事件监听
+
+        UIUtil.hideScrollerBar(this.gold_scroller);
+        UIUtil.hideScrollerBar(this.diamond_scroller);
+        UIUtil.hideScrollerBar(this.vip_scroller);
+        this.addEventListener(egret.TouchEvent.TOUCH_TAP,this.chipsShow,this)
+    }
+    protected onDisable(event: eui.UIEvent): void
+    {
+        super.onDisable(event);
+        this.goldList.removeEventListener(eui.ItemTapEvent.ITEM_TAP, this.BuyClickHandler, this);
+        this.diamondList.removeEventListener(eui.ItemTapEvent.ITEM_TAP, this.BuyClickHandler, this);
+        this.vipList.removeEventListener(eui.ItemTapEvent.ITEM_TAP, this.BuyClickHandler, this);
+        ShoppingManager.buyOverAction.removeListener(this.refreshProperty);// 移除事件监听
+    }
+    /**
+     * 点击按钮状态改变事件处理
+    */
+    private changeActive(event: egret.TouchEvent)
+    {
+        event.target.selected == true;
+        if (event.target.selected != this.activeBtnFlage)
+            this.activeBtnFlage.selected = false;
+        this.activeBtnFlage = event.target;
+    }
+    /**
+     * 渲染信息
+    */
+    private refreshUI()
+    {
+        this.gold_dp = new eui.ArrayCollection(ShoppingManager.goldList);
+        this.goldList.dataProvider = this.gold_dp;
+        this.diamond_dp = new eui.ArrayCollection(ShoppingManager.diamondList);
+        this.diamondList.dataProvider = this.diamond_dp;
+        this.vip_dp = new eui.ArrayCollection(ShoppingManager.vipList);
+        this.vipList.dataProvider = this.vip_dp;
+        this.diamondNumLabel.text = MathUtil.formatNum(UserManager.userInfo.diamond);
+        this.goldNumLabel.text = MathUtil.formatNum(UserManager.userInfo.gold);
+    }
+    private refreshProperty()
+    {
+        this.diamondNumLabel.text = MathUtil.formatNum(UserManager.userInfo.diamond);
+        this.goldNumLabel.text = MathUtil.formatNum(UserManager.userInfo.gold);
+        UIManager.showFloatTips("购买成功了");
+    }
+    /**
+     * 购买金币/钻石选择
+    */
+    private BuyClickHandler(event: eui.ItemTapEvent)
+    {
+        SoundManager.playEffect(Sex.Male, MusicAction.buttonClick);
+        let awardDef: AwardDefinition;
+        switch (event.target)
+        {
+            case this.goldList:
+                awardDef = AwardDefined.GetInstance().getAwardDefinition(this.goldList.selectedItem.definition.awardId);           
+                if (awardDef)
+                {
+                    let goldIndex=awardDef.costType.indexOf(CostType.RMB);
+                    AlertManager.showAlertObj({ message: StringUtil.format("是否花费{0}元，购买{1}？", awardDef.costNum[goldIndex], awardDef.name), OnConfirm: this.tryPay, confirmParam: this.goldList.selectedItem, isSingle: false });
+                }
+                break;
+            case this.diamondList:
+                awardDef = AwardDefined.GetInstance().getAwardDefinition(this.diamondList.selectedItem.definition.awardId);
+                if (awardDef)
+                {
+                    let diamondIndex=awardDef.costType.indexOf(CostType.RMB);
+                    AlertManager.showAlertObj({ message: StringUtil.format("是否花费{0}元，购买{1}？", awardDef.costNum[diamondIndex], awardDef.name), OnConfirm: this.tryPay, confirmParam: this.diamondList.selectedItem, isSingle: false });
+                }
+                break;
+            case this.vipList:
+                awardDef = AwardDefined.GetInstance().getAwardDefinition(this.vipList.selectedItem.definition.awardId);
+                if (awardDef)
+                {
+                    let vipIndex=awardDef.costType.indexOf(CostType.Diamond);
+                    if (UserManager.userInfo.diamond >= awardDef.costNum[vipIndex])
+                    {
+                        AlertManager.showAlertObj({ message: StringUtil.format("是否花费{0}钻石，购买{1}？", awardDef.costNum[vipIndex], awardDef.name), OnConfirm: this.tryPay, confirmParam: this.vipList.selectedItem, isSingle: false });
+                    }
+                    else
+                    {
+                        CostManager.showBuyDiamond(this.goDiamondGp.bind(this));
+                    }    
+                   
+                }                                 
+                break;
+        }
+    }
+
+    private goDiamondGp()
+    {
+        this.shoppingTab.setSelectIndex(ShoppingGpIndex.Diamond);
+    }
+    private tryPay(obj: any)
+    {
+        if (obj)
+        {
+            ChannelManager.PaySend(obj.id);
+        }
+    }
+    private chipsShow(event: egret.TouchEvent)
+    {
+        let posX:number;
+        let posY:number;
+        let data:AddChipsData=new AddChipsData();    
+        data.maximum=2266;
+        data.perChips=200;
+        data.followChips=100;
+
+      switch (event.target)
+      {
+        case this.button1:
+        this.chips.chipsShow(53552514,ChipsPos.left);
+        break;
+        case this.button2:
+        this.chips.chipsShow(5521,ChipsPos.left);
+        break;
+        case this.button3:
+        this.chips.chipsShow(5000,ChipsPos.right);
+        break;
+        case this.button4:
+        this.chips.chipsShow(11521,ChipsPos.right);
+        break;
+        case this.button5:
+            posX=this.button5.x;
+            posY=this.button5.y;
+        this.chips.winChipsTween(posX,posY);
+        break;
+        case this.button6:
+            posX=this.button6.x;
+            posY=this.button6.y;
+        this.chips.winChipsTween(posX,posY);
+        break;
+        case this.button7:
+            posX=this.button7.x;
+            posY=this.button7.y;
+        this.chips.winChipsTween(posX,posY);
+        break;
+        case this.button8:
+            posX=this.button8.x;
+            posY=this.button8.y;
+        this.chips.winChipsTween(posX,posY);
+        break;
+        case this.button9:
+            UIManager.showPanel(UIModuleName.AddChipsPanel,{followChips: data.followChips,maximum:data.maximum,perChips:data.perChips});
+      }
+    }
+}

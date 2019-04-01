@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="jifenSkin" width="300" height="100" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing" xmlns:ns1="*" xmlns:tween="egret.tween.*">
+	<w:Declarations>
+		<tween:TweenGroup id="effectGroup">
+			<tween:TweenItem target="{group}">
+				<tween:Set>
+				<tween:props>
+					<e:Object alpha="{0}" x="{-116}" scaleX="{1.5}" scaleY="{1.5}"/>
+				</tween:props>
+				</tween:Set>
+				<tween:To duration="500" ease="quintIn">
+					<tween:props>
+						<e:Object x="{150}" y="{50}" alpha="{1}"/>
+					</tween:props>
+				</tween:To>
+				<tween:Wait duration="500"/>
+				<tween:To duration="300">
+					<tween:props>
+						<e:Object alpha="{0}"/>
+					</tween:props>
+				</tween:To>
+			</tween:TweenItem>
+		</tween:TweenGroup>
+	</w:Declarations>
+	<e:Group id="group" width="200" height="100" y="50" anchorOffsetY="50" anchorOffsetX="100" x="150">
+		<e:layout>
+			<e:HorizontalLayout gap="2" horizontalAlign="center" verticalAlign="middle"/>
+		</e:layout>
+	</e:Group>
+</e:Skin>

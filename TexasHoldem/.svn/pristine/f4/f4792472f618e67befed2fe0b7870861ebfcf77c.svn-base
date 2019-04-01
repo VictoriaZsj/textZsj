@@ -1,0 +1,972 @@
+/**
+ * 牌局管理器
+ */
+class GamblingManager
+{
+	/**
+ 	* 最大牌数
+ 	*/
+	public static readonly MaxCardNum: number = 7;
+	/**
+	 * 公共牌最大数量
+	 */
+	public static readonly MaxBoardNum: number = 5;
+	/**
+	 * 大于10的显示图片
+	 */
+	public static readonly FlushSplitIndex: number = 10;
+	/**
+	 * 最大牌的牌列表长度2-5
+	 */
+	public static maxBigList: Array<Array<number>>;
+	/**
+	 * 牌型
+	 */
+	public static cardType: CardType;
+	/**
+	 * 房间信息
+	 */
+	public static roomInfo: RoomInfo;
+	/**
+	 * 行牌
+	 */
+	public static process: GamblingProcess;
+	/**
+	 * 自己的信息
+	 */
+	private static _self: PlayerInfo;
+	/**
+	 * 一局的结算信息
+	 */
+	public static roundOverInfo: RoundOverInfo;
+	/**
+	 * 是否过或弃
+	 */
+	public static isPassOrFold: boolean = false;
+	/**
+	 * 是否跟任何
+	 */
+	public static isCallAny: boolean = false;
+	/**
+	 * 是否在房间中
+	 */
+	public static get isInRoom(): boolean
+	{
+		return this.roomInfo != null && this.roomInfo != undefined;
+	}
+	/**
+	 * 是否在座位上
+	 */
+	public static get isInSeat(): boolean
+	{
+		if (this.roomInfo && this.roomInfo.playerList)
+		{
+			for (let i: number = 0; i < this.roomInfo.playerList.length; i++)
+			{
+				if (this.roomInfo.playerList[i].roleId == UserManager.userInfo.roleId)
+				{
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	/**
+	 * 获取当前房间的总底池
+	 */
+	public static get totalPotChips(): number
+	{
+		if (GamblingManager.roomInfo && GamblingManager.roomInfo.potChips)
+		{
+			let tmpChips: number = 0;
+			for (let chips of GamblingManager.roomInfo.potChips) //当前底池边池
+			{
+				tmpChips += chips;
+			}
+			if (GamblingManager.roomInfo.playerList) //玩家已加注的总数量
+			{
+				for (let pInfo of GamblingManager.roomInfo.playerList)
+				{
+					if (pInfo.num > 0)
+					{
+						tmpChips += pInfo.num;
+					}
+				}
+			}
+			return tmpChips;
+		}
+		return 0;
+	}
+	/**
+	 * 请求进入房间
+	 */
+	public static reqEnterRoom(id: number = 0, password?: string)
+	{
+		if (password != undefined && id > 0)
+		{
+			SocketManager.call(Command.Req_EnterRoomInfo_3600, { id: id, password: password }, GamblingManager.initialize,null,this);
+		}
+		else if (id > 0)
+		{
+			SocketManager.call(Command.Req_EnterRoomInfo_3600, { id: id }, GamblingManager.initialize,null,this);
+		}
+		else
+		{
+			SocketManager.call(Command.Req_EnterRoomInfo_3600, null, GamblingManager.initialize,null,this);
+		}
+	}
+
+	public static initialize(result: SpRpcResult)
+	{
+		if (result.data && result.data["id"])
+		{
+			GamblingManager.roomInfo = new RoomInfo(result.data);
+
+			if (GamblingManager.roomInfo.playerList && GamblingManager.roomInfo.playerList.length > 0)
+			{
+				for (let pInfo of GamblingManager.roomInfo.playerList)
+				{
+					GamblingManager.reqGetPlayerUserInfo(pInfo);
+				}
+			}
+			else
+			{
+				GamblingManager.getPlayerUserInfoOver();
+			}
+		}
+		else
+		{
+			GamblingManager.getPlayerUserInfoOver();
+		}
+		SocketManager.AddCommandListener(Command.Push_NextRoundStart_2107, GamblingManager.pushNextRoundStart, this);
+		SocketManager.AddCommandListener(Command.Push_BlindChange_2100, GamblingManager.pushBlindChange, this);
+		SocketManager.AddCommandListener(Command.Push_PotChipsChange_2101, GamblingManager.pushPotChipsChange, this);
+		SocketManager.AddCommandListener(Command.Push_OneLoopOver_2102, GamblingManager.pushOneLoopOver, this);
+		SocketManager.AddCommandListener(Command.Push_SitOrStand_2103, GamblingManager.pushSitOrStand, this);
+		SocketManager.AddCommandListener(Command.Push_PlayerStateChange_2104, GamblingManager.pushStateChange, this);
+		SocketManager.AddCommandListener(Command.Push_ActionPosChange_2105, GamblingManager.pushActionPosChange, this);
+		SocketManager.AddCommandListener(Command.Push_OneRoundOver_2106, GamblingManager.pushOneRoundOver, this);
+		SocketManager.AddCommandListener(Command.Push_HandCard_2108, GamblingManager.pushHandCard, this);
+		SocketManager.AddCommandListener(Command.Push_BrightCard_2109, GamblingManager.pushBrightCard, this);
+		SocketManager.AddCommandListener(Command.Push_ChipsChange_2110, GamblingManager.pushChipsChange, this);
+		SocketManager.AddCommandListener(Command.Push_PlayerListStateChange_2113, GamblingManager.pushPlayerListStateChange, this);
+	}
+	/**
+	 * 推送下一局开始
+	 */
+	private static pushNextRoundStart(result: SpRpcResult)
+	{
+		if (result.data && GamblingManager.roomInfo)
+		{
+			GamblingManager.roomInfo.copyValueFrom(result.data);
+			if (GamblingManager.roomInfo.roundNum == undefined)
+			{
+				GamblingManager.roomInfo.roundNum = 0;
+			}
+			GamblingManager.roomInfo.roundNum++;
+			GamblingManager.NextRoundStartEvent.dispatch();
+		}
+	}
+	/**
+	 * 推送盲注前注变化
+	 */
+	private static pushBlindChange(result: SpRpcResult)
+	{
+		if (result.data && GamblingManager.roomInfo)
+		{
+			GamblingManager.roomInfo.copyValueFrom(result.data);
+			GamblingManager.BlindChangeEvent.dispatch();
+		}
+	}
+	private static pushPotChipsChange(result: SpRpcResult)
+	{
+		if (result.data && GamblingManager.roomInfo)
+		{
+			GamblingManager.roomInfo.copyValueFrom(result.data);
+			GamblingManager.PotChipsChangeEvent.dispatch();
+		}
+	}
+	/**
+	 * 推送公共牌
+	 */
+	private static pushOneLoopOver(result: SpRpcResult)
+	{
+		if (result.data && GamblingManager.roomInfo)
+		{
+			GamblingManager.roomInfo.minRaiseNum = GamblingManager.roomInfo.bBlind; //一轮押注圈结束 下注金额最低最1*大盲
+			GamblingManager.roomInfo.copyValueFrom(result.data);
+			GamblingManager.OneLoopOverEvent.dispatch();
+		}
+	}
+	/**
+	 * 推送玩家坐下或站起
+	 */
+	private static pushSitOrStand(result: SpRpcResult)
+	{
+		if (result.data)
+		{
+			let state: number = result.data["state"];
+			if (state == BuyInGameState.Sit)
+			{
+				let playerInfo: PlayerInfo = new PlayerInfo();
+				playerInfo.copyValueFrom(result.data);
+				let callBack: Function = function ()
+				{
+					GamblingManager.OnGetRoomInfoEvent.removeListener(callBack, this); //有玩家坐下，则需先要拉取玩家详细信息，拉取完毕之后在抛送坐下事件
+					GamblingManager.SitOrStandEvent.dispatch({ pInfo: playerInfo, state: state });
+				};
+				GamblingManager.OnGetRoomInfoEvent.addListener(callBack, this);
+				GamblingManager.reqGetPlayerUserInfo(playerInfo);
+			}
+			else if (state == BuyInGameState.Stand)
+			{
+				let roleId: number = result.data["roleId"];
+				let playerInfo: PlayerInfo = GamblingManager.getPlayerInfo(roleId);
+				GamblingManager.removePlayer(roleId);
+
+				if (playerInfo)
+				{
+					if (playerInfo.roleId == UserManager.userInfo.roleId) //站起需要清空自己的信息
+					{
+						GamblingManager._self = null;
+					}
+					GamblingManager.SitOrStandEvent.dispatch({ pInfo: playerInfo, state: state });
+				}
+			}
+		}
+	}
+	/**
+	 * 推送玩家状态变更
+	 */
+	private static pushStateChange(result: SpRpcResult)
+	{
+		if (result.data)
+		{
+			let roleId: number = result.data["roleId"];
+			let state: PlayerState = <PlayerState>result.data["state"];
+			let num: number = result.data["num"];
+			let pInfo: PlayerInfo = GamblingManager.getPlayerInfo(roleId);
+			if (state == PlayerState.Check || state == PlayerState.AllIn ||
+				state == PlayerState.Raise && GamblingManager.roomInfo && num > 0)
+			{
+				GamblingManager.roomInfo.maxAnte = num;
+			}
+			if (pInfo)
+			{
+				pInfo.state = state;
+				pInfo.num = num;
+				if (GamblingManager.roomInfo && pInfo.state == PlayerState.Raise || pInfo.state == PlayerState.AllIn)
+				{
+					let lastMaxNum: number = GamblingManager.findMaxPlayerNum(pInfo.roleId);
+					let tmpNum: number = pInfo.num - lastMaxNum;
+
+					if (lastMaxNum == 0) //第一次下注
+					{
+						GamblingManager.roomInfo.minRaiseNum = GamblingManager.roomInfo.bBlind * 2;
+					}
+					else if (tmpNum > 0) //<=0为无效的情况 相当于 平跟
+					{
+						if (tmpNum < GamblingManager.roomInfo.bBlind)
+						{
+							GamblingManager.roomInfo.minRaiseNum += lastMaxNum + GamblingManager.roomInfo.bBlind;
+						}
+						else
+						{
+							GamblingManager.roomInfo.minRaiseNum += lastMaxNum + tmpNum; //最小加注额度
+						}
+					}
+				}
+				GamblingManager.PlayerStateChangeEvent.dispatch({ roleId: roleId, state: state, num: num });
+			}
+		}
+	}
+	/**
+	 * 查找状态参数最大的数量
+	 */
+	private static findMaxPlayerNum(excludeRoleId: number): number
+	{
+		let num: number = 0;
+		if (GamblingManager.roomInfo && GamblingManager.roomInfo.playerList)
+		{
+			for (let pInfo of GamblingManager.roomInfo.playerList)
+			{
+				if (pInfo.roleId != excludeRoleId && pInfo.num > num)
+				{
+					num = pInfo.num;
+				}
+			}
+		}
+		return num;
+	}
+	/**
+	 * 推送说话位置变更
+	 */
+	public static pushActionPosChange(result: SpRpcResult)
+	{
+		if (result.data && GamblingManager.roomInfo)
+		{
+			GamblingManager.roomInfo.copyValueFrom(result.data);
+			GamblingManager.ActionPosChangeEvent.dispatch();
+		}
+	}
+	/**
+	 * 推送一局结束
+	 */
+	public static pushOneRoundOver(result: SpRpcResult)
+	{
+		if (result.data)
+		{
+			GamblingManager.roundOverInfo.copyValueFrom(result.data);
+			GamblingManager.RoundOverEvent.dispatch();
+		}
+	}
+	/**
+	 * 推送玩家手牌
+	 */
+	private static pushHandCard(result: SpRpcResult)
+	{
+		if (result.data && GamblingManager.self)
+		{
+			GamblingManager.self.copyValueFrom(result.data);
+			GamblingManager.HandCardComeEvent.dispatch();
+		}
+	}
+	/**
+	 * 推送亮牌 已废弃
+	 */
+	private static pushBrightCard(result: SpRpcResult)
+	{
+		if (result.data)
+		{
+			let roleId: number = result.data["roleId"];
+			let pInfo: PlayerInfo = GamblingManager.getPlayerInfo(roleId);
+			if (pInfo)
+			{
+				pInfo.copyValueFrom(result.data);
+				GamblingManager.BrightCardShowEvent.dispatch();
+			}
+		}
+	}
+	/**
+	 * 推送筹码变更
+	 */
+	private static pushChipsChange(result: SpRpcResult)
+	{
+		if (result.data)
+		{
+			let roleId: number = result.data["roleId"];
+			let br: number = result.data["bankRoll"];
+			let pInfo: PlayerInfo = GamblingManager.getPlayerInfo(roleId);
+			if (pInfo)
+			{
+				pInfo.bankRoll = br;
+				GamblingManager.ChipsChangeEvent.dispatch(pInfo);
+			}
+		}
+	}
+	/**
+	 * 推送玩家列表状态变更
+	 */
+	private static pushPlayerListStateChange(result: SpRpcResult)
+	{
+		if (result.data)
+		{
+			let list: Array<number> = result.data["roleId"];
+			let state: PlayerState = result.data["state"];
+			if (list && state != undefined)
+			{
+				let pInfo: PlayerInfo
+				for (let roleId of list)
+				{
+					pInfo = GamblingManager.getPlayerInfo(roleId);
+					if (pInfo)
+					{
+						pInfo.state = state;
+					}
+				}
+				GamblingManager.PlayerListStateChangeEvent.dispatch();
+			}
+		}
+	}
+	//--------------------------------------------------------------------
+	/**
+	 * 请求下一局开始(准备)
+	 */
+	public static reqNextRoundStart()
+	{
+		SocketManager.call(Command.Req_NextRound_3601, null, GamblingManager.onNextRoundStart,null,this);
+	}
+
+	private static onNextRoundStart(result: SpRpcResult)
+	{
+		if (GamblingManager.roomInfo)
+		{
+			GamblingManager.ReadyStateChangeEvent.dispatch();
+		}
+	}
+	/**
+	 * 请求说话
+	 */
+	public static reqAction(state: PlayerState, num: number = 0)
+	{
+		let callBack: Function = function (result: SpRpcResult)
+		{
+			if (GamblingManager.self)
+			{
+				GamblingManager.ActionOverEvent.dispatch();
+			}
+		};
+		if (num != 0)
+		{
+			SocketManager.call(Command.Req_Action_3602, { state: state, num: num }, callBack,null,this)
+		}
+		else
+		{
+			SocketManager.call(Command.Req_Action_3602, { state: state }, callBack,null,this)
+		}
+	}
+	/**
+	 * 请求超时操作
+	 */
+	public static reqTimeOut()
+	{
+		if (GamblingManager.isCanCheck)
+		{
+			GamblingManager.reqAction(PlayerState.Check);
+		}
+		else
+		{
+			GamblingManager.reqAction(PlayerState.Fold);
+		}
+	}
+	/**
+	 * 请求离开房间(返回大厅)
+	 */
+	public static reqLeveaveRoom()
+	{
+		let callBack: Function = function (result: SpRpcResult)
+		{
+			GamblingManager.LeaveRoomEvent.dispatch();
+		};
+		SocketManager.call(Command.Req_LeaveRoom_3603, null, callBack,null,this);
+	}
+	/**
+	 * 请求买入游戏
+	 */
+	public static reqBuyInGame(num: number, isAutoBuy: boolean, pos: number)
+	{
+		let callBack: Function = function (result: SpRpcResult)
+		{
+			if (GamblingManager.roomInfo)
+			{
+				GamblingManager.roomInfo.isAutoBuy = isAutoBuy;
+			}
+			if (result.data)
+			{
+				let sitPos: number = result.data["pos"];
+				GamblingManager.BuyInGameEvent.dispatch(sitPos);
+			}
+		};
+		SocketManager.call(Command.Req_BuyInGame_3604, { num: num, isAutoBuy: isAutoBuy, pos: pos }, callBack,null,this);
+	}
+	/**
+	 * 请求站起
+	 */
+	public static reqStandUp()
+	{
+		let callBack: Function = function (result: SpRpcResult)
+		{
+			GamblingManager.StandUpEvent.dispatch();
+		};
+		SocketManager.call(Command.Req_StandUp_3605, null, callBack,null,this);
+	}
+	/**
+	 * 请求亮牌
+	 */
+	public static reqBrightCard()
+	{
+		let callBack: Function = function (result: SpRpcResult)
+		{
+			if (GamblingManager.roomInfo)
+			{
+				GamblingManager.roomInfo.isShowCard = !GamblingManager.roomInfo.isShowCard;
+			}
+			GamblingManager.BrightCardFlagEvent.dispatch();
+		};
+		SocketManager.call(Command.Req_BrightCard_3606, null, callBack,null,this);
+	}
+	/**
+	 * 请求增加金币
+	 */
+	public static reqAddCoin(num: number)
+	{
+		if (num > 0)
+		{
+			let callBack: Function = function (result: SpRpcResult)
+			{
+				GamblingManager.AddCoinEvent.dispatch();
+			};
+			SocketManager.call(Command.Req_AddCoin_3607, { num: num }, callBack,null,this);
+		}
+		else
+		{
+			console.log("增加金币数量异常！");
+		}
+	}
+	//--------------------------组全用户信息用-----------------------------
+	/**
+	 * 拉取玩家信息完毕 可以进入房间 or 进入大厅
+	 */
+	private static getPlayerUserInfoOver()
+	{
+		GamblingManager.OnGetRoomInfoEvent.dispatch();
+	}
+	private static _getUserInfoQueue: Array<PlayerInfo>;
+	private static _isOnGetUserInfo: boolean = false;
+	/**
+ 	* 拉取玩家的用户信息
+ 	*/
+	public static reqGetPlayerUserInfo(playerInfo: PlayerInfo)
+	{
+		if (!playerInfo)
+		{
+			return;
+		}
+		if (!GamblingManager._getUserInfoQueue)
+		{
+			GamblingManager._getUserInfoQueue = new Array<PlayerInfo>();
+		}
+		for (let info of GamblingManager._getUserInfoQueue)
+		{
+			if (playerInfo.roleId == info.roleId)
+			{
+				return; //已存在
+			}
+		}
+		GamblingManager._getUserInfoQueue.push(playerInfo);
+
+		GamblingManager.startGetUserInfo(GamblingManager._getUserInfoQueue[0]);
+	}
+	private static startGetUserInfo(target: PlayerInfo)
+	{
+		if (!GamblingManager._isOnGetUserInfo)
+		{
+			GamblingManager._isOnGetUserInfo = true;
+			let callBack: Function = function (result: SpRpcResult)
+			{
+				GamblingManager._isOnGetUserInfo = false;
+				GamblingManager._getUserInfoQueue[0].userInfo = new UserInfo(result.data);
+				GamblingManager._getUserInfoQueue.shift();
+				if (result.data)
+				{
+					GamblingManager.getNext();
+				}
+			};
+			let errorCallBack: Function = function (result: SpRpcResult)
+			{
+				GamblingManager._isOnGetUserInfo = false;
+				GamblingManager._getUserInfoQueue.shift();
+				GamblingManager.getNext();
+			};
+			UserManager.sendGetUserInfo(target.roleId, callBack, errorCallBack);
+		}
+	}
+	private static getNext()
+	{
+		if (GamblingManager._getUserInfoQueue.length > 0)
+		{
+			GamblingManager.startGetUserInfo(GamblingManager._getUserInfoQueue[0]);
+		}
+		else
+		{
+			GamblingManager.getPlayerUserInfoOver();
+		}
+	}
+	//--------------------------------------------------------------------
+
+	//-----------------------------数据状态处理与更新----------------------
+	public static get self(): PlayerInfo
+	{
+		if (!GamblingManager._self)
+		{
+			GamblingManager._self = GamblingManager.getPlayerInfo(UserManager.userInfo.roleId);
+		}
+		return GamblingManager._self;
+	}
+
+	public static addPlayer(playerInfo: PlayerInfo)
+	{
+		if (GamblingManager.roomInfo)
+		{
+			if (GamblingManager.roomInfo.playerList)
+			{
+				if (playerInfo && GamblingManager.isContainPlayer(playerInfo.roleId) == false)
+				{
+					GamblingManager.roomInfo.playerList.push(playerInfo);
+				}
+			}
+			else
+			{
+				GamblingManager.roomInfo.playerList = new Array<PlayerInfo>();
+				if (playerInfo)
+				{
+					GamblingManager.roomInfo.playerList.push(playerInfo);
+				}
+			}
+		}
+	}
+	/**
+	 * 移除玩家
+	 */
+	public static removePlayer(roleId: number)
+	{
+		let player: PlayerInfo = GamblingManager.getPlayerInfo(roleId);
+		ArrayUtil.RemoveItem(player, GamblingManager.roomInfo.playerList);
+	}
+	/**
+	 * 获取玩家信息
+	 */
+	public static getPlayerInfo(roleId: number): PlayerInfo
+	{
+		if (GamblingManager.roomInfo && GamblingManager.roomInfo.playerList)
+		{
+			for (let player of GamblingManager.roomInfo.playerList)
+			{
+				if (player.roleId == roleId)
+				{
+					return player;
+				}
+			}
+		}
+		return null;
+	}
+	/**
+	 * 获取玩家状态
+	 */
+	public static getPlayerState(roleId: number): PlayerState
+	{
+		let pInfo: PlayerInfo = GamblingManager.getPlayerInfo(roleId);
+		if (pInfo)
+		{
+			return pInfo.state;
+		}
+		else
+		{
+			return PlayerState.Empty;
+		}
+	}
+	/**
+	 * 获取玩家信息根据位置
+	 */
+	public static getPlayerInfoByPos(pos: number): PlayerInfo
+	{
+		if (GamblingManager.roomInfo && GamblingManager.roomInfo.playerList)
+		{
+			for (let player of GamblingManager.roomInfo.playerList)
+			{
+				if (player.pos == pos)
+				{
+					return player;
+				}
+			}
+		}
+		return null;
+	}
+	/**
+ 	* 玩家是否已存在
+ 	*/
+	public static isContainPlayer(roleId: number): boolean
+	{
+		return GamblingManager.getPlayerInfo(roleId) != null;
+	}
+	/**
+	 * 是否是小盲位
+	 */
+	public static isSBlindPos(pos: number): boolean
+	{
+		if (GamblingManager.roomInfo && GamblingManager.roomInfo.sBlindPos == pos)
+		{
+			return true;
+		}
+		return false;
+	}
+	/**
+	 * 是否是大盲位
+	 */
+	public static isBBlindPos(pos: number): boolean
+	{
+		if (GamblingManager.roomInfo && GamblingManager.roomInfo.bBlindPos == pos)
+		{
+			return true;
+		}
+		return false;
+	}
+	/**
+	 * 获取最大座位
+	 */
+	public static get maxSeats(): number
+	{
+		if (GamblingManager.roomInfo && GamblingManager.roomInfo.definition)
+		{
+			return GamblingManager.roomInfo.definition.seat;
+		}
+		return 0;
+	}
+	/**
+	 * 是否还在牌桌上
+	 */
+	public static isOnDesk(roleId: number): boolean
+	{
+		let pInfo: PlayerInfo = GamblingManager.getPlayerInfo(roleId);
+		if (pInfo)
+		{
+			switch (pInfo.state)
+			{
+				case PlayerState.Action:
+				case PlayerState.Check:
+				case PlayerState.Call:
+				case PlayerState.Raise:
+				case PlayerState.Blind:
+					return true;
+			}
+		}
+		return false;
+	}
+	/**
+	 * 获取可以加注的最大值
+	 */
+	public static get maxRaiseChips(): number
+	{
+		if (GamblingManager.roomInfo && GamblingManager.roomInfo.playerList && GamblingManager.self)
+		{
+			let maxBankRoll: number = 0;
+			for (let pInfo of GamblingManager.roomInfo.playerList)
+			{
+				if (pInfo.roleId != UserManager.userInfo.roleId && pInfo.bankRoll > maxBankRoll) 
+				{
+					maxBankRoll = pInfo.bankRoll;
+				}
+			}
+			if (maxBankRoll > GamblingManager.roomInfo.minRaiseNum)
+			{
+				let offset: number = maxBankRoll - GamblingManager.roomInfo.minRaiseNum;
+				let bbNum: number = Math.ceil(offset / GamblingManager.roomInfo.bBlind);
+				let additional: number = bbNum * GamblingManager.roomInfo.bBlind;
+				additional += GamblingManager.roomInfo.minRaiseNum;
+				return Math.min(additional, GamblingManager.self.bankRoll);
+			}
+			return GamblingManager.roomInfo.minRaiseNum;
+		}
+		return 0;
+	}
+	/**
+ 	* 获取需要跟注的数量
+ 	*/
+	public static get callNum(): number
+	{
+		if (GamblingManager.self && GamblingManager.roomInfo && GamblingManager.self.state == PlayerState.Action)
+		{
+			return GamblingManager.roomInfo.maxAnte - GamblingManager.self.num;
+		}
+		return 0;
+	}
+	/**
+	 * 是否可以过牌
+	 */
+	public static get isCanCheck(): boolean
+	{
+		if (GamblingManager.self && GamblingManager.roomInfo)
+		{
+			if (GamblingManager.self.state == PlayerState.Action && GamblingManager.self.num == GamblingManager.roomInfo.maxAnte)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	/**
+	 * 是否可以加注
+	 */
+	public static get isCanRaise(): boolean
+	{
+		if (GamblingManager.self && GamblingManager.roomInfo && GamblingManager.self.state == PlayerState.Action)
+		{
+			if (GamblingManager.self.bankRoll > GamblingManager.roomInfo.maxAnte)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	/**
+	 * 是否需要allin 加注最小值
+	 */
+	public static isNeedAllIn(): boolean
+	{
+		if (GamblingManager.self && GamblingManager.roomInfo && GamblingManager.self.state == PlayerState.Action)
+		{
+			if (GamblingManager.self.bankRoll <= GamblingManager.roomInfo.maxAnte)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	//-----------------------------------event事件--------------------------------
+	/**
+	 * 拉取房间信息
+	 */
+	public static OnGetRoomInfoEvent: DelegateDispatcher = new DelegateDispatcher();
+	/**
+	 * 下一局开始事件
+	 */
+	public static NextRoundStartEvent: DelegateDispatcher = new DelegateDispatcher();
+	/**
+	 * 买入游戏事件
+	 */
+	public static BuyInGameEvent: DelegateDispatcher = new DelegateDispatcher();
+	/**
+	 * 坐下或站起
+	 */
+	public static SitOrStandEvent: DelegateDispatcher = new DelegateDispatcher();
+	/**
+	 * 玩家状态变更
+	 */
+	public static PlayerStateChangeEvent: DelegateDispatcher = new DelegateDispatcher();
+	/**
+	 * 手牌推送
+	 */
+	public static HandCardComeEvent: DelegateDispatcher = new DelegateDispatcher();
+	/**
+	 * 推送亮牌
+	 */
+	public static BrightCardShowEvent: DelegateDispatcher = new DelegateDispatcher();
+	/**
+	 * 筹码变更
+	 */
+	public static ChipsChangeEvent: DelegateDispatcher = new DelegateDispatcher();
+	/**
+	 * 底池变更
+	 */
+	public static PotChipsChangeEvent: DelegateDispatcher = new DelegateDispatcher();
+	/**
+	 * 公共牌变化
+	 */
+	public static OneLoopOverEvent: DelegateDispatcher = new DelegateDispatcher();
+	/**
+	 * 推送说话位置变更
+	 */
+	public static ActionPosChangeEvent: DelegateDispatcher = new DelegateDispatcher();
+	/**
+	 * 准备状态变更
+	 */
+	public static ReadyStateChangeEvent: DelegateDispatcher = new DelegateDispatcher();
+	/**
+	 * 说话完毕
+	 */
+	public static ActionOverEvent: DelegateDispatcher = new DelegateDispatcher();
+	/**
+	 * 离开房间事件
+	 */
+	public static LeaveRoomEvent: DelegateDispatcher = new DelegateDispatcher();
+	/**
+	 * 站起
+	 */
+	public static StandUpEvent: DelegateDispatcher = new DelegateDispatcher();
+	/**
+	 * 请求亮牌
+	 */
+	public static BrightCardFlagEvent: DelegateDispatcher = new DelegateDispatcher();
+	/**
+	 * 增加金币
+	 */
+	public static AddCoinEvent: DelegateDispatcher = new DelegateDispatcher();
+	/**
+	 * 玩家列表状态变更
+	 */
+	public static PlayerListStateChangeEvent: DelegateDispatcher = new DelegateDispatcher();
+	/**
+	 * 一局结束
+	 */
+	public static RoundOverEvent: DelegateDispatcher = new DelegateDispatcher();
+	/**
+	 * 盲注前注变更
+	 */
+	public static BlindChangeEvent: DelegateDispatcher = new DelegateDispatcher();
+}
+/**
+ * 结算信息
+ */
+class RoundOverInfo extends BaseServerValueInfo
+{
+	/**
+	 * 底池奖励列表
+	 */
+	public potList: Array<PotAwardInfo>;
+	/**
+	 * 手牌信息
+	 */
+	public roleHandCardList: Array<HandCardInfo>;
+	public reset()
+	{
+		this.potList = undefined;
+		this.roleHandCardList = undefined;
+	}
+}
+/**
+ * 手牌信息
+ */
+class HandCardInfo extends BaseServerValueInfo
+{
+	/**
+	 * 用户ID
+	 */
+	public roleId: number;
+	/**
+	 * 手牌列表
+	 */
+	public cardList: Array<Array<number>>;
+	public reset()
+	{
+		this.roleId = 0;
+		this.cardList = undefined;
+	}
+}
+/**
+ * 底池奖励信息
+ */
+class PotAwardInfo extends BaseServerValueInfo
+{
+	/**
+	 * 用户ID列表
+	 */
+	public roleId: Array<number>;
+	/**
+	 * 0.主池 边池从1递增
+	 */
+	public type: number;
+	/**
+	 * 金额	
+	 */
+	public num: number;
+	public reset()
+	{
+		this.roleId = undefined;
+		this.type = 0;
+		this.num = 0;
+	}
+}
+/**
+ * 买入游戏状态
+ */
+enum BuyInGameState
+{
+	/**
+	 * 坐下
+	 */
+	Sit = 1,
+	/**
+	 * 站起
+	 */
+	Stand = 2,
+}

@@ -1,0 +1,39 @@
+[ {
+  "id" : 1,
+  "activityId" : 3,
+  "day" : 1,
+  "awardId" : 1301
+}, {
+  "id" : 1,
+  "activityId" : 3,
+  "day" : 2,
+  "awardId" : 1302
+}, {
+  "id" : 1,
+  "activityId" : 3,
+  "day" : 3,
+  "awardId" : 1303,
+  "pilePrize" : 1351
+}, {
+  "id" : 1,
+  "activityId" : 3,
+  "day" : 4,
+  "awardId" : 1304
+}, {
+  "id" : 1,
+  "activityId" : 3,
+  "day" : 5,
+  "awardId" : 1305,
+  "pilePrize" : 1352
+}, {
+  "id" : 1,
+  "activityId" : 3,
+  "day" : 6,
+  "awardId" : 1306
+}, {
+  "id" : 1,
+  "activityId" : 3,
+  "day" : 7,
+  "awardId" : 1307,
+  "pilePrize" : 1353
+} ]

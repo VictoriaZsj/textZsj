@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="NumRenderer" width="70" height="70" xmlns:e="http://ns.egret.com/eui">
+    <e:Image horizontalCenter="-0" verticalCenter="0" width="69"
+             height="68"  scale9Grid="14,12,14,14" source="bg_page18_png"/>
+    <e:Label text="-" textAlign="center" verticalAlign="middle" anchorOffsetY="0" anchorOffsetX="0" width="55"
+              horizontalCenter="0" verticalCenter="17" size="45"/>
+    <e:Label id="label1" text="1" width="60" height="55" textAlign="center" verticalAlign="middle"  anchorOffsetX="0" anchorOffsetY="0" horizontalCenter="0" verticalCenter="-5" size="47"/>
+</e:Skin>

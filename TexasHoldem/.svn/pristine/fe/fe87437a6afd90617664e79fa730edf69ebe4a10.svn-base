@@ -1,0 +1,42 @@
+<e:Skin class="panelSkin13" width="720" height="1280" xmlns:e="http://ns.egret.com/eui"
+        xmlns:w="http://ns.egret.com/wing" xmlns:ns1="*">
+	<e:Group id="tweenGroup" width="720" height="1280" anchorOffsetY="0" x="0" y="0">
+		<e:Group id="privateRoomGroup" width="640" height="980" anchorOffsetX="0" anchorOffsetY="0" y="40"
+		         horizontalCenter="0">
+			<e:Image width="640" height="980" source="bg_page17_png" scale9Grid="22,16,140,46" anchorOffsetY="0" />
+			<e:Label text="创建私人房间" x="24" y="26" />
+			<ns1:GameButton id="closeButton" label="Button" skinName="buttonSkin4" x="533.5" y="10" />
+			<e:Label text="请输入私人房密码" y="690.75" anchorOffsetX="0" width="364" anchorOffsetY="0" height="52"
+			         verticalAlign="middle" textAlign="center" horizontalCenter="0" />
+			<e:Label text="最大携带" y="81.66" anchorOffsetX="0" width="364" anchorOffsetY="0" height="52" verticalAlign="middle"
+			         textAlign="center" horizontalCenter="0" />
+			<e:Label text="前注" y="574" anchorOffsetX="0" width="364" anchorOffsetY="0" height="52" verticalAlign="middle"
+			         textAlign="center" horizontalCenter="0" />
+			<e:Group id="labelGroup" anchorOffsetX="0" width="531" anchorOffsetY="0" height="67" horizontalCenter="0.5"
+			         verticalCenter="300.5">
+				<e:layout>
+					<e:HorizontalLayout gap="22" />
+				</e:layout>
+			</e:Group>
+			<e:Button id="createBtn" label="创建房间" y="901.08" scaleX="0.8" scaleY="0.8" horizontalCenter="0" />
+			<e:Label text="不输入密码则不加锁私人房！" y="843.15" size="24" horizontalCenter="0" />
+			<e:Scroller id="maxCarryScroller" width="640" height="395" x="0" y="145">
+				<e:Group/>
+			</e:Scroller>
+			<e:List id="maxCarryList" width="605" height="395" y="145" anchorOffsetX="0" anchorOffsetY="0" horizontalCenter="0">
+				<e:layout>
+					<e:TileLayout orientation="rows" verticalGap="15" requestedRowCount="2" requestedColumnCount="4" horizontalGap="15"
+					              paddingLeft="18" />
+				</e:layout>
+			</e:List>
+			<e:ToggleSwitch id="anteaLabel" skinName="shareIDToggleSwitchSkin" label="0" x="44.92" y="634.4"
+			                 scaleX="0.5" scaleY="0.5"/>
+			<e:ToggleSwitch id="antebLabel" skinName="shareIDToggleSwitchSkin" label="400" x="194.92" y="634.4"
+			                 scaleX="0.5" scaleY="0.5"/>
+			<e:ToggleSwitch id="antecLabel" skinName="shareIDToggleSwitchSkin" label="4000" x="345.92" y="634.4"
+			                 scaleX="0.5" scaleY="0.5"/>
+			<e:ToggleSwitch id="antedLabel" skinName="shareIDToggleSwitchSkin" label="4万" x="495.92" y="634.4"
+			                 scaleX="0.5" scaleY="0.5"/>
+		</e:Group>
+	</e:Group>
+</e:Skin>

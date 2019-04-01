@@ -1,0 +1,332 @@
+/**
+ * 聊天管理
+ */
+class ChatManager
+{
+	public static messageList: Array<ChatInfo>;
+	public static faceList: Array<Face>;
+	public static isOnMessage: boolean;
+
+	public static initialzie()
+	{
+		if (!ChatManager.messageList)
+		{
+			ChatManager.messageList = new Array<ChatInfo>();
+		}
+		ArrayUtil.Clear(ChatManager.messageList);
+
+		SocketManager.AddCommandListener(Command.Chat_PushMessage_2014, ChatManager.pushChatMessage, this);
+	}
+	private static pushChatMessage(result: SpRpcResult)
+	{
+		if (result.data)
+		{
+			let chatInfo: ChatInfo = PoolUtil.GetObject<ChatInfo>(ChatInfo);
+			chatInfo.roleId = result.data["roleId"];
+			chatInfo.message = result.data["message"];
+			chatInfo.type = result.data["type"];
+			chatInfo.name = result.data["name"];
+			if (chatInfo.type == ChatMessageType.Maquee)
+			{
+				ChatManager.messageList.push(chatInfo);
+				// ChatManager.messageOper();
+			}
+			else
+			{
+				ChatManager.CheckAndPlay(chatInfo);
+			}
+			ChatManager.dispatchChatEvent();
+		}
+	}
+	/**
+	 * 发送语音消息
+	 */
+	public static SendAudioRecordMessage(type: ChatMessageType, time: number, guid: string, sign: string, path: string)
+	{
+		ChatManager.SendChatMessage(ChatSpecialStrings.AudioRecordMessage + time + StringConstant.Comma + guid + StringConstant.Comma + sign + StringConstant.Comma + path, type);
+	}
+	/**
+	 * 发送聊天消息
+	 */
+	public static SendChatMessage(message: string, type: ChatMessageType)
+	{
+		let callBackServer: Function = function (result: SpRpcResult)
+		{
+			SocketManager.RemoveCommandListener(Command.Chat_SendMessage_3019, callBackServer, this);
+			ChatManager.OnChatSendMessageFromServer(result, message, type);
+		};
+		SocketManager.AddCommandListener(Command.Chat_SendMessage_3019, callBackServer, this);
+		SocketManager.Send(Command.Chat_SendMessage_3019, { "message": message, "type": type });
+	}
+	private static OnChatSendMessageFromServer(result: SpRpcResult, message: string, type: ChatMessageType)
+	{
+		let info: ChatInfo = ChatManager.CreateChatInfoByMyInfo(type, message);
+		ChatManager.DispatchMessageSend(info);
+	}
+	private static _checkList: Array<ChatInfo>;
+	/**
+	 * 检测播放列表
+	 */
+	public static CheckAndPlay(info: ChatInfo)
+	{
+		if (!ChatManager._checkList)
+		{
+			ChatManager._checkList = new Array<ChatInfo>();
+		}
+		if (ChatManager._checkList.indexOf(info) == -1)
+		{
+			ChatManager._checkList.push(info);
+		}
+		let guid: string = info.param[1];
+		ChannelManager.hasRecordData(guid); //调到原生
+	}
+	/**
+	 * 原生检测完毕调回来
+	 */
+	public static checkComplete(message: string)
+	{
+		let data: any = JSON.parse(message);
+		if (data)
+		{
+			let guid: string = data["guid"];
+			let result: boolean = StringUtil.toBoolean(data["has"]);
+			let chatInfo: ChatInfo = ChatManager.getRecordChatInfo(guid);
+			if (chatInfo)
+			{
+				if (result)
+				{
+					if (RecordAudioManager.playingGuid != guid) //可以同时播放
+					{
+						ChannelManager.playRecord(guid);
+						RecordAudioManager.PlayPauseAndResume(guid, parseInt(chatInfo.param[0]));
+					}
+				}
+				else
+				{
+					RecordAudioManager.DownloadAmrData(chatInfo.param[3], guid, parseInt(chatInfo.param[0]));
+				}
+			}
+		}
+	}
+	public static getRecordChatInfo(guid: string): ChatInfo
+	{
+		for (let info of ChatManager._checkList)
+		{
+			if (info.param[1] == guid)
+			{
+				return info;
+			}
+		}
+		return null;
+	}
+	/**
+	 * 声音播放完毕删除记录
+	 */
+	public static removeRecordChatInfo(guid: string)
+	{
+		for (let info of ChatManager._checkList)
+		{
+			if (info.param[1] == guid)
+			{
+				ArrayUtil.RemoveItem(info, ChatManager._checkList);
+				break;
+			}
+		}
+	}
+	private static CreateChatInfoByMyInfo(type: ChatMessageType, message: string): ChatInfo
+	{
+		let info: ChatInfo = new ChatInfo();
+		info.roleId = UserManager.userInfo.roleId;
+		info.type = type;
+		info.message = message;
+		info.name = UserManager.userInfo.name;
+		return info;
+	}
+	private static messageOper()
+	{
+		if (!ChatManager.isOnMessage)
+		{
+			if (ChatManager.messageList.length > 0)
+			{
+				let chatInfo: ChatInfo = ChatManager.messageList.shift();
+				if (chatInfo.type == ChatMessageType.Maquee)
+				{
+					UIManager.showPanel(UIModuleName.MarqueePanel, chatInfo.message);
+				}
+				else if (chatInfo.type == ChatMessageType.InRoom)
+				{
+					ChatManager.CheckAndPlay(chatInfo);
+				}
+				PoolUtil.PutObject<ChatInfo>(chatInfo);
+			}
+		}
+	}
+	public static nextMessage()
+	{
+		ChatManager.isOnMessage = false;
+		ChatManager.messageOper();
+	}
+
+	/**
+	 * 发送聊天请求
+	*/
+	public static reqSendChatMsg(message: string, type: ChatMessageType)
+	{
+		/*let callback: Function = function (result: SpRpcResult)
+		{
+			SocketManager.RemoveCommandListener(Command.Req_Send_ChatMessage_3019, callback);
+			if (type == ChatMessageType.Maquee)
+			{
+				let info: ChatInfo = ChatManager.CreateChatInfoByMyInfo(type, message);
+				ChatManager.onSendChatMsgEvent.dispatch(info);
+
+			} else
+			{
+				let info;
+				info.message = message;
+				info.type = ChatMessageType.InRoom;
+				ChatManager.onSendChatMsgEvent.dispatch(info);
+			}
+		};
+		SocketManager.AddCommandListener(Command.Req_Send_ChatMessage_3019, callback);
+		SocketManager.Send(Command.Req_Send_ChatMessage_3019, { "message": message, "type": type });*/
+
+		//todo 测试代码
+		if (type == ChatMessageType.Maquee)
+		{
+			let info: ChatInfo = ChatManager.CreateChatInfoByMyInfo(type, message);
+			ChatManager.onSendChatMsgEvent.dispatch(info);
+		} else
+		{
+			let info = new Object();
+			info["message"] = message;
+			info["type"] = ChatMessageType.InRoom;
+			ChatManager.onSendChatMsgEvent.dispatch(info);
+		}
+		//
+	}
+	//-------------------------------------------------------
+	// 聊天消息推送
+	//-------------------------------------------------------
+	public static pushChatMessageEa: DelegateDispatcher = new DelegateDispatcher();
+	/**
+	 * 发送聊天消息成功后广播
+	*/
+	public static onSendChatMsgEvent: DelegateDispatcher = new DelegateDispatcher();
+	public static dispatchChatEvent()
+	{
+		ChatManager.pushChatMessageEa.dispatch();
+	}
+	private static OnMessageSend: DelegateDispatcher = new DelegateDispatcher();
+	private static DispatchMessageSend(info: ChatInfo)
+	{
+		if (ChatManager.OnMessageSend != null)
+		{
+			ChatManager.OnMessageSend.dispatch(info);
+		}
+	}
+}
+/**
+ * 聊天信息
+ */
+class ChatInfo implements IPoolObject
+{
+	/**
+	 * 角色Id
+	 */
+	public roleId: number;
+	/**
+	 * 角色昵称
+	*/
+	public name: string;
+	/**
+	 * 消息
+	 */
+	private _message: string;
+	public get message(): string
+	{
+		return this._message;
+	}
+	public set message(value: string)
+	{
+		this._message = value;
+		this.ParseMessageParams();
+	}
+	/**
+	 * 类型1.房间聊天2.跑马灯消息
+	 */
+	public type: number;
+	public param: Array<string>;
+	public reset()
+	{
+		this.roleId = undefined;
+		this.message = undefined;
+		this.type = undefined;
+	}
+	/**
+	 * 解析聊天参数
+	 */
+	private ParseMessageParams()
+	{
+		if (this.message && this.message.indexOf(ChatSpecialStrings.AudioRecordMessage) == 0)
+		{
+			let content: string = this.message.substring(ChatSpecialStrings.AudioRecordMessage.length);
+			let splits: Array<string> = content.split(StringConstant.Comma);
+			if (splits.length == 4)//分别是time，guid,sign,path
+			{
+				this.param = splits;
+			}
+		}
+	}
+}
+/**
+ * 聊天消息类型
+ */
+enum ChatMessageType
+{
+	/**
+	 * 房间聊天
+	 */
+	InRoom = 1,
+	/**
+	 * 跑马灯
+	 */
+	Maquee = 2,
+}
+class ChatChannelInfo
+{
+	public targetId: number;
+	public targetName: string;
+}
+/**
+ * 聊天特殊字符
+ */
+class ChatSpecialStrings
+{
+	/**
+	 * 录音消息
+	 */
+	public static AudioRecordMessage: string = "#AudioRecordMessage#";
+	/**
+	 * 分享战斗视频
+	 */
+	public static ShareVcr: string = "#ShareVcr#";
+	/**
+	 * 打开某个面板
+	 */
+	public static OpenModule: string = "#OpenModule#";
+}
+/**
+ * 表情
+*/
+class Face
+{
+	/**
+	 * id
+	*/
+	public id: number;
+	/**
+	 * 资源路径
+	*/
+	public source: string;
+}

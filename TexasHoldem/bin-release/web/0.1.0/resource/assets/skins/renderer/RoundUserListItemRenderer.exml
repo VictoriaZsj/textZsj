@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="RoundUserListItemRendererSkin" width="1120" height="184" xmlns:e="http://ns.egret.com/eui"
+        xmlns:w="http://ns.egret.com/wing" xmlns:ns1="*">
+    <e:Image width="1100" height="184" x="10" y="-1" anchorOffsetY="0" fillMode="scale" anchorOffsetX="0"
+              source="bg_page27_png" scale9Grid="344,138,8,9"/>
+    <e:Image width="361" height="2" x="564" y="56.01" source="graymaskbg_1_png" />
+	<e:Image x="64" y="73" source="jushu_png"/>
+	<e:Image x="443" y="72" source="tongzhuo_png" scaleX="1.1" scaleY="1.1"/>
+    <e:Label text="回放码:" x="166" y="73" fontFamily="SimHei"  size="26" textColor="0x656c72"/>
+	<e:Label id="nameLabel2" text="回放码:" x="524" y="74" textColor="0x656C72" fontFamily="SimHei" size="26" width="169"/>
+	<e:Label id="nameLabel3" text="回放码:" x="524" y="104" textColor="0x656C72" fontFamily="SimHei" size="26" anchorOffsetY="0" height="21" width="169"/>
+	<e:Label id="nameLabel4" text="回放码:" x="524" y="134.5" textColor="0x656C72" fontFamily="SimHei" size="26" anchorOffsetY="0" height="21" width="169"/>
+	<e:Label text="战绩:" x="689.41" y="74" fontFamily="SimHei" size="26" width="169" textAlign="right" textColor="0xc47844"/>
+	<e:Label text="战绩:" x="689.41" y="104" fontFamily="SimHei" size="26" anchorOffsetY="0" height="21" width="169" textAlign="right" textColor="0xc47844"/>
+	<e:Label text="战绩:" x="689.41" y="134.5" fontFamily="SimHei" size="26" anchorOffsetY="0" height="21" width="169" textAlign="right" textColor="0xc47844"/>
+	<e:Label id="scoreLabel2" text="-4" x="869.41" y="74" fontFamily="SimHei" size="26" textAlign="left" textColor="0xC47844" rotation="1.16"/>
+	<e:Label id="scoreLabel3" text="-4" x="869.41" y="104" fontFamily="SimHei" size="26" anchorOffsetY="0" height="21" textAlign="left" textColor="0xC47844"/>
+	<e:Label id="scoreLabel4" text="-4" x="869.41" y="134.5" fontFamily="SimHei" size="26" anchorOffsetY="0" height="21" textAlign="left" textColor="0xC47844"/>
+	<e:Label id="roundIndexLabel" text="1" x="74" y="91" bold="true" fontFamily="SimHei" size="26" textColor="0xffffff" width="34" textAlign="center"/>
+    <e:Label id="idLabel" text="999999" x="262.5" y="73" fontFamily="SimHei"  size="26" textColor="0x656c72"/>
+    <e:Label text="游戏局数:" x="166" y="118" fontFamily="SimHei"  size="26" textColor="0x656c72"/>
+    <e:Label id="roundLabel" text="999999" x="288.21" y="118" fontFamily="SimHei"  size="26" textColor="0x656c72"/>
+    <e:Label id="timeLabel" text="2017-3-28 16:08" x="35.5" y="7" bold="true" fontFamily="SimHei"  size="26" textColor="0x9c6f48"/>
+	<e:Label text="我的战绩:" x="738.07" y="20" fontFamily="SimHei" size="26" textColor="0xc47844"/>
+	<e:Label id="scoreLabel" text="-40" x="866.73" y="20" fontFamily="SimHei" textColor="0xC47844" size="26" textAlign="left"/>
+	<ns1:GameButton id="infoBtn" label="Button" x="939" y="64" skinName="buttonSkin47"/>
+</e:Skin>

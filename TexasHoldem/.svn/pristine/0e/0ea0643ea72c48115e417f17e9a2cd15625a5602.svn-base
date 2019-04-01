@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="panelSkin5" width="720" height="1280" xmlns:e="http://ns.egret.com/eui"
+        xmlns:w="http://ns.egret.com/wing" xmlns:ns1="*" xmlns:tween="egret.tween.*">
+	<w:Config id="15caf743bf8" />
+	<w:Declarations>
+	</w:Declarations>
+	<e:Image id="bg" width="720" height="1280" x="0" y="0" source="Bg2_png" />
+	<e:Image id="kanbanImg" touchEnabled="false" anchorOffsetX="544" source="background_2_png" scaleX="1" scaleY="1" left="37" bottom="0" width="700" anchorOffsetY="0" height="1200"/>
+	<e:Group id="userinfoGroup" touchChildren="true" width="720" height="200" anchorOffsetY="0" touchEnabled="true" x="0" y="0">
+		<e:Image id="userImg" height="100" anchorOffsetX="0" anchorOffsetY="0" scaleX="1" scaleY="1" source="1001_png" width="100" x="30" y="25"/>
+		<e:Image id="borderImg" height="100" anchorOffsetX="0" anchorOffsetY="0" scaleX="1" scaleY="1" width="100" x="30" y="25" source="1001_png"/>
+		<e:Label id="userNameLabel" text="用户名称六字" x="0" y="133" size="30" bold="true" fontFamily="Microsoft JhengHei" anchorOffsetX="0" width="180" anchorOffsetY="0" height="40" textColor="0x000000"/>
+		<e:Label id="vipLevelLabel" text="VIP99" x="150" y="25" textColor="0x000000" border="true"/>
+	</e:Group>
+	<e:Group id="diamondNumLabelGroup" touchChildren="true" width="225" height="65" anchorOffsetY="0" anchorOffsetX="0" verticalCenter="-599.5" x="250">
+		<e:Image anchorOffsetX="0" anchorOffsetY="0" source="bg_page3_2_png"  verticalCenter="0" x="0" width="200"/>
+		<e:Image id="diamondImg" anchorOffsetX="0" anchorOffsetY="0" source="button_8_png" scaleX="1" scaleY="1"
+		         touchEnabled="true" verticalCenter="-2"  x="0"/>
+		<e:Label id="diamondNumLabel" text="1000万" size="30" textAlign="left" fontFamily="SimHei" scaleX="1" scaleY="1"
+		         touchEnabled="false"  textColor="0xffc871" y="18" x="60"/>
+		<ns1:GameButton id="addDiamondBtn" label="Button" skinName="buttonSkin8" scaleX="1" scaleY="1" anchorOffsetX="0"
+		                x="150"  y="-2"/>
+	</e:Group>
+	<e:Group id="goldNumLabelGroup" touchChildren="true" width="225" height="65" anchorOffsetY="0" anchorOffsetX="0" verticalCenter="-599.5" x="500">
+		<e:Image anchorOffsetX="0" anchorOffsetY="0" source="bg_page3_2_png" verticalCenter="0" x="0" width="200"/>
+		<e:Image id="goldImg" anchorOffsetX="0" anchorOffsetY="0" source="button_8_png" scaleX="1" scaleY="1" touchEnabled="true" verticalCenter="-2" x="0"/>
+		<e:Label id="goldNumLabel" text="1000万" size="30" textAlign="left" fontFamily="SimHei" scaleX="1" scaleY="1" touchEnabled="false" textColor="0xFFC871" y="18" x="60"/>
+		<ns1:GameButton id="addGoldBtn" label="领房卡" x="20" scaleX="1" scaleY="1" skinName="buttonSkin54" y="65" enabled="true"/>
+	</e:Group>
+	<e:Group id="rightMenu" width="150" height="320" x="570" y="300">
+		<ns1:GameButton id="signBtn" label="签到" x="0" y="0" height="100" width="150" skinName="buttonSkin2"/>
+		<ns1:GameButton id="activityBtn" label="活动" x="0" y="110" width="150" height="100" skinName="buttonSkin2"/>
+		<ns1:GameButton id="mailBtn" label="邮件" x="0" y="220" width="150" height="100" skinName="buttonSkin2"/>
+	</e:Group>
+	<e:Group id="ranking" width="100" height="460" x="0" y="350">
+		<e:Image width="100" height="460" x="0" y="0" scaleX="1" scaleY="1" source="bg_page4_2_png"/>
+		<e:Image id="rankingImg0" width="80" height="80" x="10" y="10" source="bg_page19_2_png"/>
+		<e:Image width="80" height="80" x="10" y="110" id="rankingImg1" source="bg_page19_2_png"/>
+		<e:Image width="80" height="80" x="10" y="210" id="rankingImg2" source="bg_page19_2_png"/>
+		<e:Image width="80" height="80" x="10" y="310" id="rankingImg3" source="bg_page19_2_png"/>
+		<e:Image width="100" height="50" x="0" y="410" id="rankingImg4" source="bg_page19_2_png"/>
+		<e:Label text="冠" x="10" y="10" textColor="0x000000" bold="true" width="30" height="30" size="30" textAlign="center"/>
+		<e:Label text="亚" x="10" y="110" textColor="0x000000" bold="true" width="30" height="30" size="30" textAlign="center"/>
+		<e:Label text="季" x="10" y="210" textColor="0x000000" bold="true" width="30" height="30" size="30" textAlign="center"/>
+		<e:Label text="4" x="10" y="310" textColor="0x000000" bold="true" width="30" height="30" size="30" textAlign="center"/>
+		<e:Label text="&gt;" y="420" textColor="0x000000" bold="true" width="30" height="30" size="30" textAlign="center" horizontalCenter="0"/>
+	</e:Group>
+	<ns1:GameButton id="pokerBtn" label="Button" y="810" width="250" height="250" scaleX="1" horizontalCenter="0" skinName="buttonSkin14"/>
+	<ns1:GameButton id="hundredBattle" label="Button" y="835" width="200" height="200" scaleX="1" horizontalCenter="-225" skinName="buttonSkin14"/>
+	<ns1:GameButton id="matchBtn" label="Button" y="835" width="200" height="200" scaleX="1" x="485" skinName="buttonSkin14" scaleY="1"/>
+	<e:Group width="720" height="150" x="0" y="1130" anchorOffsetY="0" anchorOffsetX="0">
+		<e:Image width="720" height="150" x="0" y="0" source="bg_page4_2_png"/>
+		<ns1:GameButton id="shopBtn" label="商城" x="0" y="15" skinName="buttonSkin15" scaleX="0.9" scaleY="0.9" height="150" width="150"/>
+		<ns1:GameButton id="friendBtn" label="好友" x="144.5" y="15" skinName="buttonSkin11" scaleX="0.9" scaleY="0.9" width="150" height="150"/>
+		<ns1:GameButton id="questBtn" label="任务" x="450" y="15" skinName="buttonSkin13" scaleX="0.9" scaleY="0.9" width="150" height="150"/>
+		<ns1:GameButton id="freeGoldBtn" label="任务" x="272.5" skinName="buttonSkin13" scaleX="1.2" scaleY="1.2" width="150" height="150" top="-70"/>
+		<ns1:GameButton id="moreBtn" label="更多" x="585" y="15" skinName="buttonSkin12" scaleX="0.9" scaleY="0.9" width="150" height="150"/>
+	</e:Group>
+	<e:Group id="moreGroup" width="400" height="120" x="320" y="1000" anchorOffsetX="0" anchorOffsetY="0">
+		<e:Image id="moreBg" width="400" height="120" x="0" y="0" source="bg_page4_2_png"/>
+		<ns1:GameButton id="settingBtn" label="设置" scaleX="0.9" scaleY="0.9" width="100" height="100" skinName="buttonSkin14" verticalCenter="0" right="0"/>
+		<ns1:GameButton id="playWayBtn" label="设置" scaleX="0.9" scaleY="0.9" width="100" height="100" skinName="buttonSkin14" horizontalCenter="0" verticalCenter="0"/>
+		<ns1:GameButton id="safeBoxBtn" label="设置" scaleX="0.9" scaleY="0.9" width="100" height="100" skinName="buttonSkin14" left="0" verticalCenter="0"/>
+	</e:Group>
+</e:Skin>

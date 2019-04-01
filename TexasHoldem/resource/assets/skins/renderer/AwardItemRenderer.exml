@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="awardItemRendererSkin" width="600" height="90" xmlns:ns1="*"
+        xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing">
+    <e:Image id="bgImg" width="600" height="90" anchorOffsetX="0" anchorOffsetY="0" source="bg_page19_3_png" y="0"
+             scale9Grid="10,9,276,25" />
+
+
+    <e:Label id="rankLabel" text="1" x="72" y="34" width="50" size="24"  textAlign="center"/>
+
+
+	<e:Label id="awardDesLabel" text="10元话费" x="247" y="34" width="300" textAlign="center" size="24"/>
+</e:Skin>

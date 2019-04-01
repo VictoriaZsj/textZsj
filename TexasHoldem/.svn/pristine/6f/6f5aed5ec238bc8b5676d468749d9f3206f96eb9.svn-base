@@ -1,0 +1,85 @@
+/**
+ * 我的礼物渲染项
+ */
+class MyAwardPanelItemRenderer extends BaseItemRenderer<AwardInfo>
+{
+    public itemImg: eui.Image//物品图片
+    public itemTitleLabel: eui.Label//物品标题
+    public itemDesLabel//物品描述
+    public takePrizeBtn: eui.Button//领取奖品
+    public takeDesLabel: eui.Label//奖品状态
+
+    public constructor()
+    {
+        super();
+        this.skinName = UIRendererSkinName.MyAwardPanelItemRenderer;
+    }
+    protected createChildren()
+    {
+        this.dataChanged();
+    }
+    protected dataChanged(): void
+    {
+        super.dataChanged();
+        if (this.bindData)
+        {
+            this.takePrizeBtn.visible = this.takeDesLabel.visible = this.itemDesLabel.visible = false;
+            this.itemImg.source = "fang_ka";
+            this.itemTitleLabel.text = this.bindData.name;
+            if (MyAwardManager.renderFlag == 1)  //未领取
+            {
+                this.takePrizeBtn.visible = true;
+                this.takePrizeBtn.addEventListener(egret.TouchEvent.TOUCH_TAP, this.onTakeAward, this);
+            } else if (MyAwardManager.renderFlag == 2)  //已领取
+            {
+                this.takeDesLabel.visible = this.itemDesLabel.visible = true;
+                this.itemDesLabel.text = this.bindData.des;
+                if (this.bindData.state == MyAwardState.Complete)
+                {
+                    if (this.bindData.effectType == EffectType.Kind)
+                    {
+                        this.takeDesLabel.text = "已发货";
+                    } else if (this.bindData.effectType == EffectType.Cost)
+                    {
+                        this.takeDesLabel.text = "已充值";
+                    }
+                } else if (this.bindData.state == MyAwardState.Underway)
+                {
+                    if (this.bindData.effectType == EffectType.Kind)
+                    {
+                        this.takeDesLabel.text = "等待发货";
+                    } else if (this.bindData.effectType == EffectType.Cost)
+                    {
+                        this.takeDesLabel.text = "充值中";
+                    }
+                }
+            }
+            this.addEventListener(egret.Event.REMOVED_FROM_STAGE, this.onDisable, this);
+        }
+    }
+    private onDisable(event: egret.Event)
+    {
+        this.removeEventListener(egret.Event.REMOVED_FROM_STAGE, this.onDisable, this);
+        if (this.takePrizeBtn)
+        {
+            this.takePrizeBtn.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.onTakeAward, this);
+        }
+    }
+    //领取礼物
+    private onTakeAward()
+    {
+        if (!UserManager.userInfo.addressName)
+        {
+            AlertManager.showSingleAlert("您尚未填写领奖信息，请填写后再领取奖品");
+        } else
+        {
+            if (this.bindData.effectType == EffectType.Kind)
+            {
+                //实物订单确认界面
+            } else
+            {
+                //话费订单确认界面
+            }
+        }
+    }
+}

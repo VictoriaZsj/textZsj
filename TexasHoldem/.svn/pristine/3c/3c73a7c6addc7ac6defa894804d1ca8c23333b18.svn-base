@@ -1,0 +1,35 @@
+/**
+ * 发牌动画
+ */
+class FlopCardAnimation extends BaseAnimation<egret.DisplayObject>{
+	public target: egret.DisplayObject;
+	private _initMatrix: egret.Matrix;
+
+	private _angleVec: Vector2D;
+	public constructor()
+	{
+		super();
+		this._angleVec = new Vector2D(0, 0);
+	}
+	public reset()
+	{
+		super.reset();
+		if (!this._initMatrix)
+		{
+			this._initMatrix = this.target.matrix;
+		}
+		this.target.alpha = 1;
+		this.target.matrix = this._initMatrix;
+	}
+	public run(point: egret.Point)
+	{
+		super.run(point);
+		this._angleVec.x = point.x - this._initMatrix.tx;
+		this._angleVec.y = point.y - this._initMatrix.ty;
+
+		let angle: number = this._angleVec.angle;
+		angle = angle * 180 / Math.PI;
+		let tween: egret.Tween = egret.Tween.get(this.target);
+		tween.to({ x: point.x, y: point.y, alpha: 0.3, rotation: angle }, 300).call(this.runOver, this);
+	}
+}

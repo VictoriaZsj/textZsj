@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="panelSkin9" width="720" height="720" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing"
+        xmlns:ns1="*" xmlns:tween="egret.tween.*">
+	<w:Config id="15c813d330f" />
+	<e:Group id="tweenGroup" width="720" height="720" x="0" y="-3.03" anchorOffsetY="0">
+		<e:Image width="720" height="720" x="0" y="3.03" source="bg_page2_png" scale9Grid="21,20,106,107" anchorOffsetY="0" />
+		<e:ToggleSwitch id="goldCoinsBtn" label="可领取" skinName="getCardToggleSwitchSkin" x="199" y="168.32" scaleX="0.5"
+		                scaleY="0.5" />
+		<e:ToggleSwitch id="diamondBtn" label="分享ID" skinName="shareIDToggleSwitchSkin" x="407" y="168.32" scaleX="0.5"
+		                scaleY="0.5" />
+		<e:Button id="returnBtn" label="返回" x="48" y="32" skinName="buttonSkin2" />
+		<e:Label text="商城" x="318" y="75" size="50" textColor="0xdd1c1c" bold="true" />
+		<e:Group id="goldGroup" width="700" height="420" x="11" y="233" anchorOffsetX="0" anchorOffsetY="0">
+			<e:Scroller id="gold_scroller" width="646" height="350" x="41" y="41"></e:Scroller>
+			<e:List id="goldList" width="646" height="390" anchorOffsetX="0" anchorOffsetY="0" x="40" y="17" >
+				<e:layout>
+					<e:TileLayout rowHeight="190" requestedColumnCount="3" horizontalAlign="center" verticalAlign="top" orientation="rows" horizontalGap="17" verticalGap="11"/>
+				</e:layout>
+			</e:List>
+		</e:Group>
+		<e:Group id="diamondGroup" width="700" height="420" x="11" y="233" anchorOffsetX="0" anchorOffsetY="0">
+			<e:Scroller id="diamond_scroller" width="646" height="350" x="41" y="41" anchorOffsetX="0">
+				<e:Group/>
+			</e:Scroller>
+			<e:List id="diamondList" width="646" height="390" anchorOffsetX="0" anchorOffsetY="0" x="40" y="17">
+				<e:layout>
+					<e:TileLayout orientation="rows" requestedColumnCount="3" rowHeight="190"  horizontalAlign="center" verticalAlign="top" horizontalGap="17" verticalGap="11"/>
+				</e:layout>
+			</e:List>
+		</e:Group>
+	</e:Group>
+</e:Skin>

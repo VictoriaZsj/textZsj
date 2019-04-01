@@ -1,0 +1,92 @@
+/**
+ *  资产管理类
+ */
+class PropertyManager
+{
+    /**
+     * 金币差值
+     */
+    private static _goldOffset: number;
+    /**
+     * 钻石差值
+     */
+    private static _diamondOffset: number;
+    /**
+     * 经验差值
+     */
+    private static _expOffset: number;
+
+    private static _isOpen: boolean = false;
+    /**
+     * item获取列表
+     */
+    private static _itemGetList: Array<ItemGetInfo> = new Array<ItemGetInfo>();
+    public static get itemGetList(): Array<ItemGetInfo>
+    {
+        return PropertyManager._itemGetList;
+    }
+
+    public static OpenGet()
+    {
+        PropertyManager._isOpen = true;
+        ArrayUtil.Clear(PropertyManager._itemGetList);
+        PropertyManager._goldOffset = UserManager.userInfo.gold;
+        PropertyManager._diamondOffset = UserManager.userInfo.diamond;
+        PropertyManager._expOffset = UserManager.userInfo.exp;
+    }
+
+    public static OpenGoldGet()
+    {
+        PropertyManager._goldOffset = UserManager.userInfo.gold;
+    }
+    public static OpenDiamondGet()
+    {
+        PropertyManager._diamondOffset = UserManager.userInfo.diamond;
+    }
+    public static Clear()
+    {
+        PropertyManager._isOpen = false;
+    }
+
+    public static ShowGoldPnael()
+    {
+        if (PropertyManager._isOpen == false)
+            {
+                let doffset:number =UserManager.userInfo.gold - PropertyManager._goldOffset;
+                if (doffset > 0)
+                {
+                    //UIManager.showPanel();
+                }
+            }
+    }
+
+    public static ShowItemList()
+    {
+        if (!PropertyManager._isOpen)
+        {
+            return;
+        }
+        PropertyManager._goldOffset = UserManager.userInfo.gold - PropertyManager._goldOffset;
+        PropertyManager._diamondOffset = UserManager.userInfo.diamond - PropertyManager._diamondOffset;
+        PropertyManager._expOffset = UserManager.userInfo.exp = PropertyManager._expOffset;
+        PropertyManager.AddBase(PropertyId.gold, PropertyManager._goldOffset);
+        PropertyManager.AddBase(PropertyId.diamond, PropertyManager._diamondOffset);
+        PropertyManager.AddBase(PropertyId.exp, PropertyManager._expOffset);
+        if (PropertyManager._itemGetList.length > 0)
+        {
+            //UIManager.showPanel(UIModuleName. ,PropertyManager._itemGetList);
+        }
+    }
+
+    public static AddBase(itemId: number, count: number)
+    {
+        if (count > 0 && PropertyManager._isOpen)
+        {
+            let info: ItemGetInfo = new ItemGetInfo();
+            info.id = itemId;
+            info.count = count;
+            PropertyManager._itemGetList.push(info);
+        }
+    }
+
+}

@@ -1,0 +1,35 @@
+/**
+ * 一张卡片的信息
+ */
+class OnceResultCardComponet extends BaseComponent<number>
+{
+	public face: eui.Image;
+	public constructor()
+	{
+		super();
+		this.skinName = UIComponentSkinName.OnceResultCardComponet;
+	}
+	public init(data: number)
+	{
+		super.init(data);
+		this.refreshFace();
+	}
+	protected rendererStart(event: egret.Event)
+	{
+		super.rendererStart(event);
+		this.refreshFace();
+	}
+	public refreshFace()
+	{
+		if (this.bindData && this.face)
+		{
+			let paiDef: PaiDefinition = PaiDefined.GetInstance().getDefinition(this.bindData, PaiDefined.GetInstance().paiList);
+			this.face.source = paiDef.img + ResSuffixName.PNGSuffix;
+		}
+	}
+	public destroy()
+	{
+		super.destroy();
+		this.face.source = StringConstant.empty;
+	}
+}

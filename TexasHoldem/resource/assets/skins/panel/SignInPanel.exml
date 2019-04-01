@@ -1,0 +1,40 @@
+<e:Skin class="panelSkin13" width="720" height="840" xmlns:e="http://ns.egret.com/eui"
+        xmlns:w="http://ns.egret.com/wing" xmlns:ns1="*">
+	<e:Group id="tweenGroup" width="720" height="841.33" anchorOffsetY="0" horizontalCenter="1" verticalCenter="0.5">
+		<e:Group id="signInGroup" width="640" height="836" anchorOffsetX="0" anchorOffsetY="0" y="1.33" horizontalCenter="0">
+			<e:Image width="640" height="836" source="bg_page17_png" scale9Grid="22,16,140,46" anchorOffsetY="0"/>
+			<e:Label text="3天" x="240" y="142.5" size="25"/>
+			<e:Label text="每日签到" x="24" y="26" size="35"/>
+			<ns1:GameButton id="closeButton" label="Button" skinName="buttonSkin4" x="569" y="0"/>
+			<e:Label text="每周累计签到到达指定天数，即可获得相应奖励" y="84" anchorOffsetX="0" width="476" anchorOffsetY="0" height="40" verticalAlign="middle" textAlign="center" horizontalCenter="0" size="22" textColor="0xffcf70"/>
+			<e:Image width="494" height="25" y="170" source="bg_page1_png" anchorOffsetX="0" anchorOffsetY="0" horizontalCenter="0"/>
+			<e:Group verticalCenter="-235.5" horizontalCenter="0">
+				<e:Image id="signImg1" width="20" height="20" x="-172" y="-12" scaleX="1" scaleY="1" source="radiobutton_unselect_png"/>
+				<e:Image id="signImg2" width="20" height="20" x="192" y="171" source="radiobutton_unselect_png"/>
+				<e:Image id="signImg3" width="20" height="20" x="-172" y="-12" scaleX="1" scaleY="1" source="radiobutton_unselect_png"/>
+				<e:Image id="signImg4" width="20" height="20" x="-172" y="-12" scaleX="1" scaleY="1" source="radiobutton_unselect_png"/>
+				<e:Image id="signImg5" width="20" height="20" x="-172" y="-12" scaleX="1" scaleY="1" source="radiobutton_unselect_png"/>
+				<e:Image id="signImg6" width="20" height="20" x="-172" y="-12" scaleX="1" scaleY="1" source="radiobutton_unselect_png"/>
+				<e:Image id="signImg7" width="20" height="20" x="-172" y="-12" scaleX="1" scaleY="1" source="radiobutton_unselect_png"/>
+				<e:layout>
+				<e:HorizontalLayout gap="40"/>
+				</e:layout>
+			</e:Group>
+			<e:Scroller id="signIn_scroller" width="605" height="494" verticalCenter="64" x="18" anchorOffsetY="0"/>
+			<e:List id="signInList" width="605" height="494" anchorOffsetX="0" anchorOffsetY="0" y="236" horizontalCenter="0.5">
+				<e:layout>
+					<e:VerticalLayout verticalAlign="top" horizontalAlign="center" gap="10"/>
+				</e:layout>
+			</e:List>
+			<e:Image width="25" height="25" x="250" y="168" source="chips_04_png"/>
+			<e:Image width="25" height="25" x="367.5" y="168.83" source="chips_04_png"/>
+			<e:Image width="25" height="25" x="490" y="167.5" source="chips_03_png"/>
+			<e:Label text="5天" x="360.5" y="142.5" size="25"/>
+			<e:Label text="7天" x="480.5" y="148" size="25"/>
+			<e:Label id="threeDay" text="Label" x="234.64" y="203" size="20"/>
+			<e:Label id="fiveDay" text="Label" x="353" y="203" size="20"/>
+			<e:Label id="sevenDay" text="Label" x="474.81" y="203" size="20"/>
+			<e:Button id="signInBtn" label="签到领取" x="138" y="742" anchorOffsetY="0" height="57" anchorOffsetX="0" width="351"/>
+		</e:Group>
+	</e:Group>
+</e:Skin>

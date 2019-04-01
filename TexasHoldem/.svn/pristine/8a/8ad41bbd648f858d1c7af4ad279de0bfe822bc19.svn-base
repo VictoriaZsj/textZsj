@@ -1,0 +1,129 @@
+/**
+ * 商城面板
+*/
+class ShoppingPanel extends BasePanel
+{
+    public shoppingTab: TabComponent;
+    public returnBtn: eui.Button;
+    public goldGroup: eui.Group;
+    public goldList: eui.List;
+
+    public diamondGroup: eui.Group;
+    public diamondList: eui.List;
+
+    public gold_scroller: eui.Scroller;
+    public diamond_scroller: eui.Scroller;
+
+    private gold_dp: eui.ArrayCollection;
+    private diamond_dp: eui.ArrayCollection;
+
+    public constructor()
+    {
+        super();
+        this._isMaskClickClose = true;
+        this.skinName = UISkinName.ShoppingPanel;
+    }
+
+    // 只执行一次
+    protected onAwake(event: eui.UIEvent)
+    {
+        //滚动设置
+        this.gold_scroller.scrollPolicyH = eui.ScrollPolicy.OFF;
+        this.diamond_scroller.scrollPolicyH = eui.ScrollPolicy.OFF;
+        super.onAwake(event);
+        let array: Array<eui.Group> = new Array<eui.Group>();
+        array.push(this.goldGroup);
+        array.push(this.diamondGroup);
+        this.shoppingTab.init(array);
+
+        this.gold_dp = new eui.ArrayCollection(ShoppingManager.getListByType(ShoppingType.gold));
+        this.diamond_dp = new eui.ArrayCollection(ShoppingManager.getListByType(ShoppingType.diamond));
+
+        //this.shoppingTab.setTabSkinName("shareIDToggleSwitchSkin");
+
+        this.diamondList.visible = true;
+        UIUtil.listRenderer(this.goldList, this.gold_scroller, GoldListItemRenderer, ScrollViewDirection.Vertical_T_D, eui.ScrollPolicy.ON, null, true);
+        UIUtil.listRenderer(this.diamondList, this.diamond_scroller, DiamondListItemRenderer, ScrollViewDirection.Vertical_T_D, eui.ScrollPolicy.ON, null, true);
+    }
+
+    // 每次打开都会执行
+    public init(appendData: any)
+    {
+        super.init(appendData);
+        if (appendData)
+        {
+            this.onTabChange(parseInt(appendData.toString()));
+        }
+        else
+        {
+            this.onTabChange(0);
+        }
+        if (appendData && appendData == ShoppingType.diamond)
+        {
+            this.diamondGroup.visible = true;
+            this.goldGroup.visible = false;
+        }
+    }
+
+    protected onEnable(event: eui.UIEvent): void
+    {
+        super.onEnable(event);
+        // 购买金币
+        this.goldList.addEventListener(eui.ItemTapEvent.ITEM_TAP, this.BuyClickHandler, this);
+        this.diamondList.addEventListener(eui.ItemTapEvent.ITEM_TAP, this.BuyClickHandler, this);
+        this.shoppingTab.selectChanged.addListener(this.onTabChange, this);
+        UIUtil.hideScrollerBar(this.gold_scroller);
+        UIUtil.hideScrollerBar(this.diamond_scroller);
+    }
+
+    protected onDisable(event: eui.UIEvent): void
+    {
+        super.onDisable(event);
+        this.goldList.removeEventListener(eui.ItemTapEvent.ITEM_TAP, this.BuyClickHandler, this);
+        this.diamondList.removeEventListener(eui.ItemTapEvent.ITEM_TAP, this.BuyClickHandler, this);
+        this.shoppingTab.selectChanged.removeListener(this.onTabChange);
+    }
+    private onTabChange(index: number)
+    {
+        switch (index)
+        {
+            case 0:
+                this.goldList.dataProvider = this.gold_dp;
+                break;
+            case 1:
+                setTimeout(function ()
+                {
+                    this.diamondList.dataProvider = this.diamond_dp;
+                }.bind(this), 100);
+                break;
+        }
+    }
+    protected onRender(event: egret.Event)
+    {
+        super.onRender(event);
+    }
+    /**
+     * 购买金币/钻石选择
+    */
+    private BuyClickHandler(event: eui.ItemTapEvent)
+    {
+        SoundManager.playEffect(Sex.Male, MusicAction.buttonClick);
+        switch (event.target)
+        {
+            case this.goldList:
+                AlertManager.showAlertObj({ message: StringUtil.format("是否花费{0}元，购买{1}？", this.goldList.selectedItem.definition.price, this.goldList.selectedItem.definition.name), OnConfirm: this.tryPay, confirmParam: this.goldList.selectedItem, isSingle: false });
+                break;
+            case this.diamondList:
+                AlertManager.showAlertObj({ message: StringUtil.format("是否花费{0}元，购买{1}？", this.diamondList.selectedItem.definition.price, this.diamondList.selectedItem.definition.name), OnConfirm: this.tryPay, confirmParam: this.diamondList.selectedItem, isSingle: false });
+                break;
+        }
+    }
+
+    private tryPay(obj: any)
+    {
+        if (obj)
+        {
+            ChannelManager.PayGoldSend(obj.definition.get);
+        }
+    }
+}

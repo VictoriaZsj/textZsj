@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="panelSkin21" width="720" height="1280" xmlns:e="http://ns.egret.com/eui"
+        xmlns:w="http://ns.egret.com/wing" xmlns:ns1="*" xmlns:tween="egret.tween.*">
+	<w:Declarations>
+		<tween:TweenGroup id="loading">
+			<tween:TweenItem target="{image}">
+				<tween:TweenItem target="{image}" />
+				<tween:Set>
+					<tween:props>
+						<e:Object/>
+					</tween:props>
+				</tween:Set>
+				<tween:props>
+					<e:Object loop="{true}" />
+				</tween:props>
+				<tween:To duration="1000">
+					<tween:props>
+						<e:Object rotation="{360}" />
+					</tween:props>
+				</tween:To>
+			</tween:TweenItem>
+		</tween:TweenGroup>
+	</w:Declarations>
+	<e:Image id="image2" anchorOffsetX="0" anchorOffsetY="0" scaleX="-1"
+	         width="301" height="56"  scale9Grid="5,5,32,12" horizontalCenter="0" verticalCenter="0" source="bg_page4_2_png"/>
+	<e:Image id="image" width="100" height="100" source="loading_png" anchorOffsetX="50" anchorOffsetY="50"  horizontalCenter="0" y="550"/>
+	<e:Image id="image0" anchorOffsetX="50" anchorOffsetY="50" source="h_zzjzz_png"
+	          horizontalCenter="0" verticalCenter="0"/>
+</e:Skin>

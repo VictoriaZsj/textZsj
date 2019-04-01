@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="panelSkin18" width="720" height="1280" xmlns:ns1="*" xmlns:e="http://ns.egret.com/eui"
+        xmlns:w="http://ns.egret.com/wing">
+	<e:Group id="anmGroup" horizontalCenter="-1" verticalCenter="-3" width="720" height="1280">
+		<e:Image width="720" height="1280" anchorOffsetY="0" anchorOffsetX="0" source="bg_page2_png" scale9Grid="44,39,67,89" />
+		<e:List id="list" width="720">
+			<e:layout>
+			<e:VerticalLayout gap="1" horizontalAlign="center" verticalAlign="top"/>
+			</e:layout>
+		</e:List>
+		<e:Scroller id="scroller" width="720" height="680"></e:Scroller>
+
+		<e:Image height="600" anchorOffsetX="0" anchorOffsetY="0" scaleX="1" scaleY="1" scale9Grid="19,18,23,23" source="bg_page19_png" horizontalCenter="1" width="720" x="1" y="680"/>
+		<e:Group id="keyBoradGroup" width="720" height="600" y="680">
+
+
+			<e:Group id="faceGroup" x="0" y="90">
+				<e:Group x="0" y="0">
+					<e:Scroller id="faceScroller" width="720" y="0" height="510" x="0" />
+					<e:List id="faceList" width="720" height="510" y="0" x="0" >
+						<e:layout>
+							<e:TileLayout orientation="rows" horizontalGap="0" verticalGap="0" requestedRowCount="6"/>
+						</e:layout>
+					</e:List>
+				</e:Group>
+				<e:Group id="disGroup" width="720" height="510">
+					<e:Image width="720" height="510" source="bg_page4_2_png"/>
+					<e:Label text="入座后才可输入表情" horizontalCenter="0" verticalCenter="0" bold="true" size="36" textColor="0xfcf9f9"/>
+				</e:Group>
+			</e:Group>
+			<e:Group id="fastGroup" y="90">
+				<e:Scroller id="fastScroller" width="720" y="0" height="510" x="0" />
+				<e:List id="fastList" width="720" height="510" y="0" x="0" >
+					<e:layout>
+						<e:VerticalLayout gap="1"/>
+					</e:layout>
+				</e:List>
+			</e:Group>
+		</e:Group>
+		<e:Group horizontalCenter="0" x="26" scaleX="1" scaleY="1" width="720" height="90" y="680">
+			<e:ToggleSwitch id="faceBtn" label="表情" skinName="shareIDToggleSwitchSkin" x="524" y="6" scaleX="0.4"/>
+			<ns1:GameButton id="fastEnterBtn" label="快捷输入" skinName="buttonSkin32" x="614.6" y="6" scaleX="0.4"/>
+			<ns1:GameButton id="sendBtn" label="发送按钮" skinName="buttonSkin32" x="433.6" y="6" scaleX="0.4"/>
+			<e:EditableText id="writeLabel" width="390" height="66" text="" x="29" y="12" anchorOffsetX="0" anchorOffsetY="0" verticalAlign="middle" textColor="0x0c0c0c" bold="false" border="true" borderColor="0x3d3a3a"/>
+		</e:Group>
+	</e:Group>
+</e:Skin>

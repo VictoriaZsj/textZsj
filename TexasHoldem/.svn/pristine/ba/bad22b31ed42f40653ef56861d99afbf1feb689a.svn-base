@@ -1,0 +1,74 @@
+/**
+ * 行为操作支持 仅自己
+ */
+class GamblingPanelActionSupport extends BaseGamblingPanelSupport
+{
+	public initialize()
+	{
+		super.initialize();
+	}
+	/**
+	 * 状态变更
+	 */
+	public changeState(state: PlayerState)
+	{
+		switch (state)
+		{
+			case PlayerState.WaitNext:
+				this.target.actionGroup.visible = false;
+				break;
+			case PlayerState.WaitAction:
+				this.target.actionGroup.visible = true;
+				this.target.actionGroup.hideAll();
+				this.target.actionGroup.preActionGroup.visible = true;
+				break;
+			case PlayerState.Check:
+			case PlayerState.Raise:
+			case PlayerState.AllIn:
+			case PlayerState.Call:
+			case PlayerState.Blind:
+				this.target.actionGroup.visible = false;
+				break;
+			case PlayerState.Fold: //弃牌
+				this.target.actionGroup.visible = true;
+				this.target.actionGroup.hideAll();
+				this.target.actionGroup.brightCardBtn.visible = true;
+				break;
+			case PlayerState.Action: //说话
+				this.target.actionGroup.visible = true;
+				this.target.actionGroup.hideAll();
+				this.target.actionGroup.raiseGroup.visible = true;
+				this.target.actionGroup.actionGroup.visible = true;
+				break;
+		}
+	}
+	public onClick(target: any)
+	{
+		switch (target)
+		{
+			case this.target.actionGroup.brightCardBtn: //结束时亮牌
+				GamblingManager.actionHandler.isBrightCard = !GamblingManager.actionHandler.isBrightCard;
+				break;
+			case this.target.actionGroup.passOrDropBtn: //过或弃
+				GamblingManager.actionHandler.isPassOrFold = !GamblingManager.actionHandler.isPassOrFold;
+				break;
+			case this.target.actionGroup.callAnyBtn: //一律跟
+				GamblingManager.actionHandler.isCallAny = !GamblingManager.actionHandler.isCallAny;
+				break;
+			case this.target.actionGroup.oneOfThreeBtn: //加注1/3底池
+				break;
+			case this.target.actionGroup.oneOfTwoBtn: //加注1/2底池
+				break;
+			case this.target.actionGroup.twoOfThreeBtn: //加注2/3底池
+				break;
+			case this.target.actionGroup.oneBtn: //加注 底池*1
+				break;
+			case this.target.actionGroup.raiseBtn: //加注
+				break;
+			case this.target.actionGroup.foldBtn: //弃牌
+				break;
+			case this.target.actionGroup.callBtn: //跟注
+				break;
+		}
+	}
+}

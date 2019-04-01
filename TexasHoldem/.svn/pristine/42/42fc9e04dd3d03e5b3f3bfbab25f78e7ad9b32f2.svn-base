@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="AssignmentPanelSkin" width="720" height="1280" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing"
+        xmlns:ns1="*" xmlns:tween="egret.tween.*">
+	<w:Config id="15c813d330f" />
+	<e:Group id="anmGroup" width="720" height="100" x="0" y="0">
+		<e:Image id="bg" width="720" height="100" x="0" y="0" source="bg_page4_png"/>
+		<e:Image id="titleImg" width="300" height="80" y="10" source="bg_page3_2_png" x="210" scaleX="1" scaleY="1"/>
+		<e:Label text="任务" x="318" y="25" size="50" bold="true" textColor="0xfcd232"/>
+		<e:Button id="closeButton" label="返回" x="50" y="50" skinName="buttonSkin2" width="150" scaleX="0.5" height="80" scaleY="0.9" anchorOffsetX="75" anchorOffsetY="40"/>
+	</e:Group>
+	<e:Group id="anmGroup1" width="720" height="1180" x="0" y="100" anchorOffsetY="0">
+		<e:Image width="720" height="1180" x="1" y="4.03" source="bg_page2_png" scale9Grid="21,20,106,107" anchorOffsetY="0"/>
+		<ns1:TabComponent id="assignmentTab" width="700" height="1140" y="20" anchorOffsetX="0" anchorOffsetY="0" x="10"/>
+		<e:Group id="dayGroup" width="700" height="1020" y="139" anchorOffsetX="0" anchorOffsetY="0" name="每日任务" x="10">
+
+
+		</e:Group>
+		<e:Group id="weekGroup" width="700" height="1016" y="139" anchorOffsetX="0" anchorOffsetY="0" name="每周任务" x="10">
+
+
+		</e:Group>
+		<e:Group id="growGroup" width="700" height="1012" y="139" anchorOffsetX="0" anchorOffsetY="0" name="成长任务" x="10">
+
+
+		</e:Group>
+
+	</e:Group>
+
+
+
+
+</e:Skin>

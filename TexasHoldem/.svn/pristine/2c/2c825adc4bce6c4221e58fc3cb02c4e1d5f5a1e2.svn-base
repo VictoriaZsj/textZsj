@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="UserInfoPanelSkin" width="640" height="800" xmlns:e="http://ns.egret.com/eui" xmlns:ns1="*" xmlns:w="http://ns.egret.com/wing">
+	<e:Group id="tweenGroup" width="640" height="800" anchorOffsetX="0" anchorOffsetY="0" x="0" y="0">
+		<e:Image id="bg" source="bg_page11_png" scale9Grid="17,17,13,10" width="640" height="800" y="0" anchorOffsetY="0" x="0" scaleX="1" scaleY="1"/>
+		<e:Label id="userNameLabel" text="名字" x="20" y="20" size="35" textColor="0x4F5D60" fontFamily="Arial" scaleX="1" scaleY="1"/>
+		<ns1:TabComponent id="userInfoTab" width="600" height="700" y="75" skinName="TabComponentSkin" horizontalCenter="0"/>
+		<e:Group id="dataGroup" y="240" name="资料" x="0" width="600">
+			<e:Image width="300" height="53" x="300" y="221" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1"/>
+			<e:Image width="296.81" height="53" x="2" y="221.5" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1"/>
+			<e:Image width="600" height="53" y="160" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" x="0"/>
+			<e:Image width="600" height="53" y="288.5" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" x="0"/>
+			<e:Image width="600" height="53" y="355.5" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" x="0"/>
+			<e:Label text="个性签名：" x="30" y="170" size="26" bold="true" textColor="0x4F5D60" fontFamily="SimHei" scaleX="1" scaleY="1"/>
+			<e:Label id="userDesLabel" text="这个人很懒，什么东西都没有留下！" x="170" y="170" size="26" bold="true" textColor="0x4F5D60" fontFamily="SimHei" scaleX="1" scaleY="1"/>
+			<e:Label text="金币:" x="339" y="235" size="26" bold="true" textColor="0x4F5D60" fontFamily="SimHei" scaleX="1" scaleY="1"/>
+			<e:Label id="goldNumLabel" text="9999" x="409.5" y="235" size="26" bold="true" textColor="0x4F5D60" fontFamily="SimHei" scaleX="1" scaleY="1"/>
+	        <e:Label id="diamondNumLabel" text="9999999" x="98" y="237.5" size="26" bold="true" textColor="0x4F5D60" fontFamily="SimHei" scaleX="1" scaleY="1" anchorOffsetY="0" height="-52.67"/>
+			<e:Label text="ID:" x="187.24" y="102" size="26" bold="true" textColor="0x4F5D60" fontFamily="SimHei" scaleX="1" scaleY="1" anchorOffsetY="0" height="-52.67"/>
+			<e:Group id="vipGroup" width="120" height="35" x="300" y="60" anchorOffsetX="0" anchorOffsetY="0">
+				<e:Label id="vipLevelLabel" text="999" x="60" y="0" size="35" textColor="0x4F5D60" fontFamily="SimHei" scaleX="1" scaleY="1" anchorOffsetY="0" border="false" textAlign="center" verticalAlign="middle"/>
+				<e:Label text="VIP" x="0" y="0" size="35" textColor="0x4F5D60" fontFamily="SimHei" scaleX="1" scaleY="1" anchorOffsetY="0" height="35" border="true" anchorOffsetX="0" width="120" verticalAlign="middle"/>
+			</e:Group>
+			<e:Label id="ageLabel" text="99" y="63" size="26" bold="true" textColor="0x4F5D60" fontFamily="SimHei" scaleX="1" scaleY="1" anchorOffsetY="0" height="-52.67" border="true" width="66" horizontalCenter="-78" textAlign="right"/>
+			<e:Label id="userIdLabel" text="9999999" x="234.74" y="102" size="26" bold="true" textColor="0x4F5D60" fontFamily="SimHei" scaleX="1" scaleY="1" anchorOffsetY="0" height="-52.67"/>
+			<e:Label text="钻石：" x="16.83" y="235" size="26" bold="true" textColor="0x4F5D60" fontFamily="SimHei" scaleX="1" scaleY="1"/>
+			<e:Label text="正在游戏大厅" x="16.83" y="369" size="26" bold="true" textColor="0x4F5D60" fontFamily="SimHei" scaleX="1" scaleY="1"/>
+			<e:Label text="Lv." x="18.27" y="302" size="26" bold="true" textColor="0x4F5D60" fontFamily="SimHei" scaleX="1" scaleY="1"/>
+			<e:Label id="levelLabel" text="999" x="57.5" y="302" size="26" bold="true" textColor="0x4F5D60" fontFamily="SimHei" scaleX="1" scaleY="1"/>
+			<e:Label id="titleLabel" text="德州大亨" x="150" y="302" size="26" bold="true" textColor="0x4F5D60" fontFamily="SimHei" scaleX="1" scaleY="1"/>
+			<e:Image width="652" height="40" y="305" source="loading_bg_png" scale9Grid="19,18,33,5" scaleY="0.5" x="260" scaleX="0.5"/>
+			<e:Image id="levelProgressImg" width="328" height="40" x="260" y="305" scaleY="0.5" source="loading_line_png" anchorOffsetX="0" anchorOffsetY="0" scaleX="1" scale9Grid="11,10,50,21" fillMode="clip"/>
+			<e:Group id="myInfoBtnGroup" width="584.85" height="139.39" x="13" y="408" anchorOffsetX="0" anchorOffsetY="0">
+				<e:Button id="myPrizeBtn" label="我的奖品" x="1" y="7.999999999999886" skinName="buttonSkin2" scaleX="1" scaleY="1"/>
+				<e:Button id="myVipBtn" label="我的VIP" x="203" y="7.999999999999886" skinName="buttonSkin2" scaleX="1" scaleY="1"/>
+			</e:Group>
+			<e:Group id="friendInfoBtnGroup" width="584.85" height="139.39" x="13" y="408" anchorOffsetX="0" anchorOffsetY="0">
+				<e:Button id="deleteFriendBtn" label="删除好友" y="17.999999999999886" skinName="buttonSkin2" scaleX="1.5" scaleY="1" horizontalCenter="0"/>
+			</e:Group>
+			<e:Group id="receiveOtherBtnGroup" width="584.85" height="139.39" x="13" y="408" anchorOffsetX="0" anchorOffsetY="0">
+				<e:Button id="refuseBtn" label="拒绝" x="50" y="27.2" skinName="buttonSkin2" scaleX="1.5" scaleY="1"/>
+				<e:Button id="acceptBtn" label="同意" x="300" y="27.2" skinName="buttonSkin2" scaleX="1.5" scaleY="1"/>
+			</e:Group>
+			<e:Group id="sendOtherInfoBtnGroup" width="584.85" height="139.39" x="13" y="408" anchorOffsetX="0" anchorOffsetY="0">
+				<e:Button id="requestBtn" label="申请好友" y="27.199999999999932" skinName="buttonSkin2" scaleX="1.5" scaleY="1" horizontalCenter="0" x="174"/>
+			</e:Group>
+			<e:Image id="userImg" width="93" height="80" x="24.47" y="24" source="bg_page1_png" anchorOffsetX="0" anchorOffsetY="0" scaleX="1.2" scaleY="1.3"/>
+			<e:Button label="修改昵称" x="187.24" y="24" scaleX="0.8" scaleY="0.4" skinName="buttonSkin2" anchorOffsetX="0" width="156.25"/>
+			<e:Image width="31" height="27" x="187.24" y="63" source="boy_png" anchorOffsetX="0" anchorOffsetY="0"/>
+		</e:Group>
+		<e:Group id="situationGroup" x="0" y="240" name="概况" height="501" width="600">
+			<e:Image width="600" height="53" x="0" y="426.38" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1"/>
+			<e:Image width="600" height="91.66" x="0" y="315" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" anchorOffsetY="0"/>
+			<e:Image width="600" height="109" x="0" y="196" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" anchorOffsetY="0"/>
+			<e:Image width="600" height="163" x="0" y="18.5" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1" anchorOffsetY="0"/>
+			<e:Label id="" text="已完游戏局数/胜利" x="26.5" y="204.33" size="26" bold="true" textColor="0x4F5D60" fontFamily="SimHei" scaleX="1" scaleY="1"/>
+			<e:Label id="" text="胜率" x="28.5" y="250.5" size="26" bold="true" textColor="0x4F5D60" fontFamily="SimHei" scaleX="1" scaleY="1"/>
+			<e:Label id="" text="好友" x="39.5" y="145" size="26" bold="true" textColor="0x4F5D60" fontFamily="SimHei" scaleX="1" scaleY="1"/>
+			<e:Label id="" text="一把最高赢取金币" x="31.5" y="107.7" size="26" bold="true" textColor="0x4F5D60" fontFamily="SimHei" scaleX="1" scaleY="1"/>
+			<e:Label id="" text="最高拥有金币" x="35.5" y="74" size="26" bold="true" textColor="0x4F5D60" fontFamily="SimHei" scaleX="1" scaleY="1"/>
+			<e:Label id="" text="加入游戏时间" x="38.13" y="37.03" size="26" bold="true" textColor="0x4F5D60" fontFamily="SimHei" scaleX="1" scaleY="1"/>
+			<e:Label id="championTimesLabel" text="999" x="465" y="439.88" size="26" bold="true" textColor="0x4F5D60" fontFamily="SimHei" scaleX="1" scaleY="1"/>
+			<e:Label id="" text="竞标赛夺冠次数" x="38.13" y="439.88" size="26" bold="true" textColor="0x4F5D60" fontFamily="SimHei" scaleX="1" scaleY="1"/>
+			<e:Label id="maxHandLabel" text="皇家同花顺" x="31" y="360.83" size="26" bold="false" fontFamily="SimHei" scaleX="1" scaleY="1" textColor="0xedc80b"/>
+			<e:Label id="" text="最大手牌" x="31" y="334.83" size="26" bold="true" textColor="0x4F5D60" fontFamily="SimHei" scaleX="1" scaleY="1"/>
+			<e:Label id="winProbabilityLabel" text="100%" x="452" y="250.5" size="26" bold="true" textColor="0x4F5D60" fontFamily="SimHei" scaleX="1" scaleY="1"/>
+			<e:Label id="winTimeLabel" text="99999" x="452" y="204.33" size="26" bold="true" textColor="0x4F5D60" fontFamily="SimHei" scaleX="1" scaleY="1"/>
+
+			
+			<e:Label id="frindNumLabel" text="999" x="458.5" y="145" size="26" bold="true" textColor="0x4F5D60" fontFamily="SimHei" scaleX="1" scaleY="1"/>
+			<e:Label id="maxGoldOnetimeLabel" text="999999" x="453.5" y="107.7" size="26" bold="true" textColor="0x4F5D60" fontFamily="SimHei" scaleX="1" scaleY="1"/>
+			
+			<e:Label id="maxGoldLabel" text="9999999" x="453.5" y="74" size="26" bold="true" textColor="0x4F5D60" fontFamily="SimHei" scaleX="1" scaleY="1"/>
+			<e:Label id="joinTimeLabel" text="2017-06-05" x="453.7" y="37" size="26" bold="true" textColor="0x4F5D60" fontFamily="SimHei" scaleX="1" scaleY="1" anchorOffsetX="0" width="146.3" anchorOffsetY="0" height="26"/>
+			
+		</e:Group>
+
+		<e:Group id="achievementGroup" name="成就" height="600" y="240" x="0" width="620">
+			<e:Image width="80" height="80" x="20" y="20" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1"/>
+			<e:Image width="80" height="80" x="120" y="20" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1"/>
+			<e:Image width="80" height="80" x="220" y="20" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1"/>
+			<e:Image width="80" height="80" x="320" y="20" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1"/>
+			<e:Image width="80" height="80" x="420" y="20" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1"/>
+			<e:Image width="80" height="80" x="520" y="20" source="bg_page1_png" scale9Grid="20,20,48,40" anchorOffsetX="0" scaleX="1" scaleY="1"/>
+		</e:Group>
+		<e:Button id="closeButton" label="Button" x="585" y="35" skinName="buttonSkin2" width="150" height="85" scaleY="0.5" anchorOffsetY="40" anchorOffsetX="75" scaleX="0.5"/>
+	</e:Group>
+</e:Skin>

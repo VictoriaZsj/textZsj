@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="cardfaceSkin1" width="80" height="111" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing">
+        <e:Image width="154.41" height="194.76" x="-8" y="1" source="mj_bg_png" scaleX="0.6" scaleY="0.6" anchorOffsetX="0" anchorOffsetY="0"/>
+        <e:Image id="contentImg" width="48" height="64" x="39" y="59"  anchorOffsetX="24" anchorOffsetY="32" scaleX="1.5" scaleY="1.5" source="tiao_9_png"/>
+</e:Skin>

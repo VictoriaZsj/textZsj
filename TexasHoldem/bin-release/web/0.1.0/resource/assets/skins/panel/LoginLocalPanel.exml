@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="panelSkin21_1" width="1280" height="720" xmlns:ns1="*" xmlns:e="http://ns.egret.com/eui"
+        xmlns:w="http://ns.egret.com/wing">
+	<e:Group id="tweenGroup" horizontalCenter="0" verticalCenter="0">
+		<e:Image width="700" height="350" source="bg_page2_png" horizontalCenter="0" verticalCenter="0" scale9Grid="21,22,105,103"/>
+		<e:Image width="663.28" height="235.05" anchorOffsetX="0" anchorOffsetY="0" y="21.19" scaleX="1" scaleY="1" scale9Grid="19,18,23,23" source="bg_page19_png" horizontalCenter="0"/>
+		<e:Label text="账号" x="133.7" y="91.21" textAlign="right" size="34" bold="true"  fontFamily="SimHei" textColor="0xa0522b"/>
+		<e:Image width="340" height="42" anchorOffsetX="0" anchorOffsetY="0" horizontalCenter="53" verticalCenter="-67" source="bg_page17_png" scale9Grid="15,15,151,51"/>
+		<e:Image width="340" height="42" anchorOffsetX="0" anchorOffsetY="0" horizontalCenter="53" verticalCenter="-11" source="bg_page17_png" scale9Grid="15,15,151,51"/>
+		<e:Label text="密码" x="133.7" y="146.55" textAlign="right" size="34" bold="true"  fontFamily="SimHei" textColor="0xa0522b"/>
+		<ns1:GameButton id="loginBtn" label="登录" skinName="buttonSkin24" y="261.36" x="382.6"/>
+		<ns1:GameButton id="registerBtn" label="注册" skinName="buttonSkin38" y="261.36" x="122"/>
+		<e:Label id="accountLabel" text="Label11111111111111" x="255.14" y="95.78" wordWrap="false" anchorOffsetX="0" width="272" textAlign="left"
+		         size="24" />
+		<e:Label id="pwdLabel" text="Label11111111111111" x="255.14" y="153.3" wordWrap="false" anchorOffsetX="0" width="272" textAlign="left"
+		         size="24" />
+	</e:Group>
+</e:Skin>

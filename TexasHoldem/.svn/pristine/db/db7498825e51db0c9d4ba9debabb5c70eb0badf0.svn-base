@@ -1,0 +1,59 @@
+/**
+ * 商城选项的定义
+ * */
+class ShoppingDefined extends BaseDefined
+{
+	private static readonly ShoppingConfig: string = "shopping";
+	private static _instance: ShoppingDefined;
+	public shoppingList:Array<ShoppingDefinition>;
+	
+	public static GetInstance(): ShoppingDefined
+	{
+		if (!ShoppingDefined._instance)
+		{
+			ShoppingDefined._instance = new ShoppingDefined();
+		}
+		if (DefinedManager.IsParsed(ShoppingDefined.ShoppingConfig) == false)
+		{
+			ShoppingDefined._instance.initialize();
+		}
+		return ShoppingDefined._instance;
+	}
+    
+
+	public initialize()
+	{
+		let obj: Object = DefinedManager.GetData(ShoppingDefined.ShoppingConfig);
+		this.shoppingList = ShortNameDefined.GetInstance().convertEnter(obj) as Array<ShoppingDefinition>;
+	}	
+
+    /**
+	 * 获取金币充值定义
+	 */
+	public getGoldPayDefinition(get: number): ShoppingDefinition
+	{
+		for (let def of ShoppingDefined.GetInstance().shoppingList)
+		{
+			if (def.get == get)
+			{
+				return def;
+			}
+		}
+		return null;
+	}
+}
+
+
+/**
+ * 商城选项的定义
+ * */
+class ShoppingDefinition implements IBaseDefintion
+{
+	public id: number;
+	public price: number;
+	public type: number;
+	public get: number;
+	public img: string;
+	public name:string;
+	public des:string;
+}

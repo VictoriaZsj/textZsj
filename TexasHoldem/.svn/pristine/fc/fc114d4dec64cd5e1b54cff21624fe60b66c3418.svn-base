@@ -1,0 +1,75 @@
+/**
+ * 战绩详情信息项
+ */
+class RoundDetialsItemRenderer extends BaseItemRenderer<any>
+{
+	public roundLabel: eui.Label;
+	public timeLabel: eui.Label;
+	public scoreLabel1: eui.Label;
+	public scoreLabel2: eui.Label;
+	public scoreLabel3: eui.Label;
+	public scoreLabel4: eui.Label;
+	public shareBtn: eui.Button;
+	public constructor()
+	{
+		super();
+		this.skinName = UIRendererSkinName.RoundDetialsItemRenderer;
+	}
+	protected createChildren()
+	{
+		this.dataChanged();
+	}
+	protected dataChanged()
+	{
+		super.dataChanged();
+		// if (this.data)
+		// {
+		// 	this.addEventListener(egret.Event.REMOVED_FROM_STAGE, this.onDisable, this);
+		// 	this.roundLabel.text = this.bindData.roundNum.toString();
+		// 	this.shareBtn.addEventListener(egret.TouchEvent.TOUCH_TAP, this.onShareBtnClick, this);
+		// 	VersionManager.setComponentVisibleBySafe(this.shareBtn);
+		// 	if (this.bindData.type == RoomOverType.Disband)
+		// 	{
+		// 		this.timeLabel.text = "房间解散";
+		// 		let index: number = 1;
+		// 		for (let i: number = 1; i <= 4; i++) //将自己的分数放在第一位显示
+		// 		{
+		// 			this["scoreLabel" + index.toString()].text = "0";
+		// 			index++;
+		// 		}
+		// 	}
+		// 	else
+		// 	{
+		// 		let date: Date = new Date(this.bindData.time * 1000);
+		// 		this.timeLabel.text = DateTimeUtil.formatDate(date);
+		// 	}
+		// 	let si: number = UserManager.getSelfIndex(this.bindData);
+		// 	if (si >= 0)
+		// 	{
+		// 		let index: number = 2;
+		// 		for (let i: number = 1; i <= 4; i++) //将自己的分数放在第一位显示
+		// 		{
+		// 			if (i != si)
+		// 			{
+		// 				this["scoreLabel" + index.toString()].text = this.bindData["score" + i.toString()];
+		// 				index++;
+		// 			}
+		// 		}
+		// 		this.scoreLabel1.text = this.bindData["score" + si.toString()];
+		// 	}
+		// }
+	}
+	private onDisable(event: egret.Event)
+	{
+		this.removeEventListener(egret.Event.REMOVED_FROM_STAGE, this.onDisable, this);
+		this.shareBtn.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.onShareBtnClick, this);
+	}
+	private onShareBtnClick(event: egret.TouchEvent)
+	{
+		SoundManager.playButtonEffect(event.target);
+		// if (this.bindData && this.bindData.type != RoomOverType.Disband)
+		// {
+		// 	UIManager.showFloatTips("正在开发中！");
+		// }
+	}
+}

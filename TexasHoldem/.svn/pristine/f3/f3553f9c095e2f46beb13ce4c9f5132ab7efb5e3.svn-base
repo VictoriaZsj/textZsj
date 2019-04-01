@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="itemRenderer1" width="277" height="134" xmlns:e="http://ns.egret.com/eui"
+        xmlns:w="http://ns.egret.com/wing">
+	<e:Image width="277" height="138" horizontalCenter="0" verticalCenter="0"
+	          source="bg_page4_png" scale9Grid="10,10,126,126"/>
+	<e:Image width="167.5" height="120" x="99" y="7" anchorOffsetX="0" anchorOffsetY="0" source="bg_page4_png"
+	          scale9Grid="10,10,126,126"/>
+	<e:Image width="80" height="80" x="48.5" y="46" source="bg_head_png" anchorOffsetX="40" anchorOffsetY="40" />
+	<e:Label id="nameLabel" text="微信昵称" x="11.5" y="86" size="20" textAlign="center" fontFamily="SimHei"
+	          textColor="0xffffff"/>
+	<e:Label text="ID:" x="5.7" y="107" size="20" textAlign="center"  textColor="0xffffff"/>
+	<e:Label id="idLabel" text="999999" x="32.2" y="107.5" size="20" textAlign="center"  textColor="0xffffff"/>
+	<e:Image id="headImg" width="70" height="70" x="49.6" y="45" anchorOffsetX="35" anchorOffsetY="35" />
+	<e:Label id="nameLabel2" text="微信昵称" x="109" y="15" size="18" textAlign="center" fontFamily="SimHei"
+	          textColor="0xffffff"/>
+	<e:Label id="nameLabel3" text="微信昵称" x="109" y="37" size="18" textAlign="center" fontFamily="SimHei"
+	          textColor="0xffffff"/>
+	<e:Label id="nameLabel4" text="微信昵称" x="109" y="58" size="18" textAlign="center" fontFamily="SimHei"
+	          textColor="0xffffff"/>
+	<e:Label text="总分:" x="105.75" y="95.5" size="20" textAlign="center" fontFamily="SimHei"  textColor="0xffffff"/>
+	<e:Image id="sexImg" width="25" height="25" x="61.5" y="54" source="" />
+	<e:Image id="hostImg" x="0" y="0.8" source="fangzhu_png" anchorOffsetX="0" anchorOffsetY="0" scaleX="0.6" scaleY="0.6"/>
+	<e:Image width="146" height="2" x="110.5" y="84.5" source="graymaskbg_1_png" />
+	<e:Group id="scoreLabel2" width="82.2" height="15.2" x="182" y="17.4" anchorOffsetY="0" anchorOffsetX="0">
+		<e:layout>
+			<e:HorizontalLayout gap="2" horizontalAlign="center"/>
+		</e:layout>
+	</e:Group>
+	<e:Group id="scoreLabel3" width="82.2" height="15.2" x="182" y="38.6" anchorOffsetY="0" anchorOffsetX="0">
+		<e:layout>
+		<e:HorizontalLayout gap="2" horizontalAlign="center"/>
+		</e:layout>
+	</e:Group>
+	<e:Group id="scoreLabel4" width="82.2" height="15.2" x="182" y="61.8" anchorOffsetY="0" anchorOffsetX="0">
+		<e:layout>
+		<e:HorizontalLayout gap="2" horizontalAlign="center"/>
+		</e:layout>
+	</e:Group>
+	<e:Group id="scoreLabel" width="107.8" height="32" x="155" y="91" anchorOffsetY="0" anchorOffsetX="0">
+		<e:layout>
+		<e:HorizontalLayout horizontalAlign="center" gap="-1"/>
+		</e:layout>
+	</e:Group>
+</e:Skin>

@@ -1,0 +1,278 @@
+/**
+ * 游戏大厅界面
+ */
+class GameHallPanel extends BasePanel
+{
+	//头像信息
+	public borderImg: eui.Image;
+	public borderImg0: eui.Image;
+	public userNameLabel: eui.Label;
+	public idLabel: eui.Label;
+	public addRoomCardBtn: eui.Button;
+	public girlImg: eui.Image;
+	public boyImg: eui.Image;
+	public roomCardNumLabel: eui.Label;
+	//===================================
+	//
+	//===================================
+	public payBtn: eui.Button;
+	//===================================
+	//
+	//===================================
+	public logoImg: eui.Image;
+	public createRoomBtn: eui.Button;
+	public addInRoomBtn: eui.Button;
+	//===================================
+	//
+	//===================================
+	public recordBtn: eui.Button;
+	public playBtn: eui.Button;
+	public infoBtn: eui.Button;
+	public settingBtn: eui.Button;
+	public shareBtn: eui.Button;
+	public bringRoomCardBtn: eui.Button;
+
+	public cardImg: eui.Image;
+	public cardBgImg: eui.Image;
+
+	//飘花
+	public piaoHua0: eui.Image;
+	public piaoHua1: eui.Image;
+	public piaoHua2: eui.Image;
+	public piaoHua3: eui.Image;
+	private piaoHuaList: Array<eui.Image> = new Array<eui.Image>();
+	private piaohuaAnime: PiaoHuaAnime;
+
+	//进场动画
+	private enterAnime:Anime;
+	private animeList: Array<Anime> = new Array<Anime>();
+
+	public group: eui.Group;
+	public group0: eui.Group;
+	public group1: eui.Group;
+	public logoImg0: eui.Image;
+
+	public constructor()
+	{
+		super();
+		this.setGrayMask(false);
+		this.skinName = UISkinName.GameHallPanel;
+	}
+	protected onAwake(event: eui.UIEvent)
+	{
+		super.onAwake(event);
+		VersionManager.setComponentVisibleBySafe(this.bringRoomCardBtn, this.shareBtn);
+
+	}
+	public init(appendData: any)
+	{
+		super.init(appendData);
+		this.refreshUserInfoUI();
+
+	}
+	private refreshUserInfoUI()
+	{
+		// this.userNameLabel.text = UserManager.userInfo.weiXinInfo.name;
+		// this.idLabel.text = UserManager.userInfo.weiXinInfo.id.toString(); //todo
+		this.userNameLabel.text = UserManager.userInfo.name.toString();
+		this.idLabel.text = UserManager.userInfo.roleId.toString();
+		this.refreshCard();
+		this.boyImg.visible = false;
+		this.girlImg.visible = false;
+		if (UserManager.userInfo.weiXinInfo.sex == 1)
+		{
+			this.boyImg.visible = true;
+		}
+		else if (UserManager.userInfo.weiXinInfo.sex == 2)
+		{
+			this.girlImg.visible = true;
+		}
+	}
+	private refreshCard(num?: number)
+	{
+		this.roomCardNumLabel.text = UserManager.userInfo.card.toString();
+	}
+	protected onEnable(event: eui.UIEvent): void
+	{
+		super.onEnable(event);
+		this.setAnime();
+		this.piaohuaAnime.StartTween();
+		for (let i: number = 0; i < this.animeList.length; i++)
+		{
+			this.animeList[i].PlayTween();
+		}
+		this.addEventListener(egret.TouchEvent.TOUCH_TAP, this.onClickHandler, this);
+		PayManager.buyOverAction.addListener(this.refreshUserInfoUI, this);
+		PayManager.cardNumUpdateAction.addListener(this.refreshCard, this);
+		UserManager.GetRoundListEA.addListener(this.openRoundInfoPanel, this);
+	}
+	protected onDisable(event: eui.UIEvent): void
+	{
+		super.onDisable(event);
+		this.clearAnime();
+		this.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.onClickHandler, this);
+		PayManager.buyOverAction.removeListener(this.refreshUserInfoUI);
+		PayManager.cardNumUpdateAction.removeListener(this.refreshCard);
+		UserManager.GetRoundListEA.removeListener(this.openRoundInfoPanel);
+	}
+	private _txtDef: TextDefinition;
+	protected onClickHandler(event: eui.UIEvent)
+	{
+		switch (event.target)
+		{
+			case this.addRoomCardBtn:
+			case this.cardImg:
+			case this.cardBgImg:
+				SoundManager.playEffect(Sex.Male, MusicAction.buttonClick);
+				UIManager.showPanel(UIModuleName.PayPanel);
+				break;
+			case this.createRoomBtn:
+				SoundManager.playButtonEffect(event.target);
+				if (RoomManager.isInRoom)
+				{
+					AlertManager.showDoubleAlert("你已加入有房间，是否确定进入？", this.goToGame.bind(this));
+				}
+				else
+				{
+					UIManager.showPanel(UIModuleName.CreateRoomPanel);
+				}
+				break;
+			case this.addInRoomBtn:
+				SoundManager.playButtonEffect(event.target);
+				if (RoomManager.isInRoom)
+				{
+					AlertManager.showDoubleAlert("你已加入有房间，是否确定进入？", this.goToGame.bind(this));
+				}
+				else
+				{
+					UIManager.showPanel(UIModuleName.JoinInRoomPanel);
+				}
+				break;
+			case this.recordBtn:
+				SoundManager.playButtonEffect(event.target);
+				UserManager.reqGetRoundInfo();
+				break;
+			case this.playBtn:
+				SoundManager.playEffect(Sex.Male, MusicAction.buttonClick);
+				UIManager.showPanel(UIModuleName.TextInfoPanel, TextId.PlayWay);
+				break;
+			case this.infoBtn:
+				SoundManager.playEffect(Sex.Male, MusicAction.buttonClick);
+				UIManager.showPanel(UIModuleName.TextInfoPanel, TextId.Version);
+				break;
+			case this.settingBtn:
+				SoundManager.playEffect(Sex.Male, MusicAction.buttonClick);
+				UIManager.showPanel(UIModuleName.SettingPanel);
+				break;
+			case this.payBtn:
+				SoundManager.playEffect(Sex.Male, MusicAction.buttonClick);
+				UIManager.showPanel(UIModuleName.PayPanel);
+				break;
+			case this.borderImg:
+			case this.borderImg0:
+				SoundManager.playEffect(Sex.Male, MusicAction.buttonClick);
+				UserManager.reqGetOtherUserInfo(UserManager.userInfo.roleId);
+				break;
+			case this.shareBtn:
+				SoundManager.playEffect(Sex.Male, MusicAction.buttonClick);
+				UIManager.showPanel(UIModuleName.ShareGamePanel);
+				break;
+			case this.bringRoomCardBtn:
+				SoundManager.playEffect(Sex.Male, MusicAction.buttonClick);
+				UIManager.showPanel(UIModuleName.ActivityPanel);
+				break;
+		}
+	}
+	private goToGame()
+	{
+		SceneManager.goToGame(false);
+	}
+
+	//设置动画
+	private setAnime()
+	{
+		//设置飘花动画
+		for (let i: number = 0; i < 4; i++)
+		{
+			this.piaoHuaList.push(this["piaoHua" + i.toString()]);
+		}
+		this.piaohuaAnime = new PiaoHuaAnime(this.piaoHuaList);
+		//设置入场动画
+		this.enterAnime = new Anime(this.group);
+		this.group.alpha = 0;
+		this.enterAnime.SetTween({ alpha: 1 }, 200, false);
+		this.animeList.push(this.enterAnime);
+
+		this.enterAnime = new Anime(this.group0);
+		this.group0.alpha = 0;
+		this.enterAnime.SetTween({ alpha: 1 }, 200, false);
+		this.animeList.push(this.enterAnime);
+
+		this.enterAnime = new Anime(this.logoImg0);
+		this.logoImg0.alpha = 0;
+		this.enterAnime.SetTween({ alpha: 1 }, 200, false);
+		this.animeList.push(this.enterAnime);
+
+		this.enterAnime = new Anime(this.bringRoomCardBtn);
+		this.bringRoomCardBtn.alpha = 0;
+		this.enterAnime.SetTween({ alpha: 1 }, 200, false);
+		this.animeList.push(this.enterAnime);
+
+		this.enterAnime = new Anime(this.settingBtn);
+		this.settingBtn.x = 1280;
+		this.settingBtn.alpha = 0;
+		this.enterAnime.SetTween({ alpha: 1, x: 1170 }, 200, false);
+		this.animeList.push(this.enterAnime);
+
+		this.enterAnime = new Anime(this.shareBtn);
+		this.shareBtn.x = 1280;
+		this.shareBtn.alpha = 0;
+		this.enterAnime.SetTween({ alpha: 1, x: 1088 }, 200, false);
+		this.animeList.push(this.enterAnime);
+
+		this.enterAnime = new Anime(this.logoImg);
+		this.logoImg.alpha = 0;
+		this.enterAnime.SetTween({ alpha: 1 }, 250, false, 200);
+		this.animeList.push(this.enterAnime);
+
+		this.enterAnime = new Anime(this.group1);
+		this.group1.x = 549;
+		this.group1.y = 656;
+		this.group1.alpha = 0;
+		this.enterAnime.SetTween({ x: 559, y: 612, alpha: 1 }, 200, false, 200);
+		this.animeList.push(this.enterAnime);
+
+		this.enterAnime = new Anime(this.createRoomBtn);
+		this.createRoomBtn.x = 1016;
+		this.createRoomBtn.alpha = 0;
+		this.enterAnime.SetTween({ x: 809, alpha: 1 }, 250, false);
+		this.animeList.push(this.enterAnime);
+
+		this.enterAnime = new Anime(this.addInRoomBtn);
+		this.addInRoomBtn.x = 812;
+		this.addInRoomBtn.alpha = 0;
+		this.enterAnime.SetTween({ x: 739, alpha: 1 }, 250, false);
+		this.animeList.push(this.enterAnime);
+
+		for (let i: number = 0; i < this.animeList.length; i++)
+		{
+			this.animeList[i].PauseTween();
+		}
+
+	}
+	private clearAnime()
+	{
+		for (let i: number = 0; i < this.piaoHuaList.length; i++)
+		{
+			egret.Tween.removeTweens(this.piaoHuaList[i]);
+			this.piaoHuaList[i].y = -50;
+		}
+	}
+	/**
+	 * 打开战绩图
+	 */
+	private openRoundInfoPanel()
+	{
+		UIManager.showPanel(UIModuleName.RoundInfoPanel);
+	}
+}

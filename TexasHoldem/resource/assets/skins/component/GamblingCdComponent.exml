@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="ActionCdComponentSkin" width="62" height="73" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing">
+	<e:Image id="cdImg" source="cd_png" scale9Grid="7,9,48,56" anchorOffsetX="0" anchorOffsetY="0" horizontalCenter="0" verticalCenter="0" width="100%" height="100%"/>
+</e:Skin>
